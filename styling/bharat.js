@@ -4,14 +4,14 @@ var simplemaps_countrymap_mapdata={
     width: "responsive", //'700' or 'responsive'
     background_color: "#FFFFFF",
     background_transparent: "yes",
-    border_color: "#ffffff",
+    border_color: "#000000",
     
     //State defaults
     state_description: "State description",
     state_color: "#88A4BC",
     state_hover_color: "#3B729F",
     state_url: "",
-    border_size: 1.5,
+    border_size: 4,
     all_states_inactive: "no",
     all_states_zoomable: "yes",
     
@@ -25,7 +25,7 @@ var simplemaps_countrymap_mapdata={
     location_type: "square",
     location_image_source: "frog.png",
     location_border_color: "#FFFFFF",
-    location_border: 2,
+    location_border: 5,
     location_hover_border: 2.5,
     all_locations_inactive: "no",
     all_locations_hidden: "no",
