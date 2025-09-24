@@ -1,0 +1,292 @@
+/* Color Palette:
+    Navy: #2F4156
+    Teal: #567C9D
+    Sky Blue: #C8D9E6
+    Beige: #F5EFEB
+    White: #FFFFFF
+*/
+
+/* --- Global Styles --- */
+/* These styles apply broadly across your entire website. */
+* {
+    /* Ensures padding and border are included in the element's total width and height */
+    box-sizing: border-box;
+    /* Smooth transitions for all properties like color, size, etc. */
+    transition: all 0.3s ease-in-out;
+}
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #F5EFEB; /* Beige */
+    background-image: url('image1.png'); /* <-- Yahan apni image ka path dalein */
+    background-size: cover;      /* Image ko poore background me fit karega */
+    background-repeat: no-repeat; /* Image repeat nahi hogi */
+    background-position: center;  /* Image ko center me rakhega */
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: #2F4156;
+    overflow-x: hidden;
+}
+    
+body {
+    /* Sets a clean, sans-serif font for all text */
+    font-family: 'Inter', sans-serif;
+    /* Background color for the entire page */
+    background-color: #F5EFEB; /* Beige */
+    margin: 0; /* Removes default browser margin */
+    padding: 0; /* Removes default browser padding */
+    line-height: 1.6; /* Improves readability of text */
+    color: #2F4156; /* Navy for default text color */
+    overflow-x: hidden; /* Prevents horizontal scrollbar, especially important for the sidebar */
+}
+
+/* --- Header Styling --- */
+/* Styles for your website's main header section. */
+header {
+    background-color: #2F4156; /* Navy background */
+    color: #FFFFFF; /* White text color */
+    padding: 1rem 0; /* Padding above and below the header content */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    position: relative; /* Needed for z-index context */
+    z-index: 100; /* Ensures the header stays on top of other content */
+}
+
+.container {
+    max-width: 1200px; /* Maximum width for the content inside the header */
+    margin: 0 auto; /* Centers the container horizontally */
+    padding: 0 20px; /* Padding on the sides for smaller screens */
+    display: flex; /* Uses flexbox for alignment of header elements */
+    justify-content: space-between; /* Distributes items with space between them */
+    align-items: center; /* Vertically aligns items in the center */
+    flex-wrap: wrap; /* Allows items to wrap to the next line on smaller screens */
+}
+
+/* Styles for the group containing the sidebar toggle, logo, and title */
+.left-header-group {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between elements in this group */
+}
+
+/* Styles for the main site title "Bhart Yatra" */
+header h1 {
+    margin: 0; /* Removes default margin for h1 */
+    font-size: 2.5rem; /* Larger font size for the main title */
+}
+
+/* Styles for the link within the site title */
+header h1 a {
+    color: #FFFFFF; /* Makes "Bhart Yatra" title white */
+    text-decoration: none; /* Removes underline from the title link */
+    font-weight: 700; /* Bold font weight */
+}
+
+/* Styles for the header logo image */
+.header-logo {
+    height: 100px; /* Increased height for the logo */
+    width: auto; /* Maintains aspect ratio */
+    border-radius: 50%; /* Makes the logo perfectly circular */
+    object-fit: cover; /* Ensures image covers the area without distortion */
+    box-shadow: 0 0 0 3px #567C9D; /* Teal border effect around the logo */
+}
+
+/* Styles for the main navigation links (visible on desktop) */
+.main-nav ul {
+    list-style: none; /* Removes bullet points from list */
+    margin: 0; /* Removes default margin */
+    padding: 0; /* Removes default padding */
+    display: flex; /* Arranges list items horizontally */
+    gap: 25px; /* Space between navigation items */
+}
+
+.main-nav ul li a {
+    color: #C8D9E6; /* Sky Blue for navigation links */
+    text-decoration: none; /* Removes underline from links */
+    font-size: 1.1rem; /* Slightly larger font size */
+    padding: 8px 15px; /* Padding for a larger clickable area */
+    border-radius: 8px; /* Slightly rounded corners for links */
+    position: relative; /* Needed for pseudo-elements like the underline effect */
+    overflow: hidden; /* Hides overflow for the hover effect */
+}
+
+/* Styles for the animated underline effect on navigation links */
+.main-nav ul li a::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px; /* Underline height */
+    background-color: #567C9D; /* Teal for underline */
+    transform: scaleX(0); /* Starts hidden */
+    transform-origin: bottom right; /* Animation origin */
+    transition: transform 0.3s ease-out;
+}
+
+.main-nav ul li a:hover::before {
+    transform: scaleX(1); /* Expands on hover */
+    transform-origin: bottom left; /* Animation origin */
+}
+
+.main-nav ul li a:hover {
+    color: #FFFFFF; /* White text on hover */
+}
+
+/* --- Sidebar Styling --- */
+/* Styles for the sliding sidebar menu. */
+
+/* Styles for the hamburger icon button that toggles the sidebar */
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: #FFFFFF; /* White icon */
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 8px;
+    display: block; /* Always visible on all screen sizes */
+    align-self: center;
+    margin-right: 12px; /* Space between toggle and logo */
+    margin-left: 0;
+    transition: background 0.2s;
+}
+
+.sidebar-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Styles for the main sidebar container */
+#sidebar {
+    position: fixed; /* Stays in place when scrolling */
+    top: 0;
+    left: 0;
+    width: 280px; /* Width of the sidebar */
+    height: 100%; /* Takes full viewport height */
+    background-color: #2F4156; /* Navy background */
+    color: #FFFFFF;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+    transform: translateX(-100%); /* Starts hidden off-screen to the left */
+    transition: transform 0.4s ease-in-out; /* Smooth slide-in/out transition */
+    z-index: 1000; /* Ensures it's on top of all other content */
+    display: flex;
+    flex-direction: column; /* Arranges content vertically */
+    padding: 20px;
+}
+
+/* Class added by JavaScript when the sidebar is open */
+#sidebar.open {
+    transform: translateX(0); /* Slides into view */
+}
+
+/* Styles for the close button (X icon) inside the sidebar */
+.sidebar-close {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    font-size: 2rem;
+    cursor: pointer;
+    align-self: flex-end; /* Aligns the button to the right */
+    margin-bottom: 20px;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.sidebar-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Styles for the navigation links within the sidebar */
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav ul li {
+    margin-bottom: 10px; /* Space between list items */
+}
+
+.sidebar-nav ul li a {
+    display: flex; /* Uses flexbox to align icon and text */
+    align-items: center; /* Vertically centers icon and text */
+    gap: 10px; /* Space between icon and text */
+    color: #C8D9E6; /* Sky Blue */
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 12px 15px; /* Generous padding for easy clicking */
+    border-radius: 8px;
+}
+
+.sidebar-nav ul li a:hover {
+    background-color: #567C9D; /* Teal on hover */
+    color: #FFFFFF;
+}
+
+/* Styles for the social media links at the bottom of the sidebar */
+.social-links {
+    margin-top: auto; /* Pushes social links to the bottom of the sidebar */
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Subtle separator line */
+}
+
+.social-links a {
+    color: #C8D9E6; /* Sky Blue */
+    font-size: 1.8rem;
+    text-decoration: none;
+}
+
+.social-links a:hover {
+    color: #FFFFFF;
+    transform: scale(1.1); /* Slightly enlarges icon on hover */
+}
+
+
+/* --- Responsive Adjustments --- */
+/* These styles apply based on screen width to ensure responsiveness. */
+
+/* Styles for screens up to 768px wide (e.g., tablets and larger phones) */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: row; /* Keeps items in a row even on smaller screens */
+        justify-content: space-between; /* Distributes items */
+        align-items: center; /* Vertically aligns */
+        padding: 0 15px; /* Adjusts padding for smaller screens */
+    }
+
+    /* Main navigation is hidden on smaller screens, as sidebar takes over */
+    .main-nav {
+        display: none;
+    }
+
+    .left-header-group {
+        flex-grow: 1; /* Allows it to take available space */
+        justify-content: flex-start; /* Aligns its content to the start */
+    }
+
+    header h1 {
+        font-size: 1.8rem; /* Adjusts title size for smaller screens */
+    }
+
+    .header-logo {
+        height: 60px; /* Adjusts logo size for mobile */
+    }
+
+    /* Adjust sidebar width for very small screens if needed */
+    #sidebar {
+        width: 250px;
+    }
+}
+
+/* Styles for screens up to 480px wide (e.g., typical mobile phones) */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5rem; /* Further adjusts title size for very small screens */
+    }
+
+    .header-logo {
+        height: 50px; /* Smaller logo for very small screens */
+    }
+}

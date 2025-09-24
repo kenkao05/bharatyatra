@@ -1,0 +1,52 @@
+<!-- admin-dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .btn-container a button {
+      padding: 15px 30px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .back-btn {
+      background-color: #888;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: white;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Welcome, Admin</h1>
+  <p>Select a section to manage:</p>
+
+  <div class="btn-container">
+    <a href="admin-submissions.html">
+      <button>📥 View User Submissions</button>
+    </a>
+    <a href="admin-manage.html">
+      <button>🛠️ View/Add/Delete Entries</button>
+    </a>
+  </div>
+
+</body>
+<a href="admin-login.html" class="back-btn">← Back to Login</a>
+
+</html>
