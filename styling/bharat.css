@@ -17,7 +17,7 @@
 body {
     font-family: 'Inter', sans-serif;
     background-color: #F5EFEB; /* Beige */
-    background-image: url('image1.png'); /* <-- Yahan apni image ka path dalein */
+    background-image: url('background.png'); /* <-- Yahan apni image ka path dalein */
     background-size: cover;      /* Image ko poore background me fit karega */
     background-repeat: no-repeat; /* Image repeat nahi hogi */
     background-position: center;  /* Image ko center me rakhega */
@@ -45,20 +45,21 @@ body {
 header {
     background-color: #2F4156; /* Navy background */
     color: #FFFFFF; /* White text color */
-    padding: 1rem 0; /* Padding above and below the header content */
+    padding: 0.5rem 0; /* Padding above and below the header content */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
     position: relative; /* Needed for z-index context */
     z-index: 100; /* Ensures the header stays on top of other content */
 }
 
 .container {
-    max-width: 1200px; /* Maximum width for the content inside the header */
+     /* Maximum width for the content inside the header */
     margin: 0 auto; /* Centers the container horizontally */
     padding: 0 20px; /* Padding on the sides for smaller screens */
     display: flex; /* Uses flexbox for alignment of header elements */
     justify-content: space-between; /* Distributes items with space between them */
     align-items: center; /* Vertically aligns items in the center */
     flex-wrap: wrap; /* Allows items to wrap to the next line on smaller screens */
+    width: 100%;
 }
 
 /* Styles for the group containing the sidebar toggle, logo, and title */
@@ -66,12 +67,17 @@ header {
     display: flex;
     align-items: center;
     gap: 8px; /* Space between elements in this group */
+    margin-right: auto; /* Pushes this group to the left */
+}
+
+.main-nav {
+    margin-left: auto; /* This pushes the nav to the far right */
 }
 
 /* Styles for the main site title "Bhart Yatra" */
 header h1 {
     margin: 0; /* Removes default margin for h1 */
-    font-size: 2.5rem; /* Larger font size for the main title */
+    font-size: 2rem; /* Larger font size for the main title */
 }
 
 /* Styles for the link within the site title */
@@ -83,7 +89,7 @@ header h1 a {
 
 /* Styles for the header logo image */
 .header-logo {
-    height: 100px; /* Increased height for the logo */
+    height: 70px; /* Increased height for the logo */
     width: auto; /* Maintains aspect ratio */
     border-radius: 50%; /* Makes the logo perfectly circular */
     object-fit: cover; /* Ensures image covers the area without distortion */
@@ -267,16 +273,19 @@ header h1 a {
     }
 
     header h1 {
-        font-size: 1.8rem; /* Adjusts title size for smaller screens */
+        font-size: 1.6rem; /* Adjusts title size for smaller screens */
     }
 
     .header-logo {
-        height: 60px; /* Adjusts logo size for mobile */
+        height: 50px; /* Adjusts logo size for mobile */
     }
 
     /* Adjust sidebar width for very small screens if needed */
     #sidebar {
         width: 250px;
+    }
+    header {
+        padding: 0.4rem 0; /* Slightly reduce mobile padding too */
     }
 }
 
