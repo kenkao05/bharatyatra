@@ -67,3 +67,34 @@ header h1 {
 .card a:hover {
   text-decoration: underline;
 }
+
+.back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 600;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn i {
+            font-size: 1rem;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn-header {
+            position: absolute;
+            top: 20px;    /* distance from top of header */
+            right: 20px;  /* distance from right side */
+            z-index: 10;  /* make sure it’s above the overlay */
+        }

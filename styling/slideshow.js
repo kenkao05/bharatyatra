@@ -1,16 +1,26 @@
 // Each state and its images
 const stateImages = {
   gujarat: [
-    'styling/stateimages/rann-of-kutchh.jpg',
-    'styling/stateimages/saputarawide.jpg',
-    'styling/stateimages/girwide.jpg'
+    '../styling/stateimages/rann-of-kutchh.jpg',
+    '../styling/stateimages/saputarawide.jpg',
+    '../styling/stateimages/girwide.jpg'
   ],
   rajasthan: [
-    'styling/stateimages/rajasthanbkgd.jpg',
-    'styling/stateimages/rajasthanbkgd2.jpg',
+    '../styling/stateimages/rajasthanbkgd.jpg',
+    '../styling/stateimages/rajasthanbkgd2.jpg',
   ],
-  
-  // add more states here...
+  jammukashmir: [
+    '../styling/stateimages/jk1.jpg',
+    '../styling/stateimages/jk2.jpg',
+  ],
+  assam: [
+    '../styling/stateimages/assambkgd1.jpg',
+    '../styling/stateimages/assambkgd2.jpg',
+  ],
+  kerala: [
+    '../styling/stateimages/keralabkgd1.jpg',
+    '../styling/stateimages/keralabkgd2.jpg',
+  ] // add more states here...
 };
 
 document.addEventListener("DOMContentLoaded", () => {
