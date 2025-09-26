@@ -3,67 +3,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Rajasthan Tourist Spots</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-    }
-    .spot {
-      border: 1px solid #ddd;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 10px;
-      background-color: #f9f9f9;
-    }
-    .spot h2 {
-      margin: 0;
-    }
-    .spot a {
-      display: inline-block;
-      margin-top: 10px;
-      color: #0077cc;
-      text-decoration: none;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rajasthan</title>
+  <link rel="stylesheet" href="styling/state.css">
 </head>
+<body data-state="rajasthan">
+  <header class="state-header">
+    <h1>Rajasthan</h1>
+  </header>
 
-<body>
-  <h1>Tourist Spots in Rajasthan</h1>
-  <div id="spotsContainer">Loading...</div>
+  <div class="container">
+    <div class="card">
+      <img src="https://www.jaipurtaxiservices.com/tourpackage/1211861340jaipur-udaipur-jodhpur-jaisalmer-tour.webp" alt="Jaipur - Hawa Mahal">
+      <h3>Jaipur - Pink City</h3>
+      <a href="https://www.tourism.rajasthan.gov.in/jaipur.html">Visit Website</a>
+    </div>
 
-  <script>
-    fetch("php/fetch_spots.php?state=Rajasthan")
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById("spotsContainer");
-        container.innerHTML = "";
+    <div class="card">
+      <img src="https://travelogyindia.b-cdn.net/storage/app/itinerary/11/udaipur-tipl-600x436-2.jpg" alt="Udaipur - City Palace">
+      <h3>Udaipur - City of Lakes</h3>
+      <a href="https://www.tourism.rajasthan.gov.in/udaipur.html">Visit Website</a>
+    </div>
 
-        if (data.length === 0) {
-          container.innerHTML = "<p>No spots found.</p>";
-          return;
-        }
+    <div class="card">
+      <img src="https://www.tourism.rajasthan.gov.in/content/dam/rajasthan-tourism/english/city/explore/354.jpg" alt="Jaisalmer Fort">
+      <h3>Jaisalmer - Golden City</h3>
+      <a href="https://www.rajasthantourism.gov.in/destination/jaisalmer">Visit Website</a>
+    </div>
 
-        data.forEach(spot => {
-          const div = document.createElement("div");
-          div.className = "spot";
-          div.innerHTML = `
-            <h2>${spot.name}</h2>
-            <p>${spot.description}</p>
-            <a href="${spot.map_link}" target="_blank">View on Map</a>
-          `;
-          container.appendChild(div);
-        });
-      })
-      .catch(err => {
-        document.getElementById("spotsContainer").innerText = "Error fetching data.";
-        console.error(err);
-      });
-  </script>
+    <div class="card">
+      <img src="https://wspl.support/divitours/wp-content/uploads/2019/04/guru-shikar.jpg" alt="Mount Abu - Nakki Lake">
+      <h3>Mount Abu</h3>
+      <a href="https://www.tourism.rajasthan.gov.in/mount-abu.html">Visit Website</a>
+    </div>
+
+    <div class="card">
+      <img src="https://tse4.mm.bing.net/th/id/OIP.uJeXGzxDdSKkB_m6bXLMCwHaE0?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Ranthambore National Park">
+      <h3>Ranthambore National Park</h3>
+      <a href="https://www.ranthamborenationalpark.com">Visit Website</a>
+    </div>
+
+    <div class="card">
+      <img src="https://thumbs.dreamstime.com/b/pushkar-holy-city-india-lake-s-mountains-background-beautiful-panorama-147358766.jpg" alt="Pushkar Lake">
+      <h3>Pushkar</h3>
+      <a href="https://www.tourism.rajasthan.gov.in/pushkar.html">Visit Website</a>
+    </div>
+  </div>
+
+  <script src="styling/slideshow.js"></script>
+  <a href="index.html" style="display: inline-block; margin: 20px; padding: 10px 15px; background-color: #ccc; color: black; text-decoration: none; border-radius: 8px;">← Back to Home</a>
+
 </body>
-<a href="index.html" style="display: inline-block; margin-bottom: 20px; padding: 10px 15px; background-color: #ccc; color: black; text-decoration: none; border-radius: 8px;">← Back to Home</a>
-
 </html>

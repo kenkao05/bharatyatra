@@ -6,15 +6,10 @@ const stateImages = {
     'styling/stateimages/girwide.jpg'
   ],
   rajasthan: [
-    'jaipur.jpg',
-    'udaipur.jpg',
-    'jaisalmer.jpg'
+    'styling/stateimages/rajasthanbkgd.jpg',
+    'styling/stateimages/rajasthanbkgd2.jpg',
   ],
-  kashmir: [
-    'dal-lake.jpg',
-    'gulmarg.jpg',
-    'pahalgam.jpg'
-  ]
+  
   // add more states here...
 };
 
