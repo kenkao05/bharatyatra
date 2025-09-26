@@ -1,55 +1,181 @@
-<!-- admin-dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Dashboard</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 50px;
-    }
-    .btn-container {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 40px;
-    }
-    .btn-container a button {
-      padding: 15px 30px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .back-btn {
-      background-color: #888;
-      text-decoration: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      color: white;
-      margin-bottom: 20px;
-      display: inline-block;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BharatYatra Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .dashboard-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .dashboard-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #2980b9 0%, #1a2530 100%);
+        }
+        
+        .dashboard-btn:active {
+            transform: translateY(0);
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #a5281b 100%);
+        }
+        
+        .icon {
+            font-size: 1.5rem;
+        }
+        
+        .footer {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+
+        /*back button*/
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 600;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn i {
+            font-size: 1rem;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn-header {
+            position: absolute;
+            top: 20px;    /* distance from top of header */
+            right: 20px;  /* distance from right side */
+            z-index: 10;  /* make sure it’s above the overlay */
+        }
+        
+        @media (max-width: 600px) {
+            .dashboard-container {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-btn {
+                padding: 15px;
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <h1>Welcome, Admin</h1>
-  <p>Select a section to manage:</p>
-
-  <div class="btn-container">
-    <a href="admin-submissions.html">
-      <button>📥 View User Submissions</button>
-    </a>
-    <a href="admin-manage.html">
-      <button>🛠️ View/Add/Delete Entries</button>
-    </a>
-  </div>
-
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>BharatYatra Admin Dashboard</h1>
+            <p>Manage your travel platform content</p>
+        </div>
+        
+        <div class="buttons-container">
+            <button class="dashboard-btn" onclick="window.location.href='admin-submissions.html'">
+                <span class="icon">📋</span>
+                View/Edit Suggestion Form Entries
+            </button>
+            
+            <button class="dashboard-btn" onclick="window.location.href='admin-manage.html'">
+                <span class="icon">📍</span>
+                View/Edit State Spots
+            </button>
+        </div>
+        
+        <a href="../index.html" class="back-btn back-btn-header">
+            ← Back
+        </a>
+        
+        
+    </div>
 </body>
-<a href="../index.html" class="back-btn back-btn-header">
-    ← Back
-</a>
-
-
 </html>
+
+
+
