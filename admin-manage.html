@@ -1,140 +1,439 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Admin Manage</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin - Manage Tourist Spots</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f4f4f4;
+    :root{
+      --bg:#4a6694;
+      --card:#0b1220;
+      --accent:#06b6d4;
+      --muted:#94a3b8;
+      --glass: rgba(255,255,255,0.04);
+      --radius:14px;
+      --header-height: 80px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, 'Helvetica Neue', Arial;
     }
-    fieldset {
-      border: 2px solid #ccc;
-      padding: 20px;
-      margin-bottom: 30px;
-      background-color: #fff;
-      border-radius: 10px;
+
+    html,body{
+      height:100%;
+      margin:0;
+      padding:0;
+      background:#071021;
+      color:#e6eef6;
     }
-    legend {
-      font-weight: bold;
-      font-size: 1.2em;
+
+    body{
+      display:flex;
+      flex-direction:column;
     }
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      background-color: #3498db;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    button:hover {
-      background-color: #2980b9;
-    }
-    .danger {
-      background-color: #e74c3c;
-    }
-    .danger:hover {
-      background-color: #c0392b;
-    }
-    .back-btn {
-      background-color: #888;
-      text-decoration: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      color: white;
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
       margin-bottom: 20px;
-      display: inline-block;
+      color: #e6eef6;
+    }
+
+    select, input, textarea{
+      padding:12px 16px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.1);
+      background:var(--glass);
+      color:inherit;
+      font-size:14px;
+      outline:none;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 16px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .card{
+      width:100%;
+      max-width:380px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+      margin-bottom:20px;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .spots-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+      width: 100%;                            /* ← ADD THIS LINE */
+      max-width: 1200px;                      /* ← ADD THIS LINE */
+    }
+
+    .card img{
+      width:100%;
+      height:180px;
+      object-fit:cover;
+      border-radius:10px;
+      margin-bottom:12px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .spot-name{font-weight:700;font-size:18px;margin-bottom:8px;}
+    .spot-desc{font-size:14px;margin-bottom:12px;color:var(--muted);line-height:1.4;}
+    .spot-link a{color:var(--accent);text-decoration:none;font-size:14px;}
+    .spot-link a:hover{text-decoration:underline;}
+
+    .delete-btn{
+      align-self:flex-start;
+      margin-top:12px;
+      padding:10px 16px;
+      border-radius:10px;
+      border:none;
+      cursor:pointer;
+      font-weight:600;
+      background:linear-gradient(90deg, #ef4444, #dc2626);
+      color:#fff;
+      transition: all 0.2s ease;
+    }
+
+    .delete-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+    
+    .admin-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      backdrop-filter: blur(8px);
+      background: rgba(11, 18, 32, 0.6);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      z-index: 1000;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      height: var(--header-height);
+      box-sizing: border-box;
+    }
+
+    .admin-header .header-content {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #e6eef6;
+    }
+
+    .main-content {
+      margin-top: var(--header-height);
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .section {
+      width: 100%;
+      margin-bottom: 60px;
+      display: flex;           /* ← ADD THIS LINE */
+      flex-direction: column;  /* ← ADD THIS LINE */
+      align-items: center;   /* ← ADD THIS LINE */
+    }
+
+    .state-selector {
+      max-width: 300px;
+      margin-bottom: 30px;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--muted);
+      font-style: italic;
+      padding: 40px;
+    }
+
+    .add-spot-form {
+      max-width: 600px;
+      width: 100%;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+      margin: 0 auto;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .form-row > * {
+      flex: 1;
+    }
+
+    .photo-upload-area {
+      border: 2px dashed rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 40px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .photo-upload-area:hover {
+      border-color: var(--accent);
+      background: rgba(6, 182, 212, 0.05);
+    }
+
+    .upload-icon {
+      font-size: 48px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .upload-text {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .add-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+      background: linear-gradient(90deg, var(--accent), #0ea5a7);
+      color: #042028;
+      transition: all 0.2s ease;
+    }
+
+    .add-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+    }
+
+    @media(max-width:1000px){               /* ← CHANGE breakpoint from 768px to 1000px */
+      .spots-grid {
+        grid-template-columns: repeat(2, 1fr); /* ← CHANGE to 2 columns for medium screens */
+        gap: 16px;
+      }
+    }
+
+    @media(max-width:650px){                /* ← ADD NEW breakpoint for mobile */
+      .card{padding:16px; max-width: 100%;}
+      .main-content{padding:20px;}
+      .spots-grid {
+        grid-template-columns: 1fr;          /* ← 1 column for mobile */
+        gap: 16px;
+      }
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
     }
   </style>
 </head>
+
 <body>
+  <header class="admin-header">
+    <div class="header-content">
+      <h1>Admin - Manage Tourist Spots</h1>
+    </div>
+  </header>
 
-  <a href="admin-dashboard.html" class="back-btn">← Back to Dashboard</a>
+  <main class="main-content">
+    <!-- Section 1: Manage Existing Spots -->
+    <div class="section">
+      <h2 class="section-title">Manage Tourist Spots</h2>
+      
+      <div class="state-selector">
+        <select id="manageStateSelect">
+          <option value="Gujarat" selected>Gujarat</option>
+          <option value="Rajasthan">Rajasthan</option>
+          <option value="Kerala">Kerala</option>
+          <option value="Assam">Assam</option>
+          <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+        </select>
+      </div>
 
-  <!-- ADD Tourist Spot -->
-  <fieldset>
-    <legend>Add Tourist Spot</legend>
-    <form action="php/add_spot.php" method="POST">
-      <label for="state">State:</label>
-      <select name="state" id="state" required>
-        <option value="">-- Select State --</option>
-        <option value="Gujarat">Gujarat</option>
-        <option value="Rajasthan">Rajasthan</option>
-      </select>
+      <div id="spotsContainer" class="spots-grid"></div>
+    </div>
 
-      <label for="spotName">Spot Name:</label>
-      <input type="text" name="spotName" id="spotName" required />
+    <!-- Section 2: Add New Spot -->
+    <div class="section">
+      <h2 class="section-title">Add New Spot</h2>
+      
+      <form class="add-spot-form">
+        <div class="form-row">
+          <select id="addStateSelect">
+            <option value="">Select State</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Rajasthan">Rajasthan</option>
+            <option value="Kerala">Kerala</option>
+            <option value="Assam">Assam</option>
+            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+          </select>
+        </div>
 
-      <label for="description">Description:</label>
-      <textarea name="description" id="description" required></textarea>
+        <input type="text" id="spotName" placeholder="Spot Name" />
+        
+        <textarea id="spotDescription" placeholder="Description (1-2 lines about the place)"></textarea>
+        
+        <input type="url" id="mapsLink" placeholder="Google Maps Link" />
+        
+        <div class="photo-upload-area">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text">
+            <strong>Click to upload photos</strong><br>
+            or drag and drop files here
+          </div>
+        </div>
 
-      <label for="mapLink">Google Maps Link:</label>
-      <input type="text" name="mapLink" id="mapLink" placeholder="https://maps.app.goo.gl/..." />
-
-      <button type="submit">Add Spot</button>
-    </form>
-  </fieldset>
-
-  <!-- DELETE Tourist Spot -->
-  <fieldset>
-    <legend>Delete Tourist Spot</legend>
-    <form action="php/delete_spot.php" method="POST">
-      <label>Select State:</label>
-      <select id="stateDropdown" name="state" required onchange="loadSpots(this.value)">
-        <option value="">-- Choose State --</option>
-        <option value="Gujarat">Gujarat</option>
-        <option value="Rajasthan">Rajasthan</option>
-      </select>
-
-      <label>Select Spot Name:</label>
-      <select id="spotDropdown" name="spot_name" required>
-        <option value="">-- Select a state first --</option>
-      </select>
-
-      <button type="submit" class="danger">Delete Spot</button>
-    </form>
-  </fieldset>
+        <button type="button" class="add-btn" onclick="addSpot()">ADD SPOT</button>
+      </form>
+    </div>
+  </main>
 
   <script>
-function loadSpots(state) {
-  if (state === "") return;
+    const touristSpots = {
+      Gujarat: [
+        {
+          name: "Somnath Temple",
+          desc: "One of the twelve Jyotirlinga shrines of Lord Shiva. Located on the western coast with stunning sea views.",
+          link: "https://www.google.com/maps/place/Somnath+Temple",
+          photo: "/styling/stateimages/somnath.jpg"
+        },
+        {
+          name: "Gir National Park",
+          desc: "Home to the endangered Asiatic lions. Wildlife sanctuary with diverse flora and fauna.",
+          link: "https://www.google.com/maps/place/Gir+National+Park",
+          photo: "/styling/stateimages/gir.jpg"
+        },
+        {
+          name: "Rann of Kutch",
+          desc: "Vast white salt desert that transforms into a magical landscape during full moon nights.",
+          link: "https://www.google.com/maps/place/Rann+of+Kutch",
+          photo: "/styling/stateimages/rann.jpg"
+        },
+        {
+          name: "Dwarka",
+          desc: "Ancient city and one of the Char Dham pilgrimage sites. Rich in mythology and historical significance.",
+          link: "https://www.google.com/maps/place/Dwarka",
+          photo: "/styling/stateimages/dwarka.jpg"
+        },
+        {
+          name: "Saputara Hill Station",
+          desc: "Gujarat's only hill station offering pleasant climate, lush greenery and scenic valley views.",
+          link: "https://www.google.com/maps/place/Saputara",
+          photo: "/styling/stateimages/saputara.jpg"
+        },
+        {
+          name: "Champaner-Pavagadh",
+          desc: "UNESCO World Heritage Site featuring medieval Islamic architecture and ancient Hindu temples.",
+          link: "https://www.google.com/maps/place/Champaner-Pavagadh",
+          photo: "/styling/stateimages/champaner.jpg"
+        }
+      ],
+      Rajasthan: [],
+      Kerala: [],
+      Assam: [],
+      "Jammu and Kashmir": []
+    };
 
-  fetch(`php/get_spots.php?state=${encodeURIComponent(state)}`)
-    .then(response => response.json())
-    .then(data => {
-      const dropdown = document.getElementById("spotDropdown");
-      dropdown.innerHTML = '<option value="">-- Choose Spot --</option>';
-      data.forEach(spot => {
-        const option = document.createElement("option");
-        option.value = spot.name;
-        option.text = spot.name;
-        dropdown.appendChild(option);
+    
+
+    const spotsContainer = document.getElementById('spotsContainer');
+    const manageStateSelect = document.getElementById('manageStateSelect');
+
+    function renderSpots(state) {
+      spotsContainer.innerHTML = '';
+      const spots = touristSpots[state] || [];
+      
+      if (spots.length === 0) {
+        spotsContainer.innerHTML = `<div class="empty-state">No tourist spots added yet for ${state}.</div>`;
+        return;
+      }
+
+      spots.forEach((spot, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        card.innerHTML = `
+          <img src="${spot.photo || ''}" alt="${spot.name} photo" style="display: ${spot.photo ? 'block' : 'none'}">
+          <div class="spot-name">${spot.name}</div>
+          <div class="spot-desc">${spot.desc}</div>
+          <div class="spot-link"><a href="${spot.link}" target="_blank">View on Google Maps</a></div>
+        `;
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => {
+          if (confirm(`Are you sure you want to delete ${spot.name}?`)) {
+            card.remove();
+          }
+        });
+        
+        card.appendChild(deleteBtn);
+        spotsContainer.appendChild(card);
       });
-    })
-    .catch(error => {
-      console.error("Error fetching spots:", error);
-    });
-}
-</script>
+    }
 
+    manageStateSelect.addEventListener('change', e => {
+      renderSpots(e.target.value);
+    });
+
+    function addSpot() {
+      const state = document.getElementById('addStateSelect').value;
+      const name = document.getElementById('spotName').value;
+      const description = document.getElementById('spotDescription').value;
+      const mapsLink = document.getElementById('mapsLink').value;
+
+      if (state && name && description && mapsLink) {
+        alert(`New spot "${name}" would be added to ${state}!\n(This is a static demo)`);
+        
+        // Clear form
+        document.getElementById('addStateSelect').value = '';
+        document.getElementById('spotName').value = '';
+        document.getElementById('spotDescription').value = '';
+        document.getElementById('mapsLink').value = '';
+      } else {
+        alert('Please fill in all fields');
+      }
+    }
+
+    // Initialize with Gujarat
+    renderSpots('Gujarat');
+  </script>
+  
 </body>
 </html>
-
-
-
