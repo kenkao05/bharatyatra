@@ -7,131 +7,188 @@
   <meta name="description" content="Terms and Conditions for Bharatyatra" />
   <style>
     :root{
-      --bg:#f7f9fb;
-      --card:#ffffff;
-      --accent:#0b74de;
-      --muted:#657786;
-      --max-width:880px
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#06b6d4;
+      --muted:#94a3b8;
+      --glass: rgba(255,255,255,0.04);
+      --radius:14px;
+      --max-width:880px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, 'Helvetica Neue', Arial;
     }
+
     html,body{
       height:100%;
       margin:0;
-      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:var(--bg);
-      color:#111
+      background: linear-gradient(180deg, var(--bg) 0%, #071021 100%);
+      color:#e6eef6;
     }
 
     .container{
       max-width:var(--max-width);
-      margin:32px auto;padding:28px
+      margin:32px auto;
+      padding:28px;
     }
 
     .header{
       display:flex;
       align-items:center;
-      gap:16px
+      gap:16px;
+      margin-bottom:20px;
     }
 
-    .logo{width:56px;
+    .logo{
+      width:56px;
       height:56px;
       border-radius:10px;
-      background:linear-gradient(135deg,var(--accent),#0669b8);
+      background:linear-gradient(135deg,var(--accent),#0ea5a7);
       display:flex;
       align-items:center;
       justify-content:center;
-      color:#fff;font-weight:700;
-      font-size:20px
+      color:#042028;
+      font-weight:700;
+      font-size:20px;
     }
 
-    .h1{margin:0;
-      font-size:20px
+    h1{
+      margin:0;
+      font-size:20px;
+      color:#e6eef6;
+      font-weight:600;
     }
 
     .card{
-      background:var(--card);
-      border-radius:12px;
-      padding:22px;
-      margin-top:20px;
-      box-shadow:0 6px 18px rgba(16,24,40,0.06)
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding:28px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
     }
 
-    .h2{
-      margin-top:18px
+    h2{
+      margin-top:24px;
+      margin-bottom:12px;
+      color:#e6eef6;
+      font-weight:600;
+      font-size:18px;
     }
 
-    .p{
+    section:first-child h2 {
+      margin-top:0;
+    }
+
+    p{
       color:var(--muted);
-      line-height:1.6
+      line-height:1.6;
+      margin-bottom:16px;
     }
 
-    .ul{
-      color:var(--muted)
+    ul{
+      color:var(--muted);
+      line-height:1.6;
+      padding-left:20px;
+    }
+
+    li {
+      margin-bottom:8px;
     }
 
     .meta{
       font-size:13px;
       color:var(--muted);
-      margin-top:6px
+      margin-top:6px;
     }
 
-    .footer{margin-top:20px;
+    .footer{
+      margin-top:20px;
       font-size:13px;
-      color:var(--muted)
+      color:var(--muted);
     }
 
-    .cta{
-      display:inline-block;
-      background:var(--accent);
-      color:#fff;padding:10px 14px;
-      border-radius:8px;
+    a {
+      color:var(--accent);
       text-decoration:none;
-      margin-top:12px
+    }
+
+    a:hover {
+      text-decoration:underline;
+    }
+
+    strong {
+      color:#e6eef6;
+    }
+
+    em {
+      color:#d1d9e1;
     }
 
     .code{
-      background:#f2f4f7;
+      background:rgba(255,255,255,0.08);
       padding:2px 6px;
       border-radius:6px;
-      font-family:monospace
+      font-family:monospace;
+      color:#e6eef6;
     }
 
-    @media (max-width:540px){.container{padding:16px}.logo{display:none}}
-    
+    /* Fixed back button */
     .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.2rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            font-weight: 600;
-            border-radius: 30px;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-        }
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      background: rgba(74, 144, 226, 0.2);
+      color: white;
+      font-weight: 600;
+      border-radius: 30px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(4px);
+      cursor: pointer;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, 'Helvetica Neue', Arial;
+    }
 
-        .back-btn i {
-            font-size: 1rem;
-        }
+    .back-btn:hover {
+      transform: translateX(-5px);
+      background: linear-gradient(135deg, #4A90E2, var(--accent));
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      text-decoration: none;
+    }
 
-        .back-btn:hover {
-            transform: translateX(-5px);
-            background: linear-gradient(135deg, var(--accent), var(--secondary));
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-        }
+    footer[align="center"] {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
 
-        .back-btn-header {
-            position: absolute;
-            top: 20px;    /* distance from top of header */
-            right: 20px;  /* distance from right side */
-            z-index: 10;  /* make sure it’s above the overlay */
-        }
+    footer[align="center"] p {
+      color: var(--muted);
+      font-style: italic;
+    }
+    
+    @media (max-width:540px){
+      .container{padding:16px}
+      .logo{display:none}
+      .card{padding:20px}
+      .back-btn {
+        top: 15px;
+        right: 15px;
+        padding: 0.4rem 0.8rem;
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
+    <header class="header">
       <div class="logo">BT</div>
       <div>
         <h1>Bharatyatra — Terms &amp; Conditions</h1>
@@ -142,7 +199,7 @@
     <article class="card" role="article" aria-labelledby="toc">
       <section id="introduction">
         <h2 id="toc">1. Acceptance of Terms</h2>
-        <p>Welcome to <strong>Bharatyatra</strong>. These Terms and Conditions (<em>“Terms”</em>) govern your access to and use of our website, services and content. By accessing or using Bharatyatra, you agree to be bound by these Terms. If you do not agree, please do not use the site.</p>
+        <p>Welcome to <strong>Bharatyatra</strong>. These Terms and Conditions (<em>"Terms"</em>) govern your access to and use of our website, services and content. By accessing or using Bharatyatra, you agree to be bound by these Terms. If you do not agree, please do not use the site.</p>
       </section>
 
       <section>
@@ -164,7 +221,6 @@
         <h2>4. Intellectual Property</h2>
         <p>All text, images, logos, icons, graphics, video and other content on Bharatyatra are owned by Bharatyatra or used with permission. You may view and print content for personal, non-commercial use only. Any other use requires prior written permission.</p>
       </section>
-
 
       <section>
         <h2>5. Third‑Party Links and Content</h2>
@@ -203,13 +259,24 @@
       </section>
 
       <footer align="center">
-        <p>Thank you for choosing <strong>Bharatyatra</strong></p>
+        <p>Thank you for choosing <strong>Bharatyatra.</strong></p>
       </footer>
     </article>
 
-    <a href="index.html" class="back-btn back-btn-header">
-        <i class="fas fa-arrow-left"></i> Back
+    <a href="index.html" class="back-btn" id="backBtn">
+        ← Back
     </a>
   </div>
+
+  <script>
+    document.getElementById('backBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      if (window.history.length > 1 && document.referrer) {
+        window.history.back();
+      } else {
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
 </body>
 </html>

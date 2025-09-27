@@ -15,7 +15,7 @@
     transition: all 0.3s ease-in-out;
 }
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Playfair Display', 'Georgia', serif;
     background-color: #F5EFEB; /* Beige */
     background-image: url('background.png'); /* <-- Yahan apni image ka path dalein */
     background-size: cover;      /* Image ko poore background me fit karega */
@@ -43,7 +43,7 @@ body {
 /* --- Header Styling --- */
 /* Styles for your website's main header section. */
 header {
-    background-color: #2F4156; /* Navy background */
+    background-color: #2f4156bc; /* Navy background */
     color: #FFFFFF; /* White text color */
     padding: 0.5rem 0; /* Padding above and below the header content */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */

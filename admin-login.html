@@ -5,125 +5,194 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel Admin Login</title>
     <style>
-        /* --- Global Reset --- */
-        * {
-        margin: 0; padding: 0; box-sizing: border-box;
-        font-family: 'Segoe UI', Tahoma, sans-serif;
+        :root{
+            --bg:#0f1724; /* dark navy */
+            --card:#0b1220;
+            --accent:#06b6d4;
+            --muted:#94a3b8;
+            --glass: rgba(255,255,255,0.04);
+            --radius:14px;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, 'Helvetica Neue', Arial;
         }
 
-        /* --- Simple Background --- */
+        /* --- Global Reset --- */
+        * {
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+        }
+
+        /* --- Dark Background --- */
+        html, body {
+            height: 100%;
+        }
+        
         body {
-            background: #1f176c; /* Dark gray solid background */
-            height: 100vh;
+            background: linear-gradient(180deg, var(--bg) 0%, #071021 100%);
+            color: #e6eef6;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 32px;
         }
 
-        /* --- Glass Card --- */
+        /* --- Glass Login Container --- */
         .login-container {
-            background: rgba(255,255,255,0.15);
-            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border-radius: var(--radius);
             padding: 40px;
-            width: 420px;
-            height: 420px;
-            color: #fff;
-            box-shadow: 0 8px 32px rgba(31,38,135,0.37);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+            border: 1px solid rgba(255,255,255,0.03);
+            backdrop-filter: blur(6px);
             text-align: center;
             animation: fadeIn 1.5s ease;
         }
-        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
         /* --- Title --- */
         .login-container h2 {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             letter-spacing: 1px;
+            color: #e6eef6;
+            font-size: 1.8rem;
+            font-weight: 600;
         }
 
-        /* --- Inputs --- */
+        /* --- Form Inputs --- */
         .login-container input {
             width: 100%;
-            padding: 10px 15px;
-            margin: 18px 0; /* increased vertical space */
-            border: none;
+            padding: 14px 16px;
+            margin: 16px 0;
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 10px;
             outline: none;
-            background: rgba(255,255,255,0.2);
-            color: #fff;
+            background: var(--glass);
+            color: #e6eef6;
+            font-size: 14px;
+            transition: box-shadow 0.2s, border-color 0.2s;
+            box-sizing: border-box;
         }
+        
         .login-container input::placeholder {
-            color: #ddd;
+            color: var(--muted);
+        }
+        
+        .login-container input:focus {
+            box-shadow: 0 6px 18px rgba(6,182,212,0.08);
+            border-color: rgba(6,182,212,0.22);
         }
 
-        /* --- Button --- */
+        /* --- Submit Button --- */
         .login-container button {
             width: 100%;
-            padding: 20px;
-            margin-top: 18px; /* add space above button */
+            padding: 14px;
+            margin-top: 20px;
             border: none;
             border-radius: 10px;
-            background: linear-gradient(45deg,#ff7e5f,#feb47b);
-            color: #fff;
+            background: linear-gradient(90deg, #1062b9, #410596);
+            color: #042028;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.2s ease;
         }
+        
         .login-container button:hover {
-            transform: scale(1.05);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
         }
 
-        /*back button*/
+        /* Fixed back button */
         .back-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             padding: 0.6rem 1.2rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: rgba(74, 144, 226, 0.2);
             color: white;
             font-weight: 600;
             border-radius: 30px;
             text-decoration: none;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
-        }
-
-        .back-btn i {
-            font-size: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            cursor: pointer;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, 'Helvetica Neue', Arial;
         }
 
         .back-btn:hover {
             transform: translateX(-5px);
-            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            background: linear-gradient(135deg, #4A90E2, var(--accent));
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-        }
-
-        .back-btn-header {
-            position: absolute;
-            top: 20px;    /* distance from top of header */
-            right: 20px;  /* distance from right side */
-            z-index: 10;  /* make sure it’s above the overlay */
         }
 
         /* Verification modal */
         #verifyBox {
             display: none;
-            margin-top: 15px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
+        
+        #verifyBox p {
+            color: var(--muted);
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        
         #verifyBox input {
-            background: rgba(255,255,255,0.25);
             text-align: center;
+            font-weight: 600;
+            letter-spacing: 2px;
+            background: rgba(255,255,255,0.08);
+        }
+        
+        #verifyBox button {
+            background: linear-gradient(90deg, #1062b9, #410596);
+            margin-top: 16px;
+        }
+        
+        #verifyBox button:hover {
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            body {
+                padding: 20px;
+            }
+            
+            .login-container {
+                padding: 30px 25px;
+            }
+            
+            .back-btn {
+                top: 15px;
+                right: 15px;
+                padding: 0.4rem 0.8rem;
+                font-size: 14px;
+            }
         }
         </style>
     </head>
     <body>
-        <a href="../index.html" class="back-btn back-btn-header">
+        <a href="../index.html" class="back-btn" id="backBtn">
             ← Back
         </a>
 
         <div class="login-container">
-            <h2>Travel Admin</h2>
+            <h2>Admin Login</h2>
             <form id="loginForm">
                 <input type="text" id="username" placeholder="Admin Username" required>
                 <input type="password" id="password" placeholder="Password" required>
@@ -169,6 +238,10 @@
             alert("❌ Incorrect code. Try again.");
         }
         }
+
+        
+        
+        
         </script>
     </body>
 </html>
