@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Safety Information - Bharat Yatra Tourism</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg:#0f1724;
-            --card:#0b1220;
-            --accent:#06b6d4;
-            --muted:#94a3b8;
-            --glass: rgba(255,255,255,0.04);
+            --bg:#F8F4EC;
+            --card:#F5EFEB;
+            --accent:#B8A992;
+            --muted:#8A7D6C;
+            --glass: rgba(212, 199, 178, 0.3);
             --radius:14px;
-            --font-heading: 'Playfair Display', 'Georgia', serif;
-            --font-body: 'Source Sans Pro', system-ui, -apple-system, sans-serif;
+            --font-heading: 'Georgia', 'Times New Roman', serif;
+            --font-body: 'Georgia', 'Times New Roman', serif;
         }
 
         * {
@@ -27,8 +24,8 @@
         }
 
         body {
-            background: linear-gradient(180deg, var(--bg) 0%, #071021 100%);
-            color: #e6eef6;
+            background: linear-gradient(180deg, #F8F4EC 0%, #F5EFEB 100%);
+            color: #5A4F41;
             line-height: 1.6;
             font-family: var(--font-body);
         }
@@ -40,12 +37,12 @@
         }
 
         header {
-            background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            background: rgba(232, 223, 208, 0.7);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #e6eef6;
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            color: #5A4F41;
             padding: 20px 0;
-            box-shadow: 0 8px 32px rgba(2,6,23,0.4);
+            box-shadow: 0 8px 32px rgba(90, 79, 65, 0.15);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -75,7 +72,7 @@
             font-size: 1.8rem;
             font-weight: 700;
             font-family: var(--font-heading);
-            color: #e6eef6;
+            color: #7A6A57;
         }
 
         .logo-text p {
@@ -85,23 +82,25 @@
         }
 
         .hero {
-            background: linear-gradient(rgba(15, 23, 36, 0.8), rgba(7, 16, 33, 0.8)), 
-                        url('https://placehold.co/1200x400/0f1724/e6eef6?text=Safe+Travel+in+India') center/cover;
-            color: #e6eef6;
+            background: linear-gradient(rgba(248, 244, 236, 0.8), rgba(245, 239, 235, 0.8)), 
+                        url('https://placehold.co/1200x400/F5EFEB/7A6A57?text=Safe+Travel+in+India') center/cover;
+            color: #5A4F41;
             text-align: center;
             padding: 80px 20px;
             margin-bottom: 40px;
             border-radius: var(--radius);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            box-shadow: 0 10px 30px rgba(90, 79, 65, 0.1);
         }
 
         .hero h2 {
             font-size: 3rem;
             margin-bottom: 20px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            text-shadow: 2px 2px 8px rgba(90, 79, 65, 0.3);
             font-family: var(--font-heading);
             font-weight: 600;
+            color: #7A6A57;
         }
 
         .hero p {
@@ -112,11 +111,11 @@
         }
 
         .safety-section {
-            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            background: rgba(248, 244, 236, 0.7);
             border-radius: var(--radius);
-            box-shadow: 0 10px 30px rgba(2,6,23,0.6);
-            border: 1px solid rgba(255,255,255,0.03);
-            backdrop-filter: blur(6px);
+            box-shadow: 0 10px 30px rgba(90, 79, 65, 0.15);
+            border: 1px solid rgba(212, 199, 178, 0.3);
+            backdrop-filter: blur(12px);
             padding: 40px;
             margin-bottom: 40px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -124,7 +123,7 @@
 
         .safety-section:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(2,6,23,0.8);
+            box-shadow: 0 15px 40px rgba(90, 79, 65, 0.2);
         }
 
         .section-header {
@@ -132,12 +131,12 @@
             align-items: center;
             gap: 15px;
             margin-bottom: 25px;
-            color: #e6eef6;
+            color: #5A4F41;
         }
 
         .section-header i {
             font-size: 2rem;
-            background: rgba(6, 182, 212, 0.2);
+            background: rgba(184, 169, 146, 0.3);
             color: var(--accent);
             padding: 15px;
             border-radius: 50%;
@@ -148,6 +147,7 @@
             font-size: 1.8rem;
             font-family: var(--font-heading);
             font-weight: 600;
+            color: #7A6A57;
         }
 
         .safety-section > p {
@@ -163,20 +163,21 @@
         }
 
         .tip-card {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(4px);
+            background: rgba(232, 223, 208, 0.5);
+            backdrop-filter: blur(8px);
             border-radius: 12px;
             padding: 25px;
-            box-shadow: 0 8px 20px rgba(2,6,23,0.4);
+            box-shadow: 0 8px 20px rgba(90, 79, 65, 0.1);
             transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(212, 199, 178, 0.4);
             border-left: 4px solid var(--accent);
         }
 
         .tip-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(2,6,23,0.6);
-            border-color: rgba(6, 182, 212, 0.3);
+            box-shadow: 0 12px 30px rgba(90, 79, 65, 0.15);
+            border-color: rgba(184, 169, 146, 0.6);
+            background: rgba(232, 223, 208, 0.7);
         }
 
         .tip-card h4 {
@@ -184,7 +185,7 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 15px;
-            color: #e6eef6;
+            color: #5A4F41;
             font-family: var(--font-heading);
             font-weight: 600;
         }
@@ -198,14 +199,14 @@
         }
 
         .emergency-contacts {
-            background: linear-gradient(135deg, rgba(15, 23, 36, 0.9), rgba(11, 18, 32, 0.9));
+            background: rgba(245, 239, 235, 0.8);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #e6eef6;
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            color: #5A4F41;
             border-radius: var(--radius);
             padding: 40px;
             margin: 40px 0;
-            box-shadow: 0 10px 30px rgba(2,6,23,0.8);
+            box-shadow: 0 10px 30px rgba(90, 79, 65, 0.2);
         }
 
         .emergency-contacts h3 {
@@ -214,6 +215,7 @@
             margin-bottom: 30px;
             font-family: var(--font-heading);
             font-weight: 600;
+            color: #7A6A57;
         }
 
         .contacts-grid {
@@ -223,19 +225,19 @@
         }
 
         .contact-card {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(232, 223, 208, 0.6);
             border-radius: 12px;
             padding: 25px;
             text-align: center;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(212, 199, 178, 0.4);
             transition: all 0.3s ease;
         }
 
         .contact-card:hover {
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(232, 223, 208, 0.8);
             transform: scale(1.03);
-            box-shadow: 0 8px 25px rgba(2,6,23,0.6);
+            box-shadow: 0 8px 25px rgba(90, 79, 65, 0.15);
         }
 
         .contact-card i {
@@ -249,26 +251,27 @@
             margin-bottom: 10px;
             font-family: var(--font-heading);
             font-weight: 600;
+            color: #7A6A57;
         }
 
         .contact-card p {
             font-size: 1.2rem;
             font-weight: 600;
-            color: #e6eef6;
+            color: #5A4F41;
         }
 
         .health-advisory {
             background: rgba(255, 193, 7, 0.1);
-            border-left: 5px solid #ffc107;
+            border-left: 5px solid #D4C7B2;
             padding: 25px;
             border-radius: 0 12px 12px 0;
             margin: 30px 0;
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 193, 7, 0.2);
+            border: 1px solid rgba(212, 199, 178, 0.4);
         }
 
         .health-advisory h4 {
-            color: #ffc107;
+            color: #B8A992;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
@@ -291,29 +294,29 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.6rem 1.2rem;
-            background: rgba(74, 144, 226, 0.2);
-            color: white;
+            background: rgba(184, 169, 146, 0.6);
+            color: #5A4F41;
             font-weight: 600;
             border-radius: 30px;
             text-decoration: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(90, 79, 65, 0.15);
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(4px);
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            backdrop-filter: blur(8px);
             cursor: pointer;
             font-family: var(--font-body);
         }
 
         .back-btn:hover {
             transform: translateX(-5px);
-            background: linear-gradient(135deg, #4A90E2, var(--accent));
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+            background: rgba(212, 199, 178, 0.8);
+            box-shadow: 0 6px 18px rgba(90, 79, 65, 0.2);
         }
 
         footer {
-            background: rgba(15, 23, 36, 0.8);
+            background: rgba(245, 239, 235, 0.8);
             backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(212, 199, 178, 0.4);
             color: var(--muted);
             padding: 40px 0 20px;
             margin-top: 50px;
@@ -338,7 +341,7 @@
         }
 
         .footer-section h4 {
-            color: #e6eef6;
+            color: #7A6A57;
             margin-bottom: 20px;
             font-size: 1.3rem;
             font-family: var(--font-heading);
@@ -366,7 +369,7 @@
         .copyright {
             text-align: center;
             padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(212, 199, 178, 0.4);
             font-size: 0.9rem;
         }
 
@@ -558,9 +561,9 @@
                 <div class="footer-section">
                     <h4>Follow Us</h4>
                     <div style="display: flex; gap: 15px; margin-top: 15px;">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="https://x.com/tourismgoi"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/tourismgoi/"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/@MinistryofTourismgoi"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
             </div>

@@ -14,41 +14,67 @@
     /* Smooth transitions for all properties like color, size, etc. */
     transition: all 0.3s ease-in-out;
 }
+
 body {
-    font-family: 'Playfair Display', 'Georgia', serif;
-    background-color: #F5EFEB; /* Beige */
-    background-image: url('background.png'); /* <-- Yahan apni image ka path dalein */
-    background-size: cover;      /* Image ko poore background me fit karega */
-    background-repeat: no-repeat; /* Image repeat nahi hogi */
-    background-position: center;  /* Image ko center me rakhega */
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-    color: #2F4156;
-    overflow-x: hidden;
-}
-    
-body {
-    /* Sets a clean, sans-serif font for all text */
-    font-family: 'Inter', sans-serif;
+    /* Sets a clean, serif font for all text */
+    font-family: 'Georgia', 'Times New Roman', serif;
     /* Background color for the entire page */
     background-color: #F5EFEB; /* Beige */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
     margin: 0; /* Removes default browser margin */
     padding: 0; /* Removes default browser padding */
     line-height: 1.6; /* Improves readability of text */
-    color: #2F4156; /* Navy for default text color */
+    color: #5a4f41; /* Beige-compatible dark brown text */
     overflow-x: hidden; /* Prevents horizontal scrollbar, especially important for the sidebar */
 }
 
 /* --- Header Styling --- */
 /* Styles for your website's main header section. */
 header {
-    background-color: #2f4156bc; /* Navy background */
-    color: #FFFFFF; /* White text color */
+    background-color: #e8dfd0; /* Light beige background */
+    color: #5a4f41; /* Dark brown text color */
     padding: 0.5rem 0; /* Padding above and below the header content */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    box-shadow: 0 4px 8px rgba(90, 79, 65, 0.2); /* Beige-toned shadow for depth */
     position: relative; /* Needed for z-index context */
     z-index: 100; /* Ensures the header stays on top of other content */
+}
+
+.map-section {
+    max-width: 900px;
+    
+    margin: 0 auto 40px;
+    text-align: center;
+}
+
+
+
+
+.map-container {
+    background: #f8f4ec;
+    border-radius: 15px;
+    margin-top: 100px;
+    padding: 30px;
+    box-shadow: 0 15px 35px rgba(130, 115, 95, 0.15);
+    border: 2px solid #e8dfd0;
+    margin-bottom: 20px;
+}
+
+.map-instructions {
+    color: #7a6f5f;
+    font-size: 1rem;
+    font-style: italic;
+    margin-top: 15px;
+    margin-right: 20px;
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .map-container {
+        padding: 20px;
+    }
 }
 
 .container {
@@ -78,11 +104,12 @@ header {
 header h1 {
     margin: 0; /* Removes default margin for h1 */
     font-size: 2rem; /* Larger font size for the main title */
+    font-family: 'Georgia', 'Times New Roman', serif;
 }
 
 /* Styles for the link within the site title */
 header h1 a {
-    color: #FFFFFF; /* Makes "Bhart Yatra" title white */
+    color: #7a6a57; /* Beige-compatible brown */
     text-decoration: none; /* Removes underline from the title link */
     font-weight: 700; /* Bold font weight */
 }
@@ -93,7 +120,7 @@ header h1 a {
     width: auto; /* Maintains aspect ratio */
     border-radius: 50%; /* Makes the logo perfectly circular */
     object-fit: cover; /* Ensures image covers the area without distortion */
-    box-shadow: 0 0 0 3px #567C9D; /* Teal border effect around the logo */
+    box-shadow: 0 0 0 3px #d4c7b2; /* Beige border effect around the logo */
 }
 
 /* Styles for the main navigation links (visible on desktop) */
@@ -106,13 +133,14 @@ header h1 a {
 }
 
 .main-nav ul li a {
-    color: #C8D9E6; /* Sky Blue for navigation links */
+    color: #8a7d6c; /* Beige-compatible brownish text for navigation links */
     text-decoration: none; /* Removes underline from links */
     font-size: 1.1rem; /* Slightly larger font size */
     padding: 8px 15px; /* Padding for a larger clickable area */
     border-radius: 8px; /* Slightly rounded corners for links */
     position: relative; /* Needed for pseudo-elements like the underline effect */
     overflow: hidden; /* Hides overflow for the hover effect */
+    font-family: 'Georgia', 'Times New Roman', serif;
 }
 
 /* Styles for the animated underline effect on navigation links */
@@ -123,7 +151,7 @@ header h1 a {
     left: 0;
     width: 100%;
     height: 3px; /* Underline height */
-    background-color: #567C9D; /* Teal for underline */
+    background-color: #d4c7b2; /* Beige underline */
     transform: scaleX(0); /* Starts hidden */
     transform-origin: bottom right; /* Animation origin */
     transition: transform 0.3s ease-out;
@@ -135,7 +163,7 @@ header h1 a {
 }
 
 .main-nav ul li a:hover {
-    color: #FFFFFF; /* White text on hover */
+    color: #5a4f41; /* Darker beige on hover */
 }
 
 /* --- Sidebar Styling --- */
@@ -145,7 +173,7 @@ header h1 a {
 .sidebar-toggle {
     background: none;
     border: none;
-    color: #FFFFFF; /* White icon */
+    color: #7a6a57; /* Beige-compatible brown icon */
     font-size: 2rem;
     cursor: pointer;
     padding: 5px 10px;
@@ -158,7 +186,7 @@ header h1 a {
 }
 
 .sidebar-toggle:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(212, 199, 178, 0.3); /* Light beige hover */
 }
 
 /* Styles for the main sidebar container */
@@ -168,9 +196,9 @@ header h1 a {
     left: 0;
     width: 280px; /* Width of the sidebar */
     height: 100%; /* Takes full viewport height */
-    background-color: #2F4156; /* Navy background */
-    color: #FFFFFF;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+    background-color: #e8dfd0; /* Light beige background */
+    color: #5a4f41; /* Dark brown text */
+    box-shadow: 2px 0 10px rgba(130, 115, 95, 0.3); /* Beige-toned shadow for depth */
     transform: translateX(-100%); /* Starts hidden off-screen to the left */
     transition: transform 0.4s ease-in-out; /* Smooth slide-in/out transition */
     z-index: 1000; /* Ensures it's on top of all other content */
@@ -188,7 +216,7 @@ header h1 a {
 .sidebar-close {
     background: none;
     border: none;
-    color: #FFFFFF;
+    color: #7a6a57; /* Beige-compatible brown */
     font-size: 2rem;
     cursor: pointer;
     align-self: flex-end; /* Aligns the button to the right */
@@ -198,7 +226,7 @@ header h1 a {
 }
 
 .sidebar-close:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(212, 199, 178, 0.3); /* Light beige hover */
 }
 
 /* Styles for the navigation links within the sidebar */
@@ -216,16 +244,17 @@ header h1 a {
     display: flex; /* Uses flexbox to align icon and text */
     align-items: center; /* Vertically centers icon and text */
     gap: 10px; /* Space between icon and text */
-    color: #C8D9E6; /* Sky Blue */
+    color: #8a7d6c; /* Beige-compatible brownish text */
     text-decoration: none;
     font-size: 1.2rem;
     padding: 12px 15px; /* Generous padding for easy clicking */
     border-radius: 8px;
+    font-family: 'Georgia', 'Times New Roman', serif;
 }
 
 .sidebar-nav ul li a:hover {
-    background-color: #567C9D; /* Teal on hover */
-    color: #FFFFFF;
+    background-color: #d4c7b2; /* Light beige on hover */
+    color: #5a4f41; /* Darker brown text on hover */
 }
 
 /* Styles for the social media links at the bottom of the sidebar */
@@ -235,17 +264,17 @@ header h1 a {
     justify-content: center;
     gap: 20px;
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Subtle separator line */
+    border-top: 1px solid rgba(212, 199, 178, 0.3); /* Beige separator line */
 }
 
 .social-links a {
-    color: #C8D9E6; /* Sky Blue */
+    color: #8a7d6c; /* Beige-compatible brownish */
     font-size: 1.8rem;
     text-decoration: none;
 }
 
 .social-links a:hover {
-    color: #FFFFFF;
+    color: #5a4f41; /* Darker brown on hover */
     transform: scale(1.1); /* Slightly enlarges icon on hover */
 }
 

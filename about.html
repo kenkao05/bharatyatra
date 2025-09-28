@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - BHaratYatra</title>
+    <title>About Us - BharatYatra</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Georgia', 'Times New Roman', serif;
         }
 
         :root {
-            --primary: #6366f1;
-            --secondary: #8b5cf6;
-            --accent: #ec4899;
-            --light: #f8fafc;
-            --dark: #0f172a;
-            --gray: #64748b;
+            --primary: #B8A992;
+            --secondary: #D4C7B2;
+            --accent: #E8DFD0;
+            --light: #F8F4EC;
+            --dark: #5A4F41;
+            --gray: #8A7D6C;
+            --glass: rgba(212, 199, 178, 0.3);
         }
 
         body {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            background: linear-gradient(135deg, #F8F4EC 0%, #F5EFEB 100%);
             color: var(--dark);
             line-height: 1.6;
         }
@@ -36,8 +37,10 @@
 
         /* Header Styles */
         header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
-            color: white;
+            background: linear-gradient(135deg, rgba(184, 169, 146, 0.8) 0%, rgba(212, 199, 178, 0.8) 50%, rgba(232, 223, 208, 0.8) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            color: var(--dark);
             padding: 4rem 0;
             position: relative;
             overflow: hidden;
@@ -50,7 +53,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(90, 79, 65, 0.1);
         }
 
         .header-content {
@@ -64,17 +67,15 @@
             font-size: 3.5rem;
             font-weight: 800;
             margin-bottom: 1rem;
-            background: linear-gradient(to right, white, #dbeafe);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #7A6A57;
+            text-shadow: 0 2px 4px rgba(90, 79, 65, 0.2);
         }
 
         .subtitle {
             font-size: 1.5rem;
             opacity: 0.9;
             margin-bottom: 2rem;
+            color: var(--gray);
         }
 
         /* Section Styles */
@@ -89,14 +90,14 @@
 
         .section-title h2 {
             font-size: 2.5rem;
-            color: var(--dark);
+            color: #7A6A57;
             margin-bottom: 1rem;
         }
 
         .section-title .divider {
             width: 60px;
             height: 4px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
+            background: linear-gradient(to right, var(--primary), var(--secondary));
             margin: 0 auto;
             border-radius: 2px;
         }
@@ -118,17 +119,20 @@
         }
 
         .feature-card {
-            background: white;
+            background: rgba(248, 244, 236, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 199, 178, 0.4);
             border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 25px rgba(90, 79, 65, 0.1);
             transition: all 0.3s ease;
             text-align: center;
         }
 
         .feature-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(90, 79, 65, 0.15);
+            background: rgba(248, 244, 236, 0.9);
         }
 
         .feature-icon {
@@ -140,14 +144,18 @@
             align-items: center;
             justify-content: center;
             margin: 0 auto 1.5rem;
-            color: white;
+            color: #5A4F41;
             font-size: 2rem;
         }
 
         .feature-card h3 {
             font-size: 1.5rem;
             margin-bottom: 1rem;
-            color: var(--dark);
+            color: #7A6A57;
+        }
+
+        .feature-card p {
+            color: var(--gray);
         }
 
         /* Team Section */
@@ -160,27 +168,31 @@
 
         .team-grid-center {
             grid-template-columns: repeat(2, 1fr);
-            justify-content: center; /* Centers the 2 items */
+            justify-content: center;
         }
         
         .team-member {
-            background: linear-gradient(135deg, white, #f1f5f9);
+            background: rgba(248, 244, 236, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(212, 199, 178, 0.4);
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 25px rgba(90, 79, 65, 0.1);
             transition: all 0.3s ease;
         }
 
         .team-member:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(90, 79, 65, 0.15);
+            background: rgba(248, 244, 236, 0.8);
         }
 
         .member-header {
             display: flex;
             align-items: center;
             padding: 1.5rem;
-            background: white;
+            background: rgba(232, 223, 208, 0.5);
+            backdrop-filter: blur(6px);
         }
 
         .member-avatar {
@@ -188,8 +200,8 @@
             height: 80px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 3px solid rgba(212, 199, 178, 0.6);
+            box-shadow: 0 5px 15px rgba(90, 79, 65, 0.1);
         }
 
         .member-info {
@@ -199,6 +211,7 @@
         .member-info h3 {
             font-size: 1.3rem;
             margin-bottom: 0.3rem;
+            color: #7A6A57;
         }
 
         .member-role {
@@ -225,7 +238,7 @@
 
         .tag {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
+            color: #5A4F41;
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-size: 0.8rem;
@@ -234,7 +247,10 @@
 
         /* College Section */
         .college-section {
-            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            background: rgba(232, 223, 208, 0.5);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(212, 199, 178, 0.4);
+            border-bottom: 1px solid rgba(212, 199, 178, 0.4);
         }
 
         .college-content {
@@ -256,6 +272,10 @@
             margin-right: 1rem;
         }
 
+        .college-header h2 {
+            color: #7A6A57;
+        }
+
         .college-text {
             font-size: 1.2rem;
             color: var(--gray);
@@ -275,12 +295,19 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: var(--gray);
+        }
+
+        .stat-item i {
+            color: var(--primary);
         }
 
         /* Footer */
         footer {
-            background: var(--dark);
-            color: white;
+            background: rgba(245, 239, 235, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(212, 199, 178, 0.4);
+            color: var(--gray);
             text-align: center;
             padding: 3rem 0;
         }
@@ -288,10 +315,11 @@
         .footer-title {
             font-size: 1.5rem;
             margin-bottom: 1rem;
+            color: #7A6A57;
         }
 
         .footer-text {
-            color: #94a3b8;
+            color: var(--gray);
             margin-bottom: 1rem;
         }
 
@@ -301,13 +329,15 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.6rem 1.2rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
+            background: rgba(184, 169, 146, 0.6);
+            backdrop-filter: blur(8px);
+            color: #5A4F41;
             font-weight: 600;
             border-radius: 30px;
             text-decoration: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(90, 79, 65, 0.15);
             transition: all 0.3s ease;
+            border: 1px solid rgba(212, 199, 178, 0.4);
         }
 
         .back-btn i {
@@ -316,15 +346,15 @@
 
         .back-btn:hover {
             transform: translateX(-5px);
-            background: linear-gradient(135deg, var(--accent), var(--secondary));
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+            background: rgba(212, 199, 178, 0.8);
+            box-shadow: 0 6px 18px rgba(90, 79, 65, 0.2);
         }
 
         .back-btn-header {
             position: absolute;
-            top: 20px;    /* distance from top of header */
-            right: 20px;  /* distance from right side */
-            z-index: 10;  /* make sure it’s above the overlay */
+            top: 20px;
+            right: 20px;
+            z-index: 10;
         }
 
         /* Responsive Design */
@@ -434,7 +464,7 @@
                 <!-- Member 1 -->
                 <div class="team-member">
                     <div class="member-header">
-                        <img src="https://placehold.co/300x300/4f46e5/ffffff?text=AS" alt="Bhanushali Vaibhav" class="member-avatar">
+                        <img src="https://placehold.co/300x300/B8A992/5A4F41?text=BV" alt="Bhanushali Vaibhav" class="member-avatar">
                         <div class="member-info">
                             <h3>Bhanushali Vaibhav</h3>
                             <p class="member-roll">Roll: 231130107004</p>
@@ -445,7 +475,7 @@
                 <!-- Member 2 -->
                 <div class="team-member">
                     <div class="member-header">
-                        <img src="https://placehold.co/300x300/059669/ffffff?text=RP" alt="Gajjar Harshal" class="member-avatar">
+                        <img src="https://placehold.co/300x300/D4C7B2/5A4F41?text=GH" alt="Gajjar Harshal" class="member-avatar">
                         <div class="member-info">
                             <h3>Gajjar Harshal</h3>
                             <p class="member-roll">Roll: 231130107011</p>
@@ -456,7 +486,7 @@
                 <!-- Member 3 -->
                 <div class="team-member">
                     <div class="member-header">
-                        <img src="https://placehold.co/300x300/dc2626/ffffff?text=PD" alt="Zala Harshvardhan" class="member-avatar">
+                        <img src="https://placehold.co/300x300/E8DFD0/5A4F41?text=ZH" alt="Zala Harshvardhan" class="member-avatar">
                         <div class="member-info">
                             <h3>Zala Harshvardhan</h3>
                             <p class="member-roll">Roll: 231130107015</p>
@@ -468,7 +498,7 @@
                 <!-- Member 4 -->
                 <div class="team-member">
                     <div class="member-header">
-                        <img src="https://placehold.co/300x300/7c3aed/ffffff?text=AM" alt="Jangid Nitin" class="member-avatar">
+                        <img src="https://placehold.co/300x300/A69782/5A4F41?text=JN" alt="Jangid Nitin" class="member-avatar">
                         <div class="member-info">
                             <h3>Jangid Nitin</h3>
                             <p class="member-roll">Roll: 231130107019</p>
@@ -479,7 +509,7 @@
                 <!-- Member 5 -->
                 <div class="team-member">
                     <div class="member-header">
-                        <img src="https://placehold.co/300x300/ea580c/ffffff?text=SG" alt="Patel Shrey" class="member-avatar">
+                        <img src="https://placehold.co/300x300/958773/5A4F41?text=PS" alt="Patel Shrey" class="member-avatar">
                         <div class="member-info">
                             <h3>Patel Shrey</h3>
                             <p class="member-roll">Roll: 231130107062</p>
