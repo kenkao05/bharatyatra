@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Tracking - Bharat Yatra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #F8F4EC 0%, #F5EFEB 100%);
+            color: #5A4F41;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(232, 223, 208, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            color: #5A4F41;
+            padding: 20px 0;
+            box-shadow: 0 8px 32px rgba(90, 79, 65, 0.15);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            color: #7A6A57;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: rgba(184, 169, 146, 0.6);
+            color: #5A4F41;
+            font-weight: 600;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(90, 79, 65, 0.15);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            background: rgba(212, 199, 178, 0.8);
+            box-shadow: 0 6px 18px rgba(90, 79, 65, 0.2);
+        }
+
+        .filter-section {
+            background: rgba(248, 244, 236, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(90, 79, 65, 0.15);
+        }
+
+        .filter-title {
+            font-size: 1.5rem;
+            color: #7A6A57;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .date-inputs {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .date-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .date-group label {
+            color: #8A7D6C;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .date-group input {
+            padding: 12px 16px;
+            border: 1px solid rgba(212, 199, 178, 0.6);
+            border-radius: 10px;
+            background: rgba(232, 223, 208, 0.6);
+            color: #5A4F41;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 0.95rem;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+
+        .date-group input:focus {
+            outline: none;
+            border-color: rgba(184, 169, 146, 0.8);
+            background: rgba(232, 223, 208, 0.8);
+            box-shadow: 0 0 10px rgba(184, 169, 146, 0.3);
+        }
+
+        .clear-btn {
+            padding: 12px 24px;
+            background: rgba(184, 169, 146, 0.8);
+            color: #5A4F41;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .clear-btn:hover {
+            background: rgba(212, 199, 178, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .events-section {
+            background: rgba(248, 244, 236, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(90, 79, 65, 0.15);
+        }
+
+        .events-title {
+            font-size: 1.8rem;
+            color: #7A6A57;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .event-card {
+            background: rgba(232, 223, 208, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(212, 199, 178, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(90, 79, 65, 0.1);
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            background: rgba(232, 223, 208, 0.8);
+            box-shadow: 0 8px 25px rgba(90, 79, 65, 0.15);
+        }
+
+        .event-name {
+            font-size: 1.3rem;
+            color: #7A6A57;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .event-date {
+            color: #B8A992;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .event-state {
+            color: #8A7D6C;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .event-description {
+            color: #8A7D6C;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .no-events {
+            text-align: center;
+            color: #8A7D6C;
+            font-style: italic;
+            padding: 40px;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .date-inputs {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+                max-height: 500px;
+            }
+
+            .back-btn {
+                top: 15px;
+                right: 15px;
+                padding: 0.4rem 0.8rem;
+                font-size: 14px;
+            }
+
+            .header-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        .events-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .events-grid::-webkit-scrollbar-track {
+            background: rgba(212, 199, 178, 0.3);
+            border-radius: 4px;
+        }
+
+        .events-grid::-webkit-scrollbar-thumb {
+            background: rgba(184, 169, 146, 0.7);
+            border-radius: 4px;
+        }
+
+        .events-grid::-webkit-scrollbar-thumb:hover {
+            background: rgba(184, 169, 146, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-btn">← Back</a>
+            <div class="header-content">
+                <h1 class="header-title">Event Tracking</h1>
+            </div>
+        </header>
+
+        <div class="filter-section">
+            <h2 class="filter-title">Filter Events by Date Range</h2>
+            <div class="date-inputs">
+                <div class="date-group">
+                    <label for="fromDate">From Date:</label>
+                    <input type="date" id="fromDate">
+                </div>
+                <div class="date-group">
+                    <label for="toDate">To Date:</label>
+                    <input type="date" id="toDate">
+                </div>
+                <button class="clear-btn" onclick="clearFilters()">Clear Filters</button>
+            </div>
+        </div>
+
+        <div class="events-section">
+            <h2 class="events-title">Upcoming Events</h2>
+            <div class="events-grid" id="eventsGrid">
+                <!-- Events will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample event data - you can modify this
+        const events = [
+            {
+                name: "Holi Festival",
+                startDate: "2024-03-13",
+                endDate: "2024-03-14",
+                state: "Uttar Pradesh",
+                description: "The vibrant festival of colors celebrating the victory of good over evil and the arrival of spring."
+            },
+            {
+                name: "Diwali",
+                startDate: "2024-11-01",
+                endDate: "2024-11-01",
+                state: "Maharashtra",
+                description: "Festival of lights celebrating the return of Lord Rama and the triumph of light over darkness."
+            },
+            {
+                name: "Durga Puja",
+                startDate: "2024-10-10",
+                endDate: "2024-10-14",
+                state: "West Bengal",
+                description: "Major Hindu festival honoring goddess Durga, featuring elaborate pandals and cultural programs."
+            },
+            {
+                name: "Onam",
+                startDate: "2024-09-15",
+                endDate: "2024-09-25",
+                state: "Kerala",
+                description: "Harvest festival celebrating the homecoming of King Mahabali with traditional feasts and boat races."
+            },
+            {
+                name: "Pushkar Camel Fair",
+                startDate: "2024-11-20",
+                endDate: "2024-11-28",
+                state: "Rajasthan",
+                description: "World's largest camel fair featuring livestock trading, cultural performances, and competitions."
+            },
+            {
+                name: "Goa Carnival",
+                startDate: "2024-02-10",
+                endDate: "2024-02-13",
+                state: "Goa",
+                description: "Colorful street carnival with parades, music, dancing, and vibrant floats celebrating local culture."
+            },
+            {
+                name: "Kumbh Mela",
+                startDate: "2024-01-15",
+                endDate: "2024-03-15",
+                state: "Uttar Pradesh",
+                description: "Massive religious gathering and pilgrimage where millions of devotees bathe in sacred rivers."
+            },
+            {
+                name: "Hornbill Festival",
+                startDate: "2024-12-01",
+                endDate: "2024-12-10",
+                state: "Nagaland",
+                description: "Festival showcasing Naga tribal culture, traditions, music, and cuisine in the northeastern region."
+            },
+            {
+                name: "Hemis Festival",
+                startDate: "2024-07-20",
+                endDate: "2024-07-21",
+                state: "Ladakh",
+                description: "Buddhist festival celebrating Guru Padmasambhava with masked dances and traditional ceremonies."
+            },
+            {
+                name: "Thrissur Pooram",
+                startDate: "2024-04-25",
+                endDate: "2024-04-26",
+                state: "Kerala",
+                description: "Grand temple festival featuring decorated elephants, fireworks, and traditional percussion music."
+            },
+            {
+                name: "Desert Festival",
+                startDate: "2024-02-15",
+                endDate: "2024-02-17",
+                state: "Rajasthan",
+                description: "Cultural festival in Jaisalmer showcasing folk music, camel races, and desert traditions."
+            },
+            {
+                name: "Baisakhi",
+                startDate: "2024-04-13",
+                endDate: "2024-04-14",
+                state: "Punjab",
+                description: "Harvest festival marking the Punjabi New Year with bhangra dancing and community celebrations."
+            }
+        ];
+
+        function formatEventDate(startDate, endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            
+            if (startDate === endDate) {
+                return start.toLocaleDateString('en-US', options);
+            } else {
+                return `${start.toLocaleDateString('en-US', options)} - ${end.toLocaleDateString('en-US', options)}`;
+            }
+        }
+
+        function isEventInDateRange(event, fromDate, toDate) {
+            if (!fromDate || !toDate) return true;
+            
+            const eventStart = new Date(event.startDate);
+            const eventEnd = new Date(event.endDate);
+            const filterFrom = new Date(fromDate);
+            const filterTo = new Date(toDate);
+            
+            // Check if event overlaps with the selected date range
+            return (eventStart <= filterTo && eventEnd >= filterFrom);
+        }
+
+        function renderEvents(filteredEvents = events) {
+            const eventsGrid = document.getElementById('eventsGrid');
+            
+            if (filteredEvents.length === 0) {
+                eventsGrid.innerHTML = '<div class="no-events">No events found for the selected date range.</div>';
+                return;
+            }
+            
+            eventsGrid.innerHTML = filteredEvents.map(event => `
+                <div class="event-card">
+                    <div class="event-name">${event.name}</div>
+                    <div class="event-date">${formatEventDate(event.startDate, event.endDate)}</div>
+                    <div class="event-state">${event.state}</div>
+                    <div class="event-description">${event.description}</div>
+                </div>
+            `).join('');
+        }
+
+        function filterEvents() {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            
+            if (fromDate && toDate && fromDate > toDate) {
+                alert('From date cannot be later than To date');
+                return;
+            }
+            
+            const filteredEvents = events.filter(event => 
+                isEventInDateRange(event, fromDate, toDate)
+            );
+            
+            renderEvents(filteredEvents);
+        }
+
+        function clearFilters() {
+            document.getElementById('fromDate').value = '';
+            document.getElementById('toDate').value = '';
+            renderEvents();
+        }
+
+        // Event listeners
+        document.getElementById('fromDate').addEventListener('change', filterEvents);
+        document.getElementById('toDate').addEventListener('change', filterEvents);
+
+        // Initial render
+        renderEvents();
+    </script>
+</body>
+</html>
