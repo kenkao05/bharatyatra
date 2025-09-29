@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India's Top Wildlife Destinations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #AD8B73, #CEAB93, #E3CAA5);
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .header {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 0 0 30px 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="70" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="80" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+      opacity: 0.3;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, #FFFBE9, #ffffff, #FFFBE9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header p {
+      font-size: 1.3rem;
+      max-width: 700px;
+      margin: 0 auto 1.5rem;
+      color: #FFFBE9;
+      position: relative;
+      z-index: 1;
+    }
+
+    .explore-btn {
+      background: linear-gradient(45deg, #8B4513, #A0522D);
+      color: white;
+      border: none;
+      padding: 1.2rem 2.5rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-top: 1rem;
+      box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 3px solid rgba(255,255,255,0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .explore-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 10px 30px rgba(139, 69, 19, 0.6);
+      background: linear-gradient(45deg, #A0522D, #8B4513);
+    }
+
+    .explore-btn:active {
+      transform: translateY(1px);
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .districts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+
+    .districts-grid.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .district-card {
+      background: linear-gradient(135deg, #FFFBE9, #ffffff);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .district-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #8B4513, #A0522D, #CEAB93);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .district-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      border-color: #8B4513;
+    }
+
+    .district-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .district-card h3 {
+      color: #8B4513;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      margin-bottom: 0.8rem;
+      font-weight: 700;
+    }
+
+    .district-card p {
+      color: #666;
+      font-size: 1.1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .attractions-count {
+      background: linear-gradient(45deg, #8B4513, #A0522D);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .district-details {
+      background: rgba(255,255,255,0.95);
+      border-radius: 25px;
+      padding: 2.5rem;
+      margin-top: 2rem;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+      display: none;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .district-details.active {
+      display: block;
+      animation: slideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .district-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      color: #8B4513;
+      position: relative;
+    }
+
+    .district-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, #8B4513, #A0522D);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .category-section {
+      margin-bottom: 2.5rem;
+      background: rgba(255, 251, 233, 0.8);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border-left: 5px solid #8B4513;
+    }
+
+    .category-header {
+      background: linear-gradient(90deg, #8B4513, #A0522D);
+      color: white;
+      padding: 1.2rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      font-size: 1.4rem;
+      text-align: center;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+    }
+
+    .places-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .place-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.8rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .place-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #8B4513, #A0522D);
+    }
+
+    .place-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      border-color: #8B4513;
+    }
+
+    .place-card h4 {
+      color: #8B4513;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .place-details {
+      margin-bottom: 1.2rem;
+    }
+
+    .place-details p {
+      margin-bottom: 0.6rem;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .place-details strong {
+      color: #A0522D;
+      font-weight: 600;
+    }
+
+    .map-link {
+      display: inline-block;
+      background: linear-gradient(45deg, #8B4513, #A0522D);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 0.8rem;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+    }
+
+    .map-link:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+      background: linear-gradient(45deg, #A0522D, #8B4513);
+    }
+
+    .hotel-section {
+      background: linear-gradient(135deg, #f0f8e6, #e6f3d6);
+      padding: 1.2rem;
+      border-radius: 10px;
+      margin-top: 1.2rem;
+    }
+
+    .hotel-section h5 {
+      color: #2e7d32;
+      margin-bottom: 0.8rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .restaurant-section {
+      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+      padding: 1.2rem;
+      border-radius: 10px;
+      margin-top: 1.2rem;
+    }
+
+    .restaurant-section h5 {
+      color: #ef6c00;
+      margin-bottom: 0.8rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(45deg, #8B4513, #A0522D);
+      color: white;
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(139, 69, 19, 0.6);
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .header p {
+        font-size: 1.1rem;
+      }
+      
+      .districts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+      
+      .places-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .place-card {
+        padding: 1.5rem;
+      }
+      
+      .district-header h2 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header {
+        padding: 2rem 1rem;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .district-card {
+        padding: 1.5rem;
+      }
+      
+      .district-card h3 {
+        font-size: 1.3rem;
+      }
+      
+      .places-grid {
+        gap: 1.5rem;
+      }
+    }
+
+    .scroll-down-indicator {
+      text-align: center;
+      margin-top: 2rem;
+      color: white;
+      font-size: 1.1rem;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-10px);
+      }
+      60% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .scroll-down-indicator span {
+      display: block;
+      font-size: 2rem;
+      margin-top: 0.5rem;
+    }
+
+    .category-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #8B4513;
+    }
+
+    .back-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: rgba(184, 169, 146, 0.6);
+            color: #5A4F41;
+            font-weight: 600;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(90, 79, 65, 0.15);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            background: rgba(212, 199, 178, 0.8);
+            box-shadow: 0 6px 18px rgba(90, 79, 65, 0.2);
+        }
+  </style>
+</head>
+<body>
+    <header class="header">
+        <a href="../index.html" class="back-btn">← Back</a>
+        <h1>India's Premier Wildlife Destinations</h1>
+        <p>Explore the magnificent national parks and wildlife sanctuaries across India's diverse landscapes</p>
+        <button class="explore-btn">Begin Your Journey</button>
+        <div class="scroll-down-indicator">
+            Discover Amazing Wildlife Experiences
+            <span>↓</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="districts-grid show">
+            <!-- Jim Corbett National Park -->
+            <div class="district-card" onclick="showDistrictDetails('corbett')">
+                <h3>Jim Corbett National Park</h3>
+                <p>Uttarakhand</p>
+                <div class="attractions-count">Nainital & Pauri Garhwal</div>
+            </div>
+            
+            <!-- Kaziranga National Park -->
+            <div class="district-card" onclick="showDistrictDetails('kaziranga')">
+                <h3>Kaziranga National Park</h3>
+                <p>Assam</p>
+                <div class="attractions-count">Golaghat & Nagaon</div>
+            </div>
+            
+            <!-- Ranthambore National Park -->
+            <div class="district-card" onclick="showDistrictDetails('ranthambore')">
+                <h3>Ranthambore National Park</h3>
+                <p>Rajasthan</p>
+                <div class="attractions-count">Sawai Madhopur</div>
+            </div>
+            
+            <!-- Bandhavgarh National Park -->
+            <div class="district-card" onclick="showDistrictDetails('bandhavgarh')">
+                <h3>Bandhavgarh National Park</h3>
+                <p>Madhya Pradesh</p>
+                <div class="attractions-count">Umaria District</div>
+            </div>
+            
+            <!-- Kanha National Park -->
+            <div class="district-card" onclick="showDistrictDetails('kanha')">
+                <h3>Kanha National Park</h3>
+                <p>Madhya Pradesh</p>
+                <div class="attractions-count">Mandla & Balaghat</div>
+            </div>
+            
+            <!-- Tadoba-Andhari Tiger Reserve -->
+            <div class="district-card" onclick="showDistrictDetails('tadoba')">
+                <h3>Tadoba-Andhari Tiger Reserve</h3>
+                <p>Maharashtra</p>
+                <div class="attractions-count">Chandrapur District</div>
+            </div>
+            
+            <!-- Pench National Park -->
+            <div class="district-card" onclick="showDistrictDetails('pench')">
+                <h3>Pench National Park</h3>
+                <p>Madhya Pradesh</p>
+                <div class="attractions-count">MP/Maharashtra Belt</div>
+            </div>
+            
+            <!-- Gir National Park -->
+            <div class="district-card" onclick="showDistrictDetails('gir')">
+                <h3>Gir National Park</h3>
+                <p>Gujarat</p>
+                <div class="attractions-count">Junagadh & Gir Somnath</div>
+            </div>
+            
+            <!-- Sundarbans National Park -->
+            <div class="district-card" onclick="showDistrictDetails('sundarbans')">
+                <h3>Sundarbans National Park</h3>
+                <p>West Bengal</p>
+                <div class="attractions-count">South 24 Parganas</div>
+            </div>
+            
+            <!-- Periyar Tiger Reserve -->
+            <div class="district-card" onclick="showDistrictDetails('periyar')">
+                <h3>Periyar Tiger Reserve</h3>
+                <p>Kerala</p>
+                <div class="attractions-count">Idukki & Pathanamthitta</div>
+            </div>
+            
+            <!-- Bandipur National Park -->
+            <div class="district-card" onclick="showDistrictDetails('bandipur')">
+                <h3>Bandipur National Park</h3>
+                <p>Karnataka</p>
+                <div class="attractions-count">Mysore & Chamarajanagar</div>
+            </div>
+            
+            <!-- Nagarhole National Park -->
+            <div class="district-card" onclick="showDistrictDetails('nagarhole')">
+                <h3>Nagarhole National Park</h3>
+                <p>Karnataka</p>
+                <div class="attractions-count">Kodagu & Mysore</div>
+            </div>
+        </div>
+
+        <!-- Jim Corbett Details -->
+        <div id="corbett" class="district-details">
+            <div class="district-header">
+                <h2>Jim Corbett National Park</h2>
+                <p>Uttarakhand - Nainital & Pauri Garhwal Region</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Jim Corbett National Park</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Nainital / Pauri Garhwal region; nearest town Ramnagar.</p>
+                            <p><strong>Key Species:</strong> Bengal tiger, elephant, leopard, deer species; >500 bird species.</p>
+                            <p><strong>Area:</strong> ~1,318 km² (Corbett Tiger Reserve complex).</p>
+                            <p><strong>Best Time:</strong> Oct–June (peak wildlife sightings in winter / dry months).</p>
+                            <p><strong>How to Reach:</strong> Nearest rail/road hub Ramnagar; nearest airport Pantnagar (≈70–100 km) or Delhi (≈260 km).</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kaziranga Details -->
+        <div id="kaziranga" class="district-details">
+            <div class="district-header">
+                <h2>Kaziranga National Park</h2>
+                <p>Assam - Golaghat & Nagaon Districts</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Kaziranga National Park</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Golaghat & Nagaon districts, Assam.</p>
+                            <p><strong>Key Species:</strong> Indian one-horned rhinoceros (iconic), tigers, elephants, vast birdlife.</p>
+                            <p><strong>Area:</strong> ~430 km² (core + larger tiger reserve area).</p>
+                            <p><strong>Best Time:</strong> Nov–April (park closed during monsoon season for safety).</p>
+                            <p><strong>How to Reach:</strong> Nearest city Golaghat / Jorhat; Jorhat & Guwahati airports serve visitors.</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ranthambore Details -->
+        <div id="ranthambore" class="district-details">
+            <div class="district-header">
+                <h2>Ranthambore National Park</h2>
+                <p>Rajasthan - Sawai Madhopur District</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Ranthambore National Park</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Sawai Madhopur, Rajasthan (Ranthambore Fort inside park).</p>
+                            <p><strong>Key Species:</strong> Bengal tiger (excellent sightings), sambar, spotted deer, various birds.</p>
+                            <p><strong>Area:</strong> Tiger reserve & national park complex (~1,334 km² including buffer).</p>
+                            <p><strong>Best Time:</strong> Oct–June (hot in summer; best tiger sightings Nov–Mar).</p>
+                            <p><strong>How to Reach:</strong> Nearest town Sawai Madhopur (railway); Jaipur / Delhi airports by road/rail.</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bandhavgarh Details -->
+        <div id="bandhavgarh" class="district-details">
+            <div class="district-header">
+                <h2>Bandhavgarh National Park</h2>
+                <p>Madhya Pradesh - Umaria District</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Bandhavgarh National Park</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Umaria district / Madhya Pradesh; nearest town Tala & Bandhavgarh Fort area.</p>
+                            <p><strong>Key Species:</strong> High density of tigers, leopard, deer species; historic fort inside park.</p>
+                            <p><strong>Area:</strong> Tiger reserve with core & buffer; popular for tiger safaris.</p>
+                            <p><strong>Best Time:</strong> Oct–Jun (closed/limited during rains).</p>
+                            <p><strong>How to Reach:</strong> Nearest rail Urwan / Umaria; Jabalpur or Khajuraho airports.</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kanha Details -->
+        <div id="kanha" class="district-details">
+            <div class="district-header">
+                <h2>Kanha National Park</h2>
+                <p>Madhya Pradesh - Mandla & Balaghat Districts</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Kanha National Park</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Mandla & Balaghat districts (central India).</p>
+                            <p><strong>Key Species:</strong> Bengal tiger, barasingha (hardground swamp deer — conservation success), leopard, sloth bear.</p>
+                            <p><strong>Area:</strong> Large central India reserve—one of India's model parks (basis for Kipling's "Mowgli" landscapes).</p>
+                            <p><strong>Best Time:</strong> Oct–Jun.</p>
+                            <p><strong>How to Reach:</strong> Nearest rail station Mandla or Jabalpur (rail & airport).</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tadoba Details -->
+        <div id="tadoba" class="district-details">
+            <div class="district-header">
+                <h2>Tadoba-Andhari Tiger Reserve</h2>
+                <p>Maharashtra - Chandrapur District</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Tadoba-Andhari Tiger Reserve</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Chandrapur district, Maharashtra.</p>
+                            <p><strong>Key Species:</strong> Bengal tiger (one of Maharashtra's best tiger spotting reserves), gaur, sloth bear, many birds.</p>
+                            <p><strong>Area:</strong> Large tiger reserve made of Tadoba NP + Andhari sanctuary.</p>
+                            <p><strong>Best Time:</strong> Oct–June (safari schedules vary; check local booking).</p>
+                            <p><strong>How to Reach:</strong> Nearest city Chandrapur; Nagpur airport ~140–160 km.</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pench Details -->
+        <div id="pench" class="district-details">
+            <div class="district-header">
+                <h2>Pench National Park</h2>
+                <p>Madhya Pradesh - MP/Maharashtra Belt</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Pench National Park</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Straddles MP / Maharashtra areas (Pench Tiger Reserve).</p>
+                            <p><strong>Key Species:</strong> Tigers, leopard, sloth bear, deer, rich birdlife — inspiration for Kipling's "The Jungle Book".</p>
+                            <p><strong>Area:</strong> Important central India tiger reserve corridor.</p>
+                            <p><strong>Best Time:</strong> Oct–Jun.</p>
+                            <p><strong>How to Reach:</strong> Nearest rail/road hubs Nagpur / Seoni / Jabalpur depending on approach.</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gir Details -->
+        <div id="gir" class="district-details">
+            <div class="district-header">
+                <h2>Gir National Park</h2>
+                <p>Gujarat - Junagadh & Gir Somnath</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Gir National Park</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Junagadh / Gir Somnath districts, Gujarat (Sasan Gir area).</p>
+                            <p><strong>Key Species:</strong> Asiatic lion (unique global population), leopard, deer, nilgai.</p>
+                            <p><strong>Area:</strong> Protected national park + large wildlife sanctuary area.</p>
+                            <p><strong>Best Time:</strong> Oct–June (avoid monsoon).</p>
+                            <p><strong>How to Reach:</strong> Nearest towns: Junagadh, Veraval; Rajkot / Diu airports for access.</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sundarbans Details -->
+        <div id="sundarbans" class="district-details">
+            <div class="district-header">
+                <h2>Sundarbans National Park</h2>
+                <p>West Bengal - South 24 Parganas</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Sundarbans National Park</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Sundarbans delta, South 24 Parganas (Indian Sundarbans).</p>
+                            <p><strong>Key Species:</strong> Bengal tiger (mangrove/tidal tigers), saltwater crocodile, many aquatic birds, unique mangrove flora.</p>
+                            <p><strong>Area:</strong> Mangrove delta, biosphere reserve—shared ecosystem with Bangladesh.</p>
+                            <p><strong>Best Time:</strong> Nov–Mar (many seasonal closures during monsoon).</p>
+                            <p><strong>How to Reach:</strong> Nearest hub Kolkata → boat/launch to Sundarban entry points (Hogla, Godkhali, Sajnekhali etc.).</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Periyar Details -->
+        <div id="periyar" class="district-details">
+            <div class="district-header">
+                <h2>Periyar Tiger Reserve</h2>
+                <p>Kerala - Idukki & Pathanamthitta</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Periyar Tiger Reserve</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Idukki & Pathanamthitta districts, Kerala (Western Ghats).</p>
+                            <p><strong>Key Species:</strong> Elephants, Bengal tiger, gaur, rich endemic bird & plant life. Famous for boat safaris on Periyar Lake.</p>
+                            <p><strong>Area:</strong> ~350 km² protected area (part of Western Ghats biodiversity hotspot).</p>
+                            <p><strong>Best Time:</strong> Sep–May (monsoon heavy June–Aug but waterfall scenery is great then).</p>
+                            <p><strong>How to Reach:</strong> Nearest town Kumily / Thekkady; nearest airports Kochi / Madurai.</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bandipur Details -->
+        <div id="bandipur" class="district-details">
+            <div class="district-header">
+                <h2>Bandipur National Park</h2>
+                <p>Karnataka - Mysore & Chamarajanagar</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Bandipur National Park</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Mysore / Chamarajanagar region, Karnataka; contiguous with Nagarhole and Mudumalai (TN).</p>
+                            <p><strong>Key Species:</strong> Tigers, elephants, gaurs, deer, rich birdlife — part of Nilgiri-Biosphere corridors.</p>
+                            <p><strong>Area:</strong> Major protected area in southern India (core of the Mysore forest belt).</p>
+                            <p><strong>Best Time:</strong> Oct–May (monsoon months limit access).</p>
+                            <p><strong>How to Reach:</strong> Nearest city Mysore (≈80–100 km), Bangalore airport farther away.</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nagarhole Details -->
+        <div id="nagarhole" class="district-details">
+            <div class="district-header">
+                <h2>Nagarhole National Park</h2>
+                <p>Karnataka - Kodagu & Mysore Districts</p>
+            </div>
+            
+            <div class="category-section">
+                <div class="category-header">
+                    Park Information
+                </div>
+                
+                <div class="places-grid">
+                    <div class="place-card">
+                        <h4>Nagarhole National Park</h4>
+                        <div class="place-details">
+                            <p><strong>Location:</strong> Kodagu & Mysore districts, Karnataka (Kabini reservoir area).</p>
+                            <p><strong>Key Species:</strong> Bengal tiger, Asian elephant, leopard, gaur, rich riverine birdlife; excellent wildlife corridor with Bandipur.</p>
+                            <p><strong>Area:</strong> Part of Nilgiri Biosphere Reserve; famous for boat safaris on Kabini and jeep safaris.</p>
+                            <p><strong>Best Time:</strong> Oct–May.</p>
+                            <p><strong>How to Reach:</strong> Nearest town Hunsur / Mysore; access via Kabini & Nagarhole entry points.</p>
+                        </div>
+                        <a href="#" class="map-link">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-to-top" onclick="scrollToTop()">↑</button>
+
+    <script>
+        // Show district details
+        function showDistrictDetails(districtId) {
+            // Hide all district details
+            const districtDetails = document.querySelectorAll('.district-details');
+            districtDetails.forEach(detail => {
+                detail.classList.remove('active');
+            });
+            
+            // Show selected district details
+            const selectedDistrict = document.getElementById(districtId);
+            if (selectedDistrict) {
+                selectedDistrict.classList.add('active');
+                // Scroll to the details section
+                selectedDistrict.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Scroll to top function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Explore button functionality
+        document.querySelector('.explore-btn').addEventListener('click', function() {
+            document.querySelector('.districts-grid').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation to districts grid
+            setTimeout(() => {
+                document.querySelector('.districts-grid').classList.add('show');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

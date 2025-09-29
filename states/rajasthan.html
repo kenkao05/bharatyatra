@@ -3,56 +3,1281 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rajasthan</title>
-  <link rel="stylesheet" href="../styling/state.css">
+  <title>Explore Rajasthan - Comprehensive Tourism Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #AD8B73, #CEAB93, #E3CAA5);
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .header {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 0 0 30px 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="70" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="80" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+      opacity: 0.3;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, #FFFBE9, #ffffff, #FFFBE9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header p {
+      font-size: 1.3rem;
+      max-width: 700px;
+      margin: 0 auto 1.5rem;
+      color: #FFFBE9;
+      position: relative;
+      z-index: 1;
+    }
+
+    .explore-btn {
+      background: linear-gradient(45deg, #8B4513, #A0522D);
+      color: white;
+      border: none;
+      padding: 1.2rem 2.5rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-top: 1rem;
+      box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 3px solid rgba(255,255,255,0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .explore-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 10px 30px rgba(139, 69, 19, 0.6);
+      background: linear-gradient(45deg, #A0522D, #8B4513);
+    }
+
+    .explore-btn:active {
+      transform: translateY(1px);
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .districts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+
+    .districts-grid.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .district-card {
+      background: linear-gradient(135deg, #FFFBE9, #ffffff);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .district-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #8B4513, #A0522D, #CEAB93);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .district-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      border-color: #8B4513;
+    }
+
+    .district-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .district-card h3 {
+      color: #8B4513;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      margin-bottom: 0.8rem;
+      font-weight: 700;
+    }
+
+    .district-card p {
+      color: #666;
+      font-size: 1.1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .attractions-count {
+      background: linear-gradient(45deg, #8B4513, #A0522D);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .district-details {
+      background: rgba(255,255,255,0.95);
+      border-radius: 25px;
+      padding: 2.5rem;
+      margin-top: 2rem;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+      display: none;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .district-details.active {
+      display: block;
+      animation: slideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .district-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      color: #8B4513;
+      position: relative;
+    }
+
+    .district-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, #8B4513, #A0522D);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .category-section {
+      margin-bottom: 2.5rem;
+      background: rgba(255, 251, 233, 0.8);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border-left: 5px solid #8B4513;
+    }
+
+    .category-header {
+      background: linear-gradient(90deg, #8B4513, #A0522D);
+      color: white;
+      padding: 1.2rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      font-size: 1.4rem;
+      text-align: center;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+    }
+
+    .places-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .place-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.8rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .place-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #8B4513, #A0522D);
+    }
+
+    .place-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      border-color: #8B4513;
+    }
+
+    .place-card h4 {
+      color: #8B4513;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .place-details {
+      margin-bottom: 1.2rem;
+    }
+
+    .place-details p {
+      margin-bottom: 0.6rem;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .place-details strong {
+      color: #A0522D;
+      font-weight: 600;
+    }
+
+    .map-link {
+      display: inline-block;
+      background: linear-gradient(45deg, #8B4513, #A0522D);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 0.8rem;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+    }
+
+    .map-link:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+      background: linear-gradient(45deg, #A0522D, #8B4513);
+    }
+
+    .hotel-section {
+      background: linear-gradient(135deg, #f0f8e6, #e6f3d6);
+      padding: 1.2rem;
+      border-radius: 10px;
+      margin-top: 1.2rem;
+    }
+
+    .hotel-section h5 {
+      color: #2e7d32;
+      margin-bottom: 0.8rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .restaurant-section {
+      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+      padding: 1.2rem;
+      border-radius: 10px;
+      margin-top: 1.2rem;
+    }
+
+    .restaurant-section h5 {
+      color: #ef6c00;
+      margin-bottom: 0.8rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(45deg, #8B4513, #A0522D);
+      color: white;
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(139, 69, 19, 0.6);
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .header p {
+        font-size: 1.1rem;
+      }
+      
+      .districts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+      
+      .places-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .place-card {
+        padding: 1.5rem;
+      }
+      
+      .district-header h2 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header {
+        padding: 2rem 1rem;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .district-card {
+        padding: 1.5rem;
+      }
+      
+      .district-card h3 {
+        font-size: 1.3rem;
+      }
+      
+      .places-grid {
+        gap: 1.5rem;
+      }
+    }
+
+    .scroll-down-indicator {
+      text-align: center;
+      margin-top: 2rem;
+      color: white;
+      font-size: 1.1rem;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-10px);
+      }
+      60% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .scroll-down-indicator span {
+      display: block;
+      font-size: 2rem;
+      margin-top: 0.5rem;
+    }
+  </style>
 </head>
-<body data-state="rajasthan">
-  <header class="state-header">
-    <h1>Rajasthan</h1>
-  </header>
-
-  <div class="container">
-    <div class="card">
-      <img src="https://www.jaipurtaxiservices.com/tourpackage/1211861340jaipur-udaipur-jodhpur-jaisalmer-tour.webp" alt="Jaipur - Hawa Mahal">
-      <h3>Jaipur - Pink City</h3>
-      <a href="https://www.tourism.rajasthan.gov.in/jaipur.html">Visit Website</a>
-    </div>
-
-    <div class="card">
-      <img src="https://travelogyindia.b-cdn.net/storage/app/itinerary/11/udaipur-tipl-600x436-2.jpg" alt="Udaipur - City Palace">
-      <h3>Udaipur - City of Lakes</h3>
-      <a href="https://www.tourism.rajasthan.gov.in/udaipur.html">Visit Website</a>
-    </div>
-
-    <div class="card">
-      <img src="https://www.tourism.rajasthan.gov.in/content/dam/rajasthan-tourism/english/city/explore/354.jpg" alt="Jaisalmer Fort">
-      <h3>Jaisalmer - Golden City</h3>
-      <a href="https://www.rajasthantourism.gov.in/destination/jaisalmer">Visit Website</a>
-    </div>
-
-    <div class="card">
-      <img src="https://wspl.support/divitours/wp-content/uploads/2019/04/guru-shikar.jpg" alt="Mount Abu - Nakki Lake">
-      <h3>Mount Abu</h3>
-      <a href="https://www.tourism.rajasthan.gov.in/mount-abu.html">Visit Website</a>
-    </div>
-
-    <div class="card">
-      <img src="https://tse4.mm.bing.net/th/id/OIP.uJeXGzxDdSKkB_m6bXLMCwHaE0?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Ranthambore National Park">
-      <h3>Ranthambore National Park</h3>
-      <a href="https://www.ranthamborenationalpark.com">Visit Website</a>
-    </div>
-
-    <div class="card">
-      <img src="https://thumbs.dreamstime.com/b/pushkar-holy-city-india-lake-s-mountains-background-beautiful-panorama-147358766.jpg" alt="Pushkar Lake">
-      <h3>Pushkar</h3>
-      <a href="https://www.tourism.rajasthan.gov.in/pushkar.html">Visit Website</a>
+<body>
+  <div class="header">
+    <h1>Explore Rajasthan</h1>
+    <p>Discover the Royal Heritage, Palaces, Forts, and Cultural Treasures of Rajasthan</p>
+    <button class="explore-btn" onclick="showDistricts()">Start Exploring Rajasthan</button>
+    <div class="scroll-down-indicator" id="scrollIndicator" style="display: none;">
+      Scroll down to see districts
+      <span>↓</span>
     </div>
   </div>
 
-  <script src="../styling/slideshow.js"></script>
-  <a href="../index.html" class="back-btn back-btn-header">
-    ← Back
-  </a>
+  <div class="container">
+    <div class="districts-grid" id="districtsGrid">
+      <div class="district-card" onclick="showDistrictDetails('jaipur')">
+        <h3>Jaipur</h3>
+        <p>The Pink City</p>
+        <div class="attractions-count">6 Attractions</div>
+      </div>
+      
+      <div class="district-card" onclick="showDistrictDetails('udaipur')">
+        <h3>Udaipur</h3>
+        <p>City of Lakes</p>
+        <div class="attractions-count">5 Attractions</div>
+      </div>
+      
+      <div class="district-card" onclick="showDistrictDetails('jodhpur')">
+        <h3>Jodhpur</h3>
+        <p>The Blue City</p>
+        <div class="attractions-count">3 Attractions</div>
+      </div>
+      
+      <div class="district-card" onclick="showDistrictDetails('jaisalmer')">
+        <h3>Jaisalmer</h3>
+        <p>The Golden City</p>
+        <div class="attractions-count">4 Attractions</div>
+      </div>
+      
+      <div class="district-card" onclick="showDistrictDetails('ajmerpushkar')">
+        <h3>Ajmer & Pushkar</h3>
+        <p>Pilgrimage Centers</p>
+        <div class="attractions-count">3 Attractions</div>
+      </div>
+    </div>
 
+    <!-- Jaipur District Details -->
+    <div class="district-details" id="jaipur-details">
+      <div class="district-header">
+        <h2>Jaipur District - The Pink City</h2>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          History & Overview
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>About Jaipur</h4>
+            <div class="place-details">
+              <p><strong>Founded:</strong> By Maharaja Sawai Jai Singh II in 1727 as a planned city.</p>
+              <p><strong>Character:</strong> Mixes royal palaces, forts and bazaars; the old city ("pink") preserves haveli-style architecture and lively markets.</p>
+              <p><strong>UNESCO Site:</strong> The Jantar Mantar observatory is a world heritage monument.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Top Attractions
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Amber (Amer) Fort</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Sprawling hill fort with Sheesh Mahal, courtyards and Maota Lake views.</p>
+              <p><strong>Visit Duration:</strong> 2–3 hrs; day opens ~08:00, sound & light at night</p>
+              <p><strong>Tickets:</strong> Small (Indian / foreign categories)</p>
+            </div>
+            
+            <div class="hotel-section">
+              <h5>Nearby Hotels</h5>
+              <p>Alsisar Haveli (₹8,000-15,000/night)</p>
+              <p>Ram Pratap Palace (₹6,000-12,000/night)</p>
+            </div>
+            
+            <div class="restaurant-section">
+              <h5>Nearby Restaurants</h5>
+              <p>1135 AD Restaurant (Rajasthani cuisine)</p>
+              <p>Samosa Stand near Amer Fort (local snacks)</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Hawa Mahal (Palace of Winds)</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Lattice façade built so royal women could watch street festivals privately.</p>
+              <p><strong>Visit Duration:</strong> Quick photo-stop (30–45 min)</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>City Palace</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Palace-museum complex next to Jantar Mantar; museum displays royal costumes, arms and chariots.</p>
+              <p><strong>Timings:</strong> Opens ~09:30–17:30 typically</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Jantar Mantar (UNESCO)</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> 18th-century astronomical instruments; UNESCO World Heritage Site.</p>
+              <p><strong>Highlights:</strong> Great for history/photography</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Nahargarh & Jaigarh Forts</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Hilltop forts for sunset panoramas and cannon exhibits.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Suggested Itinerary (2 Days)
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Day 1</h4>
+            <div class="place-details">
+              <p>Morning Amber Fort → Lunch near Amber → City Palace & Jantar Mantar (afternoon) → Shopping around Johri Bazaar / evening Chokhi Dhani cultural village.</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Day 2</h4>
+            <div class="place-details">
+              <p>Morning Nahargarh for sunrise or sunset, Jaigarh, then museums and bazaars (gemstone/jewellery).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Accommodation Options
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Budget</h4>
+            <div class="place-details">
+              <p>Guesthouses/hostels around Old City</p>
+              <p>Price Range: ₹700–1,500/night</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Mid-range</h4>
+            <div class="place-details">
+              <p>Central heritage hotels / 3–4★ near MI Road</p>
+              <p>Price Range: ₹3,000–7,000/night</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Luxury</h4>
+            <div class="place-details">
+              <p>Rambagh Palace (Taj) - iconic palace-hotel (high end)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Local Food Picks
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Laxmi Mishthan Bhandar</h4>
+            <div class="place-details">
+              <p>Sweets & kachori - old favourite</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Chokhi Dhani</h4>
+            <div class="place-details">
+              <p>Traditional Rajasthani village-cum-dining experience</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Best Time & Tips
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Best Time to Visit</h4>
+            <div class="place-details">
+              <p>October → March (pleasant; peak tourist season)</p>
+              <p>Avoid intense summer heat (Apr–Jun)</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Travel Tips</h4>
+            <div class="place-details">
+              <p>Start Amber Fort early (to avoid heat & crowds)</p>
+              <p>You can reach Amber by taxi/auto; avoid elephant rides if you prefer (ethical concerns often discussed)</p>
+              <p>Check official timings and ticket categories on the attraction pages before you go</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
+    </div>
+
+    <!-- Udaipur District Details -->
+    <div class="district-details" id="udaipur-details">
+      <div class="district-header">
+        <h2>Udaipur District - City of Lakes</h2>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          History & Overview
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>About Udaipur</h4>
+            <div class="place-details">
+              <p><strong>Built Around:</strong> Lakes and palaces</p>
+              <p><strong>Character:</strong> Romantic lakeside setting, royal palaces and calm evening boat rides are the big draw</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Top Attractions
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>City Palace (Udaipur)</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Hilltop palace complex, museums, terraces overlooking Lake Pichola</p>
+              <p><strong>Visit Duration:</strong> Allow 2–3 hours</p>
+            </div>
+            
+            <div class="hotel-section">
+              <h5>Nearby Hotels</h5>
+              <p>Taj Lake Palace (on water - high end)</p>
+              <p>Hotel Lakend (lake-facing heritage hotel)</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Lake Pichola</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Boat rides to Jag Mandir and view of Taj Lake Palace</p>
+              <p><strong>Boat Fares:</strong> Daytime and sunset fares differ (day ~₹400/adult, sunset higher)</p>
+              <p><strong>Note:</strong> Verify at local boat counter or official tourism pages</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Jagdish Temple</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> 17th-century temple near City Palace</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Saheliyon-ki-Bari</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Formal garden with fountains</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Bagore Ki Haveli</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Evening cultural dance/puppet shows</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Suggested Itinerary (1–2 Days)
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Day 1</h4>
+            <div class="place-details">
+              <p>City Palace + Jagdish Temple + lunch lakeside → sunset boat ride on Lake Pichola → evening cultural show at Bagore Ki Haveli</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Day 2 (Optional)</h4>
+            <div class="place-details">
+              <p>Saheliyon-ki-Bari, Monsoon Palace viewpoint, local markets</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Accommodation Options
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Budget</h4>
+            <div class="place-details">
+              <p>Lakeside guesthouses / hostels</p>
+              <p>Price Range: ₹700–1,500/night</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Mid-range</h4>
+            <div class="place-details">
+              <p>Jagat Niwas / historic lakeside hotels</p>
+              <p>Price Range: ₹3,000–6,000/night</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Luxury</h4>
+            <div class="place-details">
+              <p>Taj Lake Palace (on water - high end)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Local Food Picks
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Ambrai</h4>
+            <div class="place-details">
+              <p>Lakeside view dining</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Natraj Dining Hall</h4>
+            <div class="place-details">
+              <p>Local thali</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Best Time & Tips
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Best Time to Visit</h4>
+            <div class="place-details">
+              <p>Oct → Feb (cool, pleasant)</p>
+              <p>Monsoon brings greenery but occasional lake-level changes</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Travel Tips</h4>
+            <div class="place-details">
+              <p>Book sunset boat rides in advance during peak season / weekends</p>
+              <p>Lakeside rooftop restaurants get busy at dusk</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
+    </div>
+
+    <!-- Jodhpur District Details -->
+    <div class="district-details" id="jodhpur-details">
+      <div class="district-header">
+        <h2>Jodhpur District - The Blue City</h2>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          History & Overview
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>About Jodhpur</h4>
+            <div class="place-details">
+              <p><strong>History:</strong> Once capital of Marwar kingdom</p>
+              <p><strong>Character:</strong> City framed by the massive Mehrangarh Fort rising above a sea of blue-painted houses</p>
+              <p><strong>Highlights:</strong> Fort museums and palaces are major attractions</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Top Attractions
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Mehrangarh Fort</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Huge hill fort with galleries, rare arms & costumes, and panoramic views</p>
+              <p><strong>Features:</strong> Museum & optional audio guides/night tours</p>
+              <p><strong>Timings:</strong> Typically 9:00–17:00; audio guide available</p>
+            </div>
+            
+            <div class="hotel-section">
+              <h5>Nearby Hotels</h5>
+              <p>RAAS Jodhpur (boutique heritage hotel)</p>
+              <p>Umaid Bhawan Palace (Taj) - heritage/luxury</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Jaswant Thada</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Marble cenotaph near Mehrangarh (peaceful stop)</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Umaid Bhawan Palace</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> A functioning palace & luxury hotel, with a museum wing open to visitors</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Suggested Itinerary (1–2 Days)
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Full Day Plan</h4>
+            <div class="place-details">
+              <p>Morning: Mehrangarh Fort + museum + Jaswant Thada → lunch in old city → explore clock tower & Sardar Market (spices, textiles) → evening rooftop dinner with fort views</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Accommodation Options
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Budget</h4>
+            <div class="place-details">
+              <p>Guesthouses near Clock Tower</p>
+              <p>Price Range: ₹800–1,500/night</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Mid-range</h4>
+            <div class="place-details">
+              <p>Boutique heritage hotels / RAAS Jodhpur</p>
+              <p>Price Range: ₹5,000–8,000/night</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Luxury</h4>
+            <div class="place-details">
+              <p>Umaid Bhawan Palace (Taj) - heritage/luxury</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Local Food Picks
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Indique</h4>
+            <div class="place-details">
+              <p>Rooftop with fort views</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Gypsy Dining Hall</h4>
+            <div class="place-details">
+              <p>Local thali</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Best Time & Tips
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Best Time to Visit</h4>
+            <div class="place-details">
+              <p>Oct → Mar (pleasant weather)</p>
+              <p>Summer is very hot (avoid April–June)</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Travel Tips</h4>
+            <div class="place-details">
+              <p>Wear comfortable shoes at Mehrangarh (lots of steps/uneven paths)</p>
+              <p>Consider guided tours inside the fort for richer context</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
+    </div>
+
+    <!-- Jaisalmer District Details -->
+    <div class="district-details" id="jaisalmer-details">
+      <div class="district-header">
+        <h2>Jaisalmer District - The Golden City</h2>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          History & Overview
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>About Jaisalmer</h4>
+            <div class="place-details">
+              <p><strong>Built Of:</strong> Honey-coloured sandstone</p>
+              <p><strong>Character:</strong> The living fort (Jaisalmer Fort) still houses markets and homes inside its walls</p>
+              <p><strong>Major Draws:</strong> Desert safaris + medieval havelis</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Top Attractions
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Jaisalmer Fort (Sonar Quila)</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Massive fortification with residential lanes, Jain temples and rooftop views</p>
+              <p><strong>Experience:</strong> Explore at walking pace</p>
+            </div>
+            
+            <div class="hotel-section">
+              <h5>Unique Stays</h5>
+              <p>Heritage havelis inside the fort</p>
+              <p>Desert camps near Sam Sand Dunes</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Famous Havelis</h4>
+            <div class="place-details">
+              <p><strong>Patwon-ki-Haveli</strong></p>
+              <p><strong>Salim Singh Ki Haveli</strong></p>
+              <p><strong>Nathmal Ji Ki Haveli</strong></p>
+              <p><strong>About:</strong> Richly carved merchant mansions</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Sam Sand Dunes (Thar Desert)</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Camel/jeep safaris, desert camps, sunset & cultural performances</p>
+              <p><strong>Duration:</strong> Allow an afternoon → night (camp)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Suggested Itinerary (2 Days)
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Day 1</h4>
+            <div class="place-details">
+              <p>Jaisalmer Fort & havelis → sunset from fort ramparts → night market</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Day 2</h4>
+            <div class="place-details">
+              <p>Morning local shops → afternoon drive to Sam Sand Dunes for sunset camel/jeep safari → overnight desert camp (optional)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Accommodation Options
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Budget</h4>
+            <div class="place-details">
+              <p>Guesthouses near fort</p>
+              <p>Price Range: ₹800–1,500/night</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Mid-range</h4>
+            <div class="place-details">
+              <p>Haveli stays / boutique guesthouses</p>
+              <p>Price Range: ₹2,000–5,000/night</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Luxury</h4>
+            <div class="place-details">
+              <p>Suryagarh / heritage resorts / high-end desert lodges</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Local Food & Culture
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Fort Cafés</h4>
+            <div class="place-details">
+              <p>Roof-top cafés inside the fort for local thali and sunset views</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Best Time & Tips
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Best Time to Visit</h4>
+            <div class="place-details">
+              <p>Oct → Feb (cool nights)</p>
+              <p>Summer is extreme (avoid April–June)</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Travel Tips</h4>
+            <div class="place-details">
+              <p>If staying at a desert camp, check included meals/activities and transport from town</p>
+              <p>Carry warm clothes for desert nights (can be cold)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
+    </div>
+
+    <!-- Ajmer & Pushkar District Details -->
+    <div class="district-details" id="ajmerpushkar-details">
+      <div class="district-header">
+        <h2>Ajmer & Pushkar District - Pilgrimage Centers</h2>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          History & Overview
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>About Ajmer & Pushkar</h4>
+            <div class="place-details">
+              <p><strong>Ajmer:</strong> Sufi pilgrimage centre (Ajmer Sharif Dargah)</p>
+              <p><strong>Pushkar:</strong> Sacred lake-town known for the Brahma Temple and the annual camel fair</p>
+              <p><strong>Together:</strong> Popular religious / cultural stop en route between Jaipur / Jodhpur</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Top Attractions
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Ajmer Sharif Dargah</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Tomb of Sufi saint Khwaja Moinuddin Chishti; major pilgrimage site</p>
+              <p><strong>Crowds:</strong> Large crowds on Thursdays and Urs festival</p>
+              <p><strong>Timings:</strong> Open early morning well into evening (seasonal variations)</p>
+            </div>
+            
+            <div class="hotel-section">
+              <h5>Nearby Accommodations</h5>
+              <p>Ajmer: Mid-range hotels</p>
+              <p>Pushkar: Many lakeside guesthouses and budget hotels (popular with backpackers)</p>
+            </div>
+          </div>
+          
+          <div class="place-card">
+            <h4>Pushkar Brahma Temple</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> One of the very few temples dedicated to Lord Brahma in India, next to sacred Pushkar Lake</p>
+              <p><strong>Special Event:</strong> Pushkar hosts the famous Pushkar Camel Fair (seasonal - Oct/Nov)</p>
+              <p><strong>Timings:</strong> Defined arti timings and closes for a short mid-day interval</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Suggested Visit Plan
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Combined Visit</h4>
+            <div class="place-details">
+              <p>Early morning at Pushkar Lake → Brahma Temple → wander Pushkar bazaar (antiques/handicrafts) → drive to Ajmer for Dargah (timings & crowd management)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          Food & Culture
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Local Experience</h4>
+            <div class="place-details">
+              <p>Pushkar is largely vegetarian and tourist-friendly</p>
+              <p>Experience local Rajasthani cuisine and rooftop cafés around the lake</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
+    </div>
+  </div>
+
+  <button class="back-to-top" onclick="scrollToTop()" style="display: none;">↑</button>
+
+  <script>
+    function showDistricts() {
+      document.querySelector('.explore-btn').style.display = 'none';
+      document.getElementById('scrollIndicator').style.display = 'block';
+      
+      setTimeout(() => {
+        document.getElementById('districtsGrid').classList.add('show');
+        document.getElementById('scrollIndicator').style.display = 'none';
+      }, 500);
+    }
+
+    function showDistrictDetails(districtId) {
+      document.getElementById('districtsGrid').style.display = 'none';
+      document.getElementById(districtId + '-details').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideDistrictDetails() {
+      document.querySelectorAll('.district-details').forEach(detail => {
+        detail.classList.remove('active');
+      });
+      document.getElementById('districtsGrid').style.display = 'grid';
+      window.scrollTo({ top: document.querySelector('.header').offsetHeight, behavior: 'smooth' });
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Show back to top button when scrolling
+    window.addEventListener('scroll', function() {
+      const backToTopButton = document.querySelector('.back-to-top');
+      if (window.pageYOffset > 300) {
+        backToTopButton.style.display = 'flex';
+      } else {
+        backToTopButton.style.display = 'none';
+      }
+    });
+
+    // Smooth scrolling for all links
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>

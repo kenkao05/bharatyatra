@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Explore Kerala - Comprehensive Tourism Guide</title>
+  <title>Explore Uttar Pradesh - Comprehensive Tourism Guide</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -47,9 +47,9 @@
       font-family: 'Playfair Display', serif;
       font-size: 3.5rem;
       margin-bottom: 1rem;
-      background: linear-gradient(45deg, #FFF8E1, #FAF0E6, #FFF8E1); 
+      background: linear-gradient(45deg, #FFFBE9, #ffffff, #FFFBE9);
       -webkit-background-clip: text;
-    
+      
       background-clip: text;
       position: relative;
       z-index: 1;
@@ -440,6 +440,12 @@
       margin-top: 0.5rem;
     }
 
+    .category-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #8B4513;
+    }
+
     .travel-tips {
             background: rgba(255,255,255,0.9);
             border-radius: 20px;
@@ -511,15 +517,15 @@
             background: rgba(212, 199, 178, 0.8);
             box-shadow: 0 6px 18px rgba(90, 79, 65, 0.2);
         }
-    
+
   </style>
 </head>
 <body>
   <div class="header">
     <a href="../index.html" class="back-btn">← Back</a>
-    <h1>Explore Kerala</h1>
-    <p>Discover God's Own Country - Temples, Heritage, and Natural Beauty of Kerala</p>
-    <button class="explore-btn" onclick="showDistricts()">Start Exploring Kerala</button>
+    <h1>Explore Uttar Pradesh</h1>
+    <p>Discover the Rich Heritage, Temples, and Cultural Treasures of Uttar Pradesh</p>
+    <button class="explore-btn" onclick="showDistricts()">Start Exploring UP</button>
     <div class="scroll-down-indicator" id="scrollIndicator" style="display: none;">
       Scroll down to see districts
       <span>↓</span>
@@ -528,105 +534,155 @@
 
   <div class="container">
     <div class="districts-grid" id="districtsGrid">
-      <div class="district-card" onclick="showDistrictDetails('thiruvananthapuram')">
-        <h3>Thiruvananthapuram</h3>
-        <p>Temples & Heritage</p>
-        <div class="attractions-count">4 Attractions</div>
-      </div>
-      
-      <div class="district-card" onclick="showDistrictDetails('thrissur')">
-        <h3>Thrissur</h3>
-        <p>Temples & Culture</p>
+      <div class="district-card" onclick="showDistrictDetails('varanasi')">
+        <h3>Varanasi</h3>
+        <p>Temples & Ghats</p>
         <div class="attractions-count">3 Attractions</div>
       </div>
       
-      <div class="district-card" onclick="showDistrictDetails('guruvayur')">
-        <h3>Guruvayur</h3>
-        <p>Pilgrimage</p>
+      <div class="district-card" onclick="showDistrictDetails('agra')">
+        <h3>Agra</h3>
+        <p>Heritage & Monuments</p>
         <div class="attractions-count">2 Attractions</div>
       </div>
       
-      <div class="district-card" onclick="showDistrictDetails('varkala')">
-        <h3>Varkala</h3>
-        <p>Temples & Beaches</p>
-        <div class="attractions-count">2 Attractions</div>
-      </div>
-      
-      <div class="district-card" onclick="showDistrictDetails('kumarakom')">
-        <h3>Kumarakom</h3>
-        <p>Backwaters</p>
+      <div class="district-card" onclick="showDistrictDetails('ayodhya')">
+        <h3>Ayodhya</h3>
+        <p>Temples & Pilgrimage</p>
         <div class="attractions-count">1 Attraction</div>
       </div>
       
-      <div class="district-card" onclick="showDistrictDetails('kochi')">
-        <h3>Kochi</h3>
+      <div class="district-card" onclick="showDistrictDetails('mathura')">
+        <h3>Mathura-Vrindavan</h3>
+        <p>Krishna Temples</p>
+        <div class="attractions-count">2 Attractions</div>
+      </div>
+      
+      <div class="district-card" onclick="showDistrictDetails('prayagraj')">
+        <h3>Prayagraj</h3>
+        <p>River Confluence</p>
+        <div class="attractions-count">1 Attraction</div>
+      </div>
+      
+      <div class="district-card" onclick="showDistrictDetails('lucknow')">
+        <h3>Lucknow</h3>
         <p>Heritage & Culture</p>
-        <div class="attractions-count">2 Attractions</div>
-      </div>
-      
-      <div class="district-card" onclick="showDistrictDetails('kannur')">
-        <h3>Kannur</h3>
-        <p>Culture & Cuisine</p>
         <div class="attractions-count">1 Attraction</div>
       </div>
       
-      <div class="district-card" onclick="showDistrictDetails('alappuzha')">
-        <h3>Alappuzha</h3>
-        <p>Backwaters</p>
+      <div class="district-card" onclick="showDistrictDetails('jhansi')">
+        <h3>Jhansi</h3>
+        <p>Historic Fort</p>
+        <div class="attractions-count">1 Attraction</div>
+      </div>
+      
+      <div class="district-card" onclick="showDistrictDetails('meerut')">
+        <h3>Meerut</h3>
+        <p>Heritage & Nature</p>
+        <div class="attractions-count">1 Attraction</div>
+      </div>
+      
+      <div class="district-card" onclick="showDistrictDetails('mirzapur')">
+        <h3>Mirzapur</h3>
+        <p>Temples & Nature</p>
+        <div class="attractions-count">1 Attraction</div>
+      </div>
+      
+      <div class="district-card" onclick="showDistrictDetails('chitrakoot')">
+        <h3>Chitrakoot</h3>
+        <p>Pilgrimage & Nature</p>
         <div class="attractions-count">1 Attraction</div>
       </div>
     </div>
 
-    <!-- Thiruvananthapuram District Details -->
-    <div class="district-details" id="thiruvananthapuram-details">
+    <!-- Varanasi District Details -->
+    <div class="district-details" id="varanasi-details">
       <div class="district-header">
-        <h2>Thiruvananthapuram District</h2>
+        <h2>Varanasi District</h2>
       </div>
       
       <div class="category-section">
         <div class="category-header">
+          <div class="category-icon"></div>
           Temples
         </div>
         <div class="places-grid">
           <div class="place-card">
-            <h4>Sree Padmanabhaswamy Temple</h4>
+            <h4>Kashi Vishwanath Temple</h4>
             <div class="place-details">
-              <p><strong>About:</strong> A 16th-century temple dedicated to Lord Vishnu, renowned for its Dravidian architecture and immense wealth.</p>
-              <p><strong>Attractions:</strong> Dravidian architecture, underground vaults, spiritual significance</p>
+              <p><strong>About:</strong> One of the 12 Jyotirlingas of Lord Shiva, on the western bank of the holy Ganga River.</p>
+              <p><strong>Attractions:</strong> Main Jyotirlinga Temple, Ganga Aarti, Manikarnika Ghat, Sarnath</p>
               <p><strong>Best Time:</strong> October - March</p>
             </div>
+            <a href="https://maps.google.com/?q=Kashi+Vishwanath+Temple" class="map-link" target="_blank">View on Map</a>
             
             <div class="hotel-section">
               <h5>Nearby Hotels</h5>
-              <p>The Royal Heritage Hotel and Ayurvedic Center (Traditional Kerala architecture)</p>
-              <p>Mascot Hotel (Heritage hotel with modern amenities)</p>
+              <p>Brijrama Palace – Heritage Hotel (luxury)</p>
+              <p>Ramada Plaza JHV Varanasi (4-star)</p>
+              <p>Hotel Alka Varanasi (budget)</p>
             </div>
             
             <div class="restaurant-section">
               <h5>Restaurants</h5>
-              <p>The Travancore Hotel (Authentic Travancore cuisine)</p>
-              <p>Good Morning Hotel (Kerala-style breakfast, porottas and beef curry)</p>
+              <p>Kashi Chat Bhandar (famous street food)</p>
+              <p>Varuna at The Gateway Hotel</p>
+              <p>Shree Cafe (vegetarian)</p>
             </div>
           </div>
           
           <div class="place-card">
-            <h4>Anantha Padmanabha Temple</h4>
+            <h4>Sankat Mochan Hanuman Temple</h4>
             <div class="place-details">
-              <p><strong>About:</strong> An ancient Hindu shrine dedicated to Lord Vishnu, known for its exquisite carvings and architectural majesty.</p>
-              <p><strong>Attractions:</strong> Exquisite carvings, architectural beauty, spiritual significance</p>
+              <p><strong>About:</strong> Dedicated to Lord Hanuman, founded by Saint Tulsidas.</p>
+              <p><strong>Attractions:</strong> Hanuman idol darshan, Evening aarti, Tulsi Manas Temple</p>
               <p><strong>Best Time:</strong> October - March</p>
             </div>
+            <a href="https://maps.google.com/?q=Sankat+Mochan+Temple" class="map-link" target="_blank">View on Map</a>
             
             <div class="hotel-section">
               <h5>Nearby Hotels</h5>
-              <p>The Royal Heritage Hotel and Ayurvedic Center (5 minutes' walk)</p>
-              <p>Mascot Hotel (Blend of modern amenities and traditional charm)</p>
+              <p>Hotel Temple on Ganges</p>
+              <p>Radisson Hotel Varanasi</p>
+              <p>Budget Ashrams nearby</p>
             </div>
             
             <div class="restaurant-section">
               <h5>Restaurants</h5>
-              <p>The Travancore Hotel (Authentic Travancore cuisine)</p>
-              <p>Good Morning Hotel (Kerala-style breakfast, porottas and beef curry)</p>
+              <p>Kashi Café</p>
+              <p>Baati Chokha (authentic UP food)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-icon"></div>
+          River Ghats
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Varanasi Ghats</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> 84 ghats on the banks of Ganga River for rituals and aartis.</p>
+              <p><strong>Attractions:</strong> Dashashwamedh Ghat, Manikarnika Ghat, Assi Ghat, Boat rides</p>
+              <p><strong>Best Time:</strong> October - March</p>
+            </div>
+            <a href="https://maps.google.com/?q=Dashashwamedh+Ghat" class="map-link" target="_blank">View on Map</a>
+            
+            <div class="hotel-section">
+              <h5>Nearby Hotels</h5>
+              <p>Brijrama Palace</p>
+              <p>Hotel Alka</p>
+              <p>Ganga View Guest House</p>
+            </div>
+            
+            <div class="restaurant-section">
+              <h5>Restaurants</h5>
+              <p>Brown Bread Bakery</p>
+              <p>Shree Cafe</p>
+              <p>Street food stalls at ghats</p>
             </div>
           </div>
         </div>
@@ -635,56 +691,62 @@
       <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
     </div>
 
-    <!-- Thrissur District Details -->
-    <div class="district-details" id="thrissur-details">
+    <!-- Agra District Details -->
+    <div class="district-details" id="agra-details">
       <div class="district-header">
-        <h2>Thrissur District</h2>
+        <h2>Agra District</h2>
       </div>
       
       <div class="category-section">
         <div class="category-header">
-          Temples
+          <div class="category-icon"></div>
+          Heritage Monuments
         </div>
         <div class="places-grid">
           <div class="place-card">
-            <h4>Vadakkunnathan Temple</h4>
+            <h4>Taj Mahal</h4>
             <div class="place-details">
-              <p><strong>About:</strong> A classical example of Kerala style architecture, this temple is dedicated to Lord Shiva and is a UNESCO World Heritage Site.</p>
-              <p><strong>Attractions:</strong> Kerala architecture, Thrissur Pooram festival, spiritual significance</p>
+              <p><strong>About:</strong> World Wonder, built by Shah Jahan for Mumtaz Mahal.</p>
+              <p><strong>Attractions:</strong> Main Mausoleum, Mehtab Bagh, Agra Fort, Itmad-ud-Daula</p>
               <p><strong>Best Time:</strong> October - March</p>
             </div>
+            <a href="https://maps.google.com/?q=Taj+Mahal" class="map-link" target="_blank">View on Map</a>
             
             <div class="hotel-section">
               <h5>Nearby Hotels</h5>
-              <p>Kochi Marriott Hotel (Luxurious accommodations)</p>
-              <p>Ramada Resort by Wyndham Kochi (Heritage-style rooms)</p>
+              <p>The Oberoi Amarvilas (luxury with Taj view)</p>
+              <p>ITC Mughal Agra (premium)</p>
+              <p>Hotel Atulyaa Taj (budget)</p>
             </div>
             
             <div class="restaurant-section">
               <h5>Restaurants</h5>
-              <p>Sree Krishna Inn (Vegetarian Kerala cuisine)</p>
-              <p>Kochi Fort Restaurant (Kerala and South Indian dishes)</p>
+              <p>Peshawri – ITC Mughal</p>
+              <p>Pinch of Spice</p>
+              <p>Joney's Place (budget, Indian food)</p>
             </div>
           </div>
           
           <div class="place-card">
-            <h4>Guruvayur Temple</h4>
+            <h4>Fatehpur Sikri</h4>
             <div class="place-details">
-              <p><strong>About:</strong> Dedicated to Lord Krishna, this temple is one of the most important pilgrimage centers in Kerala.</p>
-              <p><strong>Attractions:</strong> Krishna deity, spiritual significance, daily rituals</p>
+              <p><strong>About:</strong> UNESCO World Heritage Site, "City of Victory" built by Akbar.</p>
+              <p><strong>Attractions:</strong> Buland Darwaza, Panch Mahal, Diwan-i-Khas, Jama Masjid</p>
               <p><strong>Best Time:</strong> October - March</p>
             </div>
+            <a href="https://maps.google.com/?q=Fatehpur+Sikri" class="map-link" target="_blank">View on Map</a>
             
             <div class="hotel-section">
               <h5>Nearby Hotels</h5>
-              <p>Sree Krishna Residency (Traditional Kerala-style rooms)</p>
-              <p>Guruvayur Devaswom Guest House (Simple accommodations for pilgrims)</p>
+              <p>The Gateway Hotel Fatehabad</p>
+              <p>Hotel Goverdhan Tourist Complex</p>
+              <p>Budget Guesthouses nearby</p>
             </div>
             
             <div class="restaurant-section">
               <h5>Restaurants</h5>
-              <p>Elephant Court Restaurant (Kerala and South Indian dishes)</p>
-              <p>Saravana Bhavan (Vegetarian cuisine)</p>
+              <p>Sikri Zaika Restaurant</p>
+              <p>Highway Dhabas (local Mughlai food)</p>
             </div>
           </div>
         </div>
@@ -693,35 +755,39 @@
       <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
     </div>
 
-    <!-- Guruvayur District Details -->
-    <div class="district-details" id="guruvayur-details">
+    <!-- Ayodhya District Details -->
+    <div class="district-details" id="ayodhya-details">
       <div class="district-header">
-        <h2>Guruvayur District</h2>
+        <h2>Ayodhya District</h2>
       </div>
       
       <div class="category-section">
         <div class="category-header">
+          <div class="category-icon"></div>
           Temples
         </div>
         <div class="places-grid">
           <div class="place-card">
-            <h4>Guruvayur Temple</h4>
+            <h4>Ayodhya Ram Mandir</h4>
             <div class="place-details">
-              <p><strong>About:</strong> Dedicated to Lord Krishna, this temple is one of the most important pilgrimage centers in Kerala.</p>
-              <p><strong>Attractions:</strong> Krishna deity, spiritual significance, daily rituals</p>
+              <p><strong>About:</strong> Newly inaugurated Ram Janmabhoomi Mandir (2024).</p>
+              <p><strong>Attractions:</strong> Ram Mandir, Hanuman Garhi, Kanak Bhawan, Sarayu Ghat Aarti</p>
               <p><strong>Best Time:</strong> October - March</p>
             </div>
+            <a href="https://maps.google.com/?q=Ayodhya+Ram+Mandir" class="map-link" target="_blank">View on Map</a>
             
             <div class="hotel-section">
               <h5>Nearby Hotels</h5>
-              <p>Sree Krishna Residency (Traditional Kerala-style rooms)</p>
-              <p>Guruvayur Devaswom Guest House (Simple accommodations for pilgrims)</p>
+              <p>Clarks Inn Express Ayodhya</p>
+              <p>Taj Nadesar Palace (luxury)</p>
+              <p>Rama Residency (budget)</p>
             </div>
             
             <div class="restaurant-section">
               <h5>Restaurants</h5>
-              <p>Elephant Court Restaurant (Kerala and South Indian dishes)</p>
-              <p>Saravana Bhavan (Vegetarian cuisine)</p>
+              <p>Shree Ram Bhojanalaya</p>
+              <p>Moti Mahal Restaurant</p>
+              <p>Local Sweets Shops (Laddoo, Peda)</p>
             </div>
           </div>
         </div>
@@ -730,61 +796,63 @@
       <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
     </div>
 
-    <!-- Varkala District Details -->
-    <div class="district-details" id="varkala-details">
+    <!-- Mathura District Details -->
+    <div class="district-details" id="mathura-details">
       <div class="district-header">
-        <h2>Varkala District</h2>
+        <h2>Mathura-Vrindavan District</h2>
       </div>
       
       <div class="category-section">
         <div class="category-header">
+          <div class="category-icon"></div>
           Temples
         </div>
         <div class="places-grid">
           <div class="place-card">
-            <h4>Sree Janardhana Swamy Temple</h4>
+            <h4>Krishna Janmabhoomi Temple</h4>
             <div class="place-details">
-              <p><strong>About:</strong> A 2,000-year-old temple dedicated to Lord Vishnu, located near Papanasam beach.</p>
-              <p><strong>Attractions:</strong> Ancient architecture, beach location, spiritual significance</p>
+              <p><strong>About:</strong> Birthplace of Lord Krishna, major pilgrimage during Janmashtami.</p>
+              <p><strong>Attractions:</strong> Main temple, Yamuna Aarti, Vishram Ghat</p>
               <p><strong>Best Time:</strong> October - March</p>
             </div>
+            <a href="https://maps.google.com/?q=Mathura+Krishna+Janmabhoomi" class="map-link" target="_blank">View on Map</a>
             
             <div class="hotel-section">
               <h5>Nearby Hotels</h5>
-              <p>The Varkala Marine Palace (Traditional Kerala-style rooms with sea views)</p>
-              <p>Kshetra Beach Resort (Heritage-style accommodations)</p>
+              <p>The Radha Ashok Mathura</p>
+              <p>Hotel Basera Mathura</p>
             </div>
             
             <div class="restaurant-section">
               <h5>Restaurants</h5>
-              <p>Clafouti Restaurant (Seafood and Kerala cuisine)</p>
-              <p>The Coffee Temple (Kerala and South Indian dishes)</p>
+              <p>Brijwasi Mithaiwala (sweets)</p>
+              <p>MVT Restaurant Vrindavan</p>
+              <p>Govinda's Restaurant (ISKCON campus)</p>
             </div>
           </div>
-        </div>
-      </div>
-      
-      <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
-    </div>
-
-    <!-- Kumarakom District Details -->
-    <div class="district-details" id="kumarakom-details">
-      <div class="district-header">
-        <h2>Kumarakom District</h2>
-      </div>
-      
-      <div class="category-section">
-        <div class="category-header">
-          Heritage Hotels
-        </div>
-        <div class="places-grid">
+          
           <div class="place-card">
-            <h4>Coconut Lagoon Resort</h4>
+            <h4>Banke Bihari Temple</h4>
             <div class="place-details">
-              <p><strong>About:</strong> Located in the backwaters, this resort offers traditional Kerala-style cottages and houseboats.</p>
-              <p><strong>Attractions:</strong> Backwater views, traditional architecture, houseboat experiences</p>
+              <p><strong>About:</strong> One of the most famous temples of Lord Krishna.</p>
+              <p><strong>Attractions:</strong> Banke Bihari idol, Holi Festival, Prem Mandir nearby</p>
               <p><strong>Best Time:</strong> October - March</p>
             </div>
+            <a href="https://maps.google.com/?q=Banke+Bihari+Temple" class="map-link" target="_blank">View on Map</a>
+            
+            <div class="hotel-section">
+              <h5>Nearby Hotels</h5>
+              <p>Nidhivan Sarovar Portico</p>
+              <p>Hotel Hare Krishna Orchid</p>
+              <p>Radha Ashok</p>
+            </div>
+            
+            <div class="restaurant-section">
+              <h5>Restaurants</h5>
+              <p>Govinda's ISKCON Restaurant</p>
+              <p>11 Flowers Rooftop Café</p>
+              <p>Brijwasi Sweets</p>
+            </div>
           </div>
         </div>
       </div>
@@ -792,39 +860,39 @@
       <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
     </div>
 
-    <!-- Kochi District Details -->
-    <div class="district-details" id="kochi-details">
+    <!-- Prayagraj District Details -->
+    <div class="district-details" id="prayagraj-details">
       <div class="district-header">
-        <h2>Kochi District</h2>
+        <h2>Prayagraj District</h2>
       </div>
       
       <div class="category-section">
         <div class="category-header">
-          Heritage Hotels
+          <div class="category-icon"></div>
+          River Confluence
         </div>
         <div class="places-grid">
           <div class="place-card">
-            <h4>Old Harbour Hotel</h4>
+            <h4>Triveni Sangam</h4>
             <div class="place-details">
-              <p><strong>About:</strong> A colonial-era building turned heritage hotel, offering a blend of Dutch and Kerala architecture.</p>
-              <p><strong>Attractions:</strong> Colonial architecture, Dutch influence, historical significance</p>
+              <p><strong>About:</strong> Sacred confluence of Ganga, Yamuna & Saraswati rivers.</p>
+              <p><strong>Attractions:</strong> Triveni Sangam, Allahabad Fort, Anand Bhawan, Hanuman Temple</p>
               <p><strong>Best Time:</strong> October - March</p>
             </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="category-section">
-        <div class="category-header">
-          Restaurants
-        </div>
-        <div class="places-grid">
-          <div class="place-card">
-            <h4>Rhythm</h4>
-            <div class="place-details">
-              <p><strong>About:</strong> Offers a variety of Kerala and South Indian dishes.</p>
-              <p><strong>Specialties:</strong> Traditional Kerala cuisine, South Indian delicacies</p>
-              <p><strong>Best Time:</strong> All year round</p>
+            <a href="https://maps.google.com/?q=Triveni+Sangam" class="map-link" target="_blank">View on Map</a>
+            
+            <div class="hotel-section">
+              <h5>Nearby Hotels</h5>
+              <p>Hotel Kanha Shyam (premium)</p>
+              <p>Hotel Polo Max</p>
+              <p>Hotel Yatrik (mid-range)</p>
+            </div>
+            
+            <div class="restaurant-section">
+              <h5>Restaurants</h5>
+              <p>El Chico Restaurant</p>
+              <p>Aroma Restaurant</p>
+              <p>Eat On – Street Food</p>
             </div>
           </div>
         </div>
@@ -833,23 +901,39 @@
       <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
     </div>
 
-    <!-- Kannur District Details -->
-    <div class="district-details" id="kannur-details">
+    <!-- Lucknow District Details -->
+    <div class="district-details" id="lucknow-details">
       <div class="district-header">
-        <h2>Kannur District</h2>
+        <h2>Lucknow District</h2>
       </div>
       
       <div class="category-section">
         <div class="category-header">
-          Restaurants
+          <div class="category-icon"></div>
+          Heritage
         </div>
         <div class="places-grid">
           <div class="place-card">
-            <h4>Roses Inn</h4>
+            <h4>Bara Imambara & Rumi Darwaza</h4>
             <div class="place-details">
-              <p><strong>About:</strong> Known for its traditional Kerala cuisine.</p>
-              <p><strong>Specialties:</strong> Authentic Kerala dishes, local flavors</p>
-              <p><strong>Best Time:</strong> All year round</p>
+              <p><strong>About:</strong> Built in 1784 by Nawab Asaf-ud-Daula, iconic landmarks.</p>
+              <p><strong>Attractions:</strong> Bhool Bhulaiya, Asfi Mosque, Rumi Darwaza, Chhota Imambara</p>
+              <p><strong>Best Time:</strong> October - March</p>
+            </div>
+            <a href="https://maps.google.com/?q=Bara+Imambara" class="map-link" target="_blank">View on Map</a>
+            
+            <div class="hotel-section">
+              <h5>Nearby Hotels</h5>
+              <p>Taj Mahal Lucknow (luxury)</p>
+              <p>Clarks Avadh</p>
+              <p>Hotel Levana</p>
+            </div>
+            
+            <div class="restaurant-section">
+              <h5>Restaurants</h5>
+              <p>Tunday Kababi (famous kebabs)</p>
+              <p>Royal Café (basket chaat)</p>
+              <p>Mughal Zaika</p>
             </div>
           </div>
         </div>
@@ -858,23 +942,158 @@
       <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
     </div>
 
-    <!-- Alappuzha District Details -->
-    <div class="district-details" id="alappuzha-details">
+    <!-- Jhansi District Details -->
+    <div class="district-details" id="jhansi-details">
       <div class="district-header">
-        <h2>Alappuzha District</h2>
+        <h2>Jhansi District</h2>
       </div>
       
       <div class="category-section">
         <div class="category-header">
-          Restaurants
+          <div class="category-icon"></div>
+          Heritage
         </div>
         <div class="places-grid">
           <div class="place-card">
-            <h4>SeaLine</h4>
+            <h4>Jhansi Fort</h4>
             <div class="place-details">
-              <p><strong>About:</strong> Famous for its seafood and Kerala cuisine.</p>
-              <p><strong>Specialties:</strong> Fresh seafood, traditional Kerala dishes</p>
-              <p><strong>Best Time:</strong> All year round</p>
+              <p><strong>About:</strong> Associated with Rani Lakshmibai in 1857 revolt.</p>
+              <p><strong>Attractions:</strong> Rani Mahal, Cannon points, Sound & Light Show</p>
+              <p><strong>Best Time:</strong> October - March</p>
+            </div>
+            <a href="https://maps.google.com/?q=Jhansi+Fort" class="map-link" target="_blank">View on Map</a>
+            
+            <div class="hotel-section">
+              <h5>Nearby Hotels</h5>
+              <p>Nataraj Sarovar Portico Jhansi</p>
+              <p>Hotel Yatrik</p>
+              <p>Budget Dharamshalas</p>
+            </div>
+            
+            <div class="restaurant-section">
+              <h5>Restaurants</h5>
+              <p>Jhansi Rasoi</p>
+              <p>Royal Spice Restaurant</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
+    </div>
+
+    <!-- Meerut District Details -->
+    <div class="district-details" id="meerut-details">
+      <div class="district-header">
+        <h2>Meerut District</h2>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-icon"></div>
+          Nature & Heritage
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Hastinapur Wildlife Sanctuary</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Ancient capital of Pandavas, now wildlife sanctuary.</p>
+              <p><strong>Attractions:</strong> Elephants, Deer, Jain Temples, Pandeshwar Temple</p>
+              <p><strong>Best Time:</strong> October - March</p>
+            </div>
+            <a href="https://maps.google.com/?q=Hastinapur+Sanctuary" class="map-link" target="_blank">View on Map</a>
+            
+            <div class="hotel-section">
+              <h5>Nearby Hotels</h5>
+              <p>Godwin Hotel Meerut</p>
+              <p>Hotel Harmony Inn</p>
+              <p>Budget Guesthouses</p>
+            </div>
+            
+            <div class="restaurant-section">
+              <h5>Restaurants</h5>
+              <p>Royal Kitchen</p>
+              <p>Famous chaat stalls in Meerut</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
+    </div>
+
+    <!-- Mirzapur District Details -->
+    <div class="district-details" id="mirzapur-details">
+      <div class="district-header">
+        <h2>Mirzapur District</h2>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-icon"></div>
+          Temples
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Vindhyavasini Devi Temple</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Shaktipeeth dedicated to Maa Vindhyavasini (Durga).</p>
+              <p><strong>Attractions:</strong> Main temple, Ashtabhuja Temple, Kali Khoh cave temple</p>
+              <p><strong>Best Time:</strong> October - March</p>
+            </div>
+            <a href="https://maps.google.com/?q=Vindhyavasini+Devi+Temple" class="map-link" target="_blank">View on Map</a>
+            
+            <div class="hotel-section">
+              <h5>Nearby Hotels</h5>
+              <p>Hotel Vindhya Residency</p>
+              <p>Hotel Galaxy Mirzapur</p>
+              <p>Budget Dharamshalas available</p>
+            </div>
+            
+            <div class="restaurant-section">
+              <h5>Restaurants</h5>
+              <p>Shri Annapurna Bhojanalaya</p>
+              <p>Vindhya Sweets & Snacks</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
+    </div>
+
+    <!-- Chitrakoot District Details -->
+    <div class="district-details" id="chitrakoot-details">
+      <div class="district-header">
+        <h2>Chitrakoot District</h2>
+      </div>
+      
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-icon"></div>
+          Pilgrimage & Nature
+        </div>
+        <div class="places-grid">
+          <div class="place-card">
+            <h4>Chitrakoot</h4>
+            <div class="place-details">
+              <p><strong>About:</strong> Associated with Lord Ram's exile period, beautiful mix of spirituality & nature.</p>
+              <p><strong>Attractions:</strong> Kamadgiri Hill, Ramghat, Gupt Godavari caves, Bharat Milap Temple</p>
+              <p><strong>Best Time:</strong> October - March</p>
+            </div>
+            <a href="https://maps.google.com/?q=Chitrakoot" class="map-link" target="_blank">View on Map</a>
+            
+            <div class="hotel-section">
+              <h5>Nearby Hotels</h5>
+              <p>Hotel Ram Darshan</p>
+              <p>UP Tourism Guest House</p>
+              <p>Budget Dharamshalas</p>
+            </div>
+            
+            <div class="restaurant-section">
+              <h5>Restaurants</h5>
+              <p>Local Bhojanalayas (simple veg food)</p>
+              <p>Annapurna Restaurant</p>
             </div>
           </div>
         </div>
@@ -888,19 +1107,19 @@
     <div class="tips-grid">
         <div class="tip-card">
             <h3>Best Time to Visit</h3>
-            <p>September – March (post-monsoon, pleasant weather). June – August for monsoon beauty and Ayurveda treatments. Avoid peak summer (April-May).</p>
+            <p>October – March (cool weather, ideal for sightseeing). Avoid summer (April-June, very hot). Special festivals like Diwali in Ayodhya, Dev Deepawali in Varanasi.</p>
         </div>
         <div class="tip-card">
             <h3>Booking Tips</h3>
-            <p>Book houseboats in Alleppey/Kumarakom in advance. For Munnar and Wayanad hill stations, pre-book during peak season and festivals.</p>
+            <p>Book hotels in Agra, Varanasi, and Lucknow in advance during peak tourist season. Taj Mahal tickets can be booked online to save time.</p>
         </div>
         <div class="tip-card">
             <h3>Local Food</h3>
-            <p>Kerala Sadya (banana leaf feast), Appam with stew, Puttu, Fish Moilee, Karimeen Pollichathu. Try coastal seafood and traditional toddy shops.</p>
+            <p>Lucknowi Biryani, Kebabs (Tunday, Galawati), Chaat, Petha (Agra sweet), Banarasi Paan, Kachori-Sabzi. Street food culture is vibrant.</p>
         </div>
         <div class="tip-card">
             <h3>Transport</h3>
-            <p>Kochi and Trivandrum are main airports. Well-connected by trains and buses. Rent cars or use taxis. Backwater ferries offer unique travel experience.</p>
+            <p>Major airports in Lucknow, Varanasi, and Agra. Excellent train connectivity across the state. Metro in Lucknow and Noida. Taxis and app-cabs widely available.</p>
         </div>
     </div>
 </div>
