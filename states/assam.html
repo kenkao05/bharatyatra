@@ -5,535 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assam Tourism Guide</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #AD8B73, #CEAB93, #E3CAA5);
-            color: #333;
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        .header {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 0 0 30px 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="70" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="80" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
-            opacity: 0.3;
-        }
-
-        .header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #FFF8E1, #cebcab, #948371); 
-            -webkit-background-clip: text;
-            
-            background-clip: text;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header p {
-            font-size: 1.3rem;
-            max-width: 700px;
-            margin: 0 auto 1.5rem;
-            color: #FFFBE9;
-            position: relative;
-            z-index: 1;
-        }
-
-        .explore-btn {
-            background: linear-gradient(45deg, #8B4513, #A0522D);
-            color: white;
-            border: none;
-            padding: 1.2rem 2.5rem;
-            font-size: 1.3rem;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            margin-top: 1rem;
-            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 3px solid rgba(255,255,255,0.3);
-            position: relative;
-            z-index: 1;
-        }
-
-        .explore-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 30px rgba(139, 69, 19, 0.6);
-            background: linear-gradient(45deg, #A0522D, #8B4513);
-        }
-
-        .explore-btn:active {
-            transform: translateY(1px);
-        }
-
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem;
-        }
-
-        .districts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
-        }
-
-        .districts-grid.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .district-card {
-            background: linear-gradient(135deg, #FFFBE9, #ffffff);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .district-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #8B4513, #A0522D, #CEAB93);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .district-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-            border-color: #8B4513;
-        }
-
-        .district-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .district-card h3 {
-            color: #8B4513;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
-            margin-bottom: 0.8rem;
-            font-weight: 700;
-        }
-
-        .district-card p {
-            color: #666;
-            font-size: 1.1rem;
-            margin-bottom: 1.2rem;
-        }
-
-        .attractions-count {
-            background: linear-gradient(45deg, #8B4513, #A0522D);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .district-details {
-            background: rgba(255,255,255,0.95);
-            border-radius: 25px;
-            padding: 2.5rem;
-            margin-top: 2rem;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
-            display: none;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .district-details.active {
-            display: block;
-            animation: slideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .district-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-            color: #8B4513;
-            position: relative;
-        }
-
-        .district-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #8B4513, #A0522D);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .category-section {
-            margin-bottom: 2.5rem;
-            background: rgba(255, 251, 233, 0.8);
-            border-radius: 15px;
-            padding: 1.5rem;
-            border-left: 5px solid #8B4513;
-        }
-
-        .category-header {
-            background: linear-gradient(90deg, #8B4513, #A0522D);
-            color: white;
-            padding: 1.2rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            font-size: 1.4rem;
-            text-align: center;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-        }
-
-        .places-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .place-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.8rem;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            border: 1px solid #e9ecef;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .place-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #8B4513, #A0522D);
-        }
-
-        .place-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-            border-color: #8B4513;
-        }
-
-        .place-card h4 {
-            color: #8B4513;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-            font-weight: 700;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .place-details {
-            margin-bottom: 1.2rem;
-        }
-
-        .place-details p {
-            margin-bottom: 0.6rem;
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-
-        .place-details strong {
-            color: #A0522D;
-            font-weight: 600;
-        }
-
-        .map-link {
-            display: inline-block;
-            background: linear-gradient(45deg, #8B4513, #A0522D);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin-top: 0.8rem;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-        }
-
-        .map-link:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
-            background: linear-gradient(45deg, #A0522D, #8B4513);
-        }
-
-        .hotel-section {
-            background: linear-gradient(135deg, #f0f8e6, #e6f3d6);
-            padding: 1.2rem;
-            border-radius: 10px;
-            margin-top: 1.2rem;
-        }
-
-        .hotel-section h5 {
-            color: #2e7d32;
-            margin-bottom: 0.8rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .restaurant-section {
-            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
-            padding: 1.2rem;
-            border-radius: 10px;
-            margin-top: 1.2rem;
-        }
-
-        .restaurant-section h5 {
-            color: #ef6c00;
-            margin-bottom: 0.8rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(45deg, #8B4513, #A0522D);
-            color: white;
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .back-to-top:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.6);
-        }
-
-    
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2.5rem;
-            }
-            
-            .header p {
-                font-size: 1.1rem;
-            }
-            
-            .districts-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 1.5rem;
-            }
-            
-            .places-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .place-card {
-                padding: 1.5rem;
-            }
-            
-            .district-header h2 {
-                font-size: 2rem;
-            }
-            
-            .container {
-                padding: 1rem;
-            }
-            
-            .district-details {
-                padding: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header {
-                padding: 2rem 1rem;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .district-card {
-                padding: 1.5rem;
-            }
-            
-            .district-card h3 {
-                font-size: 1.3rem;
-            }
-            
-            .places-grid {
-                gap: 1.5rem;
-            }
-            
-            .category-header {
-                font-size: 1.2rem;
-                padding: 1rem;
-            }
-        }
-
-        .scroll-down-indicator {
-            text-align: center;
-            margin-top: 2rem;
-            color: white;
-            font-size: 1.1rem;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
-        }
-
-        .scroll-down-indicator span {
-            display: block;
-            font-size: 2rem;
-            margin-top: 0.5rem;
-        }
-
-        .category-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: #8B4513;
-        }
-
-        .travel-tips {
-            background: rgba(255,255,255,0.9);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-top: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-             display: none;  /* ADD THIS LINE */
-}
-
-.travel-tips.show {  /* ADD THIS */
-    display: block;
-}
-        
-
-        .travel-tips h2 {
-            color: #8B4513;
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .tips-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .tip-card {
-            background: linear-gradient(135deg, #FFFBE9, #ffffff);
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .tip-card h3 {
-            color: #8B4513;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-        }
-
-        .tip-card p {
-            color: #666;
-            line-height: 1.6;
-        }
-
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 10;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.2rem;
-            background: rgba(184, 169, 146, 0.6);
-            color: #5A4F41;
-            font-weight: 600;
-            border-radius: 30px;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(90, 79, 65, 0.15);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(212, 199, 178, 0.4);
-            backdrop-filter: blur(8px);
-            cursor: pointer;
-        }
-
-        .back-btn:hover {
-            transform: translateX(-5px);
-            background: rgba(212, 199, 178, 0.8);
-            box-shadow: 0 6px 18px rgba(90, 79, 65, 0.2);
-        }
-    </style>
+    <link rel="stylesheet" href="../styling/state.css">
 </head>
 <body>
     <div class="header">
@@ -548,42 +20,42 @@
 
     <div class="container">
         <div class="districts-grid" id="districtsGrid">
-            <div class="district-card" onclick="scrollToSection('guwahati-section')">
+            <div class="district-card" onclick="showDistrictDetails('guwahati-section')">
                 <h3>Guwahati</h3>
                 <p>Gateway to Assam with ancient temples and river islands</p>
                 <div class="attractions-count">3 Attractions</div>
             </div>
-            <div class="district-card" onclick="scrollToSection('kaziranga-section')">
+            <div class="district-card" onclick="showDistrictDetails('kaziranga-section')">
                 <h3>Kaziranga</h3>
                 <p>UNESCO World Heritage Site famous for one-horned rhinoceros</p>
                 <div class="attractions-count">1 Attraction</div>
             </div>
-            <div class="district-card" onclick="scrollToSection('manas-section')">
+            <div class="district-card" onclick="showDistrictDetails('manas-section')">
                 <h3>Manas</h3>
                 <p>Tiger Reserve and UNESCO Site with diverse wildlife</p>
                 <div class="attractions-count">1 Attraction</div>
             </div>
-            <div class="district-card" onclick="scrollToSection('majuli-section')">
+            <div class="district-card" onclick="showDistrictDetails('majuli-section')">
                 <h3>Majuli</h3>
                 <p>World's largest river island with rich cultural heritage</p>
                 <div class="attractions-count">1 Attraction</div>
             </div>
-            <div class="district-card" onclick="scrollToSection('sivasagar-section')">
+            <div class="district-card" onclick="showDistrictDetails('sivasagar-section')">
                 <h3>Sivasagar</h3>
                 <p>Ahom dynasty monuments and historical sites</p>
                 <div class="attractions-count">1 Attraction</div>
             </div>
-            <div class="district-card" onclick="scrollToSection('tezpur-section')">
+            <div class="district-card" onclick="showDistrictDetails('tezpur-section')">
                 <h3>Tezpur</h3>
                 <p>Cultural capital of Assam with ancient temples</p>
                 <div class="attractions-count">1 Attraction</div>
             </div>
-            <div class="district-card" onclick="scrollToSection('nameri-section')">
+            <div class="district-card" onclick="showDistrictDetails('nameri-section')">
                 <h3>Nameri</h3>
                 <p>Bird sanctuary with rich biodiversity</p>
                 <div class="attractions-count">1 Attraction</div>
             </div>
-            <div class="district-card" onclick="scrollToSection('hajo-section')">
+            <div class="district-card" onclick="showDistrictDetails('hajo-section')">
                 <h3>Hajo</h3>
                 <p>Pilgrimage site with religious diversity</p>
                 <div class="attractions-count">1 Attraction</div>
@@ -657,6 +129,7 @@
                     </div>
                 </div>
             </div>
+            <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
         </div>
 
         <!-- Kaziranga Section -->
@@ -689,6 +162,7 @@
                     </div>
                 </div>
             </div>
+            <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
         </div>
 
         <!-- Manas Section -->
@@ -719,6 +193,7 @@
                     </div>
                 </div>
             </div>
+            <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
         </div>
 
         <!-- Majuli Section -->
@@ -749,6 +224,7 @@
                     </div>
                 </div>
             </div>
+            <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
         </div>
 
         <!-- Sivasagar Section -->
@@ -782,6 +258,7 @@
                     </div>
                 </div>
             </div>
+            <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
         </div>
 
         <!-- Tezpur Section -->
@@ -815,6 +292,7 @@
                     </div>
                 </div>
             </div>
+            <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
         </div>
 
         <!-- Nameri Section -->
@@ -845,6 +323,7 @@
                     </div>
                 </div>
             </div>
+            <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
         </div>
 
         <!-- Hajo Section -->
@@ -875,6 +354,7 @@
                     </div>
                 </div>
             </div>
+            <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
         </div>
 
         <!-- Travel Tips Section -->
@@ -906,6 +386,14 @@
     <button class="back-to-top" onclick="scrollToTop()">↑</button>
 
     <script>
+        function hideDistrictDetails() {
+            document.querySelectorAll('.district-details').forEach(detail => {
+                detail.classList.remove('active');
+            });
+            document.getElementById('districtsGrid').style.display = 'grid';
+            window.scrollTo({ top: document.querySelector('.header').offsetHeight, behavior: 'smooth' });
+            }
+
         // Show districts grid with animation
         function showDistricts() {
             document.getElementById('districtsGrid').classList.add('show');
@@ -918,22 +406,29 @@
             }, 300);
         }
 
-        // Scroll to specific section
-        function scrollToSection(sectionId) {
-            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        // Show details for a specific district
+        function showDistrictDetails(sectionId) {
+            // Hide the districts grid
+            document.getElementById('districtsGrid').style.display = 'none';
+           
+
+            // Hide all other district details first
+            const allSections = document.querySelectorAll('.district-details');
+            allSections.forEach(section => section.classList.remove('active'));
+
+            // Show the selected one
+            const selected = document.getElementById(sectionId);
+            if (selected) {
+                selected.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
-        // Scroll to top
+        // Scroll to top button
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        // Show districts grid on page load
-        //window.addEventListener('load', function() {
-        //    setTimeout(showDistricts, 500);
-        //});
-
-        
     </script>
+
 </body>
 </html>
