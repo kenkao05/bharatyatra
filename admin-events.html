@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, #0f1724 0%, #071021 100%);
+            color: #e6eef6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 60px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: rgba(74, 144, 226, 0.2);
+            color: white;
+            font-weight: 600;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            background: linear-gradient(135deg, #4A90E2, #06b6d4);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-section {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border-radius: 14px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+            border: 1px solid rgba(255,255,255,0.03);
+            backdrop-filter: blur(6px);
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #e6eef6;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .date-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        input[type="date"],
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.03);
+            color: #e6eef6;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="date"]:focus,
+        input[type="text"]:focus,
+        textarea:focus {
+            box-shadow: 0 6px 18px rgba(6,182,212,0.08);
+            border-color: rgba(6,182,212,0.22);
+            background: rgba(255,255,255,0.06);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #06b6d4, #0ea5a7);
+            color: #042028;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .events-list-section {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border-radius: 14px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+            border: 1px solid rgba(255,255,255,0.03);
+            backdrop-filter: blur(6px);
+        }
+
+        .list-title {
+            font-size: 1.8rem;
+            color: #e6eef6;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .event-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .event-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(2,6,23,0.4);
+        }
+
+        .event-name {
+            font-size: 1.3rem;
+            color: #06b6d4;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .event-date {
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .event-state {
+            color: #94a3b8;
+            font-style: italic;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+
+        .event-description {
+            color: #cbd5e1;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .date-row {
+                grid-template-columns: 1fr;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-btn {
+                top: 15px;
+                right: 15px;
+                padding: 0.4rem 0.8rem;
+                font-size: 14px;
+            }
+
+            .form-section,
+            .events-list-section {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="admin-dashboard.html" class="back-btn">← Back</a>
+
+    <div class="container">
+        <div class="form-section">
+            <h1 class="form-title">Event Management</h1>
+            
+            <div class="success-message" id="successMessage">
+                Event added successfully!
+            </div>
+
+            <form id="eventForm">
+                <div class="date-row">
+                    <div class="form-group">
+                        <label for="fromDate">From Date *</label>
+                        <input type="date" id="fromDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="toDate">To Date *</label>
+                        <input type="date" id="toDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventName">Event Name *</label>
+                    <input type="text" id="eventName" placeholder="Enter event name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventState">State Where Celebrated *</label>
+                    <input type="text" id="eventState" placeholder="Enter state name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventDescription">Event Description *</label>
+                    <textarea id="eventDescription" placeholder="Enter event description" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Add Event</button>
+            </form>
+        </div>
+
+        <div class="events-list-section">
+            <h2 class="list-title">Existing Events</h2>
+            <div class="events-grid">
+                <div class="event-item">
+                    <div class="event-name">Holi Festival</div>
+                    <div class="event-date">March 13, 2024 - March 14, 2024</div>
+                    <div class="event-state">Uttar Pradesh</div>
+                    <div class="event-description">The vibrant festival of colors celebrating the victory of good over evil and the arrival of spring.</div>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-name">Diwali</div>
+                    <div class="event-date">November 1, 2024</div>
+                    <div class="event-state">Maharashtra</div>
+                    <div class="event-description">Festival of lights celebrating the return of Lord Rama and the triumph of light over darkness.</div>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-name">Durga Puja</div>
+                    <div class="event-date">October 10, 2024 - October 14, 2024</div>
+                    <div class="event-state">West Bengal</div>
+                    <div class="event-description">Major Hindu festival honoring goddess Durga, featuring elaborate pandals and cultural programs.</div>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-name">Onam</div>
+                    <div class="event-date">September 15, 2024 - September 25, 2024</div>
+                    <div class="event-state">Kerala</div>
+                    <div class="event-description">Harvest festival celebrating the homecoming of King Mahabali with traditional feasts and boat races.</div>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-name">Pushkar Camel Fair</div>
+                    <div class="event-date">November 20, 2024 - November 28, 2024</div>
+                    <div class="event-state">Rajasthan</div>
+                    <div class="event-description">World's largest camel fair featuring livestock trading, cultural performances, and competitions.</div>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-name">Goa Carnival</div>
+                    <div class="event-date">February 10, 2024 - February 13, 2024</div>
+                    <div class="event-state">Goa</div>
+                    <div class="event-description">Colorful street carnival with parades, music, dancing, and vibrant floats celebrating local culture.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('eventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            const eventName = document.getElementById('eventName').value;
+            const eventState = document.getElementById('eventState').value;
+            const eventDescription = document.getElementById('eventDescription').value;
+            
+            // Validate dates
+            if (fromDate && toDate && fromDate > toDate) {
+                alert('From date cannot be later than To date');
+                return;
+            }
+            
+            // Show success message
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+            
+            // Clear form (static implementation - data not actually saved)
+            this.reset();
+            
+            // In a real implementation, you would send this data to a backend
+            console.log('Event data (not saved - static page):', {
+                fromDate,
+                toDate,
+                eventName,
+                eventState,
+                eventDescription
+            });
+        });
+    </script>
+</body>
+</html>
