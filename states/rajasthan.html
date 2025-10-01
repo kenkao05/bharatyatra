@@ -9,6 +9,7 @@
 </head>
 <body>
   <div class="header">
+    <a href="../index.html" class="back-btn">← Back</a>
     <h1>Explore Rajasthan</h1>
     <p>Discover the Royal Heritage, Palaces, Forts, and Cultural Treasures of Rajasthan</p>
     <button class="explore-btn" onclick="showDistricts()">Start Exploring Rajasthan</button>
@@ -783,16 +784,37 @@
           </div>
         </div>
       </div>
-      
       <button class="map-link" onclick="hideDistrictDetails()" style="margin-top: 2rem;">← Back to Districts</button>
     </div>
+    <div class="travel-tips" id="travelTips">
+        <h2>Travel & Stay Tips</h2>
+        <div class="tips-grid">
+              <div class="tip-card">
+                  <h3>Best Time to Visit</h3>
+                  <p>October to March is ideal, with pleasant weather for sightseeing and desert tours. Summers can be extremely hot, especially in desert areas like Jaisalmer.</p>
+              </div>
+              <div class="tip-card">
+                  <h3>Booking Tips</h3>
+                  <p>It’s wise to book hotels in advance during peak tourist season(Nov–Feb). Choosing stays near forts, palaces, or old city centers saves travel time.</p>
+              </div>
+              <div class="tip-card">
+                  <h3>Local Food</h3>
+                  <p>Rajasthan is famous for Dal Baati Churma, Gatte ki Sabzi, and Laal Maas. Street food like kachoris and ghewar sweets are also a must-try.</p>
+              </div>
+              <div class="tip-card">
+                  <h3>Transport</h3>
+                  <p>Auto-rickshaws, buses, and tourist cabs are the most common local transport options. Trains and buses also provide good connectivity between Rajasthan’s major cities.</p>
+              </div>
+          </div>
+      </div>
+    </div>
   </div>
-
   <button class="back-to-top" onclick="scrollToTop()" style="display: none;">↑</button>
 
   <script>
     function showDistricts() {
       document.querySelector('.explore-btn').style.display = 'none';
+      document.getElementById('travelTips').classList.add('show');
       document.getElementById('scrollIndicator').style.display = 'block';
       
       setTimeout(() => {
