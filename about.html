@@ -179,6 +179,8 @@
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(90, 79, 65, 0.1);
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .team-member:hover {
@@ -193,6 +195,7 @@
             padding: 1.5rem;
             background: rgba(232, 223, 208, 0.5);
             backdrop-filter: blur(6px);
+            flex: 1;
         }
 
         .member-avatar {
@@ -202,10 +205,12 @@
             object-fit: cover;
             border: 3px solid rgba(212, 199, 178, 0.6);
             box-shadow: 0 5px 15px rgba(90, 79, 65, 0.1);
+            flex-shrink: 0;
         }
 
         .member-info {
             margin-left: 1.5rem;
+            flex: 1;
         }
 
         .member-info h3 {
@@ -223,26 +228,6 @@
         .member-roll {
             color: var(--gray);
             font-size: 0.9rem;
-        }
-
-        .member-bio {
-            padding: 0 1.5rem 1.5rem;
-            color: var(--gray);
-        }
-
-        .social-tags {
-            display: flex;
-            gap: 0.5rem;
-            padding: 0 1.5rem 1.5rem;
-        }
-
-        .tag {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #5A4F41;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
         }
 
         /* College Section */
@@ -469,7 +454,7 @@
                             <h3>Bhanushali Vaibhav</h3>
                             <p class="member-roll">Roll: 231130107004</p>
                         </div>
-                    </div>                     
+                    </div>
                 </div>
 
                 <!-- Member 2 -->
@@ -480,7 +465,7 @@
                             <h3>Gajjar Harshal</h3>
                             <p class="member-roll">Roll: 231130107011</p>
                         </div>
-                    </div>  
+                    </div>
                 </div>
 
                 <!-- Member 3 -->
@@ -491,7 +476,7 @@
                             <h3>Zala Harshvardhan</h3>
                             <p class="member-roll">Roll: 231130107015</p>
                         </div>
-                    </div>                  
+                    </div>
                 </div>
             </div>
             <div class="team-grid team-grid-center">
@@ -504,7 +489,7 @@
                             <p class="member-roll">Roll: 231130107019</p>
                         </div>
                     </div>
-                    </div>
+                </div>
 
                 <!-- Member 5 -->
                 <div class="team-member">
@@ -514,7 +499,7 @@
                             <h3>Patel Shrey</h3>
                             <p class="member-roll">Roll: 231130107062</p>
                         </div>
-                    </div>       
+                    </div>
                 </div>
             </div>
         </div>
