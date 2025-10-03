@@ -3,454 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>India's Top Wildlife Destinations</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Wildlife of India - Flora, Fauna & National Parks</title>
     <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
 
-    body {
-      background: linear-gradient(135deg, #AD8B73, #CEAB93, #E3CAA5);
-      color: #333;
-      line-height: 1.6;
-      min-height: 100vh;
-    }
+        body {
+            background: linear-gradient(135deg, #F8F4EC 0%, #F5EFEB 100%);
+            color: #5A4F41;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
 
-    .header {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: white;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      background: rgba(0,0,0,0.2);
-      backdrop-filter: blur(10px);
-      border-radius: 0 0 30px 30px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="70" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="80" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
-      opacity: 0.3;
-    }
-
-    .header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 3.5rem;
-      margin-bottom: 1rem;
-      background: linear-gradient(45deg, #FFFBE9, #ffffff, #FFFBE9);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      position: relative;
-      z-index: 1;
-    }
-
-    .header p {
-      font-size: 1.3rem;
-      max-width: 700px;
-      margin: 0 auto 1.5rem;
-      color: #FFFBE9;
-      position: relative;
-      z-index: 1;
-    }
-
-    .explore-btn {
-      background: linear-gradient(45deg, #8B4513, #A0522D);
-      color: white;
-      border: none;
-      padding: 1.2rem 2.5rem;
-      font-size: 1.3rem;
-      font-weight: 600;
-      border-radius: 50px;
-      cursor: pointer;
-      margin-top: 1rem;
-      box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      border: 3px solid rgba(255,255,255,0.3);
-      position: relative;
-      z-index: 1;
-    }
-
-    .explore-btn:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 10px 30px rgba(139, 69, 19, 0.6);
-      background: linear-gradient(45deg, #A0522D, #8B4513);
-    }
-
-    .explore-btn:active {
-      transform: translateY(1px);
-    }
-
-    .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
-
-    .districts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.6s ease;
-    }
-
-    .districts-grid.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .district-card {
-      background: linear-gradient(135deg, #FFFBE9, #ffffff);
-      border-radius: 20px;
-      padding: 2rem;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      border: 2px solid transparent;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .district-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #8B4513, #A0522D, #CEAB93);
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-    }
-
-    .district-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-      border-color: #8B4513;
-    }
-
-    .district-card:hover::before {
-      transform: scaleX(1);
-    }
-
-    .district-card h3 {
-      color: #8B4513;
-      font-family: 'Playfair Display', serif;
-      font-size: 1.6rem;
-      margin-bottom: 0.8rem;
-      font-weight: 700;
-    }
-
-    .district-card p {
-      color: #666;
-      font-size: 1.1rem;
-      margin-bottom: 1.2rem;
-    }
-
-    .attractions-count {
-      background: linear-gradient(45deg, #8B4513, #A0522D);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: inline-block;
-    }
-
-    .district-details {
-      background: rgba(255,255,255,0.95);
-      border-radius: 25px;
-      padding: 2.5rem;
-      margin-top: 2rem;
-      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
-      display: none;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .district-details.active {
-      display: block;
-      animation: slideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .district-header {
-      text-align: center;
-      margin-bottom: 2.5rem;
-      color: #8B4513;
-      position: relative;
-    }
-
-    .district-header h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      background: linear-gradient(45deg, #8B4513, #A0522D);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .category-section {
-      margin-bottom: 2.5rem;
-      background: rgba(255, 251, 233, 0.8);
-      border-radius: 15px;
-      padding: 1.5rem;
-      border-left: 5px solid #8B4513;
-    }
-
-    .category-header {
-      background: linear-gradient(90deg, #8B4513, #A0522D);
-      color: white;
-      padding: 1.2rem;
-      border-radius: 12px;
-      margin-bottom: 1.5rem;
-      font-size: 1.4rem;
-      text-align: center;
-      font-weight: 600;
-      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-    }
-
-    .places-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
-    }
-
-    .place-card {
-      background: white;
-      border-radius: 15px;
-      padding: 1.8rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-      border: 1px solid #e9ecef;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .place-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #8B4513, #A0522D);
-    }
-
-    .place-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-      border-color: #8B4513;
-    }
-
-    .place-card h4 {
-      color: #8B4513;
-      margin-bottom: 1rem;
-      font-size: 1.3rem;
-      font-weight: 700;
-      font-family: 'Playfair Display', serif;
-    }
-
-    .place-details {
-      margin-bottom: 1.2rem;
-    }
-
-    .place-details p {
-      margin-bottom: 0.6rem;
-      font-size: 1rem;
-      line-height: 1.5;
-    }
-
-    .place-details strong {
-      color: #A0522D;
-      font-weight: 600;
-    }
-
-    .map-link {
-      display: inline-block;
-      background: linear-gradient(45deg, #8B4513, #A0522D);
-      color: white;
-      padding: 0.8rem 1.5rem;
-      border-radius: 25px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      margin-top: 0.8rem;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-    }
-
-    .map-link:hover {
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
-      background: linear-gradient(45deg, #A0522D, #8B4513);
-    }
-
-    .hotel-section {
-      background: linear-gradient(135deg, #f0f8e6, #e6f3d6);
-      padding: 1.2rem;
-      border-radius: 10px;
-      margin-top: 1.2rem;
-    }
-
-    .hotel-section h5 {
-      color: #2e7d32;
-      margin-bottom: 0.8rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-
-    .restaurant-section {
-      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
-      padding: 1.2rem;
-      border-radius: 10px;
-      margin-top: 1.2rem;
-    }
-
-    .restaurant-section h5 {
-      color: #ef6c00;
-      margin-bottom: 0.8rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-
-    .back-to-top {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: linear-gradient(45deg, #8B4513, #A0522D);
-      color: white;
-      border: none;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      transition: all 0.3s ease;
-      z-index: 1000;
-    }
-
-    .back-to-top:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(139, 69, 19, 0.6);
-    }
-
-    @media (max-width: 768px) {
-      .header h1 {
-        font-size: 2.5rem;
-      }
-      
-      .header p {
-        font-size: 1.1rem;
-      }
-      
-      .districts-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-      }
-      
-      .places-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .place-card {
-        padding: 1.5rem;
-      }
-      
-      .district-header h2 {
-        font-size: 2rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .header {
-        padding: 2rem 1rem;
-      }
-      
-      .header h1 {
-        font-size: 2rem;
-      }
-      
-      .district-card {
-        padding: 1.5rem;
-      }
-      
-      .district-card h3 {
-        font-size: 1.3rem;
-      }
-      
-      .places-grid {
-        gap: 1.5rem;
-      }
-    }
-
-    .scroll-down-indicator {
-      text-align: center;
-      margin-top: 2rem;
-      color: white;
-      font-size: 1.1rem;
-      animation: bounce 2s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-      }
-      40% {
-        transform: translateY(-10px);
-      }
-      60% {
-        transform: translateY(-5px);
-      }
-    }
-
-    .scroll-down-indicator span {
-      display: block;
-      font-size: 2rem;
-      margin-top: 0.5rem;
-    }
-
-    .category-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: #8B4513;
-    }
-
-    .back-btn {
-            position: absolute;
+        .back-btn {
+            position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 10;
+            z-index: 1000;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
@@ -464,493 +37,779 @@
             transition: all 0.3s ease;
             border: 1px solid rgba(212, 199, 178, 0.4);
             backdrop-filter: blur(8px);
-            cursor: pointer;
         }
 
         .back-btn:hover {
             transform: translateX(-5px);
             background: rgba(212, 199, 178, 0.8);
-            box-shadow: 0 6px 18px rgba(90, 79, 65, 0.2);
         }
-  </style>
+
+        header {
+            background: rgba(232, 223, 208, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #7A6A57;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #8A7D6C;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            background: rgba(248, 244, 236, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 199, 178, 0.4);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(90, 79, 65, 0.15);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            color: #7A6A57;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border-bottom: 3px solid #B8A992;
+            padding-bottom: 1rem;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #6A5F4F;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 2rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .wildlife-card {
+            background: rgba(232, 223, 208, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(212, 199, 178, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(90, 79, 65, 0.1);
+        }
+
+        .wildlife-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(90, 79, 65, 0.2);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #D4C7B2, #E8DFD0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #B8A992;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: #7A6A57;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .card-subtitle {
+            font-size: 0.9rem;
+            color: #B8A992;
+            font-style: italic;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-description {
+            color: #8A7D6C;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .filter-section {
+            background: rgba(232, 223, 208, 0.8);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .filter-label {
+            font-size: 1.2rem;
+            color: #7A6A57;
+            margin-right: 1rem;
+            font-weight: 600;
+        }
+
+        .filter-select {
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(184, 169, 146, 0.6);
+            background: rgba(248, 244, 236, 0.9);
+            color: #5A4F41;
+            font-size: 1rem;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #B8A992;
+            box-shadow: 0 0 10px rgba(184, 169, 146, 0.3);
+        }
+
+        .park-item {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #B8A992;
+            transition: all 0.3s ease;
+        }
+
+        .park-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(90, 79, 65, 0.15);
+        }
+
+        .park-name {
+            font-size: 1.3rem;
+            color: #7A6A57;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .park-details {
+            color: #8A7D6C;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .park-details strong {
+            color: #B8A992;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #FFFBE9, #ffffff);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid #E8DFD0;
+        }
+
+        .tip-icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .tip-title {
+            font-size: 1.2rem;
+            color: #7A6A57;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .tip-text {
+            color: #8A7D6C;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .photo-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .photo-item {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(90, 79, 65, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.05);
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #B8A992, #D4C7B2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .photo-caption {
+            background: rgba(232, 223, 208, 0.9);
+            padding: 1rem;
+            text-align: center;
+            color: #7A6A57;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-btn {
+                top: 15px;
+                right: 15px;
+                padding: 0.4rem 0.8rem;
+                font-size: 14px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <header class="header">
-        <a href="../index.html" class="back-btn">← Back</a>
-        <h1>India's Premier Wildlife Destinations</h1>
-        <p>Explore the magnificent national parks and wildlife sanctuaries across India's diverse landscapes</p>
-        <button class="explore-btn">Begin Your Journey</button>
-        <div class="scroll-down-indicator">
-            Discover Amazing Wildlife Experiences
-            <span>↓</span>
-        </div>
+    <a href="index.html" class="back-btn">← Back</a>
+
+    <header>
+        <h1>Wildlife of India</h1>
+        <p class="subtitle">Discover the Rich Biodiversity, Flora, Fauna & Natural Heritage</p>
     </header>
 
     <div class="container">
-        <div class="districts-grid show">
-            <!-- Jim Corbett National Park -->
-            <div class="district-card" onclick="showDistrictDetails('corbett')">
-                <h3>Jim Corbett National Park</h3>
-                <p>Uttarakhand</p>
-                <div class="attractions-count">Nainital & Pauri Garhwal</div>
-            </div>
-            
-            <!-- Kaziranga National Park -->
-            <div class="district-card" onclick="showDistrictDetails('kaziranga')">
-                <h3>Kaziranga National Park</h3>
-                <p>Assam</p>
-                <div class="attractions-count">Golaghat & Nagaon</div>
-            </div>
-            
-            <!-- Ranthambore National Park -->
-            <div class="district-card" onclick="showDistrictDetails('ranthambore')">
-                <h3>Ranthambore National Park</h3>
-                <p>Rajasthan</p>
-                <div class="attractions-count">Sawai Madhopur</div>
-            </div>
-            
-            <!-- Bandhavgarh National Park -->
-            <div class="district-card" onclick="showDistrictDetails('bandhavgarh')">
-                <h3>Bandhavgarh National Park</h3>
-                <p>Madhya Pradesh</p>
-                <div class="attractions-count">Umaria District</div>
-            </div>
-            
-            <!-- Kanha National Park -->
-            <div class="district-card" onclick="showDistrictDetails('kanha')">
-                <h3>Kanha National Park</h3>
-                <p>Madhya Pradesh</p>
-                <div class="attractions-count">Mandla & Balaghat</div>
-            </div>
-            
-            <!-- Tadoba-Andhari Tiger Reserve -->
-            <div class="district-card" onclick="showDistrictDetails('tadoba')">
-                <h3>Tadoba-Andhari Tiger Reserve</h3>
-                <p>Maharashtra</p>
-                <div class="attractions-count">Chandrapur District</div>
-            </div>
-            
-            <!-- Pench National Park -->
-            <div class="district-card" onclick="showDistrictDetails('pench')">
-                <h3>Pench National Park</h3>
-                <p>Madhya Pradesh</p>
-                <div class="attractions-count">MP/Maharashtra Belt</div>
-            </div>
-            
-            <!-- Gir National Park -->
-            <div class="district-card" onclick="showDistrictDetails('gir')">
-                <h3>Gir National Park</h3>
-                <p>Gujarat</p>
-                <div class="attractions-count">Junagadh & Gir Somnath</div>
-            </div>
-            
-            <!-- Sundarbans National Park -->
-            <div class="district-card" onclick="showDistrictDetails('sundarbans')">
-                <h3>Sundarbans National Park</h3>
-                <p>West Bengal</p>
-                <div class="attractions-count">South 24 Parganas</div>
-            </div>
-            
-            <!-- Periyar Tiger Reserve -->
-            <div class="district-card" onclick="showDistrictDetails('periyar')">
-                <h3>Periyar Tiger Reserve</h3>
-                <p>Kerala</p>
-                <div class="attractions-count">Idukki & Pathanamthitta</div>
-            </div>
-            
-            <!-- Bandipur National Park -->
-            <div class="district-card" onclick="showDistrictDetails('bandipur')">
-                <h3>Bandipur National Park</h3>
-                <p>Karnataka</p>
-                <div class="attractions-count">Mysore & Chamarajanagar</div>
-            </div>
-            
-            <!-- Nagarhole National Park -->
-            <div class="district-card" onclick="showDistrictDetails('nagarhole')">
-                <h3>Nagarhole National Park</h3>
-                <p>Karnataka</p>
-                <div class="attractions-count">Kodagu & Mysore</div>
-            </div>
+        <!-- Biodiversity Overview -->
+        <div class="section">
+            <h2 class="section-title">India's Biodiversity</h2>
+            <p class="intro-text">
+                India is one of the 17 megadiverse countries in the world, home to approximately 7-8% of all recorded species. 
+                From the snow-capped Himalayas to tropical rainforests, vast deserts to coastal mangroves, India's diverse 
+                geography supports an incredible variety of life forms. The country harbors over 45,000 plant species and 
+                91,000 animal species, making it a paradise for nature enthusiasts and wildlife lovers.
+            </p>
         </div>
 
-        <!-- Jim Corbett Details -->
-        <div id="corbett" class="district-details">
-            <div class="district-header">
-                <h2>Jim Corbett National Park</h2>
-                <p>Uttarakhand - Nainital & Pauri Garhwal Region</p>
-            </div>
-            
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
+        <!-- Flora Section -->
+        <div class="section">
+            <h2 class="section-title">Flora - Plants & Vegetation</h2>
+            <div class="cards-grid">
+                <div class="wildlife-card">
+                    <div class="card-image">🌳</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Banyan Tree</h3>
+                        <p class="card-subtitle">Ficus benghalensis</p>
+                        <p class="card-description">India's national tree, known for its massive aerial roots. Found throughout India, sacred in Hindu culture. Can spread over several acres.</p>
+                    </div>
                 </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Jim Corbett National Park</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Nainital / Pauri Garhwal region; nearest town Ramnagar.</p>
-                            <p><strong>Key Species:</strong> Bengal tiger, elephant, leopard, deer species; >500 bird species.</p>
-                            <p><strong>Area:</strong> ~1,318 km² (Corbett Tiger Reserve complex).</p>
-                            <p><strong>Best Time:</strong> Oct–June (peak wildlife sightings in winter / dry months).</p>
-                            <p><strong>How to Reach:</strong> Nearest rail/road hub Ramnagar; nearest airport Pantnagar (≈70–100 km) or Delhi (≈260 km).</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🌺</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Lotus</h3>
+                        <p class="card-subtitle">Nelumbo nucifera</p>
+                        <p class="card-description">India's national flower, sacred in Hinduism and Buddhism. Grows in shallow water bodies across the country, symbolizes purity and enlightenment.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🌲</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Sal Tree</h3>
+                        <p class="card-subtitle">Shorea robusta</p>
+                        <p class="card-description">Important timber tree found in forests of Central and Northern India. Sacred to Buddhists, provides habitat for many wildlife species.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🌴</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Mangroves</h3>
+                        <p class="card-subtitle">Various species</p>
+                        <p class="card-description">Found in coastal areas, especially Sundarbans. Critical ecosystem supporting marine life, protecting coastlines from erosion and storms.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🌿</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Neem Tree</h3>
+                        <p class="card-subtitle">Azadirachta indica</p>
+                        <p class="card-description">Medicinal tree found throughout India. Known for antibacterial properties, used in traditional medicine and agriculture for pest control.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🌸</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Rhododendron</h3>
+                        <p class="card-subtitle">Various species</p>
+                        <p class="card-description">Himalayan flowering shrubs, state flower of Uttarakhand. Blooms in spring with vibrant colors, found at high altitudes.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Kaziranga Details -->
-        <div id="kaziranga" class="district-details">
-            <div class="district-header">
-                <h2>Kaziranga National Park</h2>
-                <p>Assam - Golaghat & Nagaon Districts</p>
-            </div>
-            
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
+        <!-- Fauna Section -->
+        <div class="section">
+            <h2 class="section-title">Fauna - Iconic Wildlife</h2>
+            <div class="cards-grid">
+                <div class="wildlife-card">
+                    <div class="card-image">🐅</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Bengal Tiger</h3>
+                        <p class="card-subtitle">Panthera tigris tigris</p>
+                        <p class="card-description">India's national animal. Approximately 3,000 tigers in India. Found in forests across the country, largest population in the Sundarbans and Central Indian forests.</p>
+                    </div>
                 </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Kaziranga National Park</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Golaghat & Nagaon districts, Assam.</p>
-                            <p><strong>Key Species:</strong> Indian one-horned rhinoceros (iconic), tigers, elephants, vast birdlife.</p>
-                            <p><strong>Area:</strong> ~430 km² (core + larger tiger reserve area).</p>
-                            <p><strong>Best Time:</strong> Nov–April (park closed during monsoon season for safety).</p>
-                            <p><strong>How to Reach:</strong> Nearest city Golaghat / Jorhat; Jorhat & Guwahati airports serve visitors.</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🦁</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Asiatic Lion</h3>
+                        <p class="card-subtitle">Panthera leo persica</p>
+                        <p class="card-description">Only wild population in Gir Forest, Gujarat. Around 600 individuals. Smaller than African lions, critically endangered species making a comeback.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🐘</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Indian Elephant</h3>
+                        <p class="card-subtitle">Elephas maximus indicus</p>
+                        <p class="card-description">Found in forests of South and Northeast India. Smaller than African elephants, important for ecosystem as seed dispersers. About 27,000 in the wild.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🦏</div>
+                    <div class="card-content">
+                        <h3 class="card-title">One-Horned Rhinoceros</h3>
+                        <p class="card-subtitle">Rhinoceros unicornis</p>
+                        <p class="card-description">Primarily in Kaziranga, Assam. About 3,700 individuals. Excellent swimmers, graze on grasslands. Conservation success story from near extinction.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🐆</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Snow Leopard</h3>
+                        <p class="card-subtitle">Panthera uncia</p>
+                        <p class="card-description">Found in Himalayan regions. Elusive, adapted to high-altitude cold environments. Approximately 400-700 in India, critically endangered.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🦚</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Indian Peafowl</h3>
+                        <p class="card-subtitle">Pavo cristatus</p>
+                        <p class="card-description">India's national bird. Males known for spectacular tail feathers. Found throughout India, considered sacred in Hindu mythology.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🦅</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Indian Eagle</h3>
+                        <p class="card-subtitle">Various species</p>
+                        <p class="card-description">Several eagle species including Steppe Eagle and Greater Spotted Eagle. Powerful raptors found in forests and open areas across India.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🐊</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Gharial</h3>
+                        <p class="card-subtitle">Gavialis gangeticus</p>
+                        <p class="card-description">Critically endangered crocodile with long, thin snout. Found in rivers of Northern India. Fish-eating, harmless to humans.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🐒</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Hoolock Gibbon</h3>
+                        <p class="card-subtitle">Hoolock species</p>
+                        <p class="card-description">India's only ape species, found in Northeast forests. Excellent brachiators, live in monogamous family groups. Endangered due to habitat loss.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Ranthambore Details -->
-        <div id="ranthambore" class="district-details">
-            <div class="district-header">
-                <h2>Ranthambore National Park</h2>
-                <p>Rajasthan - Sawai Madhopur District</p>
-            </div>
+        <!-- National Parks & Sanctuaries -->
+        <div class="section">
+            <h2 class="section-title">National Parks & Wildlife Sanctuaries</h2>
             
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
+            <div class="filter-section">
+                <label class="filter-label">Filter by State:</label>
+                <select class="filter-select" id="stateFilter" onchange="filterParks()">
+                    <option value="all">All States</option>
+                    <option value="gujarat">Gujarat</option>
+                    <option value="rajasthan">Rajasthan</option>
+                    <option value="up">Uttar Pradesh</option>
+                    <option value="assam">Assam</option>
+                    <option value="jk">Jammu & Kashmir</option>
+                    <option value="kerala">Kerala</option>
+                </select>
+            </div>
+
+            <div id="parksContainer">
+                <!-- Gujarat Parks -->
+                <div class="park-item" data-state="gujarat">
+                    <h3 class="park-name">Gir National Park - Gujarat</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> Asiatic Lions<br>
+                        <strong>Area:</strong> 1,412 km²<br>
+                        <strong>Best Time:</strong> December to March<br>
+                        <strong>Wildlife:</strong> Asiatic Lions, Leopards, Sambar Deer, Chital, Nilgai<br>
+                        <strong>Highlights:</strong> Only habitat of Asiatic Lions, Jeep safaris, bird watching
+                    </p>
                 </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Ranthambore National Park</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Sawai Madhopur, Rajasthan (Ranthambore Fort inside park).</p>
-                            <p><strong>Key Species:</strong> Bengal tiger (excellent sightings), sambar, spotted deer, various birds.</p>
-                            <p><strong>Area:</strong> Tiger reserve & national park complex (~1,334 km² including buffer).</p>
-                            <p><strong>Best Time:</strong> Oct–June (hot in summer; best tiger sightings Nov–Mar).</p>
-                            <p><strong>How to Reach:</strong> Nearest town Sawai Madhopur (railway); Jaipur / Delhi airports by road/rail.</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
+
+                <div class="park-item" data-state="gujarat">
+                    <h3 class="park-name">Blackbuck National Park - Gujarat</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> Blackbucks<br>
+                        <strong>Area:</strong> 34 km²<br>
+                        <strong>Best Time:</strong> October to March<br>
+                        <strong>Wildlife:</strong> Blackbucks, Nilgai, Wolves, Jackals<br>
+                        <strong>Highlights:</strong> Large population of blackbucks, grassland ecosystem
+                    </p>
+                </div>
+
+                <!-- Rajasthan Parks -->
+                <div class="park-item" data-state="rajasthan">
+                    <h3 class="park-name">Ranthambore National Park - Rajasthan</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> Royal Bengal Tigers<br>
+                        <strong>Area:</strong> 392 km²<br>
+                        <strong>Best Time:</strong> October to April<br>
+                        <strong>Wildlife:</strong> Tigers, Leopards, Sloth Bears, Wild Boar, Sambar<br>
+                        <strong>Highlights:</strong> Historic Ranthambore Fort, tiger sightings, lakes
+                    </p>
+                </div>
+
+                <div class="park-item" data-state="rajasthan">
+                    <h3 class="park-name">Sariska Tiger Reserve - Rajasthan</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> Tigers, Ancient temples<br>
+                        <strong>Area:</strong> 866 km²<br>
+                        <strong>Best Time:</strong> October to March<br>
+                        <strong>Wildlife:</strong> Tigers, Leopards, Sambar, Chital, Nilgai<br>
+                        <strong>Highlights:</strong> Kankwari Fort, Pandupol temple, rich history
+                    </p>
+                </div>
+
+                <div class="park-item" data-state="rajasthan">
+                    <h3 class="park-name">Keoladeo National Park - Rajasthan</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> Bird sanctuary (UNESCO Site)<br>
+                        <strong>Area:</strong> 29 km²<br>
+                        <strong>Best Time:</strong> August to February<br>
+                        <strong>Wildlife:</strong> Over 370 bird species, migratory Siberian cranes<br>
+                        <strong>Highlights:</strong> Wetland ecosystem, cycling paths, bird watching paradise
+                    </p>
+                </div>
+
+                <!-- UP Parks -->
+                <div class="park-item" data-state="up">
+                    <h3 class="park-name">Jim Corbett National Park - Uttarakhand/UP Border</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> Tigers, India's first national park<br>
+                        <strong>Area:</strong> 520 km²<br>
+                        <strong>Best Time:</strong> November to February<br>
+                        <strong>Wildlife:</strong> Tigers, Elephants, Leopards, Deer species<br>
+                        <strong>Highlights:</strong> Ramganga River, diverse zones, luxury resorts
+                    </p>
+                </div>
+
+                <div class="park-item" data-state="up">
+                    <h3 class="park-name">Dudhwa National Park - Uttar Pradesh</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> Swamp deer (Barasingha)<br>
+                        <strong>Area:</strong> 490 km²<br>
+                        <strong>Best Time:</strong> November to April<br>
+                        <strong>Wildlife:</strong> Tigers, Swamp Deer, Elephants, One-horned Rhino<br>
+                        <strong>Highlights:</strong> Terai grasslands, bird diversity
+                    </p>
+                </div>
+
+                <!-- Assam Parks -->
+                <div class="park-item" data-state="assam">
+                    <h3 class="park-name">Kaziranga National Park - Assam</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> One-horned Rhinoceros (UNESCO Site)<br>
+                        <strong>Area:</strong> 859 km²<br>
+                        <strong>Best Time:</strong> November to April<br>
+                        <strong>Wildlife:</strong> Rhinos, Tigers, Elephants, Wild Water Buffalo<br>
+                        <strong>Highlights:</strong> Elephant safaris, highest density of tigers, Brahmaputra River
+                    </p>
+                </div>
+
+                <div class="park-item" data-state="assam">
+                    <h3 class="park-name">Manas National Park - Assam</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> UNESCO Site, Project Tiger<br>
+                        <strong>Area:</strong> 500 km²<br>
+                        <strong>Best Time:</strong> November to April<br>
+                        <strong>Wildlife:</strong> Tigers, Elephants, Pygmy Hog, Golden Langur<br>
+                        <strong>Highlights:</strong> River rafting, diverse habitats, Bhutan border
+                    </p>
+                </div>
+
+                <!-- J&K Parks -->
+                <div class="park-item" data-state="jk">
+                    <h3 class="park-name">Dachigam National Park - Jammu & Kashmir</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> Hangul (Kashmir Stag)<br>
+                        <strong>Area:</strong> 141 km²<br>
+                        <strong>Best Time:</strong> April to October<br>
+                        <strong>Wildlife:</strong> Hangul, Himalayan Black Bear, Leopards, Musk Deer<br>
+                        <strong>Highlights:</strong> High-altitude ecosystem, near Srinagar
+                    </p>
+                </div>
+
+                <div class="park-item" data-state="jk">
+                    <h3 class="park-name">Hemis National Park - Jammu & Kashmir</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> Snow Leopards, largest national park in India<br>
+                        <strong>Area:</strong> 4,400 km²<br>
+                        <strong>Best Time:</strong> May to September<br>
+                        <strong>Wildlife:</strong> Snow Leopards, Tibetan Wolf, Bharal, Ibex<br>
+                        <strong>Highlights:</strong> High-altitude cold desert, Buddhist monasteries
+                    </p>
+                </div>
+
+                <!-- Kerala Parks -->
+                <div class="park-item" data-state="kerala">
+                    <h3 class="park-name">Periyar National Park - Kerala</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> Elephant reserve, spice plantations<br>
+                        <strong>Area:</strong> 925 km²<br>
+                        <strong>Best Time:</strong> September to March<br>
+                        <strong>Wildlife:</strong> Elephants, Tigers, Gaur, Sambar, Nilgiri Tahr<br>
+                        <strong>Highlights:</strong> Periyar Lake, boat safaris, spice trails
+                    </p>
+                </div>
+
+                <div class="park-item" data-state="kerala">
+                    <h3 class="park-name">Silent Valley National Park - Kerala</h3>
+                    <p class="park-details">
+                        <strong>Famous For:</strong> Tropical rainforest, Lion-tailed Macaque<br>
+                        <strong>Area:</strong> 237 km²<br>
+                        <strong>Best Time:</strong> December to March<br>
+                        <strong>Wildlife:</strong> Lion-tailed Macaque, Tigers, Leopards, Elephants<br>
+                        <strong>Highlights:</strong> Pristine forest, no human habitation, biodiversity hotspot
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zoos Section -->
+        <div class="section">
+            <h2 class="section-title">Major Zoos in India</h2>
+            <div class="cards-grid">
+                <div class="wildlife-card">
+                    <div class="card-image">🦁</div>
+                    <div class="card-content">
+                        <h3 class="card-title">National Zoological Park</h3>
+                        <p class="card-subtitle">Delhi</p>
+                        <p class="card-description">One of the best zoos in Asia, spread over 176 acres. Houses over 1,350 animals from 130 species. Open-air enclosures, white tigers, African safari section.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🐘</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Mysore Zoo</h3>
+                        <p class="card-subtitle">Karnataka</p>
+                        <p class="card-description">Established in 1892, one of India's oldest zoos. Known for conservation breeding programs. Houses gorillas, elephants, and big cats.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🦒</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Alipore Zoo</h3>
+                        <p class="card-subtitle">Kolkata, West Bengal</p>
+                        <p class="card-description">India's oldest formally stated zoo, established in 1876. Famous for successfully breeding rare species. Houses Aldabra giant tortoise and diverse fauna.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🐅</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Nehru Zoological Park</h3>
+                        <p class="card-subtitle">Hyderabad, Telangana</p>
+                        <p class="card-description">Spread over 380 acres near Mir Alam Tank. Houses 1,500 animals. Famous for safari park, nocturnal animal house, and butterfly park.</p>
+                    </div>
+                </div>
+
+                <div class="wildlife-card">
+                    <div class="card-image">🦓</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Arignar Anna Zoological Park</h3>
+                        <p class="card-subtitle">Chennai, Tamil Nadu</p>
+                        <p class="card-description">One of the largest zoos in South Asia at 1,265 acres. Houses 2,500 species. Known for lion and elephant safaris, reptile house.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Bandhavgarh Details -->
-        <div id="bandhavgarh" class="district-details">
-            <div class="district-header">
-                <h2>Bandhavgarh National Park</h2>
-                <p>Madhya Pradesh - Umaria District</p>
-            </div>
-            
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
+        <!-- Wildlife Travel Tips & Safety -->
+        <div class="section">
+            <h2 class="section-title">Wildlife Travel Tips & Safety Guidelines</h2>
+            <div class="tips-grid">
+                <div class="tip-box">
+                    <div class="tip-icon">📅</div>
+                    <h3 class="tip-title">Best Time to Visit</h3>
+                    <p class="tip-text">October to March is ideal for most parks. Summer (April-June) offers better animal sightings near water sources but is extremely hot. Monsoon season (July-September) sees park closures in many regions.</p>
                 </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Bandhavgarh National Park</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Umaria district / Madhya Pradesh; nearest town Tala & Bandhavgarh Fort area.</p>
-                            <p><strong>Key Species:</strong> High density of tigers, leopard, deer species; historic fort inside park.</p>
-                            <p><strong>Area:</strong> Tiger reserve with core & buffer; popular for tiger safaris.</p>
-                            <p><strong>Best Time:</strong> Oct–Jun (closed/limited during rains).</p>
-                            <p><strong>How to Reach:</strong> Nearest rail Urwan / Umaria; Jabalpur or Khajuraho airports.</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
-                    </div>
+
+                <div class="tip-box">
+                    <div class="tip-icon">🎫</div>
+                    <h3 class="tip-title">Booking & Permits</h3>
+                    <p class="tip-text">Book safari slots well in advance, especially for popular parks like Ranthambore and Jim Corbett. Many parks require online booking. Carry valid ID proof and permits at all times.</p>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-icon">👕</div>
+                    <h3 class="tip-title">What to Wear</h3>
+                    <p class="tip-text">Neutral colors (khaki, olive, brown) are recommended. Avoid bright colors and white. Carry layers for early morning safaris. Comfortable closed shoes are essential. Hat and sunglasses for sun protection.</p>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-icon">📸</div>
+                    <h3 class="tip-title">Photography Tips</h3>
+                    <p class="tip-text">Bring telephoto lens for wildlife shots. Early morning and late afternoon offer best lighting. Avoid flash photography. Carry extra batteries and memory cards. Protect equipment from dust.</p>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-icon">⚠️</div>
+                    <h3 class="tip-title">Safety Rules</h3>
+                    <p class="tip-text">Never exit vehicle during safari unless permitted. Maintain silence to avoid disturbing wildlife. Don't feed animals. Follow guide instructions strictly. Keep safe distance from all animals.</p>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-icon">🚫</div>
+                    <h3 class="tip-title">What NOT to Do</h3>
+                    <p class="tip-text">Don't litter or use plastic. No smoking in forest areas. Don't play loud music. Avoid sudden movements or loud noises. Never provoke or chase animals for photos.</p>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-icon">🏥</div>
+                    <h3 class="tip-title">Health Precautions</h3>
+                    <p class="tip-text">Carry basic first-aid kit. Use insect repellent. Stay hydrated. Take malaria prophylaxis if recommended. Inform guide of any medical conditions. Keep emergency contacts handy.</p>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-icon">💰</div>
+                    <h3 class="tip-title">Budget Planning</h3>
+                    <p class="tip-text">Safari costs vary by park and vehicle type. Jeep safaris are more expensive than canter rides. Accommodation near parks ranges from budget to luxury. Book packages for better deals.</p>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-icon">🌍</div>
+                    <h3 class="tip-title">Responsible Tourism</h3>
+                    <p class="tip-text">Respect wildlife and habitat. Support local communities by buying local products. Choose eco-friendly accommodations. Report any illegal activities. Practice leave-no-trace principles.</p>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-icon">📱</div>
+                    <h3 class="tip-title">Connectivity</h3>
+                    <p class="tip-text">Mobile network may be limited in forest areas. Inform family/friends of your itinerary. Download offline maps. Carry power bank. Emergency numbers are usually displayed at park gates.</p>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-icon">🏨</div>
+                    <h3 class="tip-title">Accommodation Tips</h3>
+                    <p class="tip-text">Stay close to park gates to save travel time. Book forest rest houses for authentic experience. Luxury resorts offer better amenities. Check if meals are included. Verify cancellation policies.</p>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-icon">🌡️</div>
+                    <h3 class="tip-title">Weather Preparation</h3>
+                    <p class="tip-text">Check weather forecast before visit. Carry raincoat during monsoon. Sun protection is essential in summer. Warm clothes needed for winter and high-altitude parks. Be prepared for temperature variations.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Kanha Details -->
-        <div id="kanha" class="district-details">
-            <div class="district-header">
-                <h2>Kanha National Park</h2>
-                <p>Madhya Pradesh - Mandla & Balaghat Districts</p>
-            </div>
-            
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
-                </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Kanha National Park</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Mandla & Balaghat districts (central India).</p>
-                            <p><strong>Key Species:</strong> Bengal tiger, barasingha (hardground swamp deer — conservation success), leopard, sloth bear.</p>
-                            <p><strong>Area:</strong> Large central India reserve—one of India's model parks (basis for Kipling's "Mowgli" landscapes).</p>
-                            <p><strong>Best Time:</strong> Oct–Jun.</p>
-                            <p><strong>How to Reach:</strong> Nearest rail station Mandla or Jabalpur (rail & airport).</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tadoba Details -->
-        <div id="tadoba" class="district-details">
-            <div class="district-header">
-                <h2>Tadoba-Andhari Tiger Reserve</h2>
-                <p>Maharashtra - Chandrapur District</p>
-            </div>
-            
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
-                </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Tadoba-Andhari Tiger Reserve</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Chandrapur district, Maharashtra.</p>
-                            <p><strong>Key Species:</strong> Bengal tiger (one of Maharashtra's best tiger spotting reserves), gaur, sloth bear, many birds.</p>
-                            <p><strong>Area:</strong> Large tiger reserve made of Tadoba NP + Andhari sanctuary.</p>
-                            <p><strong>Best Time:</strong> Oct–June (safari schedules vary; check local booking).</p>
-                            <p><strong>How to Reach:</strong> Nearest city Chandrapur; Nagpur airport ~140–160 km.</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pench Details -->
-        <div id="pench" class="district-details">
-            <div class="district-header">
-                <h2>Pench National Park</h2>
-                <p>Madhya Pradesh - MP/Maharashtra Belt</p>
-            </div>
-            
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
-                </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Pench National Park</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Straddles MP / Maharashtra areas (Pench Tiger Reserve).</p>
-                            <p><strong>Key Species:</strong> Tigers, leopard, sloth bear, deer, rich birdlife — inspiration for Kipling's "The Jungle Book".</p>
-                            <p><strong>Area:</strong> Important central India tiger reserve corridor.</p>
-                            <p><strong>Best Time:</strong> Oct–Jun.</p>
-                            <p><strong>How to Reach:</strong> Nearest rail/road hubs Nagpur / Seoni / Jabalpur depending on approach.</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Gir Details -->
-        <div id="gir" class="district-details">
-            <div class="district-header">
-                <h2>Gir National Park</h2>
-                <p>Gujarat - Junagadh & Gir Somnath</p>
-            </div>
-            
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
-                </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Gir National Park</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Junagadh / Gir Somnath districts, Gujarat (Sasan Gir area).</p>
-                            <p><strong>Key Species:</strong> Asiatic lion (unique global population), leopard, deer, nilgai.</p>
-                            <p><strong>Area:</strong> Protected national park + large wildlife sanctuary area.</p>
-                            <p><strong>Best Time:</strong> Oct–June (avoid monsoon).</p>
-                            <p><strong>How to Reach:</strong> Nearest towns: Junagadh, Veraval; Rajkot / Diu airports for access.</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sundarbans Details -->
-        <div id="sundarbans" class="district-details">
-            <div class="district-header">
-                <h2>Sundarbans National Park</h2>
-                <p>West Bengal - South 24 Parganas</p>
-            </div>
-            
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
-                </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Sundarbans National Park</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Sundarbans delta, South 24 Parganas (Indian Sundarbans).</p>
-                            <p><strong>Key Species:</strong> Bengal tiger (mangrove/tidal tigers), saltwater crocodile, many aquatic birds, unique mangrove flora.</p>
-                            <p><strong>Area:</strong> Mangrove delta, biosphere reserve—shared ecosystem with Bangladesh.</p>
-                            <p><strong>Best Time:</strong> Nov–Mar (many seasonal closures during monsoon).</p>
-                            <p><strong>How to Reach:</strong> Nearest hub Kolkata → boat/launch to Sundarban entry points (Hogla, Godkhali, Sajnekhali etc.).</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Periyar Details -->
-        <div id="periyar" class="district-details">
-            <div class="district-header">
-                <h2>Periyar Tiger Reserve</h2>
-                <p>Kerala - Idukki & Pathanamthitta</p>
-            </div>
-            
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
-                </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Periyar Tiger Reserve</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Idukki & Pathanamthitta districts, Kerala (Western Ghats).</p>
-                            <p><strong>Key Species:</strong> Elephants, Bengal tiger, gaur, rich endemic bird & plant life. Famous for boat safaris on Periyar Lake.</p>
-                            <p><strong>Area:</strong> ~350 km² protected area (part of Western Ghats biodiversity hotspot).</p>
-                            <p><strong>Best Time:</strong> Sep–May (monsoon heavy June–Aug but waterfall scenery is great then).</p>
-                            <p><strong>How to Reach:</strong> Nearest town Kumily / Thekkady; nearest airports Kochi / Madurai.</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bandipur Details -->
-        <div id="bandipur" class="district-details">
-            <div class="district-header">
-                <h2>Bandipur National Park</h2>
-                <p>Karnataka - Mysore & Chamarajanagar</p>
-            </div>
-            
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
-                </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Bandipur National Park</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Mysore / Chamarajanagar region, Karnataka; contiguous with Nagarhole and Mudumalai (TN).</p>
-                            <p><strong>Key Species:</strong> Tigers, elephants, gaurs, deer, rich birdlife — part of Nilgiri-Biosphere corridors.</p>
-                            <p><strong>Area:</strong> Major protected area in southern India (core of the Mysore forest belt).</p>
-                            <p><strong>Best Time:</strong> Oct–May (monsoon months limit access).</p>
-                            <p><strong>How to Reach:</strong> Nearest city Mysore (≈80–100 km), Bangalore airport farther away.</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Nagarhole Details -->
-        <div id="nagarhole" class="district-details">
-            <div class="district-header">
-                <h2>Nagarhole National Park</h2>
-                <p>Karnataka - Kodagu & Mysore Districts</p>
-            </div>
-            
-            <div class="category-section">
-                <div class="category-header">
-                    Park Information
-                </div>
-                
-                <div class="places-grid">
-                    <div class="place-card">
-                        <h4>Nagarhole National Park</h4>
-                        <div class="place-details">
-                            <p><strong>Location:</strong> Kodagu & Mysore districts, Karnataka (Kabini reservoir area).</p>
-                            <p><strong>Key Species:</strong> Bengal tiger, Asian elephant, leopard, gaur, rich riverine birdlife; excellent wildlife corridor with Bandipur.</p>
-                            <p><strong>Area:</strong> Part of Nilgiri Biosphere Reserve; famous for boat safaris on Kabini and jeep safaris.</p>
-                            <p><strong>Best Time:</strong> Oct–May.</p>
-                            <p><strong>How to Reach:</strong> Nearest town Hunsur / Mysore; access via Kabini & Nagarhole entry points.</p>
-                        </div>
-                        <a href="#" class="map-link">View on Map</a>
-                    </div>
-                </div>
-            </div>
+        <!-- Conservation Message -->
+        <div class="section">
+            <h2 class="section-title">Conservation & Future</h2>
+            <p class="intro-text">
+                India's wildlife faces challenges from habitat loss, human-wildlife conflict, and climate change. However, 
+                successful conservation programs have brought back several species from the brink of extinction. Project Tiger, 
+                Project Elephant, and various breeding programs show promising results. As responsible travelers, we can 
+                contribute by choosing eco-friendly tourism, respecting wildlife regulations, and supporting conservation 
+                initiatives. Every small action counts in preserving India's incredible natural heritage for future generations.
+            </p>
         </div>
     </div>
 
-    <button class="back-to-top" onclick="scrollToTop()">↑</button>
-
     <script>
-        // Show district details
-        function showDistrictDetails(districtId) {
-            // Hide all district details
-            const districtDetails = document.querySelectorAll('.district-details');
-            districtDetails.forEach(detail => {
-                detail.classList.remove('active');
-            });
+        function filterParks() {
+            const selectedState = document.getElementById('stateFilter').value;
+            const allParks = document.querySelectorAll('.park-item');
             
-            // Show selected district details
-            const selectedDistrict = document.getElementById(districtId);
-            if (selectedDistrict) {
-                selectedDistrict.classList.add('active');
-                // Scroll to the details section
-                selectedDistrict.scrollIntoView({ behavior: 'smooth' });
+            allParks.forEach(park => {
+                if (selectedState === 'all') {
+                    park.style.display = 'block';
+                } else {
+                    if (park.getAttribute('data-state') === selectedState) {
+                        park.style.display = 'block';
+                    } else {
+                        park.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Smooth scroll to top
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                document.querySelector('.back-btn').style.opacity = '1';
             }
-        }
-        
-        // Scroll to top function
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-        
-        // Explore button functionality
-        document.querySelector('.explore-btn').addEventListener('click', function() {
-            document.querySelector('.districts-grid').scrollIntoView({ 
-                behavior: 'smooth' 
-            });
-        });
-        
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add animation to districts grid
-            setTimeout(() => {
-                document.querySelector('.districts-grid').classList.add('show');
-            }, 500);
         });
     </script>
 </body>
