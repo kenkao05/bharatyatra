@@ -122,14 +122,22 @@
 
         .card-image {
             width: 100%;
-            height: 200px;
+            height: 180px;
             background: linear-gradient(135deg, #D4C7B2, #E8DFD0);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 3rem;
             color: #B8A992;
+            object-fit: cover;
         }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit:cover;  /* keeps aspect ratio and crops neatly */
+            display: block;
+            }
 
         .card-content {
             padding: 1.5rem;
@@ -334,7 +342,7 @@
             <h2 class="section-title">Flora - Plants & Vegetation</h2>
             <div class="cards-grid">
                 <div class="wildlife-card">
-                    <div class="card-image">🌳</div>
+                    <div class="card-image"><img src="styling/stateimages/banyan.jpg" alt="TBanyan Tree"></div>
                     <div class="card-content">
                         <h3 class="card-title">Banyan Tree</h3>
                         <p class="card-subtitle">Ficus benghalensis</p>
@@ -343,7 +351,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🌺</div>
+                    <div class="card-image"><img src="styling/stateimages/lotus.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Lotus</h3>
                         <p class="card-subtitle">Nelumbo nucifera</p>
@@ -352,7 +360,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🌲</div>
+                    <div class="card-image"><img src="styling/stateimages/saltree.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Sal Tree</h3>
                         <p class="card-subtitle">Shorea robusta</p>
@@ -361,7 +369,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🌴</div>
+                    <div class="card-image"><img src="styling/stateimages/mangroves.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Mangroves</h3>
                         <p class="card-subtitle">Various species</p>
@@ -370,7 +378,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🌿</div>
+                    <div class="card-image"><img src="styling/stateimages/neem.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Neem Tree</h3>
                         <p class="card-subtitle">Azadirachta indica</p>
@@ -379,7 +387,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🌸</div>
+                    <div class="card-image"><img src="styling/stateimages/rhododendron.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Rhododendron</h3>
                         <p class="card-subtitle">Various species</p>
@@ -394,7 +402,7 @@
             <h2 class="section-title">Fauna - Iconic Wildlife</h2>
             <div class="cards-grid">
                 <div class="wildlife-card">
-                    <div class="card-image">🐅</div>
+                    <div class="card-image"><img src="styling/stateimages/tiger.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Bengal Tiger</h3>
                         <p class="card-subtitle">Panthera tigris tigris</p>
@@ -403,7 +411,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🦁</div>
+                    <div class="card-image"><img src="styling/stateimages/lion.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Asiatic Lion</h3>
                         <p class="card-subtitle">Panthera leo persica</p>
@@ -412,7 +420,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🐘</div>
+                    <div class="card-image"><img src="styling/stateimages/elephant.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Indian Elephant</h3>
                         <p class="card-subtitle">Elephas maximus indicus</p>
@@ -421,7 +429,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🦏</div>
+                    <div class="card-image"><img src="styling/stateimages/rhino.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">One-Horned Rhinoceros</h3>
                         <p class="card-subtitle">Rhinoceros unicornis</p>
@@ -430,7 +438,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🐆</div>
+                    <div class="card-image"><img src="styling/stateimages/leopard.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Snow Leopard</h3>
                         <p class="card-subtitle">Panthera uncia</p>
@@ -439,7 +447,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🦚</div>
+                    <div class="card-image"><img src="styling/stateimages/peafowl.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Indian Peafowl</h3>
                         <p class="card-subtitle">Pavo cristatus</p>
@@ -448,7 +456,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🦅</div>
+                    <div class="card-image"><img src="styling/stateimages/eagle.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Indian Eagle</h3>
                         <p class="card-subtitle">Various species</p>
@@ -457,7 +465,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🐊</div>
+                    <div class="card-image"><img src="styling/stateimages/gharial.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Gharial</h3>
                         <p class="card-subtitle">Gavialis gangeticus</p>
@@ -466,7 +474,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🐒</div>
+                    <div class="card-image"><img src="styling/stateimages/gibbon.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Hoolock Gibbon</h3>
                         <p class="card-subtitle">Hoolock species</p>
@@ -650,7 +658,7 @@
             <h2 class="section-title">Major Zoos in India</h2>
             <div class="cards-grid">
                 <div class="wildlife-card">
-                    <div class="card-image">🦁</div>
+                    <div class="card-image"><img src="styling/stateimages/delhizoo.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">National Zoological Park</h3>
                         <p class="card-subtitle">Delhi</p>
@@ -659,7 +667,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🐘</div>
+                    <div class="card-image"><img src="styling/stateimages/mysorezoo.png"></div>
                     <div class="card-content">
                         <h3 class="card-title">Mysore Zoo</h3>
                         <p class="card-subtitle">Karnataka</p>
@@ -668,7 +676,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🦒</div>
+                    <div class="card-image"><img src="styling/stateimages/aliporezoo.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Alipore Zoo</h3>
                         <p class="card-subtitle">Kolkata, West Bengal</p>
@@ -677,7 +685,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🐅</div>
+                    <div class="card-image"><img src="styling/stateimages/nehruzoo.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Nehru Zoological Park</h3>
                         <p class="card-subtitle">Hyderabad, Telangana</p>
@@ -686,7 +694,7 @@
                 </div>
 
                 <div class="wildlife-card">
-                    <div class="card-image">🦓</div>
+                    <div class="card-image"><img src="styling/stateimages/annazoo.jpg"></div>
                     <div class="card-content">
                         <h3 class="card-title">Arignar Anna Zoological Park</h3>
                         <p class="card-subtitle">Chennai, Tamil Nadu</p>
