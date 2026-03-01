@@ -9,15 +9,17 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;900&display=swap');
 
     :root {
-      --state-primary: #506746;
-      --state-secondary: #ffffff;
-      --state-accent: #a7e4e2;
-      --state-accent-dark: #7a9594;
-      --heading-color: #f5b068;
-      --text-muted: #666;
+      --state-primary: #5A4F41;
+      --state-secondary: #F5EFEB;
+      --state-accent: #82593a;
+      --state-accent-dark: #7a6a57;
+      --heading-color: #7a6a57;
+      --text-muted: #6b6b6b;
+      --light-beige: #e8dfd0;
+      --border-color: #d4c7b2;
       --transition: all 0.3s ease;
     }
 
@@ -29,7 +31,7 @@
     }
 
     body {
-      background: #ffffff;
+      background: var(--state-secondary);
       overflow-x: hidden;
       padding-top: 80px;
     }
@@ -41,8 +43,8 @@
       width: 100%;
       padding: 20px 0;
       z-index: 1000;
-      background: var(--state-primary);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      background: var(--light-beige);
+      box-shadow: 0 4px 8px rgba(90, 79, 65, 0.2);
       transition: var(--transition);
     }
 
@@ -71,7 +73,7 @@
     }
 
     .nav-links a {
-      color: #ffffff;
+      color: #8a7d6c;
       text-decoration: none;
       font-size: 1rem;
       font-weight: 500;
@@ -97,7 +99,7 @@
     }
 
     .menu-btn {
-      color: #ffffff;
+      color: #8a7d6c;
       font-size: 1.5rem;
       cursor: pointer;
     }
@@ -109,7 +111,7 @@
       top: 0;
       width: 300px;
       height: 100%;
-      background: var(--state-primary);
+      background: var(--light-beige);
       z-index: 2000;
       transition: var(--transition);
       padding: 30px;
@@ -121,7 +123,7 @@
     }
 
     .close-btn {
-      color: var(--state-secondary);
+      color: var(--state-primary);
       font-size: 2rem;
       cursor: pointer;
       text-align: right;
@@ -134,11 +136,11 @@
 
     .sidebar-links li {
       padding: 12px 0;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid var(--border-color);
     }
 
     .sidebar-links a {
-      color: var(--state-secondary);
+      color: #8a7d6c;
       text-decoration: none;
       display: flex;
       align-items: center;
@@ -157,7 +159,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7);
+      background: rgba(90, 79, 65, 0.7);
       visibility: hidden;
       opacity: 0;
       z-index: 1500;
@@ -171,7 +173,7 @@
 
     /* ==================== PAGE HEADER ==================== */
     .page-header {
-      background: linear-gradient(135deg, var(--state-primary) 0%, #4a514a 100%);
+      background: linear-gradient(135deg, var(--state-primary) 0%, var(--state-accent-dark) 100%);
       padding: 60px 40px 40px;
       text-align: center;
       color: white;
@@ -182,7 +184,9 @@
       font-weight: 700;
       margin-bottom: 15px;
       letter-spacing: 2px;
-      color: var(--heading-color);
+      color: var(--light-beige);
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
     }
 
     .page-header p {
@@ -202,10 +206,10 @@
       gap: 20px;
       flex-wrap: wrap;
       align-items: center;
-      background: #f5f5f5;
+      background: #FDFBF7;
       padding: 25px;
       border-radius: 0;
-      border: 2px solid var(--state-accent);
+      border: 2px solid var(--border-color);
     }
 
     .search-box {
@@ -453,8 +457,8 @@
 
     /* SVG Styling */
     .map-wrapper svg path.district-path {
-      fill: #d4d4d4;
-      stroke: #636A60;
+      fill: var(--light-beige);
+      stroke: var(--border-color);
       stroke-width: 1;
       transition: fill 0.3s ease;
       cursor: default;
@@ -463,7 +467,7 @@
     /* Highlighted state - when clicked from list */
     .map-wrapper svg path.district-path.highlighted {
       fill: var(--state-accent);
-      stroke: var(--state-accent);
+      stroke: var(--state-primary);
       stroke-width: 2;
     }
 
@@ -585,6 +589,9 @@
       font-size: 32px;
       margin-bottom: 20px;
       color: var(--heading-color);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      text-transform: uppercase;
     }
 
     .modal-body p {
@@ -602,8 +609,8 @@
     }
 
     .attraction-card-modal {
-      background: #f5f5f5;
-      border: 2px solid var(--state-accent);
+      background: var(--state-secondary);
+      border: 2px solid var(--border-color);
       padding: 15px;
       cursor: pointer;
       transition: var(--transition);
@@ -633,13 +640,15 @@
     .accommodations-section {
       margin-top: 30px;
       padding-top: 30px;
-      border-top: 2px solid var(--state-accent);
+      border-top: 2px solid var(--border-color);
     }
 
     .accommodations-section h3 {
       font-size: 24px;
       margin-bottom: 20px;
       color: var(--heading-color);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-style: italic;
     }
 
     .accommodation-list {
@@ -648,7 +657,7 @@
 
     .accommodation-item {
       padding: 15px;
-      background: #f5f5f5;
+      background: var(--state-secondary);
       border-left: 4px solid var(--state-accent);
       margin-bottom: 10px;
     }
