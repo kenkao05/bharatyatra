@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://unpkg.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://gtpnojbbamoaznlutxap.supabase.co;
+                 script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com;
+                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+                 font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+                 img-src 'self' data: https:;
+                 frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <title>Admin Dashboard | BharatYatra</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="admin-auth.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --bg:       #071021;
+      --card:     #0b1220;
+      --card2:    #0e1628;
+      --border:   rgba(255,255,255,0.07);
+      --border2:  rgba(255,255,255,0.04);
+      --cyan:     #06b6d4;
+      --cyan-dim: rgba(6,182,212,0.12);
+      --blue:     #4FC3FF;
+      --muted:    #94a3b8;
+      --muted2:   rgba(200,220,235,0.5);
+      --white:    #e8f0f7;
+      --red:      #ef4444;
+      --red-dim:  rgba(239,68,68,0.12);
+      --green:    #22c55e;
+      --green-dim:rgba(34,197,94,0.12);
+      --amber:    #f59e0b;
+      --amber-dim:rgba(245,158,11,0.12);
+      --purple:   #a78bfa;
+      --purple-dim:rgba(167,139,250,0.12);
+      --radius:   14px;
+      --radius-sm:8px;
+      --header-h: 64px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(6,182,212,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(6,182,212,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.3); border-radius: 3px; }
+
+    /* ── HEADER ── */
+    #admin-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: rgba(7,16,33,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 16px; }
+
+    .header-logo {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      text-decoration: none;
+    }
+
+    .header-divider { width: 1px; height: 20px; background: var(--border); }
+
+    .header-title { font-size: 14px; font-weight: 500; color: var(--muted); }
+
+    .header-right { display: flex; align-items: center; gap: 12px; }
+
+    .admin-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--cyan-dim);
+      border: 1px solid rgba(6,182,212,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cyan);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .admin-email {
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 180px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-logout {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 8px 18px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { color: var(--red); border-color: rgba(239,68,68,0.5); }
+
+    /* ── MAIN ── */
+    #main {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: calc(var(--header-h) + 48px) 32px 80px;
+    }
+
+    /* ── WELCOME ── */
+    .welcome-row {
+      margin-bottom: 40px;
+    }
+
+    .welcome-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+
+    .welcome-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .welcome-title span { color: var(--cyan); }
+
+    .welcome-sub {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ── STATS GRID ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .stat-card:hover { border-color: rgba(6,182,212,0.2); transform: translateY(-2px); }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent-color, var(--cyan));
+      opacity: 0.4;
+    }
+
+    .stat-icon-wrap {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      margin-bottom: 16px;
+    }
+
+    .stat-num {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .stat-loading { color: var(--muted); font-size: 20px; }
+
+    /* ── NAV CARDS ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .nav-card {
+      background: var(--card);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 28px 26px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .nav-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--hover-color, rgba(6,182,212,0.04)) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .nav-card:hover {
+      border-color: var(--hover-border, rgba(6,182,212,0.3));
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .nav-card:hover::before { opacity: 1; }
+
+    .nav-card-icon {
+      width: 50px; height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .nav-card-body { flex: 1; min-width: 0; }
+
+    .nav-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .nav-card-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .nav-card-arrow {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 14px;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .nav-card:hover .nav-card-arrow {
+      transform: translateY(-50%) translateX(4px);
+      color: var(--cyan);
+    }
+
+    /* ── RECENT ACTIVITY ── */
+    .activity-card {
+      background: var(--card);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .activity-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .activity-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .activity-title i { color: var(--cyan); }
+
+    .activity-badge {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--cyan-dim);
+      color: var(--cyan);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+
+    .info-item {
+      padding: 22px 24px;
+      border-right: 1px solid var(--border2);
+    }
+    .info-item:last-child { border-right: none; }
+
+    .info-item-label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .info-item-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-right: 6px;
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+      .nav-grid { grid-template-columns: repeat(2, 1fr); }
+      .info-grid { grid-template-columns: 1fr; }
+      .info-item { border-right: none; border-bottom: 1px solid var(--border2); }
+    }
+
+    @media (max-width: 640px) {
+      #main { padding: calc(var(--header-h) + 24px) 16px 60px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .nav-grid { grid-template-columns: 1fr; }
+      .welcome-title { font-size: 24px; }
+      .admin-email { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header id="admin-header">
+    <div class="header-left">
+      <a href="../index.html" class="header-logo">Bharat Yatra</a>
+      <div class="header-divider"></div>
+      <span class="header-title">Admin Panel</span>
+    </div>
+    <div class="header-right">
+      <div class="admin-avatar" id="adminAvatar">A</div>
+      <span class="admin-email" id="adminEmail">Loading…</span>
+      <button class="btn-logout" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN ==================== -->
+  <main id="main">
+
+    <!-- Welcome -->
+    <div class="welcome-row">
+      <div class="welcome-eyebrow">Admin Panel</div>
+      <h1 class="welcome-title">Good to see you, <span id="adminName">Admin</span></h1>
+      <p class="welcome-sub">Manage all travel content, accommodations, and submissions from here.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+
+      <div class="stat-card" style="--accent-color: var(--cyan);">
+        <div class="stat-icon-wrap" style="background:var(--cyan-dim); color:var(--cyan);">
+          <i class="fas fa-globe-asia"></i>
+        </div>
+        <div class="stat-num" id="sStates"><i class="fas fa-circle-notch fa-spin stat-loading"></i></div>
+        <div class="stat-label">States</div>
+      </div>
+
+      <div class="stat-card" style="--accent-color: var(--blue);">
+        <div class="stat-icon-wrap" style="background:rgba(79,195,255,0.12); color:var(--blue);">
+          <i class="fas fa-map"></i>
+        </div>
+        <div class="stat-num" id="sDistricts"><i class="fas fa-circle-notch fa-spin stat-loading"></i></div>
+        <div class="stat-label">Districts</div>
+      </div>
+
+      <div class="stat-card" style="--accent-color: var(--amber);">
+        <div class="stat-icon-wrap" style="background:var(--amber-dim); color:var(--amber);">
+          <i class="fas fa-landmark"></i>
+        </div>
+        <div class="stat-num" id="sAttractions"><i class="fas fa-circle-notch fa-spin stat-loading"></i></div>
+        <div class="stat-label">Attractions</div>
+      </div>
+
+      <div class="stat-card" style="--accent-color: var(--green);">
+        <div class="stat-icon-wrap" style="background:var(--green-dim); color:var(--green);">
+          <i class="fas fa-bed"></i>
+        </div>
+        <div class="stat-num" id="sAccommodations"><i class="fas fa-circle-notch fa-spin stat-loading"></i></div>
+        <div class="stat-label">Accommodations</div>
+      </div>
+
+      <div class="stat-card" style="--accent-color: var(--purple);">
+        <div class="stat-icon-wrap" style="background:var(--purple-dim); color:var(--purple);">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <div class="stat-num" id="sSubmissions"><i class="fas fa-circle-notch fa-spin stat-loading"></i></div>
+        <div class="stat-label">Submissions</div>
+      </div>
+
+    </div>
+
+    <!-- Navigation cards -->
+    <div class="section-label">Quick Access</div>
+
+    <div class="nav-grid">
+
+      <a class="nav-card" href="admin-state.html"
+         style="--hover-border: rgba(6,182,212,0.3); --hover-color: rgba(6,182,212,0.04);">
+        <div class="nav-card-icon" style="background:var(--cyan-dim); color:var(--cyan);">
+          <i class="fas fa-map-marked-alt"></i>
+        </div>
+        <div class="nav-card-body">
+          <div class="nav-card-title">Content Manager</div>
+          <div class="nav-card-desc">Manage states, districts, attractions and accommodations. Full CRUD operations.</div>
+        </div>
+        <i class="fas fa-arrow-right nav-card-arrow"></i>
+      </a>
+
+      <a class="nav-card" href="admin-medical.html"
+         style="--hover-border: rgba(34,197,94,0.3); --hover-color: rgba(34,197,94,0.04);">
+        <div class="nav-card-icon" style="background:var(--green-dim); color:var(--green);">
+          <i class="fas fa-hospital-alt"></i>
+        </div>
+        <div class="nav-card-body">
+          <div class="nav-card-title">Hospital Manager</div>
+          <div class="nav-card-desc">Add, edit, and remove hospitals listed per state for medical tourism.</div>
+        </div>
+        <i class="fas fa-arrow-right nav-card-arrow"></i>
+      </a>
+
+      <a class="nav-card" href="admin-form.html"
+         style="--hover-border: rgba(167,139,250,0.3); --hover-color: rgba(167,139,250,0.04);">
+        <div class="nav-card-icon" style="background:var(--purple-dim); color:var(--purple);">
+          <i class="fas fa-inbox"></i>
+        </div>
+        <div class="nav-card-body">
+          <div class="nav-card-title">Contact Submissions</div>
+          <div class="nav-card-desc">View and manage contact form submissions. Filter by category and search.</div>
+        </div>
+        <i class="fas fa-arrow-right nav-card-arrow"></i>
+      </a>
+
+    </div>
+
+    <!-- System info -->
+    <div class="section-label">System Status</div>
+
+    <div class="activity-card">
+      <div class="activity-header">
+        <div class="activity-title">
+          <i class="fas fa-server"></i> Platform Info
+        </div>
+        <div class="activity-badge"><span class="status-dot"></span>Live</div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-item-label">Database</div>
+          <div class="info-item-value"><span class="status-dot"></span>Supabase PostgreSQL</div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-label">Hosting</div>
+          <div class="info-item-value"><span class="status-dot"></span>Vercel via GitHub</div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-label">Phase</div>
+          <div class="info-item-value">Phase 1 — 5 States Active</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // sb is provided by admin-auth.js
+
+    // ── INACTIVITY OVERLAY ──────────────────────────────────────────────────
+    // Warn user 60s before forced logout
+    const WARN_BEFORE_MS = 60 * 1000;
+    let warnTimer = null;
+
+    function showInactivityWarning() {
+      // Create warning banner if not present
+      if (document.getElementById('inactivityWarn')) return;
+      const el = document.createElement('div');
+      el.id = 'inactivityWarn';
+      el.style.cssText = `
+        position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+        background:#1e1b4b; border:1px solid #6366f1; border-radius:10px;
+        padding:14px 24px; font-family:Inter,sans-serif; font-size:13px;
+        color:#e0e7ff; z-index:9999; display:flex; align-items:center; gap:12px;
+        box-shadow:0 8px 32px rgba(0,0,0,0.5); animation:toastIn .3s ease;
+      `;
+      el.innerHTML = `
+        <i class="fas fa-clock" style="color:#818cf8"></i>
+        <span>You'll be logged out in <strong id="warnCountdown">60</strong>s due to inactivity.</span>
+        <button onclick="document.getElementById('inactivityWarn').remove(); BYAuth._resetTimer && BYAuth._resetTimer();"
+          style="background:#6366f1;color:#fff;border:none;border-radius:6px;padding:5px 12px;cursor:pointer;font-size:12px;font-family:Inter,sans-serif;">
+          Stay logged in
+        </button>
+      `;
+      document.body.appendChild(el);
+
+      let secs = 60;
+      const cd = setInterval(() => {
+        secs--;
+        const el2 = document.getElementById('warnCountdown');
+        if (el2) el2.textContent = secs;
+        if (secs <= 0) clearInterval(cd);
+      }, 1000);
+    }
+
+    // Expose reset so warning button can call it
+    BYAuth._resetTimer = function() {
+      document.dispatchEvent(new MouseEvent('mousemove'));
+    };
+
+    // ── LOGOUT ──────────────────────────────────────────────────────────────
+    async function handleLogout() {
+      BYAuth.logout('user_initiated');
+    }
+
+    // ── STATS ───────────────────────────────────────────────────────────────
+    async function loadStats() {
+      const results = await Promise.allSettled([
+        sb.from('states').select('id', { count: 'exact', head: true }),
+        sb.from('districts').select('id', { count: 'exact', head: true }),
+        sb.from('attractions').select('id', { count: 'exact', head: true }),
+        sb.from('accommodations').select('id', { count: 'exact', head: true }),
+        sb.from('contact_submissions').select('id', { count: 'exact', head: true }),
+      ]);
+
+      const ids = ['sStates','sDistricts','sAttractions','sAccommodations','sSubmissions'];
+      results.forEach((r, i) => {
+        const el = document.getElementById(ids[i]);
+        if (!el) return;
+        el.textContent = (r.status === 'fulfilled' && r.value?.count != null)
+          ? r.value.count
+          : '—';
+      });
+    }
+
+    // ── INIT ────────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', async () => {
+      const session = await BYAuth.check();
+      if (!session) return;
+
+      const email = session.user.email;
+      document.getElementById('adminEmail').textContent = email;
+      document.getElementById('adminAvatar').textContent = email.charAt(0).toUpperCase();
+      const name = email.split('@')[0]
+        .replace(/[._-]/g, ' ')
+        .replace(/\w/g, c => c.toUpperCase());
+      document.getElementById('adminName').textContent = name;
+
+      loadStats();
+    });
+  </script>
+</body>
