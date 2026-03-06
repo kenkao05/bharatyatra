@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gujarat - Jewel of Western India | Bharat Yatra</title>
-  
+
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  
+
   <!-- Supabase -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  
+
   <!-- GSAP -->
   <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
   <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
@@ -108,15 +109,16 @@
     /* ==================== SIDEBAR ==================== */
     .sidebar {
       position: fixed;
-      right: -320px;
       top: 0;
-      width: 300px;
+      right: -320px;
+      width: 320px;
       height: 100%;
-      background: var(--state-primary);
+      background: #000;
       z-index: 2000;
-      transition: var(--transition);
-      padding: 30px;
       overflow-y: auto;
+      padding: 50px 36px 40px;
+      transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      border-left: 1px solid #222;
     }
 
     .sidebar.active {
@@ -124,52 +126,81 @@
     }
 
     .close-btn {
-      color: var(--state-secondary);
-      font-size: 2rem;
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      background: none;
+      border: none;
+      font-size: 32px;
+      color: #fff;
       cursor: pointer;
-      text-align: right;
-      margin-bottom: 20px;
+      line-height: 1;
+      padding: 4px 8px;
+      transition: color 0.2s;
+    }
+
+    .close-btn:hover {
+      color: #ff6b35;
+    }
+
+    .sidebar-tagline {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 13px;
+      color: #555;
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #222;
     }
 
     .sidebar-links {
       list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    .sidebar-links li {
-      padding: 12px 0;
-      border-bottom: 1px solid #333;
-    }
-
-    .sidebar-links a {
-      color: var(--state-secondary);
-      text-decoration: none;
+    .sidebar-links li a {
       display: flex;
       align-items: center;
-      gap: 15px;
-      transition: 0.3s;
+      gap: 14px;
+      padding: 12px 0;
+      color: #ccc;
+      text-decoration: none;
+      font-family: 'Georgia', serif;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #111;
+      transition: color 0.25s, padding-left 0.25s;
     }
 
-    .sidebar-links a:hover {
-      color: var(--state-accent);
-      padding-left: 10px;
+    .sidebar-links li a i {
+      font-size: 15px;
+      width: 20px;
+      color: #ff6b35;
+      flex-shrink: 0;
+    }
+
+    .sidebar-links li a:hover {
+      color: #fff;
+      padding-left: 6px;
     }
 
     .overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      visibility: hidden;
-      opacity: 0;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
       z-index: 1500;
-      transition: var(--transition);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
     }
 
     .overlay.active {
-      visibility: visible;
       opacity: 1;
+      visibility: visible;
     }
 
     /* ==================== SCROLL PROGRESS ==================== */
@@ -186,7 +217,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.3);
       transition: all 0.3s ease;
       cursor: pointer;
     }
@@ -210,7 +241,7 @@
     .track {
       display: flex;
       height: 100vh;
-      width: 400vw;
+      width: max-content;
     }
 
     .panel {
@@ -218,6 +249,12 @@
       height: 100vh;
       flex-shrink: 0;
       position: relative;
+    }
+
+    /* Events panel expands to fit all timeline cards — no inner scroll */
+    .events-panel {
+      width: max-content !important;
+      min-width: 100vw;
     }
 
     /* ==================== PANEL 1: VIDEO ==================== */
@@ -234,25 +271,25 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;              
+      object-fit: cover;
       object-position: center 40%;
       animation: fadeInVideo 2s ease forwards;
     }
 
     @keyframes fadeInVideo {
-      to { opacity: 1; }
+      to {
+        opacity: 1;
+      }
     }
 
     .video-panel::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to right,
-        rgba(0,0,0,0.5),
-        rgba(0,0,0,0.2),
-        rgba(0,0,0,0)
-      );
+      background: linear-gradient(to right,
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0.2),
+          rgba(0, 0, 0, 0));
       z-index: 1;
     }
 
@@ -275,7 +312,7 @@
       font-size: clamp(80px, 12vw, 160px);
       font-weight: 700;
       color: var(--state-secondary);
-      text-shadow: 4px 4px 20px rgba(0,0,0,0.7);
+      text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.7);
       letter-spacing: 8px;
       opacity: 0;
       animation: fadeInTitle 1.5s ease 0.5s forwards;
@@ -285,7 +322,7 @@
       font-family: 'Georgia', serif;
       font-size: clamp(18px, 2vw, 28px);
       color: var(--state-secondary);
-      text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
       display: flex;
       align-items: center;
       gap: 20px;
@@ -302,7 +339,9 @@
     }
 
     @keyframes fadeInTitle {
-      to { opacity: 1; }
+      to {
+        opacity: 1;
+      }
     }
 
     .mute-btn {
@@ -312,7 +351,7 @@
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0, 0, 0, 0.6);
       border: 2px solid var(--state-secondary);
       color: var(--state-secondary);
       font-size: 1.2rem;
@@ -566,9 +605,17 @@
       border: 2px solid var(--state-accent);
     }
 
-    .craft-card:nth-child(1) { grid-row: span 2; }
-    .craft-card:nth-child(3) { grid-row: span 2; }
-    .craft-card:nth-child(5) { grid-row: span 2; }
+    .craft-card:nth-child(1) {
+      grid-row: span 2;
+    }
+
+    .craft-card:nth-child(3) {
+      grid-row: span 2;
+    }
+
+    .craft-card:nth-child(5) {
+      grid-row: span 2;
+    }
 
     .craft-card:hover {
       transform: translateY(-8px);
@@ -616,7 +663,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0, 0, 0, 0.9);
       z-index: 3000;
       align-items: center;
       justify-content: center;
@@ -644,6 +691,7 @@
         opacity: 0;
         transform: translateY(-50px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -727,101 +775,514 @@
       font-size: 15px;
     }
 
-    /* ==================== FOOTER ==================== */
-    footer {
-      background: var(--state-primary);
-      color: var(--state-secondary);
-      padding: 60px 20px;
-      border-top: 4px solid #ff6b35;
-    }
-
-    .footer-grid {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 30px;
-    }
-
-    .footer-section h3 {
-      color: #ff6b35;
-      margin-bottom: 20px;
-      font-size: 1rem;
-      text-transform: uppercase;
-      border-left: 3px solid #ff6b35;
-      padding-left: 10px;
-    }
-
-    .footer-section ul {
-      list-style: none;
-    }
-
-    .footer-section a {
-      color: #bbb;
-      text-decoration: none;
-      font-size: 0.95rem;
-      line-height: 2.2;
-      transition: var(--transition);
-    }
-
-    .footer-section a:hover {
-      color: #ff6b35;
-      padding-left: 5px;
-    }
-
-    .footer-social {
+    /* ==================== PANEL 5: EVENTS TIMELINE ==================== */
+    .events-panel {
+      background: #f9f6f2;
       display: flex;
-      gap: 15px;
-      margin-top: 15px;
+      flex-direction: column;
+      padding: 60px 60px 40px;
     }
 
-    .footer-social a {
-      width: 35px;
-      height: 35px;
-      background: #333;
+    .events-panel .panel-title {
+      color: #000;
+      flex-shrink: 0;
+    }
+
+    .events-timeline-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
+      margin-top: 10px;
+    }
+
+    /* Category filter pills */
+    .events-category-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      margin-bottom: 28px;
+    }
+
+    .cat-pill {
+      padding: 6px 18px;
+      border: 1.5px solid #ddd;
+      background: #fff;
+      color: #555;
+      font-size: 12px;
+      font-family: 'Georgia', serif;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-pill:hover {
+      border-color: #ff6b35;
+      color: #ff6b35;
+    }
+
+    .cat-pill.active {
+      background: #ff6b35;
+      border-color: #ff6b35;
+      color: #fff;
+    }
+
+    /* Timeline container — no inner scroll; panel expands to content */
+    .events-timeline {
+      flex: 1;
+      position: relative;
+      overflow: visible;
+      padding-bottom: 16px;
+    }
+
+
+    .events-loading {
       display: flex;
       align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      color: white;
-      transition: 0.3s;
+      gap: 12px;
+      color: #aaa;
+      font-size: 14px;
+      padding: 60px 0;
     }
 
-    .footer-social a:hover {
+    /* The horizontal track inside the timeline */
+    .timeline-track {
+      display: flex;
+      align-items: center;
+      position: relative;
+      min-width: max-content;
+      padding: 60px 40px 20px;
+      gap: 0;
+    }
+
+    /* Central horizontal line */
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, #e0d8d0 40px, #e0d8d0 calc(100% - 40px), transparent);
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+
+    /* Each event node wrapper */
+    .tl-node {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 220px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    /* Alternate cards above/below the line */
+    .tl-node:nth-child(odd) {
+      flex-direction: column;
+      padding-bottom: 60px;
+    }
+
+    .tl-node:nth-child(even) {
+      flex-direction: column-reverse;
+      padding-top: 60px;
+    }
+
+    /* The dot on the line */
+    .tl-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2.5px solid #ccc;
+      z-index: 2;
+      flex-shrink: 0;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      margin: 8px 0;
+    }
+
+    .tl-node:hover .tl-dot {
+      border-color: #ff6b35;
+      background: #ff6b35;
+      transform: scale(1.3);
+    }
+
+    /* Connector line from dot to card */
+    .tl-connector {
+      width: 1.5px;
+      height: 36px;
+      background: #ddd;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .tl-node:hover .tl-connector {
       background: #ff6b35;
     }
 
-    .app-links {
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    /* The card */
+    .tl-card {
+      background: #fff;
+      border: 1px solid #ece8e2;
+      width: 180px;
+      padding: 14px 16px;
+      flex-shrink: 0;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
     }
 
-    .app-link {
-      background: #000;
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
+    .tl-node:hover .tl-card {
+      border-color: #ff6b35;
+      box-shadow: 0 4px 20px rgba(255, 107, 53, 0.10);
+      transform: translateY(-3px);
+    }
+
+    .tl-date {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #ff6b35;
+      font-family: 'Georgia', serif;
+      margin-bottom: 6px;
+    }
+
+    .tl-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #111;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .tl-venue {
+      font-size: 11px;
+      color: #888;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .tl-venue i {
+      color: #ff6b35;
+      font-size: 10px;
+    }
+
+    .tl-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tl-cat {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      background: #fff5f1;
+      color: #ff6b35;
+      border: 1px solid #ffd5c2;
+    }
+
+    .tl-fee {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .tl-featured {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      background: #fffbeb;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+
+    /* hidden node when filtered */
+    .tl-node.hidden {
+      display: none;
+    }
+
+
+    /* ==================== EVENT MODAL ==================== */
+    .event-modal-content {
+      max-width: 680px;
+      border: none;
+      overflow: hidden;
+    }
+
+    .event-modal-hero {
+      position: relative;
+      height: 260px;
+      background: #111 center/cover no-repeat;
+    }
+
+    .event-modal-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.15) 60%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px 32px;
+      gap: 8px;
+    }
+
+    .event-modal-cat {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #ff6b35;
+      background: rgba(255, 107, 53, 0.15);
+      border: 1px solid rgba(255, 107, 53, 0.4);
+      padding: 3px 10px;
+      align-self: flex-start;
+    }
+
+    .event-modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    .event-modal-body {
+      padding: 28px 32px 32px;
+      background: #fff;
+    }
+
+    .event-modal-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .event-meta-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: #444;
+      background: #f6f3ef;
+      padding: 7px 14px;
+      border: 1px solid #ece8e2;
+    }
+
+    .event-meta-chip i {
+      color: #ff6b35;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .fee-chip.free-chip {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    .fee-chip.free-chip i,
+    .fee-chip.free-chip span {
+      color: #16a34a;
+    }
+
+    .event-modal-desc {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.85;
+      margin-bottom: 24px;
+      border-top: 1px solid #f0ede8;
+      padding-top: 20px;
+    }
+
+    .event-modal-footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .event-recurring-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #888;
+      border: 1px solid #e5e1db;
+      padding: 5px 12px;
+    }
+
+    .event-recurring-badge i {
+      color: #ff6b35;
+      font-size: 11px;
+    }
+
+    .event-modal-website {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #ff6b35;
+      border: 1.5px solid #ff6b35;
+      padding: 8px 20px;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .event-modal-website:hover {
+      background: #ff6b35;
+      color: #fff;
+    }
+
+    .event-modal-website.hidden {
+      display: none;
+    }
+
+    /* ==================== FOOTER ==================== */
+    #footer {
+      background: #080808;
+      border-top: 1px solid #1e1e1e;
+      padding: 70px 0 0;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px 60px;
+      display: grid;
+      grid-template-columns: 1.8fr 1fr 1fr 1.2fr;
+      gap: 48px;
+    }
+
+    .footer-logo {
+      font-family: 'Georgia', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: #ff6b35;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .footer-tagline {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.8;
+    }
+
+    .footer-heading {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #ff6b35;
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .footer-links li a {
       display: flex;
       align-items: center;
       gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #666;
       text-decoration: none;
-      border: 1px solid #333;
-      font-size: 0.8rem;
+      border-bottom: 1px solid #111;
+      transition: color 0.2s, padding-left 0.2s;
     }
 
-    .app-link:hover {
+    .footer-links li a i {
+      font-size: 13px;
+      color: #ff6b35;
+      width: 16px;
+      flex-shrink: 0;
+    }
+
+    .footer-links li a:hover {
+      color: #fff;
+      padding-left: 4px;
+    }
+
+    .footer-socials {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .social-btn {
+      width: 38px;
+      height: 38px;
+      border: 1px solid #2a2a2a;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 15px;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .social-btn:hover {
       border-color: #ff6b35;
+      color: #ff6b35;
+      background: rgba(255, 107, 53, 0.06);
+    }
+
+    .footer-contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #ff6b35;
+      border: 2px solid #ff6b35;
+      padding: 10px 22px;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .footer-contact-btn:hover {
+      background: #ff6b35;
+      color: #fff;
     }
 
     .footer-bottom {
+      border-top: 1px solid #161616;
+      padding: 20px 40px;
       text-align: center;
-      margin-top: 50px;
-      padding-top: 20px;
-      border-top: 1px solid #333;
-      color: #777;
-      font-size: 0.85rem;
+    }
+
+    .footer-bottom p {
+      font-size: 12px;
+      color: #333;
+      letter-spacing: 0.5px;
     }
 
     /* ==================== RESPONSIVE ==================== */
@@ -904,6 +1365,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- ==================== NAVBAR ==================== -->
@@ -923,16 +1385,17 @@
 
   <!-- ==================== SIDEBAR ==================== -->
   <div class="sidebar" id="sidebar">
-    <div class="close-btn" id="close-sidebar">×</div>
+    <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
+    <p class="sidebar-tagline">Discover Incredible India</p>
     <ul class="sidebar-links">
-      <li><a href="#"><i class="fas fa-map-marker-alt"></i> Destination</a></li>
-      <li><a href="#"><i class="fas fa-star"></i> Experiences</a></li>
-      <li><a href="#"><i class="fas fa-calendar-check"></i> Plan Your Trip</a></li>
-      <li><a href="#"><i class="fas fa-globe"></i> Content Hub</a></li>
-      <li><a href="#"><i class="fas fa-heart"></i> Travel for Life</a></li>
-      <li><a href="#"><i class="fas fa-palette"></i> Colours of India</a></li>
-      <li><a href="#"><i class="fas fa-question-circle"></i> FAQ</a></li>
-      <li><a href="#"><i class="fas fa-envelope"></i> Contact Us</a></li>
+      <li><a href="../destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+      <li><a href="../experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+      <li><a href="../travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+      <li><a href="../colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+      <li><a href="../itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+      <li><a href="../medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+      <li><a href="../faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+      <li><a href="../contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
     </ul>
   </div>
   <div class="overlay" id="overlay"></div>
@@ -943,6 +1406,7 @@
     <div class="progress-dot" data-panel="1"></div>
     <div class="progress-dot" data-panel="2"></div>
     <div class="progress-dot" data-panel="3"></div>
+    <div class="progress-dot" data-panel="4"></div>
   </div>
 
   <!-- ==================== HORIZONTAL SCROLL ==================== -->
@@ -953,7 +1417,7 @@
         <!-- PANEL 1: VIDEO -->
         <div class="panel video-panel">
           <video id="heroVideo" autoplay muted loop playsinline>
-            <source src="../styling/stateimages/gujarat-intro.mp4" type="video/mp4">
+            <source src="../styling/stateimages/gujarat-intro.mkv" type="video/mp4">
           </video>
           <div class="video-overlay">
             <h1 class="video-title"></h1>
@@ -981,7 +1445,18 @@
           </div>
         </div>
 
-        <!-- PANEL 4: ARTS & CRAFTS -->
+        <!-- PANEL 4: EVENTS TIMELINE -->
+        <div class="panel events-panel">
+          <h2 class="panel-title">Events &amp; Festivals</h2>
+          <div class="events-timeline-wrap">
+            <div class="events-category-bar" id="eventsCategoryBar"></div>
+            <div class="events-timeline" id="eventsTimeline">
+              <div class="events-loading"><i class="fas fa-circle-notch fa-spin"></i> Loading events…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL 5: ARTS & CRAFTS -->
         <div class="panel arts-panel">
           <h2 class="panel-title">Arts & Crafts of Gujarat</h2>
           <div class="crafts-grid" id="craftsGrid"></div>
@@ -992,70 +1467,53 @@
   </div>
 
   <!-- ==================== FOOTER ==================== -->
-  <footer>
-    <div class="footer-grid">
-      <div class="footer-section">
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">About Us</a></li>
-          <li><a href="#">Destinations</a></li>
-          <li><a href="#">Contact Us</a></li>
+  <footer id="footer">
+    <div class="footer-inner">
+
+      <!-- Brand -->
+      <div class="footer-brand">
+        <a href="../index.html" class="footer-logo">BHARAT YATRA</a>
+        <p class="footer-tagline">Discover the incredible beauty<br>and diversity of India.</p>
+      </div>
+
+      <!-- Explore -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Explore</h4>
+        <ul class="footer-links">
+          <li><a href="../destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+          <li><a href="../experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+          <li><a href="../travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+          <li><a href="../colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
         </ul>
       </div>
 
-      <div class="footer-section">
-        <h3>Medical Tourism</h3>
-        <ul>
-          <li><a href="#">Medical Tourism</a></li>
-          <li><a href="#">SEPC Medical Tourism</a></li>
-          <li><a href="#">Wellness Centers</a></li>
-          <li><a href="#">Yoga Retreats</a></li>
+      <!-- Plan -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Plan</h4>
+        <ul class="footer-links">
+          <li><a href="../itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+          <li><a href="../medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+          <li><a href="../faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
         </ul>
       </div>
 
-      <div class="footer-section">
-        <h3>Special Hospitals</h3>
-        <ul>
-          <li><a href="#">AIIMS Delhi</a></li>
-          <li><a href="#">Apollo Hospitals</a></li>
-          <li><a href="#">Fortis Healthcare</a></li>
-          <li><a href="#">Medanta Hospital</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-section">
-        <h3>Experiences</h3>
-        <ul>
-          <li><a href="#">Cultural Tours</a></li>
-          <li><a href="#">Luxury Travel</a></li>
-          <li><a href="#">Eco Tourism</a></li>
-          <li><a href="#">Wildlife Safari</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-section">
-        <h3>Follow & App</h3>
-        <div class="footer-social">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-youtube"></i></a>
+      <!-- Connect -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Follow Us</h4>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="social-btn" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
         </div>
-        <div class="app-links">
-          <a href="#" class="app-link">
-            <i class="fab fa-google-play"></i>
-            <div><small>Get it on</small><br>Google Play</div>
-          </a>
-          <a href="#" class="app-link">
-            <i class="fab fa-apple"></i>
-            <div><small>Download on</small><br>App Store</div>
-          </a>
-        </div>
+        <a href="../contactus.html" class="footer-contact-btn">
+          <i class="fas fa-envelope"></i> Contact Us
+        </a>
       </div>
+
     </div>
     <div class="footer-bottom">
-      <p>© 2026 Bharat Yatra - Incredible India. All Rights Reserved.</p>
+      <p>&copy; 2025 BharatYatra. All rights reserved.</p>
     </div>
   </footer>
 
@@ -1079,6 +1537,34 @@
       <div class="modal-body">
         <h2 id="craftModalName"></h2>
         <p id="craftModalDescription"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== EVENT MODAL ==================== -->
+  <div class="modal" id="eventModal">
+    <div class="modal-content event-modal-content">
+      <button class="modal-close" onclick="closeModal('eventModal')">&#215;</button>
+      <div class="event-modal-hero" id="eventModalHero">
+        <div class="event-modal-hero-overlay">
+          <span class="event-modal-cat" id="eventModalCat"></span>
+          <h2 class="event-modal-title" id="eventModalTitle"></h2>
+        </div>
+      </div>
+      <div class="event-modal-body">
+        <div class="event-modal-meta-row">
+          <div class="event-meta-chip"><i class="fas fa-calendar-alt"></i><span id="eventModalDates"></span></div>
+          <div class="event-meta-chip"><i class="fas fa-map-marker-alt"></i><span id="eventModalVenue"></span></div>
+          <div class="event-meta-chip fee-chip" id="eventModalFeeChip"><i class="fas fa-ticket-alt"></i><span
+              id="eventModalFee"></span></div>
+        </div>
+        <p class="event-modal-desc" id="eventModalDesc"></p>
+        <div class="event-modal-footer-row">
+          <div id="eventModalRecurring"></div>
+          <a class="event-modal-website" id="eventModalWebsite" href="#" target="_blank" rel="noopener">
+            <i class="fas fa-external-link-alt"></i> Official Website
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -1110,6 +1596,13 @@
 
     closeBtn.addEventListener('click', closeSidebar);
     overlay.addEventListener('click', closeSidebar);
+
+    // Close any modal when clicking the dark backdrop
+    document.querySelectorAll('.modal').forEach(m => {
+      m.addEventListener('click', (e) => {
+        if (e.target === m) closeModal(m.id);
+      });
+    });
 
     // ==================== MUTE/UNMUTE VIDEO ====================
     const video = document.getElementById('heroVideo');
@@ -1261,7 +1754,7 @@
       document.getElementById('modalDescription').textContent = attraction.description || attraction.short_description || '';
 
       let infoHtml = '';
-      
+
       if (attraction.entry_fee !== undefined && attraction.entry_fee !== null) {
         infoHtml += `
           <div class="info-item">
@@ -1273,7 +1766,7 @@
           </div>
         `;
       }
-      
+
       if (attraction.estimated_time_hours) {
         infoHtml += `
           <div class="info-item">
@@ -1285,7 +1778,7 @@
           </div>
         `;
       }
-      
+
       if (attraction.best_time_note) {
         infoHtml += `
           <div class="info-item">
@@ -1297,7 +1790,7 @@
           </div>
         `;
       }
-      
+
       if (attraction.address || attraction.city) {
         infoHtml += `
           <div class="info-item">
@@ -1309,7 +1802,7 @@
           </div>
         `;
       }
-      
+
       if (attraction.contact_phone) {
         infoHtml += `
           <div class="info-item">
@@ -1321,7 +1814,7 @@
           </div>
         `;
       }
-      
+
       if (attraction.guide_available) {
         infoHtml += `
           <div class="info-item">
@@ -1377,41 +1870,221 @@
     });
 
     // ==================== HORIZONTAL SCROLL (GSAP) ====================
+
+    // ==================== LOAD EVENTS ====================
+    const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    function formatDateRange(from, to) {
+      const d1 = new Date(from), d2 = new Date(to);
+      const m1 = MONTH_SHORT[d1.getUTCMonth()], m2 = MONTH_SHORT[d2.getUTCMonth()];
+      const day1 = d1.getUTCDate(), day2 = d2.getUTCDate();
+      if (m1 === m2) return `${day1}–${day2} ${m1}`;
+      return `${day1} ${m1} – ${day2} ${m2}`;
+    }
+
+    let allEvents = [];
+
+    async function loadEvents() {
+      const { data, error } = await supabaseClient
+        .from('events')
+        .select('*')
+        .eq('state_id', 1)
+        .order('date_from', { ascending: true });
+
+      if (error || !data || data.length === 0) {
+        document.getElementById('eventsTimeline').innerHTML =
+          '<div class="events-loading">No events found for Gujarat.</div>';
+        return;
+      }
+
+      allEvents = data;
+      buildCategoryPills(data);
+      renderTimeline(data);
+    }
+
+    function buildCategoryPills(events) {
+      const bar = document.getElementById('eventsCategoryBar');
+      const cats = ['All', ...new Set(events.map(e => e.category))];
+      bar.innerHTML = cats.map((c, i) =>
+        `<button class="cat-pill ${i === 0 ? 'active' : ''}" data-cat="${c}">${c}</button>`
+      ).join('');
+
+      bar.querySelectorAll('.cat-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          bar.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          const cat = pill.dataset.cat;
+          filterTimeline(cat);
+        });
+      });
+    }
+
+    function filterTimeline(cat) {
+      document.querySelectorAll('.tl-node').forEach(node => {
+        if (cat === 'All' || node.dataset.cat === cat) {
+          node.classList.remove('hidden');
+        } else {
+          node.classList.add('hidden');
+        }
+      });
+    }
+
+    function renderTimeline(events) {
+      const container = document.getElementById('eventsTimeline');
+      const track = document.createElement('div');
+      track.className = 'timeline-track';
+
+      events.forEach(ev => {
+        const node = document.createElement('div');
+        node.className = 'tl-node';
+        node.dataset.cat = ev.category;
+
+        const feeLabel = ev.entry_fee == null
+          ? '<span class="tl-fee">Free</span>'
+          : `<span class="tl-fee">&#8377;${ev.entry_fee.toLocaleString()}</span>`;
+
+        const featuredBadge = ev.is_featured
+          ? '<span class="tl-featured">&#9733; Featured</span>'
+          : '';
+
+        node.innerHTML = `
+          <div class="tl-card">
+            <div class="tl-date">${formatDateRange(ev.date_from, ev.date_to)}</div>
+            <div class="tl-name">${ev.name}</div>
+            <div class="tl-venue"><i class="fas fa-map-pin"></i>${ev.city_venue}</div>
+            <div class="tl-badges">
+              <span class="tl-cat">${ev.category}</span>
+              ${feeLabel}
+              ${featuredBadge}
+            </div>
+          </div>
+          <div class="tl-connector"></div>
+          <div class="tl-dot"></div>
+          <div class="tl-connector"></div>
+        `;
+
+        node.addEventListener('click', () => openEventModal(ev));
+        track.appendChild(node);
+      });
+
+      container.innerHTML = '';
+      container.appendChild(track);
+    }
+
+    // ==================== OPEN EVENT MODAL ====================
+    function openEventModal(ev) {
+      const MONTH_FULL = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+
+      function fullDate(str) {
+        const d = new Date(str);
+        return `${d.getUTCDate()} ${MONTH_FULL[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+      }
+
+      // Hero image
+      const hero = document.getElementById('eventModalHero');
+      if (ev.image_url) {
+        hero.style.backgroundImage = `url('${ev.image_url}')`;
+      } else {
+        hero.style.backgroundImage = `linear-gradient(135deg, #1a1a1a 0%, #3d1a00 100%)`;
+      }
+
+      // Title & category
+      document.getElementById('eventModalCat').textContent = ev.category;
+      document.getElementById('eventModalTitle').textContent = ev.name;
+
+      // Dates
+      const sameDay = ev.date_from === ev.date_to;
+      document.getElementById('eventModalDates').textContent = sameDay
+        ? fullDate(ev.date_from)
+        : `${fullDate(ev.date_from)} — ${fullDate(ev.date_to)}`;
+
+      // Venue
+      document.getElementById('eventModalVenue').textContent = ev.city_venue;
+
+      // Fee
+      const feeChip = document.getElementById('eventModalFeeChip');
+      const feeSpan = document.getElementById('eventModalFee');
+      if (ev.entry_fee == null) {
+        feeSpan.textContent = 'Free Entry';
+        feeChip.classList.add('free-chip');
+      } else {
+        feeSpan.textContent = `₹${ev.entry_fee.toLocaleString()} entry`;
+        feeChip.classList.remove('free-chip');
+      }
+
+      // Description
+      document.getElementById('eventModalDesc').textContent = ev.description || '';
+
+      // Recurring badge
+      const recurringEl = document.getElementById('eventModalRecurring');
+      recurringEl.innerHTML = ev.is_recurring
+        ? '<span class="event-recurring-badge"><i class="fas fa-redo"></i> Annual event</span>'
+        : '';
+
+      // Website link
+      const websiteEl = document.getElementById('eventModalWebsite');
+      if (ev.website_url) {
+        websiteEl.href = ev.website_url;
+        websiteEl.classList.remove('hidden');
+      } else {
+        websiteEl.classList.add('hidden');
+      }
+
+      document.getElementById('eventModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
     function initHorizontalScroll() {
       if (window.innerWidth > 1024) {
-        const panels = gsap.utils.toArray(".panel");
-        
-        gsap.to(panels, {
-          xPercent: -100 * (panels.length - 1),
+        const track       = document.querySelector(".track");
+        const panels      = gsap.utils.toArray(".panel");
+
+        // Total px to scroll = full content width minus one viewport
+        // This naturally accounts for any panel that is wider than 100vw
+        const totalScroll = () => track.scrollWidth - window.innerWidth;
+
+        // Animate the track itself, not individual panels.
+        // A single x tween on the track is equivalent to scrolling all panels.
+        gsap.to(track, {
+          x: () => -totalScroll(),
           ease: "none",
           scrollTrigger: {
             trigger: ".horizontal",
             pin: true,
             scrub: 1,
-            end: () => "+=" + (window.innerWidth * panels.length),
+            end: () => "+=" + totalScroll(),
+            invalidateOnRefresh: true,
             onUpdate: (self) => {
-              const progress = self.progress;
-              const currentPanel = Math.floor(progress * panels.length);
-              
-              document.querySelectorAll('.progress-dot').forEach((dot, index) => {
-                if (index === currentPanel) {
-                  dot.classList.add('active');
-                } else {
-                  dot.classList.remove('active');
+              // Work out which panel the viewport centre is over
+              const scrolled = self.progress * totalScroll();
+              let cumulative = 0;
+              let active = 0;
+              for (let i = 0; i < panels.length; i++) {
+                cumulative += panels[i].offsetWidth;
+                if (scrolled < cumulative - panels[i].offsetWidth * 0.5) {
+                  active = i;
+                  break;
                 }
+                active = i;
+              }
+              document.querySelectorAll('.progress-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === active);
               });
             }
           }
         });
 
+        // Dot click — jump to the start of that panel
         document.querySelectorAll('.progress-dot').forEach((dot, index) => {
           dot.addEventListener('click', () => {
-            const scrollDistance = (index / panels.length) * (window.innerWidth * panels.length);
-            gsap.to(window, {
-              scrollTo: scrollDistance,
-              duration: 1,
-              ease: "power2.inOut"
-            });
+            let offset = 0;
+            for (let i = 0; i < index; i++) offset += panels[i].offsetWidth;
+            const st = ScrollTrigger.getAll()[0];
+            if (st) {
+              const targetScroll = st.start + (offset / totalScroll()) * (st.end - st.start);
+              gsap.to(window, { scrollTo: targetScroll, duration: 1, ease: "power2.inOut" });
+            }
           });
         });
       }
@@ -1422,7 +2095,8 @@
       loadAttractions();
       loadDistricts();
       loadCrafts();
-      
+      loadEvents();
+
       setTimeout(() => {
         initHorizontalScroll();
       }, 100);
@@ -1437,4 +2111,5 @@
     });
   </script>
 </body>
+
 </html>

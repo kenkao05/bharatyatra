@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical — BharatYatra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+    /* ── SHARED STYLES (inlined from style.css) ── */
+:root {
+    --black:  #000000;
+    --red:    #C0392B;
+    --white:  #FFFFFF;
+    --grey:   #1a1a1a;
+    --muted:  #999999;
+    --sidebar-width: 320px;
+}
+
+/* ── RESET ─────────────────────────────────────── */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    overflow-x: hidden;
+}
+
+body.no-scroll { overflow: hidden; }
+
+/* ── LOADING SCREEN ─────────────────────────────── */
+#loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.7s ease;
+}
+
+#loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+    color: var(--white);
+    letter-spacing: 3px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+#loader-text.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── NAVBAR ─────────────────────────────────────── */
+#navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 10px 0;
+
+    /* ── TRANSLUCENCY CONTROLS ─────────────────────
+       Adjust the last value (0.0 – 1.0) to change opacity:
+       0.0 = fully transparent | 0.5 = half | 1.0 = solid black
+       ─────────────────────────────────────────── */
+    background: rgba(10, 10, 10, 0.55); /* ← change 0.55 to adjust translucency */
+
+    backdrop-filter: blur(12px);        /* ← change blur amount (0px = no blur) */
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.4s ease;
+}
+
+#navbar.scrolled {
+    background: rgba(8, 8, 8, 0.92);   /* ← opacity when scrolled */
+    box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-style: normal;
+    color: #ff6b35;
+    text-decoration: none;
+    letter-spacing: 3px;
+    flex-shrink: 0;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    color: #969696;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 4px 6px;
+    line-height: 1;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.menu-btn:hover {
+    color: #ff6b35;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────── */
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: calc(-1 * var(--sidebar-width));
+    width: var(--sidebar-width);
+    height: 100%;
+    background: var(--black);
+    z-index: 2000;
+    overflow-y: auto;
+    padding: 50px 36px 40px;
+    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 1px solid #222;
+}
+
+.sidebar.active {
+    right: 0;
+}
+
+.close-btn {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: var(--white);
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: var(--red);
+}
+
+.sidebar-tagline {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #222;
+}
+
+.sidebar-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar-links li a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    color: #cccccc;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #111;
+    transition: color 0.25s, padding-left 0.25s;
+}
+
+.sidebar-links li a i {
+    font-size: 16px;
+    width: 20px;
+    color: var(--red);
+    flex-shrink: 0;
+}
+
+.sidebar-links li a:hover {
+    color: var(--white);
+    padding-left: 6px;
+}
+
+/* ── OVERLAY ─────────────────────────────────────── */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+#footer {
+    background: #080808;
+    border-top: 1px solid #1e1e1e;
+    padding: 70px 0 0;
+}
+
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr 1.2fr;
+    gap: 48px;
+}
+
+.footer-logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #ff6b35;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.footer-tagline {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.8;
+}
+
+.footer-heading {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #ff6b35;
+    margin-bottom: 20px;
+}
+
+.footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.footer-links li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #666;
+    text-decoration: none;
+    border-bottom: 1px solid #111;
+    transition: color 0.2s, padding-left 0.2s;
+}
+
+.footer-links li a i {
+    font-size: 13px;
+    color: #ff6b35;
+    width: 16px;
+    flex-shrink: 0;
+}
+
+.footer-links li a:hover {
+    color: var(--white);
+    padding-left: 4px;
+}
+
+.footer-socials {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.social-btn {
+    width: 38px;
+    height: 38px;
+    border: 1px solid #2a2a2a;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 15px;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.social-btn:hover {
+    border-color: #ff6b35;
+    color: #ff6b35;
+    background: rgba(255,107,53,0.06);
+}
+
+.footer-contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ff6b35;
+    border: 2px solid #ff6b35;
+    padding: 10px 22px;
+    transition: background 0.25s, color 0.25s;
+}
+
+.footer-contact-btn:hover {
+    background: #ff6b35;
+    color: var(--white);
+}
+
+.footer-bottom {
+    border-top: 1px solid #161616;
+    padding: 20px 40px;
+    text-align: center;
+}
+
+.footer-bottom p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #333;
+    letter-spacing: 0.5px;
+}
+
+/* ── MOBILE ──────────────────────────────────────── */
+@media (max-width: 768px) {
+    :root {
+        --sidebar-width: 100%;
+    }
+
+    .logo { font-size: 18px; }
+    .menu-btn { font-size: 20px; }
+}
+    </style>
+
+    <style>
+        /* ── HERO ── */
+        #med-hero {
+            position: relative;
+            height: 52vh;
+            min-height: 340px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            overflow: hidden;
+            background: #0b0b0b;
+        }
+        .med-hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 70% 40%, rgba(255,107,53,0.12) 0%, transparent 60%),
+                linear-gradient(160deg, #0b0b0b 0%, #1a0a06 100%);
+            z-index: 0;
+        }
+        .med-hero-cross {
+            position: absolute;
+            right: 8%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            opacity: 0.07;
+        }
+        .med-hero-cross svg { width: 280px; height: 280px; }
+        .med-hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 60px 60px;
+            max-width: 900px;
+        }
+        .med-eyebrow {
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #ff6b35;
+            display: block;
+            margin-bottom: 14px;
+        }
+        #med-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.6rem, 6vw, 5rem);
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2px;
+            line-height: 1.05;
+        }
+        #med-hero h1 span { color: #ff6b35; }
+        .med-hero-sub {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            color: rgba(255,255,255,0.45);
+            margin-top: 14px;
+            letter-spacing: 0.5px;
+        }
+        .med-hero-border { height: 4px; background: #ff6b35; }
+
+        /* ── MAIN ── */
+        #med-main {
+            background: #f2f0ed;
+            padding: 60px 24px 100px;
+        }
+        .med-inner { max-width: 1100px; margin: 0 auto; }
+
+        /* ── FILTER PANEL ── */
+        .med-filter-panel {
+            background: #ffffff;
+            border-top: 3px solid #ff6b35;
+            padding: 32px 36px;
+            display: flex;
+            align-items: flex-end;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        }
+        .med-filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-width: 180px;
+        }
+        .med-filter-group label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #999;
+        }
+        .med-filter-group select {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #111;
+            border: 1px solid #ddd;
+            border-radius: 0;
+            padding: 11px 36px 11px 14px;
+            background: #fafafa;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ff6b35' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            transition: border-color 0.2s;
+        }
+        .med-filter-group select:focus { outline: none; border-color: #ff6b35; }
+        .med-search-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1.5;
+            min-width: 220px;
+        }
+        .med-search-group label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #999;
+        }
+        .med-search-wrap { position: relative; }
+        .med-search-wrap input {
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #111;
+            border: 1px solid #ddd;
+            border-radius: 0;
+            padding: 11px 14px 11px 40px;
+            background: #fafafa;
+            transition: border-color 0.2s;
+        }
+        .med-search-wrap input:focus { outline: none; border-color: #ff6b35; }
+        .med-search-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ff6b35;
+            font-size: 14px;
+        }
+        .med-filter-btn {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #ff6b35;
+            border: 2px solid #ff6b35;
+            background: transparent;
+            padding: 11px 28px;
+            cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+            white-space: nowrap;
+            align-self: flex-end;
+        }
+        .med-filter-btn:hover { background: #ff6b35; color: #ffffff; }
+
+        /* ── NOTICE ── */
+        .med-notice {
+            background: rgba(255,107,53,0.07);
+            border-left: 4px solid #ff6b35;
+            padding: 18px 24px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .med-notice i { color: #ff6b35; font-size: 18px; margin-top: 1px; flex-shrink: 0; }
+        .med-notice p { font-family: 'Poppins', sans-serif; font-size: 13px; color: #555; line-height: 1.7; }
+        .med-notice strong { color: #000; }
+
+        /* ── RESULTS HEADER ── */
+        .med-results-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .med-results-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-weight: 700;
+            color: #000;
+        }
+        .med-results-count {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ff6b35;
+        }
+
+        /* ── GRID ── */
+        #med-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .med-state-msg {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .med-state-msg i { font-size: 48px; color: #ddd; display: block; margin-bottom: 16px; }
+        .med-state-msg p { font-family: 'Poppins', sans-serif; font-size: 14px; color: #999; font-style: italic; }
+
+        /* ── HOSPITAL CARD ── */
+        .hosp-card {
+            background: #ffffff;
+            border-top: 3px solid transparent;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            animation: cardIn 0.35s ease both;
+        }
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .hosp-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+            border-top-color: #ff6b35;
+        }
+        .hosp-card-header {
+            padding: 22px 24px 16px;
+            border-bottom: 1px solid #f0eeeb;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .hosp-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            line-height: 1.3;
+            flex: 1;
+        }
+        .hosp-badge {
+            font-family: 'Poppins', sans-serif;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .badge-government  { background: rgba(0,120,212,0.10); color: #0078d4; }
+        .badge-private     { background: rgba(255,107,53,0.10); color: #e55a1a; }
+        .badge-aiims       { background: rgba(22,160,133,0.12); color: #0f8070; }
+        .badge-ayurvedic   { background: rgba(39,174,96,0.12);  color: #1e8a4a; }
+
+        .hosp-card-body {
+            padding: 18px 24px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+        .hosp-row { display: flex; align-items: flex-start; gap: 12px; }
+        .hosp-row > i { color: #ff6b35; font-size: 13px; margin-top: 3px; width: 16px; flex-shrink: 0; }
+        .hosp-row-content { display: flex; flex-direction: column; }
+        .hosp-row-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #bbb;
+            margin-bottom: 1px;
+        }
+        .hosp-row-value { font-family: 'Poppins', sans-serif; font-size: 13px; color: #333; line-height: 1.45; }
+
+        /* Stars */
+        .hosp-stars { display: inline-flex; gap: 2px; margin-left: 6px; vertical-align: middle; }
+        .hosp-stars i { font-size: 11px; color: #ff6b35; }
+        .hosp-stars i.empty { color: #ddd; }
+
+        .hosp-card-footer {
+            padding: 14px 24px;
+            border-top: 1px solid #f0eeeb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .hosp-city {
+            font-family: 'Poppins', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #bbb;
+        }
+        .hosp-call-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #ff6b35;
+            border: 1.5px solid #ff6b35;
+            padding: 7px 14px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .hosp-call-btn:hover { background: #ff6b35; color: #fff; }
+        .hosp-call-btn i { font-size: 11px; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) { #med-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) {
+            .med-hero-content { padding: 0 24px 44px; }
+            .med-filter-panel { padding: 24px 20px; gap: 16px; }
+            .med-filter-group, .med-search-group { min-width: 100%; }
+            .med-filter-btn { width: 100%; text-align: center; }
+            #med-grid { grid-template-columns: 1fr; }
+            .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+            .footer-inner > div:first-child { grid-column: 1 / -1; }
+        }
+        @media (max-width: 480px) { .footer-inner { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <!-- LOADING SCREEN -->
+    <div id="loader">
+        <p id="loader-text">Finding care near you...</p>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">BharatYatra</a>
+            <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
+        <p class="sidebar-tagline">Discover Incredible India</p>
+        <ul class="sidebar-links">
+            <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+            <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+            <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+            <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+            <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+            <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical</a></li>
+            <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            <li><a href="contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+        </ul>
+    </div>
+
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- HERO -->
+    <section id="med-hero">
+        <div class="med-hero-bg"></div>
+        <div class="med-hero-cross">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <rect x="38" y="0"  width="24" height="100" fill="#ff6b35"/>
+                <rect x="0"  y="38" width="100" height="24" fill="#ff6b35"/>
+            </svg>
+        </div>
+        <div class="med-hero-content">
+            <span class="med-eyebrow">Healthcare &amp; Wellness</span>
+            <h1>Medical <span>India</span></h1>
+            <p class="med-hero-sub">Find trusted hospitals &amp; wellness centres across every state — so help is always close.</p>
+        </div>
+    </section>
+    <div class="med-hero-border"></div>
+
+    <!-- MAIN -->
+    <section id="med-main">
+        <div class="med-inner">
+
+            <!-- Filter Panel -->
+            <div class="med-filter-panel">
+                <div class="med-filter-group">
+                    <label for="state-select">State</label>
+                    <select id="state-select">
+                        <option value="">All States</option>
+                        <option value="1">Gujarat</option>
+                        <option value="2">Rajasthan</option>
+                        <option value="3">Kerala</option>
+                        <option value="4">Uttarakhand</option>
+                        <option value="5">Assam</option>
+                    </select>
+                </div>
+
+                <div class="med-filter-group">
+                    <label for="type-select">Hospital Type</label>
+                    <select id="type-select">
+                        <option value="">All Types</option>
+                        <option value="Government">Government</option>
+                        <option value="Private">Private</option>
+                        <option value="AIIMS / Central Govt">AIIMS / Central Govt</option>
+                        <option value="Ayurvedic / AYUSH">Ayurvedic / AYUSH</option>
+                    </select>
+                </div>
+
+                <div class="med-search-group">
+                    <label for="hosp-search">Search</label>
+                    <div class="med-search-wrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="hosp-search" placeholder="Hospital name or city…">
+                    </div>
+                </div>
+
+                <button class="med-filter-btn" id="clear-filters-btn">
+                    <i class="fas fa-times" style="margin-right:6px;"></i>Clear
+                </button>
+            </div>
+
+            <!-- Notice Banner -->
+            <div class="med-notice">
+                <i class="fas fa-info-circle"></i>
+                <p>
+                    <strong>Travel advisory:</strong> Always verify hospital contact details before visiting.
+                    For life-threatening emergencies dial <strong>112</strong> (national emergency) or
+                    <strong>108</strong> (ambulance) anywhere in India.
+                </p>
+            </div>
+
+            <!-- Results Header -->
+            <div class="med-results-header">
+                <h2 class="med-results-title">Hospitals &amp; Wellness Centres</h2>
+                <span class="med-results-count" id="results-count">Loading…</span>
+            </div>
+
+            <!-- Card Grid -->
+            <div id="med-grid">
+                <div class="med-state-msg">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <p>Fetching hospitals…</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div class="footer-inner">
+            <div>
+                <a href="index.html" class="footer-logo">BharatYatra</a>
+                <p class="footer-tagline">Your comprehensive guide to Incredible India — state by state, district by district.</p>
+            </div>
+            <div>
+                <p class="footer-heading">Explore</p>
+                <ul class="footer-links">
+                    <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i>Destinations</a></li>
+                    <li><a href="experiences.html"><i class="fas fa-star"></i>Experiences</a></li>
+                    <li><a href="itinerary.html"><i class="fas fa-route"></i>Itinerary</a></li>
+                    <li><a href="colors.html"><i class="fas fa-palette"></i>Colors of India</a></li>
+                </ul>
+            </div>
+            <div>
+                <p class="footer-heading">Support</p>
+                <ul class="footer-links">
+                    <li><a href="medical.html"><i class="fas fa-hospital-alt"></i>Medical</a></li>
+                    <li><a href="faq.html"><i class="fas fa-question-circle"></i>FAQ</a></li>
+                    <li><a href="travelforlife.html"><i class="fas fa-heart"></i>Travel for Life</a></li>
+                    <li><a href="contactus.html"><i class="fas fa-envelope"></i>Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <p class="footer-heading">Connect</p>
+                <div class="footer-socials">
+                    <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+                </div>
+                <a href="contactus.html" class="footer-contact-btn">
+                    <i class="fas fa-envelope"></i> Get in Touch
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 BharatYatra. Proudly supporting India's Travel for Life initiative.</p>
+        </div>
+    </footer>
+
+    <!-- Supabase JS v2 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        /* ─────────────────────────────────────────────────────────
+           SUPABASE CONFIG
+           Replace with your actual values, or source from
+           /assets/js/supabase.js if you have a shared init file.
+        ───────────────────────────────────────────────────────── */
+        const SUPABASE_URL = 'https://gtpnojbbamoaznlutxap.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE';
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        /* ── STATE ── */
+        let allHospitals = [];
+
+        /* ── DOM REFS ── */
+        const grid        = document.getElementById('med-grid');
+        const countEl     = document.getElementById('results-count');
+        const stateSelect = document.getElementById('state-select');
+        const typeSelect  = document.getElementById('type-select');
+        const searchInput = document.getElementById('hosp-search');
+        const clearBtn    = document.getElementById('clear-filters-btn');
+
+        /* ── LOADER ── */
+        window.addEventListener('load', () => {
+            document.getElementById('loader-text').classList.add('visible');
+            setTimeout(() => document.getElementById('loader').classList.add('hidden'), 900);
+        });
+
+        /* ── NAVBAR scroll ── */
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        /* ── SIDEBAR ── */
+        const sidebar  = document.getElementById('sidebar');
+        const overlay  = document.getElementById('overlay');
+        document.getElementById('open-sidebar').addEventListener('click',  () => {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+            document.body.classList.add('no-scroll');
+        });
+        function closeSidebar() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
+        document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        /* ── HELPERS ── */
+        function badgeClass(type) {
+            if (!type) return 'badge-private';
+            const t = type.toLowerCase();
+            if (t.includes('aiims') || t.includes('central')) return 'badge-aiims';
+            if (t.includes('government'))                       return 'badge-government';
+            if (t.includes('ayurvedic') || t.includes('ayush')) return 'badge-ayurvedic';
+            return 'badge-private';
+        }
+
+        function renderStars(rating) {
+            const full  = Math.floor(rating);
+            const half  = (rating - full) >= 0.5;
+            const empty = 5 - full - (half ? 1 : 0);
+            let h = '<span class="hosp-stars">';
+            for (let i = 0; i < full;  i++) h += '<i class="fas fa-star"></i>';
+            if (half)                        h += '<i class="fas fa-star-half-alt"></i>';
+            for (let i = 0; i < empty; i++) h += '<i class="far fa-star empty"></i>';
+            return h + '</span>';
+        }
+
+        /* ── RENDER ── */
+        function renderCards(hospitals) {
+            if (!hospitals.length) {
+                grid.innerHTML = `
+                    <div class="med-state-msg">
+                        <i class="fas fa-hospital"></i>
+                        <p>No hospitals found for the selected filters.</p>
+                    </div>`;
+                countEl.textContent = '0 results';
+                return;
+            }
+
+            countEl.textContent = `${hospitals.length} result${hospitals.length !== 1 ? 's' : ''}`;
+
+            grid.innerHTML = hospitals.map((h, idx) => `
+                <div class="hosp-card" style="animation-delay:${idx * 0.05}s">
+                    <div class="hosp-card-header">
+                        <p class="hosp-name">${h.name}</p>
+                        <span class="hosp-badge ${badgeClass(h.type)}">${h.type}</span>
+                    </div>
+                    <div class="hosp-card-body">
+                        <div class="hosp-row">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="hosp-row-content">
+                                <span class="hosp-row-label">Address</span>
+                                <span class="hosp-row-value">${h.address}</span>
+                            </div>
+                        </div>
+                        <div class="hosp-row">
+                            <i class="fas fa-star"></i>
+                            <div class="hosp-row-content">
+                                <span class="hosp-row-label">Rating</span>
+                                <span class="hosp-row-value">
+                                    ${h.rating ? h.rating.toFixed(1) + renderStars(h.rating) : 'Not rated'}
+                                </span>
+                            </div>
+                        </div>
+                        ${h.contact_phone ? `
+                        <div class="hosp-row">
+                            <i class="fas fa-phone-alt"></i>
+                            <div class="hosp-row-content">
+                                <span class="hosp-row-label">Phone</span>
+                                <span class="hosp-row-value">${h.contact_phone}</span>
+                            </div>
+                        </div>` : ''}
+                    </div>
+                    <div class="hosp-card-footer">
+                        <span class="hosp-city">
+                            <i class="fas fa-city" style="margin-right:5px;color:#ccc;font-size:10px;"></i>
+                            ${h.city || ''}
+                        </span>
+                        ${h.contact_phone
+                            ? `<a href="tel:${h.contact_phone.replace(/\D/g,'')}" class="hosp-call-btn">
+                                    <i class="fas fa-phone-alt"></i> Call
+                               </a>`
+                            : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ── FILTER ── */
+        function applyFilters() {
+            const sv = stateSelect.value;
+            const tv = typeSelect.value.toLowerCase();
+            const qv = searchInput.value.toLowerCase().trim();
+
+            const result = allHospitals.filter(h => {
+                const okState  = !sv || String(h.state_id) === sv;
+                const okType   = !tv || h.type.toLowerCase() === tv;
+                const okSearch = !qv ||
+                    h.name.toLowerCase().includes(qv) ||
+                    (h.city    && h.city.toLowerCase().includes(qv))    ||
+                    (h.address && h.address.toLowerCase().includes(qv));
+                return okState && okType && okSearch;
+            });
+
+            renderCards(result);
+        }
+
+        /* ── FETCH ── */
+        async function fetchHospitals() {
+            grid.innerHTML = `
+                <div class="med-state-msg">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <p>Fetching hospitals…</p>
+                </div>`;
+            countEl.textContent = 'Loading…';
+
+            try {
+                const { data, error } = await sb
+                    .from('hospitals')
+                    .select('*')
+                    .order('state_id',  { ascending: true })
+                    .order('rating',    { ascending: false });
+
+                if (error) throw error;
+                allHospitals = data || [];
+                applyFilters();
+            } catch (err) {
+                console.error('Supabase fetch error:', err);
+                grid.innerHTML = `
+                    <div class="med-state-msg">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Could not load hospital data. Check your Supabase configuration.</p>
+                    </div>`;
+                countEl.textContent = '—';
+            }
+        }
+
+        /* ── EVENTS ── */
+        stateSelect.addEventListener('change', applyFilters);
+        typeSelect.addEventListener('change',  applyFilters);
+        searchInput.addEventListener('input',  applyFilters);
+        clearBtn.addEventListener('click', () => {
+            stateSelect.value = '';
+            typeSelect.value  = '';
+            searchInput.value = '';
+            applyFilters();
+        });
+
+        /* ── INIT ── */
+        fetchHospitals();
+    </script>
+
+</body>
+</html>
