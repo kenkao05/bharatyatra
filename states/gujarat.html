@@ -17,7 +17,7 @@
   <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@700&display=swap');
 
     :root {
       --state-primary: #000000;
@@ -44,12 +44,12 @@
     #navbar {
       position: fixed;
       top: 0;
+      left: 0;
       width: 100%;
-      padding: 12px 0;
+      padding: 10px 0;
       z-index: 1000;
-      background: #ffffff;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(252, 176, 69, 0) 0%);
-      transition: var(--transition);
+      background: transparent;
+      transition: background 0.4s ease;
     }
 
     .nav-container {
@@ -62,11 +62,14 @@
     }
 
     .logo {
-      color: #ff6b35;
+      font-family: 'Poppins', sans-serif;
       font-size: 1.8rem;
-      font-weight: bold;
-      letter-spacing: 3px;
+      font-weight: 700;
+      font-style: normal;
+      color: #ff6b35;
       text-decoration: none;
+      letter-spacing: 3px;
+      flex-shrink: 0;
     }
 
     .nav-links {
@@ -101,9 +104,19 @@
     }
 
     .menu-btn {
+      background: none;
+      border: none;
       color: #969696;
       font-size: 1.5rem;
       cursor: pointer;
+      padding: 4px 6px;
+      line-height: 1;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .menu-btn:hover {
+      color: #ff6b35;
     }
 
     /* ==================== SIDEBAR ==================== */
@@ -188,7 +201,41 @@
       padding-left: 6px;
     }
 
-    .overlay {
+    .sidebar-section-label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #444;
+      margin-top: 28px;
+      margin-bottom: 8px;
+      padding-top: 24px;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .sidebar-login-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+      padding: 11px 18px;
+      font-family: 'Georgia', serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-decoration: none;
+      color: #ff6b35;
+      border: 1px solid #ff6b35;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .sidebar-login-btn i { font-size: 13px; }
+
+    .sidebar-login-btn:hover {
+      background: #ff6b35;
+      color: #ffffff;
+    }
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.7);
@@ -576,83 +623,11 @@
       box-shadow: 0 10px 25px rgba(139, 0, 0, 0.4);
     }
 
-    /* ==================== PANEL 4: ARTS & CRAFTS ==================== */
-    .arts-panel {
-      background: #1a1a1a;
-      color: white;
-      padding: 90px 40px;
-      overflow-y: auto;
-    }
-
-    .arts-panel .panel-title {
-      color: var(--state-secondary);
-    }
-
-    .crafts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 25px;
-      grid-auto-rows: 200px;
-    }
-
-    .craft-card {
-      background: #000000;
-      border-radius: 0;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-      border: 2px solid var(--state-accent);
-    }
-
-    .craft-card:nth-child(1) {
-      grid-row: span 2;
-    }
-
-    .craft-card:nth-child(3) {
-      grid-row: span 2;
-    }
-
-    .craft-card:nth-child(5) {
-      grid-row: span 2;
-    }
-
-    .craft-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 40px rgba(139, 0, 0, 0.6);
-    }
-
-    .craft-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: grayscale(0.4) contrast(1.1);
-      transition: var(--transition);
-    }
-
-    .craft-card:hover img {
-      filter: grayscale(0) contrast(1);
-    }
-
-    .craft-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
-      padding: 30px 20px 20px;
-    }
-
-    .craft-card h3 {
-      font-size: 22px;
-      margin-bottom: 5px;
-      color: #ffffff;
-    }
-
-    .craft-card p {
-      font-size: 14px;
-      color: var(--state-accent);
-      font-weight: 600;
+    .buffer-panel {
+      width: 2vw;
+      height: 100vh;
+      flex-shrink: 0;
+      background: #f9f6f2;
     }
 
     /* ==================== MODALS ==================== */
@@ -852,7 +827,7 @@
       align-items: center;
       position: relative;
       min-width: max-content;
-      padding: 60px 40px 20px;
+      padding: 60px 300px 20px 40px;
       gap: 0;
     }
 
@@ -1166,7 +1141,7 @@
       margin: 0 auto;
       padding: 0 40px 60px;
       display: grid;
-      grid-template-columns: 1.8fr 1fr 1fr 1.2fr;
+      grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr;
       gap: 48px;
     }
 
@@ -1337,20 +1312,12 @@
         max-width: 400px;
       }
 
-      .crafts-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
       .scroll-progress {
         display: none;
       }
     }
 
     @media (max-width: 768px) {
-      .crafts-grid {
-        grid-template-columns: 1fr;
-      }
-
       .panel-title {
         font-size: 36px;
       }
@@ -1371,15 +1338,15 @@
   <!-- ==================== NAVBAR ==================== -->
   <nav id="navbar">
     <div class="nav-container">
-      <a href="#" class="logo">BHARAT YATRA</a>
+      <a href="../index.html" class="logo">BharatYatra</a>
       <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
+        <li><a href="../index.html">Home</a></li>
         <li><a href="../districts/gujaratdistrict.html">Districts</a></li>
-        <li><a href="about.html">About Us</a></li>
+        <li><a href="../destination.html">Destinations</a></li>
       </ul>
-      <div class="menu-btn" id="open-sidebar">
+      <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
         <i class="fas fa-bars"></i>
-      </div>
+      </button>
     </div>
   </nav>
 
@@ -1394,9 +1361,17 @@
       <li><a href="../colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
       <li><a href="../itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
       <li><a href="../medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
-      <li><a href="../faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
       <li><a href="../contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
     </ul>
+    <p class="sidebar-section-label">Legal &amp; Support</p>
+    <ul class="sidebar-links">
+      <li><a href="../faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+      <li><a href="../privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+      <li><a href="../terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+    </ul>
+    <a href="../admin/admin-login.html" class="sidebar-login-btn">
+      <i class="fas fa-lock"></i> Admin Login
+    </a>
   </div>
   <div class="overlay" id="overlay"></div>
 
@@ -1406,7 +1381,6 @@
     <div class="progress-dot" data-panel="1"></div>
     <div class="progress-dot" data-panel="2"></div>
     <div class="progress-dot" data-panel="3"></div>
-    <div class="progress-dot" data-panel="4"></div>
   </div>
 
   <!-- ==================== HORIZONTAL SCROLL ==================== -->
@@ -1456,11 +1430,8 @@
           </div>
         </div>
 
-        <!-- PANEL 5: ARTS & CRAFTS -->
-        <div class="panel arts-panel">
-          <h2 class="panel-title">Arts & Crafts of Gujarat</h2>
-          <div class="crafts-grid" id="craftsGrid"></div>
-        </div>
+        <!-- BUFFER: prevents last event card from clipping -->
+        <div class="buffer-panel"></div>
 
       </div>
     </section>
@@ -1497,6 +1468,15 @@
         </ul>
       </div>
 
+      <!-- Legal -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Legal</h4>
+        <ul class="footer-links">
+          <li><a href="../privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+          <li><a href="../terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+
       <!-- Connect -->
       <div class="footer-col">
         <h4 class="footer-heading">Follow Us</h4>
@@ -1526,17 +1506,6 @@
         <h2 id="modalName"></h2>
         <p id="modalDescription"></p>
         <div class="modal-info" id="modalInfo"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="craftModal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closeModal('craftModal')">×</button>
-      <img id="craftModalImage" class="modal-image" src="" alt="">
-      <div class="modal-body">
-        <h2 id="craftModalName"></h2>
-        <p id="craftModalDescription"></p>
       </div>
     </div>
   </div>
@@ -1575,6 +1544,12 @@
       "https://gtpnojbbamoaznlutxap.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE"
     );
+
+    // ==================== NAVBAR SCROLL ====================
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
 
     // ==================== SIDEBAR FUNCTIONALITY ====================
     const sidebar = document.getElementById('sidebar');
@@ -1693,57 +1668,6 @@
     }
 
     // ==================== ARTS & CRAFTS DATA ====================
-    const craftsData = [
-      {
-        name: "Bandhani",
-        description: "Bandhani is a traditional tie-dye textile art form from Gujarat, known for its vibrant colors and intricate patterns. This ancient craft involves tying thousands of tiny knots on fabric before dyeing, creating stunning dotted designs. Artisans in Kutch and Saurashtra regions have perfected this technique over generations.",
-        image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmediaindia.eu%2Fwp-content%2Fuploads%2F2016%2F12%2F3F5A8449.jpg&f=1&nofb=1&ipt=b24a2d632b2a9a136b65f604b1af92e7f10a95f04b25f87d7201e0f1da15bf4f",
-        where: "Best experienced in Bhuj, Jamnagar, and Rajkot markets"
-      },
-      {
-        name: "Patola Silk",
-        description: "Patola is one of the finest hand-woven silk fabrics in the world, exclusive to Patan, Gujarat. The double ikat weaving technique makes each saree a masterpiece, taking 6-12 months to create. These geometric patterns have been treasured for over 900 years and were once worn only by royalty.",
-        image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftiimg.tistatic.com%2Ffp%2F1%2F002%2F079%2Ftraditional-patola-sarees-735.jpg&f=1&nofb=1&ipt=bfbaccf561f86214711b0b2d08e946ef3bb17b53b4e918dee30da0fb670ac049",
-        where: "Visit Patan's weaving workshops and Patola Heritage Museum"
-      },
-      {
-        name: "Kutch Embroidery",
-        description: "Kutch embroidery is a vibrant mirror-work craft featuring colorful thread work and tiny mirrors stitched into fabric. Each tribal community has its unique style - from Rabari's dense geometric patterns to Ahir's floral designs. This craft tells stories of desert life through needle and thread.",
-        image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.sadhguru.org%2Fd%2F46272%2F1633188568-1633188567868.jpg&f=1&nofb=1&ipt=e369d11c45ca4aba59f181c971c7d1963be20f244509610d21f0c856b687cac8",
-        where: "Explore craft villages in Bhuj, Nirona, and Dhamadka"
-      },
-      {
-        name: "Rogan Art",
-        description: "Rogan painting is a rare 400-year-old art where artists use castor oil mixed with pigments to create intricate designs on fabric. The paint is applied with a metal rod, never touching the fabric directly. Today, only one family in Nirona village keeps this UNESCO-recognized craft alive.",
-        image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia-cdn.tripadvisor.com%2Fmedia%2Fphoto-s%2F07%2F8a%2F42%2Fff%2Ftraditional-rogan-art.jpg&f=1&nofb=1&ipt=36d583b9cdfd9cc67222906d606d951aded7e764a5d86e9ea622f10296ff22c7",
-        where: "Visit the Khatri family workshop in Nirona village"
-      },
-      {
-        name: "Ajrakh Block Printing",
-        description: "Ajrakh is a centuries-old block-printing technique using natural dyes and hand-carved wooden blocks. The fabric undergoes a 16-step process involving washing, printing, and dyeing to achieve its signature indigo, red, and black geometric patterns. Each piece reflects the artisan's mastery and patience.",
-        image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F474x%2F36%2Fd5%2Fe0%2F36d5e0b12c4155a69fb0dbfba6c9915e--printing.jpg&f=1&nofb=1&ipt=ca0e47d7b61809fe9b088306ee019254768cfeb837990753bb501cee4d94a991",
-        where: "Discover in Ajrakhpur and Dhamadka villages near Bhuj"
-      }
-    ];
-
-    // ==================== LOAD CRAFTS ====================
-    function loadCrafts() {
-      const container = document.getElementById("craftsGrid");
-      container.innerHTML = "";
-
-      craftsData.forEach((craft, index) => {
-        container.innerHTML += `
-          <div class="craft-card" onclick="openCraftModal(${index})">
-            <img src="${craft.image}" alt="${craft.name}">
-            <div class="craft-overlay">
-              <h3>${craft.name}</h3>
-              <p>Tap to explore</p>
-            </div>
-          </div>
-        `;
-      });
-    }
-
     // ==================== MODAL FUNCTIONS ====================
     function openAttractionModal(attractionId) {
       const attraction = window.attractionsData.find(a => a.id === attractionId);
@@ -1829,26 +1753,6 @@
 
       document.getElementById('modalInfo').innerHTML = infoHtml;
       document.getElementById('attractionModal').classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function openCraftModal(index) {
-      const craft = craftsData[index];
-      document.getElementById('craftModalImage').src = craft.image;
-      document.getElementById('craftModalName').textContent = craft.name;
-      document.getElementById('craftModalDescription').innerHTML = `
-        <p>${craft.description}</p>
-        <div class="modal-info">
-          <div class="info-item">
-            <i class="fas fa-map-marker-alt"></i>
-            <div>
-              <strong>Where to Experience</strong>
-              <span>${craft.where}</span>
-            </div>
-          </div>
-        </div>
-      `;
-      document.getElementById('craftModal').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
 
@@ -1969,6 +1873,11 @@
 
       container.innerHTML = '';
       container.appendChild(track);
+
+      // Recalculate GSAP scroll distance now that event cards are in the DOM
+      if (window.innerWidth > 1024) {
+        setTimeout(() => { ScrollTrigger.refresh(); }, 50);
+      }
     }
 
     // ==================== OPEN EVENT MODAL ====================
@@ -2094,12 +2003,11 @@
     window.addEventListener('load', () => {
       loadAttractions();
       loadDistricts();
-      loadCrafts();
       loadEvents();
 
       setTimeout(() => {
         initHorizontalScroll();
-      }, 100);
+      }, 500);
     });
 
     let resizeTimer;

@@ -207,6 +207,44 @@ body.no-scroll { overflow: hidden; }
     padding-left: 6px;
 }
 
+.sidebar-section-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #444;
+    margin-top: 28px;
+    margin-bottom: 8px;
+    padding-top: 24px;
+    border-top: 1px solid #1a1a1a;
+}
+
+.sidebar-login-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 32px;
+    padding: 11px 18px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: #ff6b35;
+    border: 1px solid #ff6b35;
+    transition: background 0.25s, color 0.25s;
+}
+
+.sidebar-login-btn i {
+    font-size: 13px;
+}
+
+.sidebar-login-btn:hover {
+    background: #ff6b35;
+    color: var(--white);
+}
+
 /* ── OVERLAY ─────────────────────────────────────── */
 .overlay {
     position: fixed;
@@ -723,7 +761,7 @@ body.no-scroll { overflow: hidden; }
     margin: 0 auto;
     padding: 0 40px 60px;
     display: grid;
-    grid-template-columns: 1.8fr 1fr 1fr 1.2fr;
+    grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr;
     gap: 48px;
 }
 
