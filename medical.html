@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical — BharatYatra</title>
+    <title>Medical | BharatYatra</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -77,20 +77,9 @@ body.no-scroll { overflow: hidden; }
     width: 100%;
     z-index: 1000;
     padding: 10px 0;
-
-    /* ── TRANSLUCENCY CONTROLS ─────────────────────
-       Adjust the last value (0.0 – 1.0) to change opacity:
-       0.0 = fully transparent | 0.5 = half | 1.0 = solid black
-       ─────────────────────────────────────────── */
-    background: rgba(10, 10, 10, 0.55); /* ← change 0.55 to adjust translucency */
-
-    backdrop-filter: blur(12px);        /* ← change blur amount (0px = no blur) */
+    background: rgba(8, 8, 8, 0.92);
+    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    transition: background 0.4s ease;
-}
-
-#navbar.scrolled {
-    background: rgba(8, 8, 8, 0.92);   /* ← opacity when scrolled */
     box-shadow: 0 2px 24px rgba(0,0,0,0.5);
 }
 
@@ -129,6 +118,25 @@ body.no-scroll { overflow: hidden; }
 .menu-btn:hover {
     color: #ff6b35;
 }
+
+.nav-back-btn {
+    margin-left: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    color: #969696;
+    border: 1px solid #333;
+    transition: color 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+}
+.nav-back-btn i { font-size: 12px; }
+.nav-back-btn:hover { color: #ff6b35; border-color: #ff6b35; }
 
 /* ── SIDEBAR ─────────────────────────────────────── */
 .sidebar {
@@ -213,6 +221,37 @@ body.no-scroll { overflow: hidden; }
     padding-left: 6px;
 }
 
+.sidebar-section-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #444;
+    margin-top: 28px;
+    margin-bottom: 8px;
+    padding-top: 24px;
+    border-top: 1px solid #1a1a1a;
+}
+
+.sidebar-login-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 32px;
+    padding: 11px 18px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: #ff6b35;
+    border: 1px solid #ff6b35;
+    transition: background 0.25s, color 0.25s;
+}
+.sidebar-login-btn i { font-size: 13px; }
+.sidebar-login-btn:hover { background: #ff6b35; color: #ffffff; }
+
 /* ── OVERLAY ─────────────────────────────────────── */
 .overlay {
     position: fixed;
@@ -240,7 +279,7 @@ body.no-scroll { overflow: hidden; }
     margin: 0 auto;
     padding: 0 40px 60px;
     display: grid;
-    grid-template-columns: 1.8fr 1fr 1fr 1.2fr;
+    grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr;
     gap: 48px;
 }
 
@@ -712,6 +751,7 @@ body.no-scroll { overflow: hidden; }
             .med-filter-btn { width: 100%; text-align: center; }
             #med-grid { grid-template-columns: 1fr; }
             .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+        .footer-inner > .footer-brand { grid-column: 1 / -1; }
             .footer-inner > div:first-child { grid-column: 1 / -1; }
         }
         @media (max-width: 480px) { .footer-inner { grid-template-columns: 1fr; } }
@@ -725,16 +765,20 @@ body.no-scroll { overflow: hidden; }
     </div>
 
     <!-- NAVBAR -->
+    <!-- ==================== NAVBAR ==================== -->
     <nav id="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">BharatYatra</a>
-            <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
-                <i class="fas fa-bars"></i>
-            </button>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="index.html" class="nav-back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+            </div>
         </div>
     </nav>
 
-    <!-- SIDEBAR -->
+    <!-- ==================== SIDEBAR ==================== -->
     <div class="sidebar" id="sidebar">
         <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
         <p class="sidebar-tagline">Discover Incredible India</p>
@@ -744,10 +788,18 @@ body.no-scroll { overflow: hidden; }
             <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
             <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
             <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
-            <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical</a></li>
-            <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
             <li><a href="contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
         </ul>
+        <p class="sidebar-section-label">Legal &amp; Support</p>
+        <ul class="sidebar-links">
+            <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+            <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+        </ul>
+        <a href="admin/admin-login.html" class="sidebar-login-btn">
+            <i class="fas fa-lock"></i> Admin Login
+        </a>
     </div>
 
     <!-- OVERLAY -->
@@ -840,45 +892,63 @@ body.no-scroll { overflow: hidden; }
     </section>
 
     <!-- FOOTER -->
+    <!-- ==================== FOOTER ==================== -->
     <footer id="footer">
         <div class="footer-inner">
-            <div>
-                <a href="index.html" class="footer-logo">BharatYatra</a>
-                <p class="footer-tagline">Your comprehensive guide to Incredible India — state by state, district by district.</p>
+
+            <!-- Brand -->
+            <div class="footer-brand">
+                <a href="index.html" class="footer-logo">BHARAT YATRA</a>
+                <p class="footer-tagline">Discover the incredible beauty<br>and diversity of India.</p>
             </div>
-            <div>
-                <p class="footer-heading">Explore</p>
+
+            <!-- Explore -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Explore</h4>
                 <ul class="footer-links">
-                    <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i>Destinations</a></li>
-                    <li><a href="experiences.html"><i class="fas fa-star"></i>Experiences</a></li>
-                    <li><a href="itinerary.html"><i class="fas fa-route"></i>Itinerary</a></li>
-                    <li><a href="colors.html"><i class="fas fa-palette"></i>Colors of India</a></li>
+                    <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+                    <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+                    <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+                    <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
                 </ul>
             </div>
-            <div>
-                <p class="footer-heading">Support</p>
+
+            <!-- Plan -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Plan</h4>
                 <ul class="footer-links">
-                    <li><a href="medical.html"><i class="fas fa-hospital-alt"></i>Medical</a></li>
-                    <li><a href="faq.html"><i class="fas fa-question-circle"></i>FAQ</a></li>
-                    <li><a href="travelforlife.html"><i class="fas fa-heart"></i>Travel for Life</a></li>
-                    <li><a href="contactus.html"><i class="fas fa-envelope"></i>Contact Us</a></li>
+                    <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+                    <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+                    <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
                 </ul>
             </div>
-            <div>
-                <p class="footer-heading">Connect</p>
+
+            <!-- Legal -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                    <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+                </ul>
+            </div>
+
+            <!-- Connect -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Follow Us</h4>
                 <div class="footer-socials">
-                    <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-btn" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
                 </div>
                 <a href="contactus.html" class="footer-contact-btn">
-                    <i class="fas fa-envelope"></i> Get in Touch
+                    <i class="fas fa-envelope"></i> Contact Us
                 </a>
             </div>
+
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 BharatYatra. Proudly supporting India's Travel for Life initiative.</p>
+            <p>&copy; 2025 BharatYatra. All rights reserved.</p>
         </div>
     </footer>
 
@@ -912,26 +982,19 @@ body.no-scroll { overflow: hidden; }
             setTimeout(() => document.getElementById('loader').classList.add('hidden'), 900);
         });
 
-        /* ── NAVBAR scroll ── */
-        window.addEventListener('scroll', () => {
-            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
-        });
-
         /* ── SIDEBAR ── */
         const sidebar  = document.getElementById('sidebar');
         const overlay  = document.getElementById('overlay');
-        document.getElementById('open-sidebar').addEventListener('click',  () => {
-            sidebar.classList.add('active');
-            overlay.classList.add('active');
-            document.body.classList.add('no-scroll');
-        });
-        function closeSidebar() {
-            sidebar.classList.remove('active');
-            overlay.classList.remove('active');
-            document.body.classList.remove('no-scroll');
-        }
-        document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+        const openBtn  = document.getElementById('open-sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        function openSidebar()  { sidebar.classList.add('active'); overlay.classList.add('active'); document.body.classList.add('no-scroll'); }
+        function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.classList.remove('no-scroll'); }
+
+        openBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
         overlay.addEventListener('click', closeSidebar);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 
         /* ── HELPERS ── */
         function badgeClass(type) {

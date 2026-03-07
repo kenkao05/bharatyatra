@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Privacy Policy | BharatYatra</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+:root {
+--black:#000000;
+--red:#C0392B;
+--white:#FFFFFF;
+--grey:#1a1a1a;
+--muted:#999999;
+--sidebar-width:320px;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body{
+font-family:'Poppins',sans-serif;
+background:#f2f0ed;
+color:#333;
+overflow-x:hidden;
+}
+
+body.no-scroll{overflow:hidden}
+
+/* ── NAVBAR ── */
+    #navbar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 10px 0;
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ff6b35;
+      text-decoration: none;
+      letter-spacing: 3px;
+      flex-shrink: 0;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: #969696;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 4px 6px;
+      line-height: 1;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+    .menu-btn:hover { color: #ff6b35; }
+    .nav-back-btn {
+      margin-left: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      color: #969696;
+      border: 1px solid #333;
+      transition: color 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+    }
+    .nav-back-btn i { font-size: 12px; }
+    .nav-back-btn:hover { color: #ff6b35; border-color: #ff6b35; }
+
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: calc(-1 * var(--sidebar-width));
+      width: var(--sidebar-width);
+      height: 100%;
+      background: var(--black);
+      z-index: 2000;
+      overflow-y: auto;
+      padding: 50px 36px 40px;
+      transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      border-left: 1px solid #222;
+    }
+
+    .sidebar.active { right: 0; }
+
+    .close-btn {
+      position: absolute;
+      top: 18px; right: 22px;
+      background: none;
+      border: none;
+      font-size: 32px;
+      color: var(--white);
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+      transition: color 0.2s;
+    }
+    .close-btn:hover { color: #ff6b35; }
+
+    .sidebar-tagline {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #222;
+    }
+
+    .sidebar-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sidebar-links li a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      color: #cccccc;
+      text-decoration: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #111;
+      transition: color 0.25s, padding-left 0.25s;
+    }
+
+    .sidebar-links li a i {
+      font-size: 16px;
+      width: 20px;
+      color: var(--red);
+      flex-shrink: 0;
+    }
+
+    .sidebar-links li a:hover {
+      color: var(--white);
+      padding-left: 6px;
+    }
+
+    .sidebar-section-label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #444;
+      margin-top: 28px;
+      margin-bottom: 8px;
+      padding-top: 24px;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .sidebar-login-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+      padding: 11px 18px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-decoration: none;
+      color: #ff6b35;
+      border: 1px solid #ff6b35;
+      transition: background 0.25s, color 0.25s;
+    }
+    .sidebar-login-btn i { font-size: 13px; }
+    .sidebar-login-btn:hover { background: #ff6b35; color: #ffffff; }
+
+    /* ── OVERLAY ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1500;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+/* HERO */
+
+.hero {
+  margin-top: 70px;
+  text-align: center;
+  padding: 110px 20px;
+  background: linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)),
+  url("https://images.unsplash.com/photo-1563986768494-4dee2763ff3f");
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+.hero h1{
+font-family:'Playfair Display',serif;
+font-size:50px;
+margin-bottom:10px;
+}
+
+.hero p{
+font-size:16px;
+color:#ddd;
+}
+
+/* FAQ */
+
+.faq-container{
+max-width:900px;
+margin:auto;
+padding:60px 20px;
+}
+
+.faq-item{
+background:white;
+border-radius:10px;
+margin-bottom:15px;
+box-shadow:0 5px 20px rgba(0,0,0,0.08);
+overflow:hidden;
+}
+
+.faq-question{
+padding:20px;
+cursor:pointer;
+font-weight:600;
+display:flex;
+justify-content:space-between;
+}
+
+.faq-answer{
+max-height:0;
+overflow:hidden;
+transition:.4s;
+padding:0 20px;
+}
+
+.faq-answer p{padding-bottom:20px}
+
+.faq-item.active .faq-answer{max-height:400px}
+
+.faq-category{
+font-size:10px;
+font-weight:700;
+letter-spacing:3px;
+text-transform:uppercase;
+color:#ff6b35;
+margin:40px 0 14px;
+}
+
+.faq-item.active i{transform:rotate(180deg)}
+
+    /* ── FOOTER ── */
+    #footer {
+      background: #080808;
+      border-top: 1px solid #1e1e1e;
+      padding: 70px 0 0;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px 60px;
+      display: grid;
+      grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr;
+      gap: 48px;
+    }
+
+    .footer-logo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: #ff6b35;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .footer-tagline {
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.8;
+    }
+
+    .footer-heading {
+      font-family: 'Poppins', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #ff6b35;
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .footer-links li a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: #666;
+      text-decoration: none;
+      border-bottom: 1px solid #111;
+      transition: color 0.2s, padding-left 0.2s;
+    }
+
+    .footer-links li a i {
+      font-size: 13px;
+      color: #ff6b35;
+      width: 16px;
+      flex-shrink: 0;
+    }
+
+    .footer-links li a:hover { color: var(--white); padding-left: 4px; }
+
+    .footer-socials {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .social-btn {
+      width: 38px; height: 38px;
+      border: 1px solid #2a2a2a;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 15px;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .social-btn:hover {
+      border-color: #ff6b35;
+      color: #ff6b35;
+      background: rgba(255,107,53,0.06);
+    }
+
+    .footer-contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #ff6b35;
+      border: 2px solid #ff6b35;
+      padding: 10px 22px;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .footer-contact-btn:hover { background: #ff6b35; color: var(--white); }
+
+    .footer-bottom {
+      border-top: 1px solid #161616;
+      padding: 20px 40px;
+      text-align: center;
+    }
+
+    .footer-bottom p {
+      font-family: 'Poppins', sans-serif;
+      font-size: 12px;
+      color: #333;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      :root { --sidebar-width: 100%; }
+      .logo { font-size: 18px; }
+      .menu-btn { font-size: 20px; }
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+      .footer-inner > .footer-brand {
+        grid-column: 1 / -1;
+      }
+    }  </style>
+</head>
+
+<body>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <nav id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">BharatYatra</a>
+      <div style="display:flex;align-items:center;gap:24px;">
+        <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <a href="index.html" class="nav-back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <div class="sidebar" id="sidebar">
+    <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
+    <p class="sidebar-tagline">Discover Incredible India</p>
+    <ul class="sidebar-links">
+      <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+      <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+      <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+      <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+      <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+      <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+      <li><a href="contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+    </ul>
+    <p class="sidebar-section-label">Legal &amp; Support</p>
+    <ul class="sidebar-links">
+      <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+      <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+      <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+    </ul>
+    <a href="admin/admin-login.html" class="sidebar-login-btn">
+      <i class="fas fa-lock"></i> Admin Login
+    </a>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+<!-- HERO -->
+
+<section class="hero">
+  <h1>Privacy Policy</h1>
+    <p>Your privacy and data protection matter to us</p>
+</section>
+
+<!-- PRIVACY POLICY CONTENT -->
+
+<section class="faq-container">
+
+<p class="faq-category">Introduction</p>
+
+<div class="faq-item">
+<div class="faq-question">What is this Privacy Policy? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer"><p>This Privacy Policy explains how BharatYatra collects, uses and protects your information when you use our website.</p></div>
+</div>
+
+<div class="faq-item">
+<div class="faq-question">Who does this policy apply to? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer"><p>This policy applies to all visitors and users who access the BharatYatra website.</p></div>
+</div>
+
+<p class="faq-category">Information We Collect</p>
+
+<div class="faq-item">
+<div class="faq-question">What information do we collect? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer"><p>We may collect information such as your name, email address and details you provide when contacting us.</p></div>
+</div>
+
+<div class="faq-item">
+<div class="faq-question">Do we collect browsing data? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer"><p>Yes, basic data like browser type, pages visited and time spent on the website may be collected to improve the platform.</p></div>
+</div>
+
+<p class="faq-category">Data Usage</p>
+
+<div class="faq-item">
+<div class="faq-question">How do we use your information? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer"><p>Your information helps us improve website performance, respond to inquiries and enhance user experience.</p></div>
+</div>
+
+<div class="faq-item">
+<div class="faq-question">Do we share your data? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer"><p>BharatYatra does not sell or rent personal information to third parties.</p></div>
+</div>
+
+<p class="faq-category">Security</p>
+
+<div class="faq-item">
+<div class="faq-question">How do we protect your data? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer"><p>We use reasonable security practices to protect your information from unauthorized access.</p></div>
+</div>
+
+<p class="faq-category">Updates</p>
+
+<div class="faq-item">
+<div class="faq-question">Can this policy change? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer"><p>This Privacy Policy may be updated occasionally and changes will appear on this page.</p></div>
+</div>
+
+</section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer id="footer">
+    <div class="footer-inner">
+
+      <!-- Brand -->
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">BHARAT YATRA</a>
+        <p class="footer-tagline">Discover the incredible beauty<br>and diversity of India.</p>
+      </div>
+
+      <!-- Explore -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Explore</h4>
+        <ul class="footer-links">
+          <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+          <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+          <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+          <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+        </ul>
+      </div>
+
+      <!-- Plan -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Plan</h4>
+        <ul class="footer-links">
+          <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+          <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Legal</h4>
+        <ul class="footer-links">
+          <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+          <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+
+      <!-- Connect -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Follow Us</h4>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="social-btn" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+        </div>
+        <a href="contactus.html" class="footer-contact-btn">
+          <i class="fas fa-envelope"></i> Contact Us
+        </a>
+      </div>
+
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 BharatYatra. All rights reserved.</p>
+    </div>
+  </footer>
+
+<script>
+    // ── SIDEBAR TOGGLE ──
+    const sidebar  = document.getElementById('sidebar');
+    const overlay  = document.getElementById('overlay');
+    const openBtn  = document.getElementById('open-sidebar');
+    const closeBtn = document.getElementById('close-sidebar');
+
+    function openSidebar()  { sidebar.classList.add('active'); overlay.classList.add('active'); document.body.classList.add('no-scroll'); }
+    function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.classList.remove('no-scroll'); }
+
+    openBtn.addEventListener('click', openSidebar);
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+    // ── FAQ ACCORDION ──
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', () => item.classList.toggle('active'));
+    });
+  </script>
+
+</body>
+</html>
