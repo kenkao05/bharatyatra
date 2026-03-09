@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiences | BharatYatra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+    /* ── SHARED BASE (verbatim from medical.html) ── */
+    :root {
+        --black:  #000000;
+        --red:    #C0392B;
+        --white:  #FFFFFF;
+        --grey:   #1a1a1a;
+        --muted:  #999999;
+        --sidebar-width: 320px;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Poppins', sans-serif; background: var(--white); color: var(--black); overflow-x: hidden; }
+    body.no-scroll { overflow: hidden; }
+
+
+    /* ── NAVBAR ── */
+    #navbar {
+        position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+        padding: 10px 0;
+        background: rgba(8,8,8,0.92);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+    }
+    .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 700; color: #ff6b35; text-decoration: none; letter-spacing: 3px; flex-shrink: 0; }
+    .menu-btn { background: none; border: none; color: #969696; font-size: 1.5rem; cursor: pointer; padding: 4px 6px; line-height: 1; transition: color 0.2s; flex-shrink: 0; }
+    .menu-btn:hover { color: #ff6b35; }
+    .nav-back-btn { margin-left: 24px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; text-decoration: none; color: #969696; border: 1px solid #333; transition: color 0.2s, border-color 0.2s; flex-shrink: 0; }
+    .nav-back-btn i { font-size: 12px; }
+    .nav-back-btn:hover { color: #ff6b35; border-color: #ff6b35; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { position: fixed; top: 0; right: calc(-1 * var(--sidebar-width)); width: var(--sidebar-width); height: 100%; background: var(--black); z-index: 2000; overflow-y: auto; padding: 50px 36px 40px; transition: right 0.35s cubic-bezier(0.4,0,0.2,1); border-left: 1px solid #222; }
+    .sidebar.active { right: 0; }
+    .close-btn { position: absolute; top: 18px; right: 22px; background: none; border: none; font-size: 32px; color: var(--white); cursor: pointer; line-height: 1; padding: 4px 8px; transition: color 0.2s; }
+    .close-btn:hover { color: #ff6b35; }
+    .sidebar-tagline { font-family: 'Playfair Display', serif; font-style: italic; font-size: 13px; color: var(--muted); letter-spacing: 2px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #222; }
+    .sidebar-links { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .sidebar-links li a { display: flex; align-items: center; gap: 14px; padding: 12px 0; color: #cccccc; text-decoration: none; font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 400; letter-spacing: 0.5px; border-bottom: 1px solid #111; transition: color 0.25s, padding-left 0.25s; }
+    .sidebar-links li a i { font-size: 16px; width: 20px; color: var(--red); flex-shrink: 0; }
+    .sidebar-links li a:hover { color: var(--white); padding-left: 6px; }
+    .sidebar-section-label { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #444; margin-top: 28px; margin-bottom: 8px; padding-top: 24px; border-top: 1px solid #1a1a1a; }
+    .sidebar-login-btn { display: flex; align-items: center; gap: 10px; margin-top: 32px; padding: 11px 18px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-decoration: none; color: #ff6b35; border: 1px solid #ff6b35; transition: background 0.25s, color 0.25s; }
+    .sidebar-login-btn i { font-size: 13px; }
+    .sidebar-login-btn:hover { background: #ff6b35; color: #ffffff; }
+
+    /* ── OVERLAY ── */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1500; opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s ease; }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+    /* ── FOOTER ── */
+    #footer { background: #080808; border-top: 1px solid #1e1e1e; padding: 70px 0 0; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px 60px; display: grid; grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr; gap: 48px; }
+    .footer-logo { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 3px; color: #ff6b35; text-decoration: none; display: block; margin-bottom: 16px; }
+    .footer-tagline { font-family: 'Poppins', sans-serif; font-size: 13px; color: #555; line-height: 1.8; }
+    .footer-heading { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #ff6b35; margin-bottom: 20px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .footer-links li a { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-family: 'Poppins', sans-serif; font-size: 14px; color: #666; text-decoration: none; border-bottom: 1px solid #111; transition: color 0.2s, padding-left 0.2s; }
+    .footer-links li a i { font-size: 13px; color: #ff6b35; width: 16px; flex-shrink: 0; }
+    .footer-links li a:hover { color: var(--white); padding-left: 4px; }
+    .footer-socials { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .social-btn { width: 38px; height: 38px; border: 1px solid #2a2a2a; color: #666; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 15px; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+    .social-btn:hover { border-color: #ff6b35; color: #ff6b35; background: rgba(255,107,53,0.06); }
+    .footer-contact-btn { display: inline-flex; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: #ff6b35; border: 2px solid #ff6b35; padding: 10px 22px; transition: background 0.25s, color 0.25s; }
+    .footer-contact-btn:hover { background: #ff6b35; color: var(--white); }
+    .footer-bottom { border-top: 1px solid #161616; padding: 20px 40px; text-align: center; }
+    .footer-bottom p { font-family: 'Poppins', sans-serif; font-size: 12px; color: #333; letter-spacing: 0.5px; }
+
+    @media (max-width: 768px) {
+        :root { --sidebar-width: 100%; }
+        .logo { font-size: 18px; }
+        .menu-btn { font-size: 20px; }
+        .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+        .footer-inner > .footer-brand { grid-column: 1 / -1; }
+    }
+    @media (max-width: 480px) { .footer-inner { grid-template-columns: 1fr; } }
+    </style>
+
+    <style>
+    /* ══════════════════════════════════════════
+       PAGE-SPECIFIC: experiences.html
+    ══════════════════════════════════════════ */
+
+    /* ── HERO ── */
+    #exp-hero {
+        position: relative;
+        height: 52vh;
+        min-height: 340px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-start;
+        overflow: hidden;
+        background: #0b0b0b;
+    }
+    .exp-hero-bg {
+        position: absolute; inset: 0;
+        background:
+            radial-gradient(ellipse at 70% 40%, rgba(255,107,53,0.12) 0%, transparent 60%),
+            linear-gradient(160deg, #0b0b0b 0%, #1a0a06 100%);
+        z-index: 0;
+    }
+    .exp-hero-icon {
+        position: absolute;
+        right: 8%; top: 50%;
+        transform: translateY(-50%);
+        font-size: 280px;
+        color: #ff6b35;
+        opacity: 0.07;
+        z-index: 1;
+        pointer-events: none;
+        line-height: 1;
+    }
+    .exp-hero-content {
+        position: relative; z-index: 2;
+        padding: 0 60px 60px;
+        max-width: 900px;
+    }
+    .exp-eyebrow {
+        font-family: 'Poppins', sans-serif;
+        font-size: 10px; font-weight: 600;
+        letter-spacing: 5px; text-transform: uppercase;
+        color: #ff6b35;
+        display: block; margin-bottom: 14px;
+    }
+    #exp-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.6rem, 6vw, 5rem);
+        font-weight: 700; color: #ffffff;
+        letter-spacing: 2px; line-height: 1.05;
+    }
+    #exp-hero h1 span { color: #ff6b35; }
+    .exp-hero-sub {
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px; font-weight: 300;
+        color: rgba(255,255,255,0.45);
+        margin-top: 14px; letter-spacing: 0.5px;
+    }
+    .exp-hero-border { height: 4px; background: #ff6b35; }
+
+    /* ── MAIN WRAPPER ── */
+    #exp-main { background: #f2f0ed; padding: 52px 24px 100px; }
+    .exp-inner { max-width: 1100px; margin: 0 auto; }
+
+    /* ══ TYPE BUTTONS (first section) ══ */
+    .exp-type-section { margin-bottom: 36px; }
+    .exp-type-label {
+        font-family: 'Poppins', sans-serif;
+        font-size: 10px; font-weight: 600;
+        letter-spacing: 4px; text-transform: uppercase;
+        color: #999; display: block; margin-bottom: 16px;
+    }
+    .exp-type-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    .type-btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 12px; font-weight: 600;
+        letter-spacing: 0.5px;
+        padding: 10px 18px;
+        border: 2px solid #e0e0e0;
+        background: #ffffff;
+        color: #555;
+        cursor: pointer;
+        transition: border-color 0.2s, color 0.2s, background 0.2s, opacity 0.2s;
+        user-select: none;
+        white-space: nowrap;
+    }
+    .type-btn i { font-size: 12px; }
+    .type-btn:hover:not(.disabled) { border-color: #ff6b35; color: #ff6b35; }
+
+    /* Active state uses --btn-colour set inline per button */
+    .type-btn.active {
+        background: var(--btn-colour, #ff6b35);
+        border-color: var(--btn-colour, #ff6b35);
+        color: #ffffff;
+    }
+    /* Disabled — zero results for current state */
+    .type-btn.disabled {
+        opacity: 0.30; cursor: not-allowed;
+        border-color: #e0e0e0; color: #bbb; background: #fafafa;
+    }
+    .type-btn.disabled:hover { border-color: #e0e0e0; color: #bbb; background: #fafafa; }
+
+    /* ══ FILTER PANEL (second section) ══ */
+    .exp-filter-panel {
+        background: #ffffff;
+        border-top: 3px solid #ff6b35;
+        padding: 28px 36px;
+        display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap;
+        margin-bottom: 36px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .exp-filter-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 180px; }
+    .exp-filter-group label {
+        font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600;
+        letter-spacing: 3px; text-transform: uppercase; color: #999;
+    }
+    .exp-filter-group select {
+        font-family: 'Poppins', sans-serif; font-size: 14px; color: #111;
+        border: 1px solid #ddd; border-radius: 0;
+        padding: 11px 36px 11px 14px; background: #fafafa;
+        cursor: pointer; appearance: none; -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ff6b35' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-position: right 14px center;
+        transition: border-color 0.2s;
+    }
+    .exp-filter-group select:focus { outline: none; border-color: #ff6b35; }
+
+    .exp-search-group { display: flex; flex-direction: column; gap: 6px; flex: 1.5; min-width: 220px; }
+    .exp-search-group label {
+        font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600;
+        letter-spacing: 3px; text-transform: uppercase; color: #999;
+    }
+    .exp-search-wrap { position: relative; }
+    .exp-search-wrap input {
+        width: 100%; font-family: 'Poppins', sans-serif; font-size: 14px; color: #111;
+        border: 1px solid #ddd; border-radius: 0;
+        padding: 11px 14px 11px 40px; background: #fafafa;
+        transition: border-color 0.2s;
+    }
+    .exp-search-wrap input:focus { outline: none; border-color: #ff6b35; }
+    .exp-search-wrap input::placeholder { color: #bbb; }
+    .exp-search-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #ff6b35; font-size: 14px; pointer-events: none; }
+
+    .exp-filter-btn {
+        font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600;
+        letter-spacing: 2.5px; text-transform: uppercase;
+        color: #ff6b35; border: 2px solid #ff6b35; background: transparent;
+        padding: 11px 28px; cursor: pointer;
+        transition: background 0.25s, color 0.25s;
+        white-space: nowrap; align-self: flex-end;
+    }
+    .exp-filter-btn:hover { background: #ff6b35; color: #ffffff; }
+
+    /* ══ RESULTS HEADER ══ */
+    .exp-results-header {
+        display: flex; align-items: baseline; justify-content: space-between;
+        margin-bottom: 28px; flex-wrap: wrap; gap: 10px;
+    }
+    .exp-results-title { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700; color: #000; }
+    .exp-results-count { font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #ff6b35; }
+
+    /* ══ CARD GRID ══ */
+    #exp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    /* ── STATE MESSAGE (loading / empty / error) ── */
+    .exp-state-msg { grid-column: 1 / -1; text-align: center; padding: 80px 20px; }
+    .exp-state-msg i { font-size: 48px; color: #ddd; display: block; margin-bottom: 16px; }
+    .exp-state-msg p { font-family: 'Poppins', sans-serif; font-size: 14px; color: #999; font-style: italic; line-height: 2; }
+    .exp-state-msg .clear-link {
+        display: inline-block; margin-top: 14px;
+        font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600;
+        letter-spacing: 2px; text-transform: uppercase;
+        color: #ff6b35; border: 2px solid #ff6b35; background: transparent;
+        padding: 8px 22px; cursor: pointer; transition: background 0.2s, color 0.2s;
+    }
+    .exp-state-msg .clear-link:hover { background: #ff6b35; color: #fff; }
+
+    /* ══ ATTRACTION CARD ══ */
+    .exp-card {
+        background: #ffffff;
+        border-top: 3px solid transparent;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-top-color 0.25s ease;
+        display: flex; flex-direction: column;
+        animation: cardIn 0.35s ease both;
+        overflow: hidden;
+    }
+    @keyframes cardIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .exp-card:hover { transform: translateY(-5px); box-shadow: 0 12px 36px rgba(0,0,0,0.12); border-top-color: #ff6b35; }
+    .exp-card:focus-visible { outline: 2px solid #ff6b35; outline-offset: 2px; }
+
+    /* Card image */
+    .exp-card-img { position: relative; width: 100%; height: 200px; overflow: hidden; background: #1a1a1a; flex-shrink: 0; }
+    .exp-card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+    .exp-card:hover .exp-card-img img { transform: scale(1.04); }
+    .exp-card-img-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.45) 100%); pointer-events: none; }
+
+    /* Type badge on image */
+    .exp-type-badge {
+        position: absolute; bottom: 12px; left: 14px;
+        font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 700;
+        letter-spacing: 1.5px; text-transform: uppercase;
+        padding: 3px 10px; background: rgba(255,107,53,0.9); color: #ffffff; z-index: 1;
+    }
+
+    /* Must-visit star — top-right of image */
+    .exp-must-star {
+        position: absolute; top: 12px; right: 12px;
+        width: 28px; height: 28px;
+        background: #ff6b35; color: #fff; font-size: 11px;
+        display: flex; align-items: center; justify-content: center; z-index: 1;
+    }
+
+    /* Card body */
+    .exp-card-body { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
+
+    .exp-cat-tag {
+        display: inline-block; align-self: flex-start;
+        font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600;
+        letter-spacing: 1px; text-transform: uppercase;
+        color: #aaa; border: 1px solid #e8e8e8; padding: 2px 8px;
+    }
+    .exp-card-title {
+        font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700;
+        color: #000; line-height: 1.3;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        margin: 0;
+    }
+    .exp-card-sub {
+        font-family: 'Poppins', sans-serif; font-size: 12px; color: #666; line-height: 1.65;
+        display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+        margin: 0;
+    }
+    .exp-card-meta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .exp-card-meta span { font-family: 'Poppins', sans-serif; font-size: 11px; color: #888; display: flex; align-items: center; gap: 5px; }
+    .exp-card-meta i { color: #ff6b35; font-size: 10px; }
+
+    .exp-card-foot {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-top: auto; padding-top: 12px; border-top: 1px solid #f0eeeb;
+    }
+    .exp-fee-free {
+        font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 700;
+        letter-spacing: 1.5px; text-transform: uppercase;
+        padding: 3px 9px; background: rgba(34,197,94,0.12); color: #16a34a;
+    }
+    .exp-fee-paid { font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600; color: #111; }
+    .exp-guide-tag {
+        font-family: 'Poppins', sans-serif; font-size: 10px; color: #ff6b35;
+        display: flex; align-items: center; gap: 5px; font-weight: 600; letter-spacing: 0.5px;
+    }
+
+    /* ══ MODAL ══ */
+    .exp-modal-overlay {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.82);
+        z-index: 3000;
+        display: none; align-items: center; justify-content: center;
+        padding: 20px; overflow-y: auto;
+    }
+    .exp-modal-overlay.active { display: flex; }
+
+    .exp-modal-box {
+        background: #ffffff;
+        width: 100%; max-width: 700px;
+        max-height: 90vh; overflow-y: auto;
+        position: relative;
+        animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn {
+        from { opacity: 0; transform: scale(0.97) translateY(12px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Modal image banner */
+    .exp-modal-img-wrap { position: relative; height: 280px; overflow: hidden; background: #1a1a1a; flex-shrink: 0; }
+    .exp-modal-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .exp-modal-img-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%); pointer-events: none; }
+
+    .exp-modal-close {
+        position: absolute; top: 14px; right: 14px;
+        width: 36px; height: 36px;
+        background: rgba(0,0,0,0.5); border: none; color: #fff;
+        font-size: 16px; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; z-index: 2; transition: background 0.2s;
+    }
+    .exp-modal-close:hover { background: #ff6b35; }
+
+    .exp-modal-top-badges {
+        position: absolute; bottom: 16px; left: 18px;
+        display: flex; align-items: center; gap: 8px; z-index: 2;
+    }
+    .exp-modal-type-badge {
+        font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 700;
+        letter-spacing: 1.5px; text-transform: uppercase;
+        padding: 3px 10px; background: rgba(255,107,53,0.9); color: #ffffff;
+    }
+    .exp-modal-must-badge {
+        font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 700;
+        letter-spacing: 1.5px; text-transform: uppercase;
+        padding: 3px 10px; background: rgba(0,0,0,0.55); color: #ffd700;
+        display: flex; align-items: center; gap: 5px;
+    }
+
+    /* Modal body */
+    .exp-modal-body { padding: 28px 32px 36px; }
+
+    .exp-modal-cat {
+        display: inline-block;
+        font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600;
+        letter-spacing: 1px; text-transform: uppercase;
+        color: #aaa; border: 1px solid #e8e8e8; padding: 2px 8px;
+        margin-bottom: 12px;
+    }
+
+    .exp-modal-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700;
+        color: #000; line-height: 1.2; margin-bottom: 18px;
+    }
+
+    .exp-modal-meta {
+        display: flex; flex-wrap: wrap; gap: 12px 22px;
+        margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid #f0eeeb;
+    }
+    .exp-modal-meta-item {
+        font-family: 'Poppins', sans-serif; font-size: 13px; color: #555;
+        display: flex; align-items: flex-start; gap: 8px;
+    }
+    .exp-modal-meta-item i { color: #ff6b35; font-size: 12px; flex-shrink: 0; margin-top: 2px; }
+    .exp-modal-meta-item .meta-label { font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #bbb; display: block; margin-bottom: 2px; }
+    .exp-modal-meta-item .meta-value { font-size: 13px; color: #333; font-weight: 500; }
+
+    .exp-modal-desc {
+        font-family: 'Poppins', sans-serif; font-size: 14px; color: #333;
+        line-height: 1.85; margin-bottom: 22px;
+    }
+
+    .exp-modal-address {
+        display: flex; align-items: flex-start; gap: 12px;
+        font-family: 'Poppins', sans-serif; font-size: 13px; color: #555;
+        margin-bottom: 16px; padding: 14px 16px;
+        background: #fafafa; border-left: 3px solid #ff6b35;
+    }
+    .exp-modal-address i { color: #ff6b35; flex-shrink: 0; margin-top: 2px; }
+
+    .exp-modal-guide {
+        display: flex; align-items: flex-start; gap: 12px;
+        padding: 14px 16px; margin-top: 4px;
+        background: rgba(255,107,53,0.05); border: 1px solid rgba(255,107,53,0.15);
+    }
+    .exp-modal-guide > i { color: #ff6b35; font-size: 18px; margin-top: 2px; flex-shrink: 0; }
+    .exp-modal-guide-title { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 13px; color: #000; margin-bottom: 3px; }
+    .exp-modal-guide-price { font-family: 'Poppins', sans-serif; font-size: 12px; color: #666; }
+
+    .exp-modal-best-time {
+        display: flex; align-items: flex-start; gap: 12px;
+        font-family: 'Poppins', sans-serif; font-size: 13px; color: #555;
+        margin-top: 14px; padding: 14px 16px;
+        background: rgba(245,158,11,0.05); border-left: 3px solid #f59e0b;
+    }
+    .exp-modal-best-time i { color: #f59e0b; flex-shrink: 0; margin-top: 2px; }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 1024px) { #exp-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    @media (max-width: 768px) {
+        .exp-hero-content { padding: 0 24px 44px; }
+        .exp-hero-icon { display: none; }
+        .exp-filter-panel { padding: 24px 20px; gap: 16px; }
+        .exp-filter-group, .exp-search-group { min-width: 100%; }
+        .exp-filter-btn { width: 100%; text-align: center; }
+        #exp-grid { grid-template-columns: 1fr; }
+        .exp-card-img { height: 180px; }
+        .exp-modal-img-wrap { height: 220px; }
+        .exp-modal-body { padding: 20px 18px 28px; }
+        .type-btn { font-size: 11px; padding: 8px 14px; }
+    }
+    </style>
+</head>
+<body>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav id="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="logo">BharatYatra</a>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="index.html" class="nav-back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ==================== SIDEBAR ==================== -->
+<div class="sidebar" id="sidebar">
+    <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
+    <p class="sidebar-tagline">Discover Incredible India</p>
+    <ul class="sidebar-links">
+        <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+        <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+        <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+        <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+        <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+        <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+        <li><a href="contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+    </ul>
+    <p class="sidebar-section-label">Legal &amp; Support</p>
+    <ul class="sidebar-links">
+        <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+        <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+    </ul>
+    <a href="admin/admin-login.html" class="sidebar-login-btn">
+        <i class="fas fa-lock"></i> Admin Login
+    </a>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<!-- ==================== HERO ==================== -->
+<section id="exp-hero">
+    <div class="exp-hero-bg"></div>
+    <i class="fas fa-compass exp-hero-icon"></i>
+    <div class="exp-hero-content">
+        <span class="exp-eyebrow">Discover &amp; Explore</span>
+        <h1>Experiences of <span>India</span></h1>
+        <p class="exp-hero-sub">From ancient temples to wild safaris — find the perfect attraction for every kind of traveller.</p>
+    </div>
+</section>
+<div class="exp-hero-border"></div>
+
+<!-- ==================== MAIN ==================== -->
+<main id="exp-main">
+    <div class="exp-inner">
+
+        <!-- TYPE BUTTONS (first) -->
+        <div class="exp-type-section">
+            <span class="exp-type-label">Choose Your Experience</span>
+            <div class="exp-type-buttons" id="type-buttons">
+                <button class="type-btn active" data-type="" style="--btn-colour:#ff6b35;"><i class="fas fa-th"></i> All</button>
+                <button class="type-btn" data-type="Nature" style="--btn-colour:#22c55e;"><i class="fas fa-leaf"></i> Nature</button>
+                <button class="type-btn" data-type="Religious" style="--btn-colour:#f97316;"><i class="fas fa-om"></i> Religious</button>
+                <button class="type-btn" data-type="Historical" style="--btn-colour:#a78bfa;"><i class="fas fa-landmark"></i> Historical</button>
+                <button class="type-btn" data-type="Wildlife" style="--btn-colour:#16a34a;"><i class="fas fa-paw"></i> Wildlife</button>
+                <button class="type-btn" data-type="Cultural" style="--btn-colour:#06b6d4;"><i class="fas fa-theater-masks"></i> Cultural</button>
+                <button class="type-btn" data-type="Museum" style="--btn-colour:#4FC3FF;"><i class="fas fa-university"></i> Museum</button>
+                <button class="type-btn" data-type="Adventure" style="--btn-colour:#ef4444;"><i class="fas fa-mountain"></i> Adventure</button>
+                <button class="type-btn" data-type="Monument" style="--btn-colour:#f59e0b;"><i class="fas fa-chess-rook"></i> Monument</button>
+                <button class="type-btn" data-type="Recreation" style="--btn-colour:#ec4899;"><i class="fas fa-bicycle"></i> Recreation</button>
+                <button class="type-btn" data-type="Experience" style="--btn-colour:#8b5cf6;"><i class="fas fa-star"></i> Experience</button>
+                <button class="type-btn" data-type="Beach" style="--btn-colour:#0ea5e9;"><i class="fas fa-umbrella-beach"></i> Beach</button>
+                <button class="type-btn" data-type="Scenic" style="--btn-colour:#64748b;"><i class="fas fa-camera"></i> Scenic</button>
+                <button class="type-btn" data-type="Modern" style="--btn-colour:#94a3b8;"><i class="fas fa-city"></i> Modern</button>
+                <button class="type-btn" data-type="Wellness" style="--btn-colour:#10b981;"><i class="fas fa-spa"></i> Wellness</button>
+                <button class="type-btn" data-type="Urban" style="--btn-colour:#6366f1;"><i class="fas fa-building"></i> Urban</button>
+            </div>
+        </div>
+
+        <!-- FILTER PANEL (second) -->
+        <div class="exp-filter-panel">
+            <div class="exp-filter-group">
+                <label for="filter-state">State</label>
+                <select id="filter-state">
+                    <option value="">All States</option>
+                    <option value="1">Gujarat</option>
+                    <option value="2">Rajasthan</option>
+                    <option value="3">Kerala</option>
+                    <option value="4">Uttarakhand</option>
+                    <option value="5">Assam</option>
+                </select>
+            </div>
+            <div class="exp-filter-group">
+                <label for="filter-fee">Entry Fee</label>
+                <select id="filter-fee">
+                    <option value="">Any Fee</option>
+                    <option value="free">Free Entry</option>
+                    <option value="paid">Paid Entry</option>
+                </select>
+            </div>
+            <div class="exp-search-group">
+                <label for="filter-search">Search</label>
+                <div class="exp-search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="filter-search" placeholder="Attraction name or city…">
+                </div>
+            </div>
+            <button class="exp-filter-btn" id="clear-filters-btn">
+                <i class="fas fa-times" style="margin-right:6px;"></i>Clear
+            </button>
+        </div>
+
+        <!-- RESULTS HEADER -->
+        <div class="exp-results-header">
+            <h2 class="exp-results-title" id="results-title">All Experiences</h2>
+            <span class="exp-results-count" id="results-count">Loading…</span>
+        </div>
+
+        <!-- CARD GRID -->
+        <div id="exp-grid">
+            <div class="exp-state-msg">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                <p>Loading attractions…</p>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- ==================== MODAL ==================== -->
+<div id="exp-modal" class="exp-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="exp-modal-box">
+
+        <div class="exp-modal-img-wrap">
+            <img id="modal-img" src="" alt="">
+            <div class="exp-modal-img-overlay"></div>
+            <button class="exp-modal-close" id="modal-close-btn" aria-label="Close modal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="exp-modal-top-badges">
+                <span class="exp-modal-type-badge" id="modal-type-badge"></span>
+                <span class="exp-modal-must-badge" id="modal-must-badge" style="display:none;">
+                    <i class="fas fa-star"></i> Must Visit
+                </span>
+            </div>
+        </div>
+
+        <div class="exp-modal-body">
+            <span class="exp-modal-cat" id="modal-category"></span>
+            <h2 class="exp-modal-title" id="modal-title"></h2>
+
+            <div class="exp-modal-meta" id="modal-meta">
+                <!-- Injected by JS -->
+            </div>
+
+            <p class="exp-modal-desc" id="modal-desc"></p>
+            <div class="exp-modal-address" id="modal-address-wrap" style="display:none;">
+                <i class="fas fa-location-arrow"></i>
+                <span id="modal-address"></span>
+            </div>
+            <div class="exp-modal-guide" id="modal-guide-wrap" style="display:none;">
+                <i class="fas fa-user-tie"></i>
+                <div>
+                    <div class="exp-modal-guide-title">Guide Available</div>
+                    <div class="exp-modal-guide-price" id="modal-guide-price"></div>
+                </div>
+            </div>
+            <div class="exp-modal-best-time" id="modal-best-time-wrap" style="display:none;">
+                <i class="fas fa-sun"></i>
+                <span id="modal-best-time"></span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer id="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <a href="index.html" class="footer-logo">BHARAT YATRA</a>
+            <p class="footer-tagline">Discover the incredible beauty<br>and diversity of India.</p>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Explore</h4>
+            <ul class="footer-links">
+                <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+                <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+                <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+                <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Plan</h4>
+            <ul class="footer-links">
+                <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+                <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+                <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Legal</h4>
+            <ul class="footer-links">
+                <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Follow Us</h4>
+            <div class="footer-socials">
+                <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-btn" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+            </div>
+            <a href="contactus.html" class="footer-contact-btn">
+                <i class="fas fa-envelope"></i> Contact Us
+            </a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 BharatYatra. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+/* ═══════════════════════════════════════════
+   SUPABASE INIT
+═══════════════════════════════════════════ */
+const SUPABASE_URL = 'https://gtpnojbbamoaznlutxap.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+let allAttractions = [];
+let districtMap    = {};   // { id → name }
+let activeType     = '';   // '' = All
+let modalOpen      = false;
+
+/* ═══════════════════════════════════════════
+   TYPE AVAILABILITY MATRIX
+   Pre-computed from DB — no extra query needed
+═══════════════════════════════════════════ */
+const TYPE_AVAIL = {
+    '':  new Set(['Adventure','Beach','Cultural','Experience','Historical','Modern','Monument','Museum','Nature','Recreation','Religious','Scenic','Urban','Wellness','Wildlife']),
+    '1': new Set(['Adventure','Beach','Cultural','Historical','Modern','Monument','Museum','Nature','Recreation','Religious','Scenic','Wildlife']),
+    '2': new Set(['Cultural','Historical','Monument','Museum','Nature','Recreation','Religious','Wildlife']),
+    '3': new Set(['Adventure','Cultural','Experience','Historical','Museum','Nature','Religious','Wellness','Wildlife']),
+    '4': new Set(['Adventure','Experience','Historical','Museum','Nature','Religious','Urban','Wildlife']),
+    '5': new Set(['Adventure','Cultural','Experience','Historical','Museum','Nature','Religious','Wildlife'])
+};
+
+/* ═══════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════ */
+function esc(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function isFreeEntry(attr) {
+    return !attr.entry_fee || parseInt(attr.entry_fee) === 0;
+}
+
+function guideAvail(attr) {
+    return attr.guide_available === true || attr.guide_available === 'true';
+}
+
+function isMustVisit(attr) {
+    return attr.is_must_visit === true || attr.is_must_visit === 'true';
+}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+const sidebar  = document.getElementById('sidebar');
+const overlay  = document.getElementById('overlay');
+const openBtn  = document.getElementById('open-sidebar');
+const closeBtn = document.getElementById('close-sidebar');
+
+function openSidebar()  { sidebar.classList.add('active'); overlay.classList.add('active'); document.body.classList.add('no-scroll'); }
+function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.classList.remove('no-scroll'); }
+
+openBtn.addEventListener('click', openSidebar);
+closeBtn.addEventListener('click', closeSidebar);
+overlay.addEventListener('click', () => { if (!modalOpen) closeSidebar(); });
+
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (modalOpen) closeModal();
+    else closeSidebar();
+});
+
+/* ═══════════════════════════════════════════
+   TYPE BUTTONS
+═══════════════════════════════════════════ */
+document.getElementById('type-buttons').addEventListener('click', e => {
+    const btn = e.target.closest('.type-btn');
+    if (!btn || btn.classList.contains('disabled')) return;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    activeType = btn.dataset.type;
+    btn.classList.add('active');
+    applyFilters();
+});
+
+function updateTypeBtnStates(stateId) {
+    const available = TYPE_AVAIL[stateId] || TYPE_AVAIL[''];
+    document.querySelectorAll('.type-btn').forEach(btn => {
+        const t = btn.dataset.type;
+        if (t === '') { btn.classList.remove('disabled'); return; }
+        if (available.has(t)) {
+            btn.classList.remove('disabled');
+        } else {
+            btn.classList.add('disabled');
+            // If currently active type becomes unavailable, reset to All
+            if (activeType === t) {
+                btn.classList.remove('active');
+                activeType = '';
+                document.querySelector('.type-btn[data-type=""]').classList.add('active');
+            }
+        }
+    });
+}
+
+/* ═══════════════════════════════════════════
+   RENDER CARD
+═══════════════════════════════════════════ */
+function renderCard(attr, index) {
+    const free = isFreeEntry(attr);
+    const feeHtml = free
+        ? `<span class="exp-fee-free">Free Entry</span>`
+        : `<span class="exp-fee-paid">&#x20B9;${parseInt(attr.entry_fee).toLocaleString('en-IN')}</span>`;
+
+    const guideHtml = guideAvail(attr)
+        ? `<span class="exp-guide-tag"><i class="fas fa-user-tie"></i> Guide</span>`
+        : '';
+
+    const mustHtml = isMustVisit(attr)
+        ? `<div class="exp-must-star" title="Must Visit"><i class="fas fa-star"></i></div>`
+        : '';
+
+    const distName = districtMap[attr.district_id] || districtMap[String(attr.district_id)] || '';
+
+    const catHtml = attr.category
+        ? `<span class="exp-cat-tag">${esc(attr.category)}</span>`
+        : '';
+
+    const timeHtml = attr.estimated_time_hours
+        ? `<span><i class="fas fa-clock"></i>${parseFloat(attr.estimated_time_hours)}h</span>`
+        : '';
+
+    const distHtml = distName
+        ? `<span><i class="fas fa-map-marker-alt"></i>${esc(distName)}</span>`
+        : '';
+
+    return `
+        <div class="exp-card" onclick="openModal(${attr.id})"
+             style="animation-delay:${Math.min(index * 0.04, 0.5)}s"
+             role="button" tabindex="0"
+             aria-label="View details for ${esc(attr.name)}"
+             onkeydown="if(event.key==='Enter'||event.key===' ')openModal(${attr.id})">
+            <div class="exp-card-img">
+                <img src="${esc(attr.image_url || '')}" alt="${esc(attr.name)}" loading="lazy"
+                     onerror="this.style.display='none'">
+                <div class="exp-card-img-overlay"></div>
+                <span class="exp-type-badge">${esc(attr.type)}</span>
+                ${mustHtml}
+            </div>
+            <div class="exp-card-body">
+                ${catHtml}
+                <h3 class="exp-card-title">${esc(attr.name)}</h3>
+                <p class="exp-card-sub">${esc(attr.short_description || '')}</p>
+                <div class="exp-card-meta">${distHtml}${timeHtml}</div>
+                <div class="exp-card-foot">${feeHtml}${guideHtml}</div>
+            </div>
+        </div>`;
+}
+
+/* ═══════════════════════════════════════════
+   RENDER GRID
+═══════════════════════════════════════════ */
+function renderGrid(attractions) {
+    const grid    = document.getElementById('exp-grid');
+    const countEl = document.getElementById('results-count');
+    const titleEl = document.getElementById('results-title');
+
+    if (!attractions.length) {
+        grid.innerHTML = `
+            <div class="exp-state-msg">
+                <i class="fas fa-search"></i>
+                <p>No attractions match your current filters.<br>
+                    <button class="clear-link" onclick="clearAllFilters()">Clear Filters</button>
+                </p>
+            </div>`;
+        countEl.textContent = 'No results';
+        return;
+    }
+
+    countEl.textContent = `Showing ${attractions.length} of ${allAttractions.length} attraction${allAttractions.length !== 1 ? 's' : ''}`;
+
+    // Update results title
+    const stateEl    = document.getElementById('filter-state');
+    const stateLabel = stateEl.options[stateEl.selectedIndex].text;
+    const parts = [];
+    if (stateEl.value) parts.push(stateLabel);
+    if (activeType)    parts.push(activeType);
+    titleEl.textContent = parts.length ? parts.join(' · ') : 'All Experiences';
+
+    grid.innerHTML = attractions.map((a, i) => renderCard(a, i)).join('');
+}
+
+/* ═══════════════════════════════════════════
+   FILTERS
+═══════════════════════════════════════════ */
+function applyFilters() {
+    const stateVal = document.getElementById('filter-state').value;
+    const feeVal   = document.getElementById('filter-fee').value;
+    const query    = document.getElementById('filter-search').value.toLowerCase().trim();
+
+    let result = [...allAttractions];
+
+    if (stateVal) result = result.filter(a => String(a.state_id) === stateVal);
+    if (activeType) result = result.filter(a => a.type === activeType);
+    if (feeVal === 'free') result = result.filter(a => isFreeEntry(a));
+    else if (feeVal === 'paid') result = result.filter(a => !isFreeEntry(a));
+    if (query) result = result.filter(a =>
+        (a.name              && a.name.toLowerCase().includes(query)) ||
+        (a.short_description && a.short_description.toLowerCase().includes(query)) ||
+        (a.city              && a.city.toLowerCase().includes(query))
+    );
+
+    renderGrid(result);
+}
+
+function clearAllFilters() {
+    document.getElementById('filter-state').value  = '';
+    document.getElementById('filter-fee').value    = '';
+    document.getElementById('filter-search').value = '';
+    activeType = '';
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.type-btn[data-type=""]').classList.add('active');
+    updateTypeBtnStates('');
+    applyFilters();
+}
+
+/* ═══════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════ */
+function openModal(id) {
+    const attr = allAttractions.find(a => a.id === id || a.id === String(id) || Number(a.id) === Number(id));
+    if (!attr) return;
+
+    // Image
+    const imgEl = document.getElementById('modal-img');
+    imgEl.src = attr.image_url || '';
+    imgEl.alt = attr.name;
+
+    // Badges
+    document.getElementById('modal-type-badge').textContent = attr.type || '';
+    document.getElementById('modal-must-badge').style.display = isMustVisit(attr) ? 'flex' : 'none';
+
+    // Category
+    const catEl = document.getElementById('modal-category');
+    catEl.textContent = attr.category || '';
+    catEl.style.display = attr.category ? 'inline-block' : 'none';
+
+    // Title
+    document.getElementById('modal-title').textContent = attr.name;
+
+    // Meta items
+    const distName = districtMap[attr.district_id] || districtMap[String(attr.district_id)] || '';
+    const feeText  = isFreeEntry(attr)
+        ? 'Free Entry'
+        : `₹${parseInt(attr.entry_fee).toLocaleString('en-IN')}`;
+    const timeText = attr.estimated_time_hours ? `${parseFloat(attr.estimated_time_hours)} hours` : null;
+
+    let metaHtml = '';
+    if (distName) metaHtml += metaItem('fa-map-marker-alt', 'Location', esc(distName));
+    if (timeText) metaHtml += metaItem('fa-clock', 'Duration', esc(timeText));
+    metaHtml += metaItem('fa-ticket-alt', 'Entry Fee', esc(feeText));
+    document.getElementById('modal-meta').innerHTML = metaHtml;
+
+    // Description
+    document.getElementById('modal-desc').textContent = attr.description || '';
+
+    // Address
+    const addrStr = [attr.address, attr.city].filter(Boolean).join(', ');
+    const addrWrap = document.getElementById('modal-address-wrap');
+    if (addrStr) {
+        document.getElementById('modal-address').textContent = addrStr;
+        addrWrap.style.display = 'flex';
+    } else { addrWrap.style.display = 'none'; }
+
+    // Guide
+    const guideWrap = document.getElementById('modal-guide-wrap');
+    if (guideAvail(attr)) {
+        document.getElementById('modal-guide-price').textContent = attr.guide_price_range
+            ? `Guide price: ${attr.guide_price_range}`
+            : 'Contact for guide pricing';
+        guideWrap.style.display = 'flex';
+    } else { guideWrap.style.display = 'none'; }
+
+    // Best time
+    const btWrap = document.getElementById('modal-best-time-wrap');
+    if (attr.best_time_note) {
+        document.getElementById('modal-best-time').textContent = attr.best_time_note;
+        btWrap.style.display = 'flex';
+    } else { btWrap.style.display = 'none'; }
+
+    // Show modal
+    document.getElementById('exp-modal').classList.add('active');
+    document.body.classList.add('no-scroll');
+    modalOpen = true;
+
+    // Scroll modal to top
+    document.querySelector('.exp-modal-box').scrollTop = 0;
+}
+
+function metaItem(icon, label, value) {
+    return `<div class="exp-modal-meta-item">
+        <i class="fas ${icon}"></i>
+        <div><span class="meta-label">${label}</span><span class="meta-value">${value}</span></div>
+    </div>`;
+}
+
+function closeModal() {
+    document.getElementById('exp-modal').classList.remove('active');
+    document.body.classList.remove('no-scroll');
+    modalOpen = false;
+}
+
+document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+document.getElementById('exp-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+/* ═══════════════════════════════════════════
+   EVENT LISTENERS
+═══════════════════════════════════════════ */
+document.getElementById('filter-state').addEventListener('change', function() {
+    updateTypeBtnStates(this.value);
+    applyFilters();
+});
+document.getElementById('filter-fee').addEventListener('change', applyFilters);
+document.getElementById('filter-search').addEventListener('input', applyFilters);
+document.getElementById('clear-filters-btn').addEventListener('click', clearAllFilters);
+
+/* ═══════════════════════════════════════════
+   FETCH
+═══════════════════════════════════════════ */
+async function fetchData() {
+    document.getElementById('exp-grid').innerHTML = `
+        <div class="exp-state-msg">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <p>Loading attractions…</p>
+        </div>`;
+    document.getElementById('results-count').textContent = 'Loading…';
+
+    try {
+        const [attrRes, distRes] = await Promise.all([
+            sb.from('attractions').select('*').order('priority_score', { ascending: false }),
+            sb.from('districts').select('id, name')
+        ]);
+
+        if (attrRes.error) throw attrRes.error;
+        if (distRes.error) throw distRes.error;
+
+        allAttractions = attrRes.data || [];
+        (distRes.data || []).forEach(d => { districtMap[d.id] = d.name; });
+
+        applyFilters();
+
+    } catch (err) {
+        console.error('Fetch error:', err);
+        document.getElementById('exp-grid').innerHTML = `
+            <div class="exp-state-msg">
+                <i class="fas fa-exclamation-triangle" style="color:#ff6b35;"></i>
+                <p>Could not load attractions.<br>Please check your connection and try again.</p>
+            </div>`;
+        document.getElementById('results-count').textContent = '—';
+    }
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded', fetchData);
+</script>
+</body>
+</html>

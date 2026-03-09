@@ -54,743 +54,246 @@
       overflow-x: hidden;
     }
 
-    /* ── SCROLLBAR ── */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.3); border-radius: 3px; }
 
     /* ── HEADER ── */
     #admin-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
+      position: fixed; top: 0; left: 0; right: 0;
       height: var(--header-h);
       background: rgba(7,16,33,0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
+      z-index: 1000; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 32px;
     }
-
     .header-left { display: flex; align-items: center; gap: 16px; }
-
-    .header-logo {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--cyan);
-      text-decoration: none;
-    }
-
-    .header-divider {
-      width: 1px; height: 20px;
-      background: var(--border);
-    }
-
-    .header-title {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: 0.5px;
-    }
-
+    .header-logo { font-size: 13px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); text-decoration: none; }
+    .header-divider { width: 1px; height: 20px; background: var(--border); }
+    .header-title { font-size: 14px; font-weight: 500; color: var(--muted); letter-spacing: 0.5px; }
     .header-right { display: flex; align-items: center; gap: 12px; }
-
-    .btn-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      background: transparent;
-      padding: 8px 18px;
-      border-radius: 40px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: var(--transition);
-      transform: translateX(0);
-    }
-    .btn-back:hover {
-      color: var(--cyan);
-      border-color: var(--cyan);
-      transform: translateX(-4px);
-    }
-
-    .btn-logout {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      background: transparent;
-      border: 1px solid var(--border);
-      padding: 8px 18px;
-      border-radius: 40px;
-      cursor: pointer;
-      transition: var(--transition);
-    }
+    .btn-back { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); background: transparent; padding: 8px 18px; border-radius: 40px; cursor: pointer; text-decoration: none; transition: var(--transition); transform: translateX(0); }
+    .btn-back:hover { color: var(--cyan); border-color: var(--cyan); transform: translateX(-4px); }
+    .btn-logout { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--muted); background: transparent; border: 1px solid var(--border); padding: 8px 18px; border-radius: 40px; cursor: pointer; transition: var(--transition); }
     .btn-logout:hover { color: var(--red); border-color: var(--red); }
 
-    /* ── MAIN CONTENT ── */
-    #main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: calc(var(--header-h) + 40px) 32px 80px;
-    }
+    /* ── MAIN ── */
+    #main { max-width: 1200px; margin: 0 auto; padding: calc(var(--header-h) + 40px) 32px 80px; }
 
-    /* ── PAGE TITLE ROW ── */
-    .page-title-row {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 32px;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .page-title {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: -0.5px;
-    }
-
+    .page-title-row { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+    .page-title { font-size: 28px; font-weight: 700; color: var(--white); letter-spacing: -0.5px; }
     .page-title span { color: var(--cyan); }
 
-    /* ── STATE SELECTOR ── */
-    .state-selector-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 36px;
-      flex-wrap: wrap;
-    }
-
-    .selector-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .state-select {
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--white);
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      padding: 10px 36px 10px 16px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      outline: none;
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      transition: var(--transition);
-      min-width: 200px;
-    }
+    .state-selector-row { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+    .selector-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+    .state-select { background: var(--card); border: 1px solid var(--border); color: var(--white); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; padding: 10px 36px 10px 16px; border-radius: var(--radius-sm); cursor: pointer; outline: none; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; transition: var(--transition); min-width: 200px; }
     .state-select:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
 
-    /* ── STATS ROW ── */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 36px;
-    }
-
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius);
-      padding: 20px 22px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      backdrop-filter: blur(8px);
-    }
-
-    .stat-icon {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
+    /* ── STATS ── */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 22px; display: flex; align-items: center; gap: 16px; backdrop-filter: blur(8px); }
+    .stat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
     .stat-icon.cyan  { background: var(--cyan-dim);  color: var(--cyan); }
     .stat-icon.blue  { background: rgba(79,195,255,0.12); color: var(--blue); }
     .stat-icon.green { background: var(--green-dim); color: var(--green); }
     .stat-icon.amber { background: var(--amber-dim); color: var(--amber); }
-
     .stat-info { flex: 1; min-width: 0; }
-    .stat-num  { font-size: 26px; font-weight: 700; color: var(--white); line-height: 1; }
-    .stat-lbl  { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+    .stat-num { font-size: 26px; font-weight: 700; color: var(--white); line-height: 1; }
+    .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
 
     /* ── SECTION HEADER ── */
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .section-title {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--cyan);
-    }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-title { font-size: 13px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--cyan); }
 
     /* ── BUTTONS ── */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      padding: 8px 16px;
-      border-radius: var(--radius-sm);
-      border: none;
-      cursor: pointer;
-      transition: var(--transition);
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: var(--cyan);
-      color: #071021;
-    }
+    .btn { display: inline-flex; align-items: center; gap: 7px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; padding: 8px 16px; border-radius: var(--radius-sm); border: none; cursor: pointer; transition: var(--transition); white-space: nowrap; }
+    .btn-primary { background: var(--cyan); color: #071021; }
     .btn-primary:hover { background: #22d3ee; transform: translateY(-1px); }
-
-    .btn-ghost {
-      background: var(--cyan-dim);
-      color: var(--cyan);
-      border: 1px solid rgba(6,182,212,0.2);
-    }
+    .btn-ghost { background: var(--cyan-dim); color: var(--cyan); border: 1px solid rgba(6,182,212,0.2); }
     .btn-ghost:hover { background: rgba(6,182,212,0.2); }
-
-    .btn-danger {
-      background: var(--red-dim);
-      color: var(--red);
-      border: 1px solid rgba(239,68,68,0.2);
-    }
+    .btn-danger { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
     .btn-danger:hover { background: rgba(239,68,68,0.25); }
-
-    .btn-edit {
-      background: rgba(245,158,11,0.1);
-      color: var(--amber);
-      border: 1px solid rgba(245,158,11,0.2);
-    }
+    .btn-edit { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
     .btn-edit:hover { background: rgba(245,158,11,0.2); }
-
     .btn-sm { padding: 5px 11px; font-size: 11px; }
+    .btn-icon { width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 12px; }
 
-    .btn-icon {
-      width: 30px; height: 30px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      font-size: 12px;
-    }
+    /* ── IMAGE FIELD ── */
+    .img-field-wrap { display: flex; gap: 8px; align-items: stretch; }
+    .img-field-wrap .form-input { flex: 1; }
+    .btn-img-pick { display: inline-flex; align-items: center; gap: 5px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid rgba(6,182,212,0.25); background: var(--cyan-dim); color: var(--cyan); cursor: pointer; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; white-space: nowrap; transition: var(--transition); flex-shrink: 0; }
+    .btn-img-pick:hover { background: rgba(6,182,212,0.22); }
+    .img-current-preview { margin-top: 8px; max-height: 80px; border-radius: 6px; border: 1px solid var(--border); display: block; }
 
     /* ── DISTRICT ACCORDION ── */
     .district-list { display: flex; flex-direction: column; gap: 10px; }
-
-    .district-card {
-      background: var(--card);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: border-color 0.2s;
-    }
+    .district-card { background: var(--card); border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s; }
     .district-card.open { border-color: rgba(6,182,212,0.25); }
-
-    .district-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 16px 20px;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.15s;
-    }
+    .district-row { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; user-select: none; transition: background 0.15s; }
     .district-row:hover { background: rgba(255,255,255,0.02); }
-
-    .district-chevron {
-      color: var(--muted);
-      font-size: 12px;
-      transition: transform 0.25s;
-      flex-shrink: 0;
-    }
+    .district-chevron { color: var(--muted); font-size: 12px; transition: transform 0.25s; flex-shrink: 0; }
     .district-card.open .district-chevron { transform: rotate(90deg); color: var(--cyan); }
-
-    .district-name {
-      flex: 1;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--white);
-    }
-
-    .badge {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 20px;
-    }
+    .district-name { flex: 1; font-size: 15px; font-weight: 600; color: var(--white); }
+    .badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
     .badge-cyan  { background: var(--cyan-dim);  color: var(--cyan); }
     .badge-blue  { background: rgba(79,195,255,0.12); color: var(--blue); }
     .badge-green { background: var(--green-dim); color: var(--green); }
     .badge-amber { background: var(--amber-dim); color: var(--amber); }
     .badge-red   { background: var(--red-dim);   color: var(--red); }
     .badge-muted { background: rgba(148,163,184,0.1); color: var(--muted); }
-
-    .district-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .district-body {
-      display: none;
-      padding: 0 20px 20px;
-      border-top: 1px solid var(--border2);
-    }
+    .district-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .district-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--border2); }
     .district-card.open .district-body { display: block; }
 
     /* ── ATTRACTION LIST ── */
     .attraction-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
-
-    .attraction-item {
-      background: var(--card2);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-    }
-
-    .attraction-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      cursor: pointer;
-    }
+    .attraction-item { background: var(--card2); border: 1px solid var(--border2); border-radius: var(--radius-sm); overflow: hidden; }
+    .attraction-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; }
     .attraction-row:hover { background: rgba(255,255,255,0.02); }
-
-    .attraction-chevron {
-      color: var(--muted);
-      font-size: 11px;
-      transition: transform 0.2s;
-      flex-shrink: 0;
-    }
+    .attraction-chevron { color: var(--muted); font-size: 11px; transition: transform 0.2s; flex-shrink: 0; }
     .attraction-item.open .attraction-chevron { transform: rotate(90deg); color: var(--blue); }
-
-    .attraction-score {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      background: var(--cyan-dim);
-      color: var(--cyan);
-      font-size: 13px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
+    .attraction-score { width: 32px; height: 32px; border-radius: 8px; background: var(--cyan-dim); color: var(--cyan); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .attraction-info { flex: 1; min-width: 0; }
-    .attraction-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--white);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .attraction-meta {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 2px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
+    .attraction-name { font-size: 13px; font-weight: 600; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .attraction-meta { font-size: 11px; color: var(--muted); margin-top: 2px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .attraction-badges { display: flex; gap: 5px; flex-shrink: 0; flex-wrap: wrap; }
     .attraction-actions { display: flex; gap: 5px; flex-shrink: 0; }
-
-    .attraction-body {
-      display: none;
-      padding: 0 16px 16px;
-      border-top: 1px solid var(--border2);
-    }
+    .attraction-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border2); }
     .attraction-item.open .attraction-body { display: block; }
 
     /* ── ACCOMMODATION LIST ── */
-    .acc-section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 0 10px;
-    }
-
-    .acc-section-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
+    .acc-section-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 10px; }
+    .acc-section-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
     .acc-list { display: flex; flex-direction: column; gap: 6px; }
-
-    .acc-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(7,16,33,0.5);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-    }
-
+    .acc-row { display: flex; align-items: center; gap: 10px; background: rgba(7,16,33,0.5); border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 10px 14px; }
     .acc-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--white); }
-    .acc-meta {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      font-size: 11px;
-      color: var(--muted);
-      flex-wrap: wrap;
-    }
+    .acc-meta { display: flex; gap: 8px; align-items: center; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
     .acc-meta span { display: flex; align-items: center; gap: 4px; }
     .acc-meta i { color: var(--cyan); font-size: 10px; }
     .acc-actions { display: flex; gap: 5px; flex-shrink: 0; }
+    .no-items { text-align: center; padding: 20px; color: var(--muted); font-size: 13px; font-style: italic; }
 
-    .no-items {
-      text-align: center;
-      padding: 20px;
-      color: var(--muted);
-      font-size: 13px;
-      font-style: italic;
-    }
-
-    /* ── LOADING STATE ── */
-    .loading-state {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 40px 20px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    /* ── LOADING ── */
+    .loading-state { display: flex; align-items: center; gap: 12px; padding: 40px 20px; color: var(--muted); font-size: 14px; }
     .spinner { animation: spin 1s linear infinite; color: var(--cyan); }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── MODAL OVERLAY ── */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(4,10,22,0.88);
-      backdrop-filter: blur(4px);
-      z-index: 2000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(4,10,22,0.88); backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.active { display: flex; }
 
     /* ── MODAL BOX ── */
-    .modal-box {
-      background: #0d1829;
-      border: 1px solid rgba(6,182,212,0.2);
-      border-radius: var(--radius);
-      width: 100%;
-      max-width: 680px;
-      max-height: 90vh;
-      overflow-y: auto;
-      position: relative;
-      animation: modalIn 0.25s ease;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(6,182,212,0.08);
-    }
-
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.96) translateY(-10px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 22px 28px 18px;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: #0d1829;
-      z-index: 1;
-    }
-
-    .modal-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--white);
-    }
+    .modal-box { background: #0d1829; border: 1px solid rgba(6,182,212,0.2); border-radius: var(--radius); width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; position: relative; animation: modalIn 0.25s ease; box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(6,182,212,0.08); }
+    .modal-box.modal-wide { max-width: 860px; }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 28px 18px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: #0d1829; z-index: 1; }
+    .modal-title { font-size: 16px; font-weight: 700; color: var(--white); }
     .modal-title span { color: var(--cyan); }
-
-    .modal-close-btn {
-      width: 32px; height: 32px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 16px;
-      transition: var(--transition);
-    }
+    .modal-close-btn { width: 32px; height: 32px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--muted); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: var(--transition); }
     .modal-close-btn:hover { background: var(--red-dim); color: var(--red); border-color: rgba(239,68,68,0.3); }
-
     .modal-body { padding: 24px 28px; }
 
     /* ── FORM ── */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 20px; }
     .form-grid.one-col { grid-template-columns: 1fr; }
     .form-col-span { grid-column: 1 / -1; }
-
     .form-group { display: flex; flex-direction: column; gap: 7px; }
-
-    .form-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
+    .form-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
     .form-label .required { color: var(--red); margin-left: 3px; }
-
-    .form-input, .form-select, .form-textarea {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      color: var(--white);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      padding: 10px 14px;
-      border-radius: var(--radius-sm);
-      outline: none;
-      transition: var(--transition);
-      width: 100%;
-    }
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
-      border-color: var(--cyan);
-      box-shadow: 0 0 0 3px var(--cyan-dim);
-      background: rgba(6,182,212,0.04);
-    }
+    .form-input, .form-select, .form-textarea { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--white); font-family: 'Inter', sans-serif; font-size: 13px; padding: 10px 14px; border-radius: var(--radius-sm); outline: none; transition: var(--transition); width: 100%; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); background: rgba(6,182,212,0.04); }
     .form-input::placeholder, .form-textarea::placeholder { color: var(--muted2); }
-
-    .form-select {
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 32px;
-    }
+    .form-select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
     .form-select option { background: #0d1829; color: var(--white); }
-
     .form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
-
-    /* Toggle switch */
     .toggle-group { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
     .toggle-label { font-size: 13px; color: var(--white); flex: 1; }
     .toggle-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
-
-    .toggle {
-      position: relative;
-      width: 44px; height: 24px;
-      flex-shrink: 0;
-    }
+    .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
     .toggle input { opacity: 0; width: 0; height: 0; }
-    .toggle-slider {
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.1);
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .toggle-slider::before {
-      content: '';
-      position: absolute;
-      left: 3px; top: 3px;
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      background: #fff;
-      transition: transform 0.2s;
-    }
+    .toggle-slider { position: absolute; inset: 0; background: rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+    .toggle-slider::before { content: ''; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
     .toggle input:checked + .toggle-slider { background: var(--cyan); }
     .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
-
     .form-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
-
-    /* Score input */
-    .score-input-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .score-input-wrap { display: flex; align-items: center; gap: 10px; }
     .score-input-wrap .form-input { max-width: 80px; text-align: center; font-weight: 700; font-size: 16px; }
-    .score-bar {
-      flex: 1;
-      height: 6px;
-      background: rgba(255,255,255,0.07);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .score-bar-fill {
-      height: 100%;
-      background: var(--cyan);
-      border-radius: 3px;
-      transition: width 0.3s ease;
-    }
+    .score-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
+    .score-bar-fill { height: 100%; background: var(--cyan); border-radius: 3px; transition: width 0.3s ease; }
 
-    /* Modal footer */
-    .modal-footer {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
-      padding: 18px 28px 22px;
-      border-top: 1px solid var(--border);
-    }
-
-    .btn-cancel {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 9px 20px;
-      border-radius: var(--radius-sm);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-    }
+    /* ── MODAL FOOTER ── */
+    .modal-footer { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 18px 28px 22px; border-top: 1px solid var(--border); }
+    .btn-cancel { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 9px 20px; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: var(--transition); }
     .btn-cancel:hover { border-color: var(--muted); color: var(--white); }
-
-    .btn-save {
-      background: var(--cyan);
-      color: #071021;
-      border: none;
-      padding: 9px 24px;
-      border-radius: var(--radius-sm);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
+    .btn-save { background: var(--cyan); color: #071021; border: none; padding: 9px 24px; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 7px; }
     .btn-save:hover { background: #22d3ee; transform: translateY(-1px); }
     .btn-save:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    /* ── CONFIRM DIALOG ── */
-    .confirm-box {
-      max-width: 420px;
-      text-align: center;
-      padding: 10px;
-    }
-    .confirm-icon {
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      background: var(--red-dim);
-      color: var(--red);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin: 0 auto 20px;
-    }
+    /* ── CONFIRM ── */
+    .confirm-box { max-width: 420px; text-align: center; padding: 10px; }
+    .confirm-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--red-dim); color: var(--red); display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 20px; }
     .confirm-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
     .confirm-msg { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
     .confirm-actions { display: flex; gap: 10px; justify-content: center; }
-    .btn-confirm-del {
-      background: var(--red);
-      color: #fff;
-      border: none;
-      padding: 10px 28px;
-      border-radius: var(--radius-sm);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-    }
+    .btn-confirm-del { background: var(--red); color: #fff; border: none; padding: 10px 28px; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition); }
     .btn-confirm-del:hover { background: #dc2626; }
 
     /* ── TOAST ── */
-    #toast {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      pointer-events: none;
-    }
-
-    .toast-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 13px 18px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--white);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-      animation: toastIn 0.3s ease;
-      min-width: 280px;
-    }
+    #toast { position: fixed; bottom: 28px; right: 28px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toast-item { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 13px 18px; font-size: 13px; font-weight: 500; color: var(--white); box-shadow: 0 8px 30px rgba(0,0,0,0.4); animation: toastIn 0.3s ease; min-width: 280px; }
     .toast-item.success { border-color: rgba(34,197,94,0.4); }
     .toast-item.success i { color: var(--green); }
     .toast-item.error { border-color: rgba(239,68,68,0.4); }
     .toast-item.error i { color: var(--red); }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateX(20px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
+    /* ════════════════════════════
+       IMAGE MANAGER
+    ════════════════════════════ */
+    .imgmgr-folder-pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--cyan); background: var(--cyan-dim); border: 1px solid rgba(6,182,212,0.2); padding: 4px 14px; border-radius: 20px; margin-bottom: 18px; }
+
+    .imgmgr-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+    .imgmgr-tab { padding: 10px 20px; font-size: 12px; font-weight: 600; color: var(--muted); background: transparent; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: var(--transition); font-family: 'Inter', sans-serif; }
+    .imgmgr-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+    .imgmgr-tab:hover:not(.active) { color: var(--white); }
+    .imgmgr-panel { display: none; }
+    .imgmgr-panel.active { display: block; }
+
+    .imgmgr-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .imgmgr-refresh { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+    .imgmgr-refresh:hover { color: var(--cyan); border-color: var(--cyan); }
+    .imgmgr-count { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+    .imgmgr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(138px, 1fr)); gap: 10px; max-height: 360px; overflow-y: auto; padding-right: 2px; }
+    .imgmgr-thumb { position: relative; border-radius: var(--radius-sm); border: 1px solid var(--border2); overflow: hidden; background: rgba(255,255,255,0.03); cursor: pointer; transition: border-color 0.15s; }
+    .imgmgr-thumb:hover { border-color: var(--cyan); }
+    .imgmgr-thumb img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+    .imgmgr-thumb-bar { padding: 5px 7px; display: flex; align-items: center; gap: 5px; }
+    .imgmgr-thumb-name { flex: 1; font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .imgmgr-del-btn { width: 20px; height: 20px; border-radius: 4px; border: none; background: var(--red-dim); color: var(--red); font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: var(--transition); }
+    .imgmgr-del-btn:hover { background: rgba(239,68,68,0.28); }
+    .imgmgr-hover-select { position: absolute; inset: 0; background: rgba(6,182,212,0.18); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s; pointer-events: none; }
+    .imgmgr-thumb:hover .imgmgr-hover-select { opacity: 1; }
+    .imgmgr-hover-select span { background: var(--cyan); color: #071021; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px; }
+    .imgmgr-empty { text-align: center; padding: 44px 20px; color: var(--muted); font-size: 13px; }
+    .imgmgr-empty i { font-size: 28px; display: block; margin-bottom: 10px; opacity: 0.5; }
+    .imgmgr-spinner { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 44px 20px; color: var(--muted); font-size: 13px; }
+
+    .imgmgr-drop { border: 2px dashed var(--border); border-radius: var(--radius); padding: 36px 24px; text-align: center; cursor: pointer; transition: var(--transition); position: relative; margin-bottom: 14px; }
+    .imgmgr-drop:hover, .imgmgr-drop.over { border-color: var(--cyan); background: var(--cyan-dim); }
+    .imgmgr-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .imgmgr-drop-icon { font-size: 30px; color: var(--muted); margin-bottom: 10px; }
+    .imgmgr-drop-title { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+    .imgmgr-drop-sub { font-size: 12px; color: var(--muted); }
+    .imgmgr-file-preview { display: none; margin-top: 10px; }
+    .imgmgr-file-preview img { max-height: 160px; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+    .imgmgr-file-name { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .imgmgr-progress { display: none; margin-top: 12px; }
+    .imgmgr-progress-track { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+    .imgmgr-progress-fill { height: 100%; background: var(--cyan); border-radius: 2px; transition: width 0.3s; }
+    .imgmgr-progress-label { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .imgmgr-upload-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
@@ -799,12 +302,13 @@
       .form-grid { grid-template-columns: 1fr; }
       .form-col-span { grid-column: 1; }
       .attraction-badges { display: none; }
+      .imgmgr-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
     }
   </style>
 </head>
 <body>
 
-  <!-- ==================== HEADER ==================== -->
+  <!-- HEADER -->
   <header id="admin-header">
     <div class="header-left">
       <a href="../index.html" class="header-logo">Bharat Yatra</a>
@@ -812,19 +316,13 @@
       <span class="header-title">Content Manager</span>
     </div>
     <div class="header-right">
-      <a href="admin-dashboard.html" class="btn-back">
-        <i class="fas fa-arrow-left"></i> Dashboard
-      </a>
-      <button class="btn-logout" onclick="handleLogout()">
-        <i class="fas fa-sign-out-alt"></i> Logout
-      </button>
+      <a href="admin-dashboard.html" class="btn-back"><i class="fas fa-arrow-left"></i> Dashboard</a>
+      <button class="btn-logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
   </header>
 
-  <!-- ==================== MAIN ==================== -->
+  <!-- MAIN -->
   <main id="main">
-
-    <!-- Title + state selector -->
     <div class="page-title-row">
       <h1 class="page-title">Content <span>Manager</span></h1>
     </div>
@@ -839,66 +337,99 @@
       </button>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-row" id="statsRow">
+    <div class="stats-row">
       <div class="stat-card">
         <div class="stat-icon cyan"><i class="fas fa-map"></i></div>
-        <div class="stat-info">
-          <div class="stat-num" id="statDistricts">—</div>
-          <div class="stat-lbl">Districts</div>
-        </div>
+        <div class="stat-info"><div class="stat-num" id="statDistricts">—</div><div class="stat-lbl">Districts</div></div>
       </div>
       <div class="stat-card">
         <div class="stat-icon blue"><i class="fas fa-landmark"></i></div>
-        <div class="stat-info">
-          <div class="stat-num" id="statAttractions">—</div>
-          <div class="stat-lbl">Attractions</div>
-        </div>
+        <div class="stat-info"><div class="stat-num" id="statAttractions">—</div><div class="stat-lbl">Attractions</div></div>
       </div>
       <div class="stat-card">
         <div class="stat-icon green"><i class="fas fa-bed"></i></div>
-        <div class="stat-info">
-          <div class="stat-num" id="statAccommodations">—</div>
-          <div class="stat-lbl">Accommodations</div>
-        </div>
+        <div class="stat-info"><div class="stat-num" id="statAccommodations">—</div><div class="stat-lbl">Accommodations</div></div>
       </div>
       <div class="stat-card">
         <div class="stat-icon amber"><i class="fas fa-star"></i></div>
-        <div class="stat-info">
-          <div class="stat-num" id="statFeatured">—</div>
-          <div class="stat-lbl">Featured</div>
-        </div>
+        <div class="stat-info"><div class="stat-num" id="statFeatured">—</div><div class="stat-lbl">Featured</div></div>
       </div>
     </div>
 
-    <!-- District list -->
     <div class="section-header">
       <span class="section-title">Districts &amp; Content</span>
     </div>
-
     <div id="districtList">
       <div class="no-items">Select a state above to load content.</div>
     </div>
-
   </main>
 
-  <!-- ==================== TOAST CONTAINER ==================== -->
   <div id="toast"></div>
 
-  <!-- ==================== MODAL OVERLAY ==================== -->
+  <!-- MAIN MODAL (forms) -->
   <div class="modal-overlay" id="modalOverlay">
-    <div class="modal-box" id="modalBox">
-      <!-- dynamic content -->
+    <div class="modal-box" id="modalBox"></div>
+  </div>
+
+  <!-- IMAGE MANAGER MODAL -->
+  <div class="modal-overlay" id="imgMgrOverlay">
+    <div class="modal-box modal-wide" id="imgMgrBox">
+      <div class="modal-header">
+        <span class="modal-title">Image <span>Manager</span></span>
+        <button class="modal-close-btn" onclick="closeImgMgr()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="imgmgr-folder-pill" id="imgMgrFolderPill">attractions</div>
+        <div class="imgmgr-tabs">
+          <button class="imgmgr-tab active" id="tabBrowse" onclick="switchTab('browse')"><i class="fas fa-images"></i>&nbsp; Browse</button>
+          <button class="imgmgr-tab" id="tabUpload" onclick="switchTab('upload')"><i class="fas fa-cloud-upload-alt"></i>&nbsp; Upload New</button>
+        </div>
+
+        <!-- BROWSE -->
+        <div class="imgmgr-panel active" id="panel-browse">
+          <div class="imgmgr-toolbar">
+            <button class="imgmgr-refresh" onclick="loadBrowse()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <span class="imgmgr-count" id="imgCount"></span>
+          </div>
+          <div class="imgmgr-grid" id="imgGrid">
+            <div class="imgmgr-spinner"><i class="fas fa-circle-notch spinner"></i>&nbsp;Loading…</div>
+          </div>
+        </div>
+
+        <!-- UPLOAD -->
+        <div class="imgmgr-panel" id="panel-upload">
+          <div class="imgmgr-drop" id="imgDrop">
+            <input type="file" id="imgFile" accept="image/jpeg,image/png,image/webp" onchange="onFileChosen(this.files)">
+            <div class="imgmgr-drop-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <div class="imgmgr-drop-title">Drag & drop or click to select</div>
+            <div class="imgmgr-drop-sub">JPG · PNG · WebP · max 5 MB</div>
+          </div>
+          <div class="imgmgr-file-preview" id="imgFilePreview">
+            <img id="imgPreviewImg" src="" alt="preview">
+            <div class="imgmgr-file-name" id="imgFileName"></div>
+          </div>
+          <div class="imgmgr-progress" id="imgProgress">
+            <div class="imgmgr-progress-track"><div class="imgmgr-progress-fill" id="imgProgressFill" style="width:0%"></div></div>
+            <div class="imgmgr-progress-label" id="imgProgressLabel">Uploading…</div>
+          </div>
+          <div class="imgmgr-upload-footer">
+            <button class="btn-cancel" onclick="clearUpload()">Clear</button>
+            <button class="btn-save" id="imgUploadBtn" onclick="doUpload()" disabled>
+              <i class="fas fa-upload"></i> Upload &amp; Select
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ==================== CONFIRM OVERLAY ==================== -->
+  <!-- CONFIRM MODAL -->
   <div class="modal-overlay" id="confirmOverlay">
-    <div class="modal-box confirm-box" id="confirmBox">
-      <div class="modal-body" style="text-align:center; padding: 32px 28px;">
+    <div class="modal-box confirm-box">
+      <div class="modal-body" style="text-align:center;padding:32px 28px;">
         <div class="confirm-icon"><i class="fas fa-trash"></i></div>
         <div class="confirm-title" id="confirmTitle">Delete item?</div>
-        <div class="confirm-msg" id="confirmMsg">This action cannot be undone.</div>
+        <div class="confirm-msg"   id="confirmMsg">This action cannot be undone.</div>
         <div class="confirm-actions">
           <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
           <button class="btn-confirm-del" id="confirmOkBtn">Delete</button>
@@ -908,88 +439,72 @@
   </div>
 
   <script>
-  // ============================================================
-  //  AUTH & CLIENT — provided by admin-auth.js (sb = window.sb)
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  CONFIG
+  // ─────────────────────────────────────────────────────────
+  const BUCKET         = 'bharatyatra-images';
+  const STORAGE_PUBLIC = 'https://gtpnojbbamoaznlutxap.supabase.co/storage/v1/object/public/' + BUCKET + '/';
 
-  async function handleLogout() {
-    BYAuth.logout('user_initiated');
-  }
+  // ─────────────────────────────────────────────────────────
+  //  AUTH
+  // ─────────────────────────────────────────────────────────
+  async function handleLogout() { BYAuth.logout('user_initiated'); }
 
-  // ============================================================
-  //  INPUT SANITISATION
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  SANITISE
+  // ─────────────────────────────────────────────────────────
   function sanitiseText(str) {
     if (!str) return '';
-    // Strip HTML tags and dangerous characters to prevent XSS in DB roundtrips
-    return String(str)
-      .replace(/<[^>]*>/g, '')          // strip HTML tags
-      .replace(/javascript:/gi, '')      // strip js: URIs
-      .replace(/on\w+\s*=/gi, '')        // strip event handlers
-      .trim();
+    return String(str).replace(/<[^>]*>/g,'').replace(/javascript:/gi,'').replace(/on\w+\s*=/gi,'').trim();
   }
-
   function sanitiseUrl(str) {
     if (!str) return '';
     const s = str.trim();
-    // Only allow http/https URLs
     if (s && !/^https?:\/\//i.test(s)) return '';
     return s;
   }
 
-  // ============================================================
-  //  STATE
-  // ============================================================
-  let currentStateId   = null;
+  // ─────────────────────────────────────────────────────────
+  //  APP STATE
+  // ─────────────────────────────────────────────────────────
+  let currentStateId = null;
   let currentStateName = '';
-  let allData          = { districts: [], attractions: [], accommodations: [] };
+  let allData = { districts: [], attractions: [], accommodations: [] };
 
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
   //  TOAST
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
   function toast(msg, type = 'success') {
     const t = document.getElementById('toast');
     const el = document.createElement('div');
     el.className = `toast-item ${type}`;
-    el.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${msg}`;
+    el.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
     t.appendChild(el);
     setTimeout(() => el.remove(), 3500);
   }
 
-  // ============================================================
-  //  MODAL HELPERS
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  MAIN MODAL
+  // ─────────────────────────────────────────────────────────
   function openModal(html) {
     document.getElementById('modalBox').innerHTML = html;
     document.getElementById('modalOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
-    // score bar update
     const si = document.getElementById('f_priority_score');
     if (si) updateScoreBar(si.value);
   }
-
   function closeModal() {
     document.getElementById('modalOverlay').classList.remove('active');
     document.body.style.overflow = '';
   }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('modalOverlay').addEventListener('click', e => {
-      if (e.target === document.getElementById('modalOverlay')) closeModal();
-    });
-    document.getElementById('confirmOverlay').addEventListener('click', e => {
-      if (e.target === document.getElementById('confirmOverlay')) closeConfirm();
-    });
-  });
-
   function updateScoreBar(val) {
-    const fill = document.getElementById('scoreBarFill');
-    if (fill) fill.style.width = (val / 10 * 100) + '%';
+    const f = document.getElementById('scoreBarFill');
+    if (f) f.style.width = (val / 10 * 100) + '%';
   }
 
-  // ============================================================
-  //  CONFIRM DIALOG
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  CONFIRM
+  // ─────────────────────────────────────────────────────────
   function openConfirm(title, msg, onOk) {
     document.getElementById('confirmTitle').textContent = title;
     document.getElementById('confirmMsg').textContent   = msg;
@@ -997,57 +512,236 @@
     document.getElementById('confirmOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
   }
-
   function closeConfirm() {
     document.getElementById('confirmOverlay').classList.remove('active');
     document.body.style.overflow = '';
   }
 
-  // ============================================================
-  //  LOAD STATES INTO SELECTOR
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  IMAGE MANAGER
+  //  Folders: 'states' | 'districts' | 'attractions'
+  // ─────────────────────────────────────────────────────────
+  let _imgField  = null;   // target input id
+  let _imgFolder = null;   // current storage folder
+  let _imgFile   = null;   // staged File object
+
+  function openImgMgr(fieldId, folder) {
+    _imgField  = fieldId;
+    _imgFolder = folder;
+    document.getElementById('imgMgrFolderPill').textContent = folder;
+    document.getElementById('imgMgrOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    switchTab('browse');
+    loadBrowse();
+  }
+
+  function closeImgMgr() {
+    document.getElementById('imgMgrOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+    clearUpload();
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tabBrowse').classList.toggle('active', tab === 'browse');
+    document.getElementById('tabUpload').classList.toggle('active', tab === 'upload');
+    document.getElementById('panel-browse').classList.toggle('active', tab === 'browse');
+    document.getElementById('panel-upload').classList.toggle('active', tab === 'upload');
+  }
+
+  // ── Browse ───────────────────────────────────────────────
+  async function loadBrowse() {
+    const grid = document.getElementById('imgGrid');
+    const cnt  = document.getElementById('imgCount');
+    grid.innerHTML = '<div class="imgmgr-spinner"><i class="fas fa-circle-notch spinner"></i>&nbsp;Loading…</div>';
+    cnt.textContent = '';
+
+    const { data, error } = await sb.storage
+      .from(BUCKET)
+      .list(_imgFolder, { limit: 300, sortBy: { column: 'created_at', order: 'desc' } });
+
+    if (error) {
+      grid.innerHTML = `<div class="imgmgr-empty"><i class="fas fa-exclamation-triangle" style="color:var(--red)"></i>Failed: ${error.message}</div>`;
+      return;
+    }
+
+    const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder' && f.name !== '.gitkeep');
+
+    if (!files.length) {
+      grid.innerHTML = `<div class="imgmgr-empty"><i class="fas fa-image"></i>No images in <strong>${_imgFolder}</strong> yet.<br><small style="display:block;margin-top:6px;font-size:11px;">Go to Upload New to add one.</small></div>`;
+      cnt.textContent = '0 images';
+      return;
+    }
+
+    cnt.textContent = files.length + ' image' + (files.length !== 1 ? 's' : '');
+    grid.innerHTML = '';
+
+    files.forEach(file => {
+      const url  = STORAGE_PUBLIC + _imgFolder + '/' + file.name;
+      const card = document.createElement('div');
+      card.className = 'imgmgr-thumb';
+      card.onclick   = () => pickImg(url);
+      card.innerHTML = `
+        <div class="imgmgr-hover-select"><span><i class="fas fa-check" style="margin-right:3px;"></i>Select</span></div>
+        <img src="${url}" alt="${file.name}" loading="lazy"
+          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22138%22 height=%22104%22%3E%3Crect fill=%22%230e1628%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2211%22 fill=%22%2394a3b8%22%3ENo preview%3C/text%3E%3C/svg%3E'">
+        <div class="imgmgr-thumb-bar">
+          <span class="imgmgr-thumb-name" title="${file.name}">${file.name}</span>
+          <button class="imgmgr-del-btn" title="Delete" onclick="deleteImg(event,'${file.name}')"><i class="fas fa-trash"></i></button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function pickImg(url) {
+    if (_imgField) {
+      const el = document.getElementById(_imgField);
+      if (el) el.value = url;
+      // update inline preview if rendered in the form
+      const prev = document.getElementById(_imgField + '_prev');
+      if (prev) { prev.src = url; prev.style.display = 'block'; }
+    }
+    closeImgMgr();
+    toast('Image selected');
+  }
+
+  function deleteImg(e, filename) {
+    e.stopPropagation();
+    openConfirm(
+      `Delete "${filename}"?`,
+      'This permanently removes the file from Supabase Storage. Any record already using this URL will lose its image.',
+      async () => {
+        const { error } = await sb.storage.from(BUCKET).remove([_imgFolder + '/' + filename]);
+        if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+        toast('Image deleted');
+        loadBrowse();
+      }
+    );
+  }
+
+  // ── Upload ───────────────────────────────────────────────
+  function onFileChosen(files) {
+    if (!files || !files.length) return;
+    const file = files[0];
+    if (file.size > 5 * 1024 * 1024) { toast('File too large — max 5 MB', 'error'); return; }
+    _imgFile = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('imgPreviewImg').src = ev.target.result;
+      document.getElementById('imgFileName').textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+      document.getElementById('imgFilePreview').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+    document.getElementById('imgUploadBtn').disabled = false;
+  }
+
+  function clearUpload() {
+    _imgFile = null;
+    const fi = document.getElementById('imgFile');
+    if (fi) fi.value = '';
+    document.getElementById('imgFilePreview').style.display  = 'none';
+    document.getElementById('imgPreviewImg').src             = '';
+    document.getElementById('imgFileName').textContent       = '';
+    document.getElementById('imgProgress').style.display     = 'none';
+    document.getElementById('imgProgressFill').style.width   = '0%';
+    document.getElementById('imgUploadBtn').disabled         = true;
+  }
+
+  async function doUpload() {
+    if (!_imgFile) return;
+    const btn = document.getElementById('imgUploadBtn');
+
+    const ext      = (_imgFile.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+    const base     = _imgFile.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0, 60);
+    const filename = base + '-' + Date.now() + '.' + ext;
+    const path     = _imgFolder + '/' + filename;
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading…';
+    document.getElementById('imgProgress').style.display   = 'block';
+    document.getElementById('imgProgressFill').style.width = '40%';
+    document.getElementById('imgProgressLabel').textContent = 'Uploading…';
+
+    const { error } = await sb.storage.from(BUCKET).upload(path, _imgFile, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: _imgFile.type
+    });
+
+    document.getElementById('imgProgressFill').style.width = '100%';
+
+    if (error) {
+      document.getElementById('imgProgressLabel').textContent = 'Upload failed';
+      toast('Upload failed: ' + error.message, 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-upload"></i> Upload &amp; Select';
+      return;
+    }
+
+    document.getElementById('imgProgressLabel').textContent = 'Done!';
+    toast('Uploaded!');
+    pickImg(STORAGE_PUBLIC + path);
+    clearUpload();
+    btn.innerHTML = '<i class="fas fa-upload"></i> Upload &amp; Select';
+  }
+
+  // ─────────────────────────────────────────────────────────
+  //  DOM READY
+  // ─────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    // drag-and-drop
+    const dz = document.getElementById('imgDrop');
+    dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('over'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); onFileChosen(e.dataTransfer.files); });
+
+    // backdrop dismiss
+    ['modalOverlay','imgMgrOverlay','confirmOverlay'].forEach(id => {
+      document.getElementById(id).addEventListener('click', e => {
+        if (e.target.id === id) {
+          if (id === 'modalOverlay')   closeModal();
+          if (id === 'imgMgrOverlay')  closeImgMgr();
+          if (id === 'confirmOverlay') closeConfirm();
+        }
+      });
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────
+  //  LOAD STATES
+  // ─────────────────────────────────────────────────────────
   async function loadStates() {
     const { data, error } = await sb.from('states').select('id, name').order('name');
     if (error || !data) return;
     const sel = document.getElementById('stateSelect');
     data.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.id;
-      opt.textContent = s.name;
-      sel.appendChild(opt);
+      const o = document.createElement('option');
+      o.value = s.id; o.textContent = s.name;
+      sel.appendChild(o);
     });
   }
 
-  // ============================================================
-  //  LOAD ALL DATA FOR SELECTED STATE
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  LOAD STATE DATA
+  // ─────────────────────────────────────────────────────────
   async function loadStateData(stateId) {
     currentStateId = stateId;
-    const sel = document.getElementById('stateSelect');
-    currentStateName = sel.options[sel.selectedIndex].text;
+    currentStateName = document.getElementById('stateSelect').options[document.getElementById('stateSelect').selectedIndex].text;
 
     document.getElementById('districtList').innerHTML =
       '<div class="loading-state"><i class="fas fa-circle-notch spinner"></i> Loading content…</div>';
 
-    // Parallel fetch
     const [dRes, aRes] = await Promise.all([
       sb.from('districts').select('*').eq('state_id', stateId).order('name'),
       sb.from('attractions').select('*').eq('state_id', stateId).order('priority_score', { ascending: false })
     ]);
 
-    if (dRes.error || aRes.error) {
-      toast('Failed to load data', 'error');
-      return;
-    }
+    if (dRes.error || aRes.error) { toast('Failed to load data', 'error'); return; }
 
-    // Fetch accommodations
-    const attractionIds = (aRes.data || []).map(a => a.id);
+    const attrIds = (aRes.data || []).map(a => a.id);
     let accData = [];
-    if (attractionIds.length) {
-      const accRes = await sb.from('accommodations')
-        .select('*')
-        .in('attraction_id', attractionIds)
-        .order('name');
+    if (attrIds.length) {
+      const accRes = await sb.from('accommodations').select('*').in('attraction_id', attrIds).order('name');
       accData = accRes.data || [];
     }
 
@@ -1067,132 +761,102 @@
     document.getElementById('statFeatured').textContent       = featured;
   }
 
-  // ============================================================
-  //  RENDER DISTRICT LIST
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  RENDER DISTRICTS
+  // ─────────────────────────────────────────────────────────
   function renderDistrictList() {
     const container = document.getElementById('districtList');
     if (!allData.districts.length) {
       container.innerHTML = '<div class="no-items">No districts found for this state.</div>';
       return;
     }
-
     container.innerHTML = '';
-    allData.districts.forEach(district => {
-      const distAttractions = allData.attractions.filter(a => a.district_id === district.id);
+    allData.districts.forEach(d => {
+      const n    = allData.attractions.filter(a => a.district_id === d.id).length;
       const card = document.createElement('div');
       card.className = 'district-card';
-      card.id = `district-${district.id}`;
-
+      card.id = `district-${d.id}`;
       card.innerHTML = `
-        <div class="district-row" onclick="toggleDistrict(${district.id})">
+        <div class="district-row" onclick="toggleDistrict(${d.id})">
           <i class="fas fa-chevron-right district-chevron"></i>
-          <span class="district-name">${district.name}</span>
-          <span class="badge badge-cyan">${distAttractions.length} attractions</span>
+          <span class="district-name">${d.name}</span>
+          <span class="badge badge-cyan">${n} attraction${n!==1?'s':''}</span>
           <div class="district-actions" onclick="event.stopPropagation()">
-            <button class="btn btn-edit btn-sm btn-icon" title="Edit district" onclick="openEditDistrictModal(${district.id})">
-              <i class="fas fa-pen"></i>
-            </button>
-            <button class="btn btn-danger btn-sm btn-icon" title="Delete district" onclick="confirmDeleteDistrict(${district.id}, '${district.name.replace(/'/g, "\\'")}')">
-              <i class="fas fa-trash"></i>
-            </button>
+            <button class="btn btn-edit btn-sm btn-icon" title="Edit" onclick="openEditDistrictModal(${d.id})"><i class="fas fa-pen"></i></button>
+            <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="confirmDeleteDistrict(${d.id},'${d.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
           </div>
         </div>
-        <div class="district-body" id="district-body-${district.id}">
-          ${renderAttractionsHTML(district.id)}
-        </div>
+        <div class="district-body" id="district-body-${d.id}">${renderAttractionsHTML(d.id)}</div>
       `;
       container.appendChild(card);
     });
   }
 
-  function toggleDistrict(id) {
-    const card = document.getElementById(`district-${id}`);
-    card.classList.toggle('open');
-  }
+  function toggleDistrict(id) { document.getElementById(`district-${id}`).classList.toggle('open'); }
 
-  // ============================================================
-  //  RENDER ATTRACTIONS HTML
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  RENDER ATTRACTIONS
+  // ─────────────────────────────────────────────────────────
   function renderAttractionsHTML(districtId) {
-    const attractions = allData.attractions.filter(a => a.district_id === districtId);
+    const list = allData.attractions.filter(a => a.district_id === districtId);
     let html = `
       <div class="section-header" style="margin-top:14px;">
-        <span class="section-title" style="color:var(--blue); font-size:11px;">Attractions</span>
-        <button class="btn btn-ghost btn-sm" onclick="openAddAttractionModal(${districtId})">
-          <i class="fas fa-plus"></i> Add Attraction
-        </button>
+        <span class="section-title" style="color:var(--blue);font-size:11px;">Attractions</span>
+        <button class="btn btn-ghost btn-sm" onclick="openAddAttractionModal(${districtId})"><i class="fas fa-plus"></i> Add Attraction</button>
       </div>
       <div class="attraction-list" id="attr-list-${districtId}">
     `;
-
-    if (!attractions.length) {
-      html += '<div class="no-items" style="font-size:12px; padding:12px;">No attractions yet.</div>';
+    if (!list.length) {
+      html += '<div class="no-items" style="font-size:12px;padding:12px;">No attractions yet.</div>';
     } else {
-      attractions.forEach(attr => {
-        const accs = allData.accommodations.filter(a => a.attraction_id === attr.id);
+      list.forEach(a => {
         html += `
-          <div class="attraction-item" id="attr-${attr.id}">
-            <div class="attraction-row" onclick="toggleAttraction(${attr.id})">
+          <div class="attraction-item" id="attr-${a.id}">
+            <div class="attraction-row" onclick="toggleAttraction(${a.id})">
               <i class="fas fa-chevron-right attraction-chevron"></i>
-              <div class="attraction-score">${attr.priority_score}</div>
+              <div class="attraction-score">${a.priority_score}</div>
               <div class="attraction-info">
-                <div class="attraction-name">${attr.name}</div>
+                <div class="attraction-name">${a.name}</div>
                 <div class="attraction-meta">
-                  <span>${attr.type || '—'}</span>
-                  <span>•</span>
-                  <span>${attr.category || '—'}</span>
-                  ${attr.entry_fee ? `<span>• ₹${attr.entry_fee}</span>` : '<span>• Free</span>'}
+                  <span>${a.type||'—'}</span><span>•</span><span>${a.category||'—'}</span>
+                  ${a.entry_fee?`<span>• ₹${a.entry_fee}</span>`:'<span>• Free</span>'}
                 </div>
               </div>
               <div class="attraction-badges">
-                ${attr.is_must_visit    ? '<span class="badge badge-amber">Must Visit</span>' : ''}
-                ${attr.is_state_featured ? '<span class="badge badge-cyan">Featured</span>'  : ''}
-                ${attr.guide_available  ? '<span class="badge badge-green">Guide</span>'     : ''}
+                ${a.is_must_visit    ?'<span class="badge badge-amber">Must Visit</span>':''}
+                ${a.is_state_featured?'<span class="badge badge-cyan">Featured</span>'  :''}
+                ${a.guide_available  ?'<span class="badge badge-green">Guide</span>'    :''}
               </div>
               <div class="attraction-actions" onclick="event.stopPropagation()">
-                <button class="btn btn-edit btn-sm btn-icon" title="Edit" onclick="openEditAttractionModal(${attr.id})">
-                  <i class="fas fa-pen"></i>
-                </button>
-                <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="confirmDeleteAttraction(${attr.id}, '${attr.name.replace(/'/g, "\\'")}')">
-                  <i class="fas fa-trash"></i>
-                </button>
+                <button class="btn btn-edit btn-sm btn-icon" title="Edit" onclick="openEditAttractionModal(${a.id})"><i class="fas fa-pen"></i></button>
+                <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="confirmDeleteAttraction(${a.id},'${a.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
               </div>
             </div>
-            <div class="attraction-body" id="attr-body-${attr.id}">
-              ${renderAccommodationsHTML(attr.id)}
-            </div>
+            <div class="attraction-body" id="attr-body-${a.id}">${renderAccommodationsHTML(a.id)}</div>
           </div>
         `;
       });
     }
-
     html += '</div>';
     return html;
   }
 
-  function toggleAttraction(id) {
-    const el = document.getElementById(`attr-${id}`);
-    el.classList.toggle('open');
-  }
+  function toggleAttraction(id) { document.getElementById(`attr-${id}`).classList.toggle('open'); }
 
-  // ============================================================
-  //  RENDER ACCOMMODATIONS HTML
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  RENDER ACCOMMODATIONS
+  // ─────────────────────────────────────────────────────────
   function renderAccommodationsHTML(attractionId) {
     const accs = allData.accommodations.filter(a => a.attraction_id === attractionId);
     let html = `
       <div class="acc-section-header">
         <span class="acc-section-label">Accommodations</span>
-        <button class="btn btn-ghost btn-sm" onclick="openAddAccommodationModal(${attractionId})">
-          <i class="fas fa-plus"></i> Add
-        </button>
+        <button class="btn btn-ghost btn-sm" onclick="openAddAccommodationModal(${attractionId})"><i class="fas fa-plus"></i> Add</button>
       </div>
       <div class="acc-list">
     `;
-
     if (!accs.length) {
-      html += '<div class="no-items" style="font-size:11px; padding:8px 0;">No accommodations linked.</div>';
+      html += '<div class="no-items" style="font-size:11px;padding:8px 0;">No accommodations linked.</div>';
     } else {
       accs.forEach(acc => {
         const stars = acc.rating ? '★'.repeat(Math.round(acc.rating)) : '—';
@@ -1200,46 +864,35 @@
           <div class="acc-row">
             <div class="acc-name">${acc.name}</div>
             <div class="acc-meta">
-              <span class="badge badge-muted" style="font-size:10px;">${acc.type || '—'}</span>
-              ${acc.price_per_night ? `<span><i class="fas fa-rupee-sign"></i>₹${acc.price_per_night.toLocaleString()}/night</span>` : ''}
-              ${acc.rating         ? `<span><i class="fas fa-star"></i>${acc.rating} (${stars})</span>` : ''}
-              ${acc.distance_from_attraction_km != null ? `<span><i class="fas fa-road"></i>${acc.distance_from_attraction_km} km</span>` : ''}
+              <span class="badge badge-muted" style="font-size:10px;">${acc.type||'—'}</span>
+              ${acc.price_per_night?`<span><i class="fas fa-rupee-sign"></i>₹${acc.price_per_night.toLocaleString()}/night</span>`:''}
+              ${acc.rating?`<span><i class="fas fa-star"></i>${acc.rating} (${stars})</span>`:''}
+              ${acc.distance_from_attraction_km!=null?`<span><i class="fas fa-road"></i>${acc.distance_from_attraction_km} km</span>`:''}
             </div>
             <div class="acc-actions">
-              <button class="btn btn-edit btn-sm btn-icon" title="Edit" onclick="openEditAccommodationModal(${acc.id})">
-                <i class="fas fa-pen"></i>
-              </button>
-              <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="confirmDeleteAccommodation(${acc.id}, '${acc.name.replace(/'/g, "\\'")}')">
-                <i class="fas fa-trash"></i>
-              </button>
+              <button class="btn btn-edit btn-sm btn-icon" title="Edit" onclick="openEditAccommodationModal(${acc.id})"><i class="fas fa-pen"></i></button>
+              <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="confirmDeleteAccommodation(${acc.id},'${acc.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
             </div>
           </div>
         `;
       });
     }
-
     html += '</div>';
     return html;
   }
 
-  // ============================================================
-  //  PARTIAL RE-RENDER HELPERS
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  PARTIAL RE-RENDER
+  // ─────────────────────────────────────────────────────────
   function reRenderDistrict(districtId) {
     const body = document.getElementById(`district-body-${districtId}`);
     if (body) body.innerHTML = renderAttractionsHTML(districtId);
     updateStats();
   }
 
-  function reRenderAttractionBody(attractionId) {
-    const body = document.getElementById(`attr-body-${attractionId}`);
-    if (body) body.innerHTML = renderAccommodationsHTML(attractionId);
-    updateStats();
-  }
-
-  // ============================================================
-  //  ── DISTRICT MODALS ──
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  DISTRICT MODALS
+  // ─────────────────────────────────────────────────────────
   function districtFormHTML(title, d = {}) {
     return `
       <div class="modal-header">
@@ -1250,26 +903,32 @@
         <div class="form-grid one-col" style="gap:16px;">
           <div class="form-group">
             <label class="form-label">Name <span class="required">*</span></label>
-            <input class="form-input" id="f_d_name" placeholder="e.g. Ahmedabad" value="${d.name || ''}">
+            <input class="form-input" id="f_d_name" placeholder="e.g. Ahmedabad" value="${d.name||''}">
           </div>
           <div class="form-group">
             <label class="form-label">Slug <span class="required">*</span></label>
-            <input class="form-input" id="f_d_slug" placeholder="e.g. ahmedabad" value="${d.slug || ''}">
+            <input class="form-input" id="f_d_slug" placeholder="e.g. ahmedabad" value="${d.slug||''}">
             <div class="form-hint">URL-safe lowercase identifier</div>
           </div>
           <div class="form-group">
             <label class="form-label">Description</label>
-            <textarea class="form-textarea" id="f_d_description" placeholder="Brief district description…" style="min-height:100px;">${d.description || ''}</textarea>
+            <textarea class="form-textarea" id="f_d_desc" style="min-height:100px;" placeholder="Brief district description…">${d.description||''}</textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">Image URL</label>
-            <input class="form-input" id="f_d_image_url" placeholder="https://…" value="${d.image_url || ''}">
+            <label class="form-label">Image</label>
+            <div class="img-field-wrap">
+              <input class="form-input" id="f_d_img" placeholder="https://… or use Browse →" value="${d.image_url||''}">
+              <button type="button" class="btn-img-pick" onclick="openImgMgr('f_d_img','districts')">
+                <i class="fas fa-images"></i> Browse
+              </button>
+            </div>
+            <img id="f_d_img_prev" src="${d.image_url||''}" class="img-current-preview" style="${d.image_url?'':'display:none;'}" onerror="this.style.display='none'">
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn-save" id="districtSaveBtn" onclick="saveDistrict(${d.id || 'null'})">
+        <button class="btn-save" id="districtSaveBtn" onclick="saveDistrict(${d.id||'null'})">
           <i class="fas fa-save"></i> Save District
         </button>
       </div>
@@ -1281,7 +940,7 @@
     openModal(districtFormHTML('Add District'));
     document.getElementById('f_d_name').addEventListener('input', function() {
       const slug = document.getElementById('f_d_slug');
-      if (!slug._touched) slug.value = this.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      if (!slug._touched) slug.value = this.value.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
     });
     document.getElementById('f_d_slug').addEventListener('input', function() { this._touched = true; });
   }
@@ -1299,16 +958,15 @@
     const payload = {
       state_id:    parseInt(currentStateId),
       name:        sanitiseText(document.getElementById('f_d_name').value),
-      slug:        sanitiseText(document.getElementById('f_d_slug').value).toLowerCase().replace(/[^a-z0-9-]/g, ''),
-      description: sanitiseText(document.getElementById('f_d_description').value),
-      image_url:   sanitiseUrl(document.getElementById('f_d_image_url').value) || null,
+      slug:        sanitiseText(document.getElementById('f_d_slug').value).toLowerCase().replace(/[^a-z0-9-]/g,''),
+      description: sanitiseText(document.getElementById('f_d_desc').value),
+      image_url:   sanitiseUrl(document.getElementById('f_d_img').value) || null,
       updated_at:  new Date().toISOString()
     };
 
     if (!payload.name || !payload.slug) {
       toast('Name and Slug are required', 'error');
-      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save District';
-      return;
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save District'; return;
     }
 
     let error;
@@ -1320,7 +978,6 @@
     }
 
     if (error) { toast('Error: ' + error.message, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save District'; return; }
-
     toast(id ? 'District updated!' : 'District added!');
     closeModal();
     await loadStateData(currentStateId);
@@ -1339,9 +996,9 @@
     );
   }
 
-  // ============================================================
-  //  ── ATTRACTION MODALS ──
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  ATTRACTION MODALS
+  // ─────────────────────────────────────────────────────────
   function attractionFormHTML(title, a = {}, districtId) {
     const types = ['Historical','Religious','Wildlife','Nature','Beach','Adventure','Cultural','Heritage','Museum','Scenic','Recreation','Spiritual'];
     const cats  = ['Heritage','Spiritual','Wildlife','Nature','Adventure','Cultural','Scenic','Recreation','Beach','Historical'];
@@ -1355,29 +1012,29 @@
 
           <div class="form-group form-col-span">
             <label class="form-label">Name <span class="required">*</span></label>
-            <input class="form-input" id="f_name" placeholder="Attraction name" value="${a.name || ''}">
+            <input class="form-input" id="f_name" placeholder="Attraction name" value="${a.name||''}">
           </div>
 
           <div class="form-group form-col-span">
             <label class="form-label">Slug <span class="required">*</span></label>
-            <input class="form-input" id="f_slug" placeholder="url-safe-slug" value="${a.slug || ''}">
+            <input class="form-input" id="f_slug" placeholder="url-safe-slug" value="${a.slug||''}">
           </div>
 
           <div class="form-group form-col-span">
             <label class="form-label">Short Description</label>
-            <input class="form-input" id="f_short_description" placeholder="One-line card preview text…" value="${(a.short_description || '').replace(/"/g, '&quot;')}">
+            <input class="form-input" id="f_short_desc" placeholder="One-line card preview text…" value="${(a.short_description||'').replace(/"/g,'&quot;')}">
           </div>
 
           <div class="form-group form-col-span">
             <label class="form-label">Full Description <span class="required">*</span></label>
-            <textarea class="form-textarea" id="f_description" placeholder="Full description…" style="min-height:90px;">${a.description || ''}</textarea>
+            <textarea class="form-textarea" id="f_desc" placeholder="Full description…" style="min-height:90px;">${a.description||''}</textarea>
           </div>
 
           <div class="form-group">
             <label class="form-label">Type</label>
             <select class="form-select" id="f_type">
               <option value="">— Select type —</option>
-              ${types.map(t => `<option value="${t}" ${a.type===t?'selected':''}>${t}</option>`).join('')}
+              ${types.map(t=>`<option value="${t}" ${a.type===t?'selected':''}>${t}</option>`).join('')}
             </select>
           </div>
 
@@ -1385,98 +1042,83 @@
             <label class="form-label">Category</label>
             <select class="form-select" id="f_category">
               <option value="">— Select category —</option>
-              ${cats.map(c => `<option value="${c}" ${a.category===c?'selected':''}>${c}</option>`).join('')}
+              ${cats.map(c=>`<option value="${c}" ${a.category===c?'selected':''}>${c}</option>`).join('')}
             </select>
           </div>
 
           <div class="form-group form-col-span">
             <label class="form-label">Priority Score (1–10) <span class="required">*</span></label>
             <div class="score-input-wrap">
-              <input class="form-input" id="f_priority_score" type="number" min="1" max="10" value="${a.priority_score || 5}"
-                oninput="updateScoreBar(this.value)">
-              <div class="score-bar">
-                <div class="score-bar-fill" id="scoreBarFill" style="width:${(a.priority_score||5)/10*100}%"></div>
-              </div>
+              <input class="form-input" id="f_priority_score" type="number" min="1" max="10"
+                value="${a.priority_score||5}" oninput="updateScoreBar(this.value)">
+              <div class="score-bar"><div class="score-bar-fill" id="scoreBarFill" style="width:${(a.priority_score||5)/10*100}%"></div></div>
             </div>
             <div class="form-hint">10 = highest priority. Drives display order sitewide.</div>
           </div>
 
           <div class="form-group">
             <label class="form-label">Entry Fee (₹)</label>
-            <input class="form-input" id="f_entry_fee" type="number" min="0" placeholder="0 = free" value="${a.entry_fee ?? ''}">
+            <input class="form-input" id="f_entry_fee" type="number" min="0" placeholder="0 = free" value="${a.entry_fee??''}">
           </div>
 
           <div class="form-group">
             <label class="form-label">Est. Visit Time (hours)</label>
-            <input class="form-input" id="f_estimated_time_hours" type="number" step="0.5" min="0" placeholder="e.g. 2.5" value="${a.estimated_time_hours ?? ''}">
+            <input class="form-input" id="f_est_time" type="number" step="0.5" min="0" placeholder="e.g. 2.5" value="${a.estimated_time_hours??''}">
           </div>
 
           <div class="form-group">
             <label class="form-label">City</label>
-            <input class="form-input" id="f_city" placeholder="City name" value="${a.city || ''}">
+            <input class="form-input" id="f_city" placeholder="City name" value="${a.city||''}">
           </div>
 
           <div class="form-group">
             <label class="form-label">Address</label>
-            <input class="form-input" id="f_address" placeholder="Street address" value="${(a.address || '').replace(/"/g, '&quot;')}">
+            <input class="form-input" id="f_address" placeholder="Street address" value="${(a.address||'').replace(/"/g,'&quot;')}">
           </div>
 
           <div class="form-group form-col-span">
             <label class="form-label">Best Time to Visit</label>
-            <input class="form-input" id="f_best_time_note" placeholder="e.g. October to March" value="${a.best_time_note || ''}">
+            <input class="form-input" id="f_best_time" placeholder="e.g. October to March" value="${a.best_time_note||''}">
           </div>
 
           <div class="form-group form-col-span">
-            <label class="form-label">Image URL</label>
-            <input class="form-input" id="f_image_url" placeholder="https://…" value="${a.image_url || ''}">
+            <label class="form-label">Image</label>
+            <div class="img-field-wrap">
+              <input class="form-input" id="f_img" placeholder="https://… or use Browse →" value="${a.image_url||''}">
+              <button type="button" class="btn-img-pick" onclick="openImgMgr('f_img','attractions')">
+                <i class="fas fa-images"></i> Browse
+              </button>
+            </div>
+            <img id="f_img_prev" src="${a.image_url||''}" class="img-current-preview" style="${a.image_url?'':'display:none;'}" onerror="this.style.display='none'">
           </div>
 
           <div class="form-group">
             <label class="form-label">Contact Phone</label>
-            <input class="form-input" id="f_contact_phone" placeholder="+91-…" value="${a.contact_phone || ''}">
+            <input class="form-input" id="f_phone" placeholder="+91-…" value="${a.contact_phone||''}">
           </div>
 
           <div class="form-group">
             <label class="form-label">Website URL</label>
-            <input class="form-input" id="f_website_url" placeholder="https://…" value="${a.website_url || ''}">
+            <input class="form-input" id="f_website" placeholder="https://…" value="${a.website_url||''}">
           </div>
 
           <div class="form-group">
             <label class="form-label">Guide Price Range</label>
-            <input class="form-input" id="f_guide_price_range" placeholder="e.g. ₹300–500" value="${a.guide_price_range || ''}">
+            <input class="form-input" id="f_guide_price" placeholder="e.g. ₹300–500" value="${a.guide_price_range||''}">
           </div>
 
-          <!-- Toggles -->
           <div class="form-group form-col-span">
             <div class="toggle-group">
-              <label class="toggle">
-                <input type="checkbox" id="f_is_must_visit" ${a.is_must_visit ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-              </label>
-              <div>
-                <div class="toggle-label">Must Visit</div>
-                <div class="toggle-sub">Appears in homepage Bucket List</div>
-              </div>
+              <label class="toggle"><input type="checkbox" id="f_must_visit" ${a.is_must_visit?'checked':''}><span class="toggle-slider"></span></label>
+              <div><div class="toggle-label">Must Visit</div><div class="toggle-sub">Appears in homepage Bucket List</div></div>
             </div>
             <div class="toggle-group">
-              <label class="toggle">
-                <input type="checkbox" id="f_is_state_featured" ${a.is_state_featured ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-              </label>
-              <div>
-                <div class="toggle-label">State Featured</div>
-                <div class="toggle-sub">Shown in state page Section 2</div>
-              </div>
+              <label class="toggle"><input type="checkbox" id="f_state_featured" ${a.is_state_featured?'checked':''}><span class="toggle-slider"></span></label>
+              <div><div class="toggle-label">State Featured</div><div class="toggle-sub">Shown in state page Section 2</div></div>
             </div>
             <div class="toggle-group">
-              <label class="toggle">
-                <input type="checkbox" id="f_guide_available" ${a.guide_available ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-              </label>
-              <div>
-                <div class="toggle-label">Guide Available</div>
-                <div class="toggle-sub">Guide services offered at this attraction</div>
-              </div>
+              <label class="toggle"><input type="checkbox" id="f_guide_avail" ${a.guide_available?'checked':''}><span class="toggle-slider"></span></label>
+              <div><div class="toggle-label">Guide Available</div><div class="toggle-sub">Guide services offered at this attraction</div></div>
             </div>
           </div>
 
@@ -1484,7 +1126,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn-save" id="attrSaveBtn" onclick="saveAttraction(${a.id || 'null'}, ${districtId || a.district_id})">
+        <button class="btn-save" id="attrSaveBtn" onclick="saveAttraction(${a.id||'null'},${districtId||a.district_id})">
           <i class="fas fa-save"></i> Save Attraction
         </button>
       </div>
@@ -1511,45 +1153,42 @@
     const btn = document.getElementById('attrSaveBtn');
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
 
-    const raw = id => document.getElementById(id)?.value ?? '';
-    const val = id => sanitiseText(raw(id));
-    const url = id => sanitiseUrl(raw(id));
-    const num = id => { const v = raw(id).trim(); return v === '' ? null : parseFloat(v); };
-    const chk = id => document.getElementById(id)?.checked || false;
+    const rv = id => document.getElementById(id)?.value ?? '';
+    const sv = id => sanitiseText(rv(id));
+    const uv = id => sanitiseUrl(rv(id));
+    const nv = id => { const v = rv(id).trim(); return v===''?null:parseFloat(v); };
+    const cb = id => document.getElementById(id)?.checked||false;
 
-    // Clamp priority score 1-10
-    const rawScore = parseInt(raw('f_priority_score')) || 5;
-    const safeScore = Math.min(10, Math.max(1, rawScore));
+    const score = Math.min(10, Math.max(1, parseInt(rv('f_priority_score'))||5));
 
     const payload = {
-      state_id:              parseInt(currentStateId),
-      district_id:           parseInt(districtId),
-      name:                  val('f_name'),
-      slug:                  val('f_slug').toLowerCase().replace(/[^a-z0-9-]/g, ''),
-      short_description:     val('f_short_description') || null,
-      description:           val('f_description'),
-      type:                  val('f_type') || null,
-      category:              val('f_category') || null,
-      priority_score:        safeScore,
-      entry_fee:             num('f_entry_fee'),
-      estimated_time_hours:  num('f_estimated_time_hours'),
-      city:                  val('f_city') || null,
-      address:               val('f_address') || null,
-      best_time_note:        val('f_best_time_note') || null,
-      image_url:             url('f_image_url') || null,
-      contact_phone:         val('f_contact_phone') || null,
-      website_url:           url('f_website_url') || null,
-      guide_price_range:     val('f_guide_price_range') || null,
-      is_must_visit:         chk('f_is_must_visit'),
-      is_state_featured:     chk('f_is_state_featured'),
-      guide_available:       chk('f_guide_available'),
-      updated_at:            new Date().toISOString()
+      state_id:             parseInt(currentStateId),
+      district_id:          parseInt(districtId),
+      name:                 sv('f_name'),
+      slug:                 sv('f_slug').toLowerCase().replace(/[^a-z0-9-]/g,''),
+      short_description:    sv('f_short_desc')||null,
+      description:          sv('f_desc'),
+      type:                 sv('f_type')||null,
+      category:             sv('f_category')||null,
+      priority_score:       score,
+      entry_fee:            nv('f_entry_fee'),
+      estimated_time_hours: nv('f_est_time'),
+      city:                 sv('f_city')||null,
+      address:              sv('f_address')||null,
+      best_time_note:       sv('f_best_time')||null,
+      image_url:            uv('f_img')||null,
+      contact_phone:        sv('f_phone')||null,
+      website_url:          uv('f_website')||null,
+      guide_price_range:    sv('f_guide_price')||null,
+      is_must_visit:        cb('f_must_visit'),
+      is_state_featured:    cb('f_state_featured'),
+      guide_available:      cb('f_guide_avail'),
+      updated_at:           new Date().toISOString()
     };
 
     if (!payload.name || !payload.slug || !payload.description) {
       toast('Name, Slug and Description are required', 'error');
-      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Attraction';
-      return;
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Attraction'; return;
     }
 
     let error;
@@ -1564,10 +1203,9 @@
 
     toast(id ? 'Attraction updated!' : 'Attraction added!');
     closeModal();
-    // Refresh attractions data
+
     const aRes = await sb.from('attractions').select('*').eq('state_id', currentStateId).order('priority_score', { ascending: false });
     allData.attractions = aRes.data || [];
-    // Keep district open
     const wasOpen = document.getElementById(`district-${districtId}`)?.classList.contains('open');
     reRenderDistrict(districtId);
     if (wasOpen) document.getElementById(`district-${districtId}`)?.classList.add('open');
@@ -1582,8 +1220,7 @@
         const { error } = await sb.from('attractions').delete().eq('id', id);
         if (error) { toast('Error: ' + error.message, 'error'); return; }
         toast('Attraction deleted');
-        const attr = allData.attractions.find(a => a.id === id);
-        const distId = attr?.district_id;
+        const distId = allData.attractions.find(a => a.id === id)?.district_id;
         allData.attractions    = allData.attractions.filter(a => a.id !== id);
         allData.accommodations = allData.accommodations.filter(a => a.attraction_id !== id);
         if (distId) reRenderDistrict(distId);
@@ -1592,9 +1229,9 @@
     );
   }
 
-  // ============================================================
-  //  ── ACCOMMODATION MODALS ──
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  ACCOMMODATION MODALS
+  // ─────────────────────────────────────────────────────────
   function accommodationFormHTML(title, acc = {}, attractionId) {
     const types = ['budget','mid-range','premium','luxury'];
     return `
@@ -1604,54 +1241,45 @@
       </div>
       <div class="modal-body">
         <div class="form-grid" style="gap:16px 20px;">
-
           <div class="form-group form-col-span">
             <label class="form-label">Name <span class="required">*</span></label>
-            <input class="form-input" id="f_acc_name" placeholder="Hotel / lodge name" value="${acc.name || ''}">
+            <input class="form-input" id="f_acc_name" placeholder="Hotel / lodge name" value="${acc.name||''}">
           </div>
-
           <div class="form-group">
             <label class="form-label">Type</label>
             <select class="form-select" id="f_acc_type">
               <option value="">— Select —</option>
-              ${types.map(t => `<option value="${t}" ${acc.type===t?'selected':''}>${t.charAt(0).toUpperCase()+t.slice(1)}</option>`).join('')}
+              ${types.map(t=>`<option value="${t}" ${acc.type===t?'selected':''}>${t.charAt(0).toUpperCase()+t.slice(1)}</option>`).join('')}
             </select>
           </div>
-
           <div class="form-group">
             <label class="form-label">Price per Night (₹)</label>
-            <input class="form-input" id="f_acc_price" type="number" min="0" placeholder="e.g. 2500" value="${acc.price_per_night ?? ''}">
+            <input class="form-input" id="f_acc_price" type="number" min="0" placeholder="e.g. 2500" value="${acc.price_per_night??''}">
           </div>
-
           <div class="form-group">
             <label class="form-label">Distance from Attraction (km)</label>
-            <input class="form-input" id="f_acc_distance" type="number" step="0.1" min="0" placeholder="e.g. 1.5" value="${acc.distance_from_attraction_km ?? ''}">
+            <input class="form-input" id="f_acc_dist" type="number" step="0.1" min="0" placeholder="e.g. 1.5" value="${acc.distance_from_attraction_km??''}">
           </div>
-
           <div class="form-group">
             <label class="form-label">Rating (1.0–5.0)</label>
-            <input class="form-input" id="f_acc_rating" type="number" step="0.1" min="1" max="5" placeholder="e.g. 4.2" value="${acc.rating ?? ''}">
+            <input class="form-input" id="f_acc_rating" type="number" step="0.1" min="1" max="5" placeholder="e.g. 4.2" value="${acc.rating??''}">
           </div>
-
           <div class="form-group form-col-span">
             <label class="form-label">Contact Phone</label>
-            <input class="form-input" id="f_acc_phone" placeholder="+91-…" value="${acc.contact_phone || ''}">
+            <input class="form-input" id="f_acc_phone" placeholder="+91-…" value="${acc.contact_phone||''}">
           </div>
-
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn-save" id="accSaveBtn" onclick="saveAccommodation(${acc.id || 'null'}, ${attractionId || acc.attraction_id})">
+        <button class="btn-save" id="accSaveBtn" onclick="saveAccommodation(${acc.id||'null'},${attractionId||acc.attraction_id})">
           <i class="fas fa-save"></i> Save Accommodation
         </button>
       </div>
     `;
   }
 
-  function openAddAccommodationModal(attractionId) {
-    openModal(accommodationFormHTML('Add Accommodation', {}, attractionId));
-  }
+  function openAddAccommodationModal(attractionId) { openModal(accommodationFormHTML('Add Accommodation', {}, attractionId)); }
 
   function openEditAccommodationModal(id) {
     const acc = allData.accommodations.find(x => x.id === id);
@@ -1663,28 +1291,26 @@
     const btn = document.getElementById('accSaveBtn');
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
 
-    const raw = id => document.getElementById(id)?.value ?? '';
-    const val = id => sanitiseText(raw(id));
-    const num = id => { const v = raw(id).trim(); return v === '' ? null : parseFloat(v); };
+    const rv = id => document.getElementById(id)?.value ?? '';
+    const sv = id => sanitiseText(rv(id));
+    const nv = id => { const v = rv(id).trim(); return v===''?null:parseFloat(v); };
 
-    // Clamp rating 1-5
-    const rawRating = num('f_acc_rating');
+    const rawRating  = nv('f_acc_rating');
     const safeRating = rawRating != null ? Math.min(5, Math.max(1, rawRating)) : null;
 
     const payload = {
       attraction_id:               parseInt(attractionId),
-      name:                        val('f_acc_name'),
-      type:                        val('f_acc_type') || null,
-      price_per_night:             num('f_acc_price'),
-      distance_from_attraction_km: num('f_acc_distance'),
+      name:                        sv('f_acc_name'),
+      type:                        sv('f_acc_type')||null,
+      price_per_night:             nv('f_acc_price'),
+      distance_from_attraction_km: nv('f_acc_dist'),
       rating:                      safeRating,
-      contact_phone:               val('f_acc_phone') || null,
+      contact_phone:               sv('f_acc_phone')||null,
     };
 
     if (!payload.name) {
       toast('Name is required', 'error');
-      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Accommodation';
-      return;
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Accommodation'; return;
     }
 
     let error;
@@ -1700,18 +1326,14 @@
     toast(id ? 'Accommodation updated!' : 'Accommodation added!');
     closeModal();
 
-    // Refresh accommodations
-    const attraction = allData.attractions.find(a => a.id === parseInt(attractionId));
-    const distId = attraction?.district_id;
+    const distId  = allData.attractions.find(a => a.id === parseInt(attractionId))?.district_id;
     const attrIds = allData.attractions.map(a => a.id);
     if (attrIds.length) {
       const accRes = await sb.from('accommodations').select('*').in('attraction_id', attrIds).order('name');
       allData.accommodations = accRes.data || [];
     }
-
-    // Restore open state
-    const attrOpen  = document.getElementById(`attr-${attractionId}`)?.classList.contains('open');
-    const distOpen  = distId && document.getElementById(`district-${distId}`)?.classList.contains('open');
+    const attrOpen = document.getElementById(`attr-${attractionId}`)?.classList.contains('open');
+    const distOpen = distId && document.getElementById(`district-${distId}`)?.classList.contains('open');
     if (distId) reRenderDistrict(distId);
     if (distOpen) document.getElementById(`district-${distId}`)?.classList.add('open');
     if (attrOpen) document.getElementById(`attr-${attractionId}`)?.classList.add('open');
@@ -1723,10 +1345,9 @@
       `Delete "${name}"?`,
       'This accommodation record will be permanently removed.',
       async () => {
-        const acc = allData.accommodations.find(a => a.id === id);
+        const acc    = allData.accommodations.find(a => a.id === id);
         const attrId = acc?.attraction_id;
-        const attraction = allData.attractions.find(a => a.id === attrId);
-        const distId = attraction?.district_id;
+        const distId = allData.attractions.find(a => a.id === attrId)?.district_id;
 
         const { error } = await sb.from('accommodations').delete().eq('id', id);
         if (error) { toast('Error: ' + error.message, 'error'); return; }
@@ -1744,15 +1365,13 @@
     );
   }
 
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
   //  INIT
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', async () => {
     const session = await BYAuth.check();
     if (!session) return;
-
     await loadStates();
-
     document.getElementById('stateSelect').addEventListener('change', function() {
       if (this.value) loadStateData(this.value);
     });

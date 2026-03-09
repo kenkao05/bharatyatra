@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BharatYatra — Travel for Life</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --black:  #000000;
+      --red:    #C0392B;
+      --white:  #FFFFFF;
+      --grey:   #1a1a1a;
+      --muted:  #999999;
+      --green:  #1a4d32;
+      --green-light: #245e3e;
+      --orange: #ff6b35;
+      --sidebar-width: 320px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fb;
+      color: #333;
+      overflow-x: hidden;
+    }
+    body.no-scroll { overflow: hidden; }
+
+    /* ── NAVBAR ── */
+    #navbar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 10px 0;
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--orange);
+      text-decoration: none;
+      letter-spacing: 3px;
+      flex-shrink: 0;
+    }
+    .menu-btn {
+      background: none;
+      border: none;
+      color: #969696;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 4px 6px;
+      line-height: 1;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+    .menu-btn:hover { color: var(--orange); }
+    .nav-back-btn {
+      margin-left: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      color: #969696;
+      border: 1px solid #333;
+      transition: color 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+    }
+    .nav-back-btn i { font-size: 12px; }
+    .nav-back-btn:hover { color: var(--orange); border-color: var(--orange); }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: calc(-1 * var(--sidebar-width));
+      width: var(--sidebar-width);
+      height: 100%;
+      background: var(--black);
+      z-index: 2000;
+      overflow-y: auto;
+      padding: 50px 36px 40px;
+      transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      border-left: 1px solid #222;
+    }
+    .sidebar.active { right: 0; }
+    .close-btn {
+      position: absolute;
+      top: 18px; right: 22px;
+      background: none;
+      border: none;
+      font-size: 32px;
+      color: var(--white);
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+      transition: color 0.2s;
+    }
+    .close-btn:hover { color: var(--orange); }
+    .sidebar-tagline {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #222;
+    }
+    .sidebar-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sidebar-links li a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      color: #cccccc;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #111;
+      transition: color 0.25s, padding-left 0.25s;
+    }
+    .sidebar-links li a i {
+      font-size: 16px;
+      width: 20px;
+      color: var(--red);
+      flex-shrink: 0;
+    }
+    .sidebar-links li a:hover { color: var(--white); padding-left: 6px; }
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #444;
+      margin-top: 28px;
+      margin-bottom: 8px;
+      padding-top: 24px;
+      border-top: 1px solid #1a1a1a;
+    }
+    .sidebar-login-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+      padding: 11px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-decoration: none;
+      color: var(--orange);
+      border: 1px solid var(--orange);
+      transition: background 0.25s, color 0.25s;
+    }
+    .sidebar-login-btn:hover { background: var(--orange); color: #fff; }
+
+    /* ── OVERLAY ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1500;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+    /* ── HERO ── */
+    .hero {
+      margin-top: 60px;
+      position: relative;
+      height: 92vh;
+      min-height: 560px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      background: linear-gradient(160deg, rgba(0,0,0,0.72) 0%, rgba(22,60,35,0.75) 100%),
+        url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600") center/cover no-repeat;
+    }
+    .hero-content { position: relative; z-index: 2; padding: 0 20px; }
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .hero h1 span {
+      font-style: italic;
+      color: #7bc49a;
+    }
+    .hero-sub {
+      font-size: clamp(14px, 2vw, 17px);
+      color: rgba(255,255,255,0.72);
+      max-width: 620px;
+      margin: 18px auto 36px;
+      line-height: 1.8;
+      font-weight: 300;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: var(--green);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 2px solid var(--green);
+      transition: background 0.3s, color 0.3s;
+    }
+    .hero-cta:hover { background: transparent; color: #7bc49a; border-color: #7bc49a; }
+    .hero-scroll {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.4);
+      font-size: 22px;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ── SECTION UTILITIES ── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: #111;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .section-body {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.9;
+      max-width: 680px;
+    }
+
+    /* ── WHAT IS SECTION ── */
+    .what-is {
+      background: #fff;
+      padding: 100px 0;
+    }
+    .what-is-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .what-is-img {
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+    .what-is-img img {
+      width: 100%;
+      height: 460px;
+      object-fit: cover;
+      display: block;
+    }
+    .what-is-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 3px solid var(--green);
+      transform: translate(14px, 14px);
+      pointer-events: none;
+    }
+    .quote-box {
+      margin-top: 32px;
+      padding: 20px 24px;
+      border-left: 3px solid var(--green);
+      background: #e6f2eb;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 15px;
+      color: #1a3d2a;
+      line-height: 1.7;
+    }
+
+    /* ── THREE PILLARS ── */
+    .pillars {
+      background: #e6f2eb;
+      padding: 100px 0;
+    }
+    .pillars-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .pillars-header { text-align: center; margin-bottom: 60px; }
+    .pillars-header .section-body { margin: 0 auto; text-align: center; }
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .pillar-card {
+      background: #fff;
+      padding: 40px 32px;
+      border-bottom: 3px solid transparent;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    }
+    .pillar-card:hover {
+      border-bottom-color: var(--green);
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(45,122,79,0.12);
+    }
+    .pillar-icon {
+      width: 56px;
+      height: 56px;
+      background: #e6f2eb;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+    .pillar-icon i {
+      font-size: 22px;
+      color: var(--green);
+    }
+    .pillar-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: #111;
+      margin-bottom: 12px;
+    }
+    .pillar-card p {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.8;
+    }
+
+    /* ── PLEDGE SECTION ── */
+    .pledge {
+      background: #fff;
+      padding: 100px 0;
+    }
+    .pledge-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .pledge-header { margin-bottom: 52px; }
+    .pledge-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .pledge-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 22px 24px;
+      background: #f9f9f9;
+      border-left: 3px solid transparent;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .pledge-item:hover {
+      border-left-color: var(--green);
+      background: #e6f2eb;
+    }
+    .pledge-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: #d4ead9;
+      font-weight: 700;
+      line-height: 1;
+      flex-shrink: 0;
+      width: 36px;
+    }
+    .pledge-text h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 4px;
+    }
+    .pledge-text p {
+      font-size: 13px;
+      color: #777;
+      line-height: 1.7;
+    }
+
+    /* ── IMPACT STATS ── */
+    .stats {
+      background: #081a10;
+      padding: 80px 0;
+    }
+    .stats-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      text-align: center;
+    }
+    .stat-item {}
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: #7bc49a;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+    .stat-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      margin-top: 6px;
+    }
+
+    /* ── HOW TO TRAVEL ── */
+    .how-to {
+      background: #f5f7fb;
+      padding: 100px 0;
+    }
+    .how-to-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .how-to-header { margin-bottom: 56px; }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .step-card {
+      background: #fff;
+      padding: 36px 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .step-card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+      transform: translateY(-4px);
+    }
+    .step-bg-num {
+      position: absolute;
+      top: -10px;
+      right: 16px;
+      font-family: 'Playfair Display', serif;
+      font-size: 6rem;
+      color: #f0f0f0;
+      font-weight: 700;
+      line-height: 1;
+      user-select: none;
+    }
+    .step-card i {
+      font-size: 24px;
+      color: var(--green);
+      margin-bottom: 18px;
+      display: block;
+    }
+    .step-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 10px;
+    }
+    .step-card p {
+      font-size: 13px;
+      color: #777;
+      line-height: 1.8;
+    }
+
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      background: linear-gradient(135deg, #0f2d1a 0%, #1a4d32 100%);
+      padding: 90px 40px;
+      text-align: center;
+    }
+    .cta-banner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .cta-banner p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      max-width: 580px;
+      margin: 0 auto 36px;
+      line-height: 1.8;
+    }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .cta-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 34px;
+      background: #7bc49a;
+      color: #081a10;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    .cta-btn-primary:hover { background: #fff; }
+    .cta-btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 34px;
+      border: 2px solid rgba(255,255,255,0.35);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .cta-btn-outline:hover { background: rgba(255,255,255,0.08); border-color: #fff; }
+
+    /* ── FOOTER ── */
+    #footer {
+      background: #080808;
+      border-top: 1px solid #1e1e1e;
+      padding: 70px 0 0;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px 60px;
+      display: grid;
+      grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr;
+      gap: 48px;
+    }
+    .footer-logo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--orange);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 16px;
+    }
+    .footer-tagline {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.8;
+    }
+    .footer-heading {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 20px;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .footer-links li a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #666;
+      text-decoration: none;
+      border-bottom: 1px solid #111;
+      transition: color 0.2s, padding-left 0.2s;
+    }
+    .footer-links li a i { font-size: 13px; color: var(--orange); width: 16px; flex-shrink: 0; }
+    .footer-links li a:hover { color: var(--white); padding-left: 4px; }
+    .footer-socials { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .social-btn {
+      width: 38px; height: 38px;
+      border: 1px solid #2a2a2a;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 15px;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .social-btn:hover { border-color: var(--orange); color: var(--orange); background: rgba(255,107,53,0.06); }
+    .footer-contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--orange);
+      border: 2px solid var(--orange);
+      padding: 10px 22px;
+      transition: background 0.25s, color 0.25s;
+    }
+    .footer-contact-btn:hover { background: var(--orange); color: var(--white); }
+    .footer-bottom {
+      border-top: 1px solid #161616;
+      padding: 20px 40px;
+      text-align: center;
+    }
+    .footer-bottom p { font-size: 12px; color: #333; letter-spacing: 0.5px; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      .what-is-inner { grid-template-columns: 1fr; gap: 40px; }
+      .pillars-grid  { grid-template-columns: 1fr; }
+      .pledge-grid   { grid-template-columns: 1fr; }
+      .stats-inner   { grid-template-columns: repeat(2, 1fr); }
+      .steps-grid    { grid-template-columns: 1fr; }
+      .footer-inner  { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .footer-inner > .footer-brand { grid-column: 1 / -1; }
+    }
+    @media (max-width: 600px) {
+      :root { --sidebar-width: 100%; }
+      .logo { font-size: 18px; }
+      .stats-inner { grid-template-columns: 1fr 1fr; }
+      .hero { height: 80vh; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <nav id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">BharatYatra</a>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <a href="index.html" class="nav-back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <div class="sidebar" id="sidebar">
+    <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
+    <p class="sidebar-tagline">Discover Incredible India</p>
+    <ul class="sidebar-links">
+      <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+      <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+      <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+      <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+      <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+      <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+      <li><a href="contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+    </ul>
+    <p class="sidebar-section-label">Legal &amp; Support</p>
+    <ul class="sidebar-links">
+      <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+      <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+      <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+    </ul>
+    <a href="admin/admin-login.html" class="sidebar-login-btn">
+      <i class="fas fa-lock"></i> Admin Login
+    </a>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Mission LiFE &nbsp;·&nbsp; Lifestyle for Environment</p>
+      <h1>Travel for <span>Life</span></h1>
+      <p class="hero-sub">A global movement towards conscious, sustainable travel — protecting India's natural wonders, heritage, and communities for generations to come.</p>
+      <a href="#what-is" class="hero-cta"><i class="fas fa-leaf"></i> Discover the Movement</a>
+    </div>
+    <div class="hero-scroll"><i class="fas fa-chevron-down"></i></div>
+  </section>
+
+  <!-- ==================== WHAT IS SECTION ==================== -->
+  <section class="what-is" id="what-is">
+    <div class="what-is-inner">
+      <div class="what-is-text">
+        <p class="section-label">What is Travel for LiFE?</p>
+        <h2 class="section-title">Tourism That Gives Back to the Planet</h2>
+        <p class="section-body">
+          Travel for LiFE (TFL) is a global movement inspired by Mission LiFE — Lifestyle for Environment — envisioned by India's Prime Minister during the 2021 United Nations Climate Change Conference (COP26) in Glasgow. It seeks to inspire both tourists and tourism businesses to embrace straightforward measures aimed at conserving natural resources, preserving biodiversity, boosting local economies, and safeguarding the socio-cultural fabric of local communities.
+        </p>
+        <p class="section-body" style="margin-top:16px;">
+          Endorsed by the G20 New Delhi Leaders' Declaration, Travel for LiFE supports the development of smart, responsible, and sustainable destinations — making India a global blueprint for conscious travel.
+        </p>
+        <div class="quote-box">
+          "Travel should leave destinations better than we found them — not just for us, but for every generation that follows."
+        </div>
+      </div>
+      <div class="what-is-img">
+        <img src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800" alt="Lush green forest India" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== THREE PILLARS ==================== -->
+  <section class="pillars">
+    <div class="pillars-inner">
+      <div class="pillars-header">
+        <p class="section-label">Foundation</p>
+        <h2 class="section-title">Three Pillars of Sustainable Travel</h2>
+        <p class="section-body">Every responsible journey rests on three core commitments — to the environment, to culture, and to local communities.</p>
+      </div>
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <div class="pillar-icon"><i class="fas fa-tree"></i></div>
+          <h3>Environmental Responsibility</h3>
+          <p>Reduce pollution and waste, conserve natural resources, protect wildlife habitats, and choose eco-friendly transport and accommodations. India's fragile ecosystems — the Himalayas, Western Ghats, Sundarbans — depend on every traveller's mindful choices.</p>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-icon"><i class="fas fa-hands"></i></div>
+          <h3>Socio-Cultural Respect</h3>
+          <p>Honour local customs, religious traditions, and dress codes at heritage sites. Engage authentically with communities rather than as a spectator. Protect the identity and dignity of the places you visit, preserving living cultures for future generations.</p>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-icon"><i class="fas fa-store"></i></div>
+          <h3>Economic Benefit for Locals</h3>
+          <p>Spend with local vendors, artisans, and homestays. Hire local guides. Buy authentic handicrafts over mass-produced souvenirs. When money flows into local hands, communities flourish and have a real stake in preserving their heritage and natural wealth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PLEDGE ==================== -->
+  <section class="pledge">
+    <div class="pledge-inner">
+      <div class="pledge-header">
+        <p class="section-label">The Responsible Traveller's Pledge</p>
+        <h2 class="section-title">Simple Actions, Lasting Impact</h2>
+        <p class="section-body">These are the everyday commitments that each traveller can make to become a force for good on every journey through India.</p>
+      </div>
+      <div class="pledge-grid">
+
+        <div class="pledge-item">
+          <span class="pledge-num">01</span>
+          <div class="pledge-text">
+            <h4>Use Public & Green Transport</h4>
+            <p>Prefer trains, buses, and CNG/EV vehicles over petrol or diesel cars. Reduce your carbon footprint one journey at a time.</p>
+          </div>
+        </div>
+
+        <div class="pledge-item">
+          <span class="pledge-num">02</span>
+          <div class="pledge-text">
+            <h4>Say No to Single-Use Plastic</h4>
+            <p>Carry a reusable water bottle, bags, and utensils. Refuse plastic straws and packaging. Leave no trace at every destination you visit.</p>
+          </div>
+        </div>
+
+        <div class="pledge-item">
+          <span class="pledge-num">03</span>
+          <div class="pledge-text">
+            <h4>Hire Local Guides</h4>
+            <p>Local guides bring destinations to life with authentic stories and knowledge — and every booking directly supports families in the community.</p>
+          </div>
+        </div>
+
+        <div class="pledge-item">
+          <span class="pledge-num">04</span>
+          <div class="pledge-text">
+            <h4>Shop from Local Artisans</h4>
+            <p>Choose handcrafted souvenirs from local markets and artisan arcades. Every purchase preserves a traditional craft and a livelihoods.</p>
+          </div>
+        </div>
+
+        <div class="pledge-item">
+          <span class="pledge-num">05</span>
+          <div class="pledge-text">
+            <h4>Eat Local & Seasonal Food</h4>
+            <p>Consume locally available, seasonal, and traditional food. Include sustainable options like millets. Support local farmers and reduce food miles.</p>
+          </div>
+        </div>
+
+        <div class="pledge-item">
+          <span class="pledge-num">06</span>
+          <div class="pledge-text">
+            <h4>Conserve Water & Energy</h4>
+            <p>Turn off lights and ACs when not in use. Take shorter showers. Report leaking taps. Small habits in hotels and homestays add up to a huge collective saving.</p>
+          </div>
+        </div>
+
+        <div class="pledge-item">
+          <span class="pledge-num">07</span>
+          <div class="pledge-text">
+            <h4>Respect Wildlife & Nature</h4>
+            <p>Never feed, touch, or disturb wildlife. Stay on marked trails in sanctuaries. Do not collect shells, corals, or plant specimens from protected areas.</p>
+          </div>
+        </div>
+
+        <div class="pledge-item">
+          <span class="pledge-num">08</span>
+          <div class="pledge-text">
+            <h4>Share Feedback &amp; Inspire Others</h4>
+            <p>Provide constructive feedback to tourism service providers. Share your responsible travel story to encourage friends, family, and fellow travellers.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== STATS ==================== -->
+  <section class="stats">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-number">300M+</div>
+        <div class="stat-label">Domestic Tourists</div>
+        <div class="stat-desc">targeted by the TFL campaign annually</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">137M</div>
+        <div class="stat-label">Jobs by 2030</div>
+        <div class="stat-desc">projected from sustainable tourism growth</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">$250B</div>
+        <div class="stat-label">GDP Contribution</div>
+        <div class="stat-desc">India's tourism target contribution by 2030</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">36</div>
+        <div class="stat-label">Best Tourism Villages</div>
+        <div class="stat-desc">recognised across 8 categories in 2024</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== HOW TO TRAVEL RESPONSIBLY ==================== -->
+  <section class="how-to">
+    <div class="how-to-inner">
+      <div class="how-to-header">
+        <p class="section-label">Your Practical Guide</p>
+        <h2 class="section-title">How to Travel Responsibly in India</h2>
+        <p class="section-body">Responsible travel doesn't require sacrifices — it just requires awareness. Here's how to make every trip count.</p>
+      </div>
+      <div class="steps-grid">
+
+        <div class="step-card">
+          <span class="step-bg-num">1</span>
+          <i class="fas fa-map-marked-alt"></i>
+          <h3>Research Before You Go</h3>
+          <p>Learn about local customs, dress codes, and cultural norms before visiting religious and heritage sites. A little knowledge shows respect and enriches your experience immensely.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-bg-num">2</span>
+          <i class="fas fa-home"></i>
+          <h3>Choose Eco-Friendly Stays</h3>
+          <p>Look for certified sustainable hotels, eco-lodges, and community homestays. These businesses invest their earnings back into local conservation and community welfare.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-bg-num">3</span>
+          <i class="fas fa-recycle"></i>
+          <h3>Pack Light, Pack Right</h3>
+          <p>Bring reusable bags, a water bottle, and a zero-waste kit. Avoid overpacking — it means less fuel on flights and trains. Leave no rubbish behind at any destination.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-bg-num">4</span>
+          <i class="fas fa-camera"></i>
+          <h3>Photograph Respectfully</h3>
+          <p>Always ask permission before photographing people, especially in rural and tribal communities. Respect signs that prohibit photography at religious or sensitive locations.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-bg-num">5</span>
+          <i class="fas fa-route"></i>
+          <h3>Explore Off the Beaten Path</h3>
+          <p>India's lesser-known destinations — Ziro Valley, Hampi, Majuli Island — are just as breathtaking as iconic spots, with far less pressure on local ecosystems and communities.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-bg-num">6</span>
+          <i class="fas fa-star"></i>
+          <h3>Leave a Positive Review</h3>
+          <p>Rate and review local businesses, guides, and eco-stays honestly. Your feedback drives quality improvements and helps other conscious travellers make better choices.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CTA BANNER ==================== -->
+  <section class="cta-banner">
+    <h2>Ready to Travel Responsibly?</h2>
+    <p>Join millions of travellers who have pledged to protect India's incredible beauty, culture, and communities — one mindful journey at a time.</p>
+    <div class="cta-btns">
+      <a href="itinerary.html" class="cta-btn-primary"><i class="fas fa-route"></i> Plan Your Journey</a>
+      <a href="contactus.html" class="cta-btn-outline"><i class="fas fa-envelope"></i> Get in Touch</a>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer id="footer">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">BHARAT YATRA</a>
+        <p class="footer-tagline">Discover the incredible beauty<br>and diversity of India.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Explore</h4>
+        <ul class="footer-links">
+          <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+          <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+          <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+          <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Plan</h4>
+        <ul class="footer-links">
+          <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+          <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Legal</h4>
+        <ul class="footer-links">
+          <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+          <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Follow Us</h4>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="social-btn" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+        </div>
+        <a href="contactus.html" class="footer-contact-btn">
+          <i class="fas fa-envelope"></i> Contact Us
+        </a>
+      </div>
+
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 BharatYatra. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ── SIDEBAR TOGGLE ──
+    const sidebar  = document.getElementById('sidebar');
+    const overlay  = document.getElementById('overlay');
+    const openBtn  = document.getElementById('open-sidebar');
+    const closeBtn = document.getElementById('close-sidebar');
+
+    function openSidebar()  { sidebar.classList.add('active'); overlay.classList.add('active'); document.body.classList.add('no-scroll'); }
+    function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.classList.remove('no-scroll'); }
+
+    openBtn.addEventListener('click', openSidebar);
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+    // ── SMOOTH SCROLL FOR HERO CTA ──
+    document.querySelector('.hero-cta').addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector('#what-is').scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+
+</body>
+</html>
