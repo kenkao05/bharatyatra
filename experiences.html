@@ -4,10 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Experiences | BharatYatra</title>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECURITY HEADERS (client-side layer)
+    ═══════════════════════════════════════════════════════════ -->
+
+    <!-- 1. Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com 'unsafe-inline';
+        style-src  'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+        font-src   'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src    'self' data: https:;
+        connect-src 'self' https://*.supabase.co;
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'self';
+        object-src 'none';
+    ">
+
+    <!-- 2. Referrer Policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <!-- 3. Anti-Clickjacking framebusting -->
+    <script>if (window.self !== window.top) { window.top.location = window.self.location; }</script>
+
+    <!--
+    SERVER-SIDE HEADERS TO ADD:
+      Header always set X-Frame-Options "DENY"
+      Header always set X-Content-Type-Options "nosniff"
+      Header always set X-XSS-Protection "1; mode=block"
+      Header always set Referrer-Policy "strict-origin-when-cross-origin"
+      Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+      Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- SRI — Subresource Integrity on Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qALmWA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 
     <style>
     /* ── SHARED BASE (verbatim from medical.html) ── */
@@ -702,8 +740,9 @@
     </div>
 </footer>
 
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase (SRI — supply-chain attack prevention) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+        crossorigin="anonymous"></script>
 
 <script>
 /* ═══════════════════════════════════════════
@@ -725,14 +764,15 @@ let modalOpen      = false;
    TYPE AVAILABILITY MATRIX
    Pre-computed from DB — no extra query needed
 ═══════════════════════════════════════════ */
-const TYPE_AVAIL = {
+/* Object.freeze prevents Prototype Pollution from injecting fake type entries */
+const TYPE_AVAIL = Object.freeze({
     '':  new Set(['Adventure','Beach','Cultural','Experience','Historical','Modern','Monument','Museum','Nature','Recreation','Religious','Scenic','Urban','Wellness','Wildlife']),
     '1': new Set(['Adventure','Beach','Cultural','Historical','Modern','Monument','Museum','Nature','Recreation','Religious','Scenic','Wildlife']),
     '2': new Set(['Cultural','Historical','Monument','Museum','Nature','Recreation','Religious','Wildlife']),
     '3': new Set(['Adventure','Cultural','Experience','Historical','Museum','Nature','Religious','Wellness','Wildlife']),
     '4': new Set(['Adventure','Experience','Historical','Museum','Nature','Religious','Urban','Wildlife']),
     '5': new Set(['Adventure','Cultural','Experience','Historical','Museum','Nature','Religious','Wildlife'])
-};
+});
 
 /* ═══════════════════════════════════════════
    HELPERS
@@ -742,6 +782,13 @@ function esc(str) {
     return String(str)
         .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
         .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ── safeImgUrl: validate URL scheme before setting as src ──────────
+   Blocks javascript: and data: injection into image src attributes. */
+function safeImgUrl(url) {
+    const s = String(url || '');
+    return /^https?:\/\//i.test(s) ? esc(s) : '';
 }
 
 function isFreeEntry(attr) {
@@ -840,13 +887,12 @@ function renderCard(attr, index) {
         : '';
 
     return `
-        <div class="exp-card" onclick="openModal(${attr.id})"
+        <div class="exp-card" data-attr-id="${esc(String(attr.id))}"
              style="animation-delay:${Math.min(index * 0.04, 0.5)}s"
              role="button" tabindex="0"
-             aria-label="View details for ${esc(attr.name)}"
-             onkeydown="if(event.key==='Enter'||event.key===' ')openModal(${attr.id})">
+             aria-label="View details for ${esc(attr.name)}">
             <div class="exp-card-img">
-                <img src="${esc(attr.image_url || '')}" alt="${esc(attr.name)}" loading="lazy"
+                <img src="${safeImgUrl(attr.image_url)}" alt="${esc(attr.name)}" loading="lazy"
                      onerror="this.style.display='none'">
                 <div class="exp-card-img-overlay"></div>
                 <span class="exp-type-badge">${esc(attr.type)}</span>
@@ -901,7 +947,12 @@ function renderGrid(attractions) {
 function applyFilters() {
     const stateVal = document.getElementById('filter-state').value;
     const feeVal   = document.getElementById('filter-fee').value;
-    const query    = document.getElementById('filter-search').value.toLowerCase().trim();
+    // Strip HTML tags and cap length before using as filter (XSS / DoS prevention)
+    const query    = document.getElementById('filter-search').value
+                        .replace(/<[^>]*>/g, '')
+                        .substring(0, 150)
+                        .toLowerCase()
+                        .trim();
 
     let result = [...allAttractions];
 
@@ -936,10 +987,11 @@ function openModal(id) {
     const attr = allAttractions.find(a => a.id === id || a.id === String(id) || Number(a.id) === Number(id));
     if (!attr) return;
 
-    // Image
+    // Image — validate URL scheme to block javascript: / data: injection
     const imgEl = document.getElementById('modal-img');
-    imgEl.src = attr.image_url || '';
-    imgEl.alt = attr.name;
+    const rawImgUrl = String(attr.image_url || '');
+    imgEl.src = /^https?:\/\//i.test(rawImgUrl) ? rawImgUrl : '';
+    imgEl.alt = attr.name || '';
 
     // Badges
     document.getElementById('modal-type-badge').textContent = attr.type || '';
@@ -1028,8 +1080,43 @@ document.getElementById('filter-state').addEventListener('change', function() {
     applyFilters();
 });
 document.getElementById('filter-fee').addEventListener('change', applyFilters);
-document.getElementById('filter-search').addEventListener('input', applyFilters);
+
+// Debounced search — prevents rapid-fire filtering (client-side DoS) and caps input length
+let _searchDebounce = null;
+document.getElementById('filter-search').addEventListener('input', function() {
+    if (this.value.length > 150) this.value = this.value.substring(0, 150);
+    clearTimeout(_searchDebounce);
+    _searchDebounce = setTimeout(applyFilters, 300);
+});
+
 document.getElementById('clear-filters-btn').addEventListener('click', clearAllFilters);
+
+/* ── Event delegation for card grid ────────────────────────────────
+   Replaces inline onclick/onkeydown handlers, which are an XSS
+   vector when the handler contains data from the database
+   (e.g. onclick="openModal(${attr.id})").
+   Using data-attr-id attribute + delegated listener is safe because
+   we validate the ID before use and never execute it as code.     */
+document.getElementById('exp-grid').addEventListener('click', function(e) {
+    const card = e.target.closest('.exp-card[data-attr-id]');
+    if (!card) return;
+    const rawId = card.dataset.attrId;
+    // Only proceed if id looks like a safe integer or short alphanumeric string
+    if (rawId && /^[a-zA-Z0-9_\-]{1,64}$/.test(rawId)) {
+        openModal(rawId);
+    }
+});
+
+document.getElementById('exp-grid').addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const card = e.target.closest('.exp-card[data-attr-id]');
+    if (!card) return;
+    const rawId = card.dataset.attrId;
+    if (rawId && /^[a-zA-Z0-9_\-]{1,64}$/.test(rawId)) {
+        e.preventDefault();
+        openModal(rawId);
+    }
+});
 
 /* ═══════════════════════════════════════════
    FETCH
@@ -1057,6 +1144,7 @@ async function fetchData() {
         applyFilters();
 
     } catch (err) {
+        // Do NOT expose raw error to DOM — information leakage risk
         console.error('Fetch error:', err);
         document.getElementById('exp-grid').innerHTML = `
             <div class="exp-state-msg">

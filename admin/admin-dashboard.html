@@ -3,18 +3,40 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!--
+    ============================================================
+    SERVER-SIDE HEADERS — configure in Vercel vercel.json or
+    Apache/Nginx alongside these meta equivalents:
+      X-Frame-Options: DENY
+      X-Content-Type-Options: nosniff
+      X-XSS-Protection: 1; mode=block
+      Referrer-Policy: strict-origin-when-cross-origin
+      Permissions-Policy: geolocation=(), microphone=(), camera=()
+      Strict-Transport-Security: max-age=31536000; includeSubDomains
+    ============================================================
+  -->
   <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://unpkg.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://gtpnojbbamoaznlutxap.supabase.co;
+        content="default-src 'self';
                  script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com;
                  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
                  font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
                  img-src 'self' data: https:;
-                 frame-ancestors 'none';">
+                 connect-src 'self' https://gtpnojbbamoaznlutxap.supabase.co;
+                 frame-ancestors 'none';
+                 base-uri 'none';
+                 form-action 'self';
+                 object-src 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
   <title>Admin Dashboard | BharatYatra</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qALmWA=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"/>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
   <script src="admin-auth.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -430,7 +452,7 @@
     <div class="header-right">
       <div class="admin-avatar" id="adminAvatar">A</div>
       <span class="admin-email" id="adminEmail">Loading…</span>
-      <button class="btn-logout" onclick="handleLogout()">
+      <button class="btn-logout" id="logoutBtn">
         <i class="fas fa-sign-out-alt"></i> Logout
       </button>
     </div>
@@ -571,55 +593,73 @@
   </main>
 
   <script>
-    // sb is provided by admin-auth.js
+    // sb and BYAuth are provided by admin-auth.js
 
-    // ── INACTIVITY OVERLAY ──────────────────────────────────────────────────
-    // Warn user 60s before forced logout
-    const WARN_BEFORE_MS = 60 * 1000;
-    let warnTimer = null;
+    // ── LOGOUT (event listener — no inline onclick) ──────────────────────────
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      BYAuth.logout('user_initiated');
+    });
 
+    // ── INACTIVITY WARNING BANNER ────────────────────────────────────────────
+    // Built entirely via DOM API — no innerHTML — preventing XSS from injected
+    // content reaching the banner, and avoids calling BYAuth via an inline
+    // onclick attribute (which would be blocked by strict CSP).
     function showInactivityWarning() {
-      // Create warning banner if not present
       if (document.getElementById('inactivityWarn')) return;
-      const el = document.createElement('div');
-      el.id = 'inactivityWarn';
-      el.style.cssText = `
-        position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
-        background:#1e1b4b; border:1px solid #6366f1; border-radius:10px;
-        padding:14px 24px; font-family:Inter,sans-serif; font-size:13px;
-        color:#e0e7ff; z-index:9999; display:flex; align-items:center; gap:12px;
-        box-shadow:0 8px 32px rgba(0,0,0,0.5); animation:toastIn .3s ease;
-      `;
-      el.innerHTML = `
-        <i class="fas fa-clock" style="color:#818cf8"></i>
-        <span>You'll be logged out in <strong id="warnCountdown">60</strong>s due to inactivity.</span>
-        <button onclick="document.getElementById('inactivityWarn').remove(); BYAuth._resetTimer && BYAuth._resetTimer();"
-          style="background:#6366f1;color:#fff;border:none;border-radius:6px;padding:5px 12px;cursor:pointer;font-size:12px;font-family:Inter,sans-serif;">
-          Stay logged in
-        </button>
-      `;
-      document.body.appendChild(el);
+
+      const wrap = document.createElement('div');
+      wrap.id = 'inactivityWarn';
+      wrap.style.cssText = [
+        'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+        'background:#1e1b4b','border:1px solid #6366f1','border-radius:10px',
+        'padding:14px 24px','font-family:Inter,sans-serif','font-size:13px',
+        'color:#e0e7ff','z-index:9999','display:flex','align-items:center','gap:12px',
+        'box-shadow:0 8px 32px rgba(0,0,0,0.5)'
+      ].join(';');
+
+      const icon = document.createElement('i');
+      icon.className = 'fas fa-clock';
+      icon.style.color = '#818cf8';
+
+      const msg = document.createElement('span');
+      msg.appendChild(document.createTextNode("You'll be logged out in "));
+      const countdown = document.createElement('strong');
+      countdown.id = 'warnCountdown';
+      countdown.textContent = '60';
+      msg.appendChild(countdown);
+      msg.appendChild(document.createTextNode('s due to inactivity.'));
+
+      const stayBtn = document.createElement('button');
+      stayBtn.textContent = 'Stay logged in';
+      stayBtn.style.cssText = [
+        'background:#6366f1','color:#fff','border:none','border-radius:6px',
+        'padding:5px 12px','cursor:pointer','font-size:12px','font-family:Inter,sans-serif'
+      ].join(';');
+      stayBtn.addEventListener('click', () => {
+        wrap.remove();
+        // Use the mutable reset slot (separate from frozen BYAuth object)
+        if (typeof window._BYAuthReset === 'function') {
+          window._BYAuthReset();
+        } else {
+          document.dispatchEvent(new MouseEvent('mousemove'));
+        }
+      });
+
+      wrap.appendChild(icon);
+      wrap.appendChild(msg);
+      wrap.appendChild(stayBtn);
+      document.body.appendChild(wrap);
 
       let secs = 60;
       const cd = setInterval(() => {
         secs--;
-        const el2 = document.getElementById('warnCountdown');
-        if (el2) el2.textContent = secs;
+        const el = document.getElementById('warnCountdown');
+        if (el) el.textContent = secs;
         if (secs <= 0) clearInterval(cd);
       }, 1000);
     }
 
-    // Expose reset so warning button can call it
-    BYAuth._resetTimer = function() {
-      document.dispatchEvent(new MouseEvent('mousemove'));
-    };
-
-    // ── LOGOUT ──────────────────────────────────────────────────────────────
-    async function handleLogout() {
-      BYAuth.logout('user_initiated');
-    }
-
-    // ── STATS ───────────────────────────────────────────────────────────────
+    // ── STATS ────────────────────────────────────────────────────────────────
     async function loadStats() {
       const results = await Promise.allSettled([
         sb.from('states').select('id', { count: 'exact', head: true }),
@@ -640,17 +680,24 @@
       });
     }
 
-    // ── INIT ────────────────────────────────────────────────────────────────
+    // ── INIT ─────────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', async () => {
       const session = await BYAuth.check();
       if (!session) return;
 
+      // Register the inactivity-reset callback into the mutable slot exposed
+      // by admin-auth.js (kept separate from the frozen BYAuth object).
+      window._BYAuthReset = function () {
+        document.dispatchEvent(new MouseEvent('mousemove'));
+      };
+
       const email = session.user.email;
+      // All written via textContent — never innerHTML — safe against XSS.
       document.getElementById('adminEmail').textContent = email;
       document.getElementById('adminAvatar').textContent = email.charAt(0).toUpperCase();
       const name = email.split('@')[0]
         .replace(/[._-]/g, ' ')
-        .replace(/\w/g, c => c.toUpperCase());
+        .replace(/\b\w/g, c => c.toUpperCase());
       document.getElementById('adminName').textContent = name;
 
       loadStats();

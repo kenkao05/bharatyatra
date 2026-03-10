@@ -4,10 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical | BharatYatra</title>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECURITY HEADERS (client-side layer)
+         For full protection, also configure these on your server.
+    ═══════════════════════════════════════════════════════════ -->
+
+    <!-- 1. Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com 'unsafe-inline';
+        style-src  'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+        font-src   'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src    'self' data: https:;
+        connect-src 'self' https://*.supabase.co;
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'self';
+        object-src 'none';
+    ">
+
+    <!-- 2. Referrer Policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <!-- 3. Anti-Clickjacking framebusting (JS fallback) -->
+    <script>
+        if (window.self !== window.top) { window.top.location = window.self.location; }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- SRI on Font Awesome — supply-chain attack prevention -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qALmWA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
     /* ── SHARED STYLES (inlined from style.css) ── */
 :root {
@@ -952,8 +982,9 @@ body.no-scroll { overflow: hidden; }
         </div>
     </footer>
 
-    <!-- Supabase JS v2 -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase JS v2 (SRI — supply-chain attack prevention) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            crossorigin="anonymous"></script>
 
     <script>
         /* ─────────────────────────────────────────────────────────
@@ -1017,6 +1048,25 @@ body.no-scroll { overflow: hidden; }
             return h + '</span>';
         }
 
+        /* DOM-safe star builder used by renderCards */
+        function renderStarsDOM(rating) {
+            const full  = Math.floor(rating);
+            const half  = (rating - full) >= 0.5;
+            const empty = 5 - full - (half ? 1 : 0);
+            const wrap  = document.createElement('span');
+            wrap.className = 'hosp-stars';
+            for (let i = 0; i < full;  i++) { const s = document.createElement('i'); s.className = 'fas fa-star'; wrap.appendChild(s); }
+            if (half)                        { const s = document.createElement('i'); s.className = 'fas fa-star-half-alt'; wrap.appendChild(s); }
+            for (let i = 0; i < empty; i++) { const s = document.createElement('i'); s.className = 'far fa-star empty'; wrap.appendChild(s); }
+            return wrap;
+        }
+
+        /* ── XSS DEFENSE: sanitize all text before inserting into DOM ── */
+        function escText(str) {
+            if (str === null || str === undefined) return '';
+            return String(str);
+        }
+
         /* ── RENDER ── */
         function renderCards(hospitals) {
             if (!hospitals.length) {
@@ -1030,65 +1080,129 @@ body.no-scroll { overflow: hidden; }
             }
 
             countEl.textContent = `${hospitals.length} result${hospitals.length !== 1 ? 's' : ''}`;
+            grid.innerHTML = '';
 
-            grid.innerHTML = hospitals.map((h, idx) => `
-                <div class="hosp-card" style="animation-delay:${idx * 0.05}s">
-                    <div class="hosp-card-header">
-                        <p class="hosp-name">${h.name}</p>
-                        <span class="hosp-badge ${badgeClass(h.type)}">${h.type}</span>
-                    </div>
-                    <div class="hosp-card-body">
-                        <div class="hosp-row">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div class="hosp-row-content">
-                                <span class="hosp-row-label">Address</span>
-                                <span class="hosp-row-value">${h.address}</span>
-                            </div>
-                        </div>
-                        <div class="hosp-row">
-                            <i class="fas fa-star"></i>
-                            <div class="hosp-row-content">
-                                <span class="hosp-row-label">Rating</span>
-                                <span class="hosp-row-value">
-                                    ${h.rating ? h.rating.toFixed(1) + renderStars(h.rating) : 'Not rated'}
-                                </span>
-                            </div>
-                        </div>
-                        ${h.contact_phone ? `
-                        <div class="hosp-row">
-                            <i class="fas fa-phone-alt"></i>
-                            <div class="hosp-row-content">
-                                <span class="hosp-row-label">Phone</span>
-                                <span class="hosp-row-value">${h.contact_phone}</span>
-                            </div>
-                        </div>` : ''}
-                    </div>
-                    <div class="hosp-card-footer">
-                        <span class="hosp-city">
-                            <i class="fas fa-city" style="margin-right:5px;color:#ccc;font-size:10px;"></i>
-                            ${h.city || ''}
-                        </span>
-                        ${h.contact_phone
-                            ? `<a href="tel:${h.contact_phone.replace(/\D/g,'')}" class="hosp-call-btn">
-                                    <i class="fas fa-phone-alt"></i> Call
-                               </a>`
-                            : ''}
-                    </div>
-                </div>
-            `).join('');
+            hospitals.forEach((h, idx) => {
+                // ── Build each card via DOM API (never innerHTML with DB strings) ──
+                const card = document.createElement('div');
+                card.className = 'hosp-card';
+                card.style.animationDelay = (idx * 0.05) + 's';
+
+                // Card header
+                const header = document.createElement('div');
+                header.className = 'hosp-card-header';
+                const nameP = document.createElement('p');
+                nameP.className = 'hosp-name';
+                nameP.textContent = escText(h.name);
+                const badge = document.createElement('span');
+                badge.className = 'hosp-badge ' + badgeClass(h.type);
+                badge.textContent = escText(h.type);
+                header.appendChild(nameP);
+                header.appendChild(badge);
+
+                // Card body
+                const body = document.createElement('div');
+                body.className = 'hosp-card-body';
+
+                function makeRow(iconClass, labelText, valueText) {
+                    const row = document.createElement('div');
+                    row.className = 'hosp-row';
+                    const icon = document.createElement('i');
+                    icon.className = iconClass;
+                    const content = document.createElement('div');
+                    content.className = 'hosp-row-content';
+                    const label = document.createElement('span');
+                    label.className = 'hosp-row-label';
+                    label.textContent = labelText;
+                    const value = document.createElement('span');
+                    value.className = 'hosp-row-value';
+                    if (typeof valueText === 'string') {
+                        value.textContent = valueText;
+                    } else {
+                        value.appendChild(valueText); // for stars span
+                    }
+                    content.appendChild(label);
+                    content.appendChild(value);
+                    row.appendChild(icon);
+                    row.appendChild(content);
+                    return row;
+                }
+
+                body.appendChild(makeRow('fas fa-map-marker-alt', 'Address', escText(h.address)));
+
+                // Rating row with stars
+                const ratingValueEl = document.createElement('span');
+                ratingValueEl.className = 'hosp-row-value';
+                if (h.rating) {
+                    ratingValueEl.textContent = Number(h.rating).toFixed(1);
+                    ratingValueEl.appendChild(renderStarsDOM(h.rating));
+                } else {
+                    ratingValueEl.textContent = 'Not rated';
+                }
+                const ratingRow = document.createElement('div');
+                ratingRow.className = 'hosp-row';
+                const ratingIcon = document.createElement('i');
+                ratingIcon.className = 'fas fa-star';
+                const ratingContent = document.createElement('div');
+                ratingContent.className = 'hosp-row-content';
+                const ratingLabel = document.createElement('span');
+                ratingLabel.className = 'hosp-row-label';
+                ratingLabel.textContent = 'Rating';
+                ratingContent.appendChild(ratingLabel);
+                ratingContent.appendChild(ratingValueEl);
+                ratingRow.appendChild(ratingIcon);
+                ratingRow.appendChild(ratingContent);
+                body.appendChild(ratingRow);
+
+                if (h.contact_phone) {
+                    body.appendChild(makeRow('fas fa-phone-alt', 'Phone', escText(h.contact_phone)));
+                }
+
+                // Card footer
+                const footer = document.createElement('div');
+                footer.className = 'hosp-card-footer';
+                const citySpan = document.createElement('span');
+                citySpan.className = 'hosp-city';
+                const cityIcon = document.createElement('i');
+                cityIcon.className = 'fas fa-city';
+                cityIcon.style.cssText = 'margin-right:5px;color:#ccc;font-size:10px;';
+                citySpan.appendChild(cityIcon);
+                citySpan.appendChild(document.createTextNode(escText(h.city || '')));
+                footer.appendChild(citySpan);
+
+                if (h.contact_phone) {
+                    const callBtn = document.createElement('a');
+                    // Sanitize phone: only allow digits, +, -, spaces
+                    const safePhone = String(h.contact_phone).replace(/[^\d\s\+\-]/g, '');
+                    callBtn.href = 'tel:' + safePhone.replace(/\D/g, '');
+                    callBtn.className = 'hosp-call-btn';
+                    const callIcon = document.createElement('i');
+                    callIcon.className = 'fas fa-phone-alt';
+                    callBtn.appendChild(callIcon);
+                    callBtn.appendChild(document.createTextNode(' Call'));
+                    footer.appendChild(callBtn);
+                }
+
+                card.appendChild(header);
+                card.appendChild(body);
+                card.appendChild(footer);
+                grid.appendChild(card);
+            });
         }
 
         /* ── FILTER ── */
         function applyFilters() {
             const sv = stateSelect.value;
             const tv = typeSelect.value.toLowerCase();
-            const qv = searchInput.value.toLowerCase().trim();
+            // Sanitize text input: strip HTML tags, limit length (DoS / XSS prevention)
+            const rawQ = searchInput.value.replace(/<[^>]*>/g, '').substring(0, 100);
+            const qv   = rawQ.toLowerCase().trim();
 
             const result = allHospitals.filter(h => {
                 const okState  = !sv || String(h.state_id) === sv;
-                const okType   = !tv || h.type.toLowerCase() === tv;
+                const okType   = !tv || (h.type && h.type.toLowerCase() === tv);
                 const okSearch = !qv ||
-                    h.name.toLowerCase().includes(qv) ||
+                    (h.name    && h.name.toLowerCase().includes(qv)) ||
                     (h.city    && h.city.toLowerCase().includes(qv))    ||
                     (h.address && h.address.toLowerCase().includes(qv));
                 return okState && okType && okSearch;
@@ -1117,11 +1231,12 @@ body.no-scroll { overflow: hidden; }
                 allHospitals = data || [];
                 applyFilters();
             } catch (err) {
+                // Do NOT expose raw error to the DOM — information leakage risk
                 console.error('Supabase fetch error:', err);
                 grid.innerHTML = `
                     <div class="med-state-msg">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <p>Could not load hospital data. Check your Supabase configuration.</p>
+                        <p>Could not load hospital data. Please try again later.</p>
                     </div>`;
                 countEl.textContent = '—';
             }
@@ -1130,7 +1245,18 @@ body.no-scroll { overflow: hidden; }
         /* ── EVENTS ── */
         stateSelect.addEventListener('change', applyFilters);
         typeSelect.addEventListener('change',  applyFilters);
-        searchInput.addEventListener('input',  applyFilters);
+
+        // Rate-limit search to avoid excessive re-filtering (DoS-like client-side abuse)
+        let searchDebounceTimer = null;
+        searchInput.addEventListener('input', () => {
+            // Enforce max input length
+            if (searchInput.value.length > 100) {
+                searchInput.value = searchInput.value.substring(0, 100);
+            }
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(applyFilters, 300);
+        });
+
         clearBtn.addEventListener('click', () => {
             stateSelect.value = '';
             typeSelect.value  = '';

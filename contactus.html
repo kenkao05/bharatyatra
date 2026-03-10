@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | BharatYatra</title>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECURITY HEADERS (client-side layer)
+         IMPORTANT: Also configure matching headers on your web server.
+    ═══════════════════════════════════════════════════════════ -->
+
+    <!-- 1. Content Security Policy — blocks XSS, clickjacking, unwanted resource loads -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com 'unsafe-inline';
+        style-src  'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+        font-src   'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src    'self' data: https:;
+        connect-src 'self' https://*.supabase.co;
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'self';
+        object-src 'none';
+    ">
+
+    <!-- 2. Referrer Policy — prevents URL leakage to third parties -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <!-- 3. Anti-Clickjacking framebusting (JS fallback for older browsers) -->
+    <script>if (window.self !== window.top) { window.top.location = window.self.location; }</script>
+
+    <!--
+    SERVER-SIDE HEADERS TO ADD (.htaccess / Nginx):
+      Header always set X-Frame-Options "DENY"
+      Header always set X-Content-Type-Options "nosniff"
+      Header always set X-XSS-Protection "1; mode=block"
+      Header always set Referrer-Policy "strict-origin-when-cross-origin"
+      Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+      Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- SRI — Subresource Integrity: if CDN is compromised, browser refuses to load tampered file -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qALmWA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <style>
+    /* ── SHARED STYLES (inlined from style.css) ── */
+    :root {
+        --black:  #000000;
+        --red:    #C0392B;
+        --white:  #FFFFFF;
+        --grey:   #1a1a1a;
+        --muted:  #999999;
+        --sidebar-width: 320px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Poppins', sans-serif; background: var(--white); color: var(--black); overflow-x: hidden; }
+    body.no-scroll { overflow: hidden; }
+
+
+
+    /* ── NAVBAR ── */
+    #navbar {
+        position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 10px 0;
+        background: rgba(8, 8, 8, 0.92);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+    }
+    .nav-container {
+        max-width: 1200px; margin: 0 auto; padding: 0 40px;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+        font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 700;
+        font-style: normal; color: #ff6b35; text-decoration: none;
+        letter-spacing: 3px; flex-shrink: 0;
+    }
+    .menu-btn {
+        background: none; border: none; color: #969696; font-size: 1.5rem;
+        cursor: pointer; padding: 4px 6px; line-height: 1;
+        transition: color 0.2s; flex-shrink: 0;
+    }
+    .menu-btn:hover { color: #ff6b35; }
+    .nav-back-btn {
+        margin-left: 24px; display: inline-flex; align-items: center; gap: 6px;
+        padding: 6px 14px; font-family: 'Poppins', sans-serif; font-size: 13px;
+        font-weight: 600; letter-spacing: 0.5px; text-decoration: none;
+        color: #969696; border: 1px solid #333;
+        transition: color 0.2s, border-color 0.2s; flex-shrink: 0;
+    }
+    .nav-back-btn i { font-size: 12px; }
+    .nav-back-btn:hover { color: #ff6b35; border-color: #ff6b35; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+        position: fixed; top: 0; right: calc(-1 * var(--sidebar-width));
+        width: var(--sidebar-width); height: 100%;
+        background: var(--black); z-index: 2000; overflow-y: auto;
+        padding: 50px 36px 40px;
+        transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        border-left: 1px solid #222;
+    }
+    .sidebar.active { right: 0; }
+    .close-btn {
+        position: absolute; top: 18px; right: 22px; background: none; border: none;
+        font-size: 32px; color: var(--white); cursor: pointer; line-height: 1;
+        padding: 4px 8px; transition: color 0.2s;
+    }
+    .close-btn:hover { color: var(--red); }
+    .sidebar-tagline {
+        font-family: 'Playfair Display', serif; font-style: italic; font-size: 13px;
+        color: var(--muted); letter-spacing: 2px;
+        margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #222;
+    }
+    .sidebar-links { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .sidebar-links li a {
+        display: flex; align-items: center; gap: 14px; padding: 12px 0;
+        color: #cccccc; text-decoration: none; font-family: 'Poppins', sans-serif;
+        font-size: 15px; font-weight: 400; font-style: normal; letter-spacing: 0.5px;
+        border-bottom: 1px solid #111; transition: color 0.25s, padding-left 0.25s;
+    }
+    .sidebar-links li a i { font-size: 16px; width: 20px; color: var(--red); flex-shrink: 0; }
+    .sidebar-links li a:hover { color: var(--white); padding-left: 6px; }
+    .sidebar-section-label {
+        font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 700;
+        letter-spacing: 3px; text-transform: uppercase; color: #444;
+        margin-top: 28px; margin-bottom: 8px; padding-top: 24px; border-top: 1px solid #1a1a1a;
+    }
+    .sidebar-login-btn {
+        display: flex; align-items: center; gap: 10px; margin-top: 32px;
+        padding: 11px 18px; font-family: 'Poppins', sans-serif; font-size: 13px;
+        font-weight: 600; letter-spacing: 1px; text-decoration: none;
+        color: #ff6b35; border: 1px solid #ff6b35; transition: background 0.25s, color 0.25s;
+    }
+    .sidebar-login-btn i { font-size: 13px; }
+    .sidebar-login-btn:hover { background: #ff6b35; color: #ffffff; }
+
+    /* ── OVERLAY ── */
+    .overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+        z-index: 1500; opacity: 0; visibility: hidden;
+        transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+    /* ── FOOTER ── */
+    #footer { background: #080808; border-top: 1px solid #1e1e1e; padding: 70px 0 0; }
+    .footer-inner {
+        max-width: 1200px; margin: 0 auto; padding: 0 40px 60px;
+        display: grid; grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr; gap: 48px;
+    }
+    .footer-logo {
+        font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700;
+        letter-spacing: 3px; color: #ff6b35; text-decoration: none;
+        display: block; margin-bottom: 16px;
+    }
+    .footer-tagline { font-family: 'Poppins', sans-serif; font-size: 13px; color: #555; line-height: 1.8; }
+    .footer-heading {
+        font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 700;
+        letter-spacing: 3px; text-transform: uppercase; color: #ff6b35; margin-bottom: 20px;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .footer-links li a {
+        display: flex; align-items: center; gap: 10px; padding: 8px 0;
+        font-family: 'Poppins', sans-serif; font-size: 14px; color: #666;
+        text-decoration: none; border-bottom: 1px solid #111;
+        transition: color 0.2s, padding-left 0.2s;
+    }
+    .footer-links li a i { font-size: 13px; color: #ff6b35; width: 16px; flex-shrink: 0; }
+    .footer-links li a:hover { color: var(--white); padding-left: 4px; }
+    .footer-socials { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .social-btn {
+        width: 38px; height: 38px; border: 1px solid #2a2a2a; color: #666;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none; font-size: 15px;
+        transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .social-btn:hover { border-color: #ff6b35; color: #ff6b35; background: rgba(255,107,53,0.06); }
+    .footer-contact-btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600;
+        letter-spacing: 2px; text-transform: uppercase; text-decoration: none;
+        color: #ff6b35; border: 2px solid #ff6b35; padding: 10px 22px;
+        transition: background 0.25s, color 0.25s;
+    }
+    .footer-contact-btn:hover { background: #ff6b35; color: var(--white); }
+    .footer-bottom { border-top: 1px solid #161616; padding: 20px 40px; text-align: center; }
+    .footer-bottom p { font-family: 'Poppins', sans-serif; font-size: 12px; color: #333; letter-spacing: 0.5px; }
+
+    /* ── MOBILE SHARED ── */
+    @media (max-width: 768px) {
+        :root { --sidebar-width: 100%; }
+        .logo { font-size: 18px; }
+        .menu-btn { font-size: 20px; }
+    }
+    </style>
+
+    <style>
+    /* ══════════════════════════════════════════════
+       CONTACT US — PAGE-SPECIFIC STYLES
+    ══════════════════════════════════════════════ */
+
+    /* ── HERO ── */
+    #ct-hero {
+        position: relative;
+        height: 52vh;
+        min-height: 340px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-start;
+        overflow: hidden;
+        background: #0b0b0b;
+    }
+    .ct-hero-bg {
+        position: absolute; inset: 0;
+        background:
+            radial-gradient(ellipse at 70% 40%, rgba(255,107,53,0.12) 0%, transparent 60%),
+            linear-gradient(160deg, #0b0b0b 0%, #1a0a06 100%);
+        z-index: 0;
+    }
+    .ct-hero-icon {
+        position: absolute;
+        right: 8%; top: 50%;
+        transform: translateY(-50%);
+        z-index: 1;
+        opacity: 0.07;
+        font-size: 260px;
+        color: #ff6b35;
+        line-height: 1;
+    }
+    .ct-hero-content {
+        position: relative; z-index: 2;
+        padding: 0 60px 60px;
+        max-width: 900px;
+    }
+    .ct-eyebrow {
+        font-family: 'Poppins', sans-serif;
+        font-size: 10px; font-weight: 600;
+        letter-spacing: 5px; text-transform: uppercase;
+        color: #ff6b35; display: block; margin-bottom: 14px;
+    }
+    #ct-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.6rem, 6vw, 5rem);
+        font-weight: 700; color: #ffffff;
+        letter-spacing: 2px; line-height: 1.05;
+    }
+    #ct-hero h1 span { color: #ff6b35; }
+    .ct-hero-sub {
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px; font-weight: 300;
+        color: rgba(255,255,255,0.45);
+        margin-top: 14px; letter-spacing: 0.5px;
+    }
+    .ct-hero-border { height: 4px; background: #ff6b35; }
+
+    /* ── MAIN ── */
+    #ct-main { background: #f2f0ed; padding: 70px 24px 100px; }
+    .ct-inner { max-width: 860px; margin: 0 auto; }
+
+    /* ── SHARED SECTION LABELS ── */
+    .ct-section-eyebrow {
+        font-family: 'Poppins', sans-serif;
+        font-size: 10px; font-weight: 600;
+        letter-spacing: 5px; text-transform: uppercase;
+        color: #ff6b35; display: block; margin-bottom: 10px;
+    }
+    .ct-section-heading {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.7rem, 4vw, 2.6rem);
+        font-weight: 700; color: #000;
+        letter-spacing: 1px; margin-bottom: 14px;
+    }
+    .ct-section-sub {
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px; color: #777; line-height: 1.8;
+        margin-bottom: 40px;
+    }
+
+    /* ── TEAM ── */
+    #ct-team { margin-bottom: 64px; }
+    .ct-team-body {
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px; color: #555; line-height: 1.85;
+        margin-bottom: 36px;
+    }
+    .ct-team-body strong { color: #000; font-weight: 600; }
+    .ct-team-row { display: flex; gap: 18px; flex-wrap: wrap; }
+    .ct-team-card {
+        flex: 1; min-width: 140px;
+        background: #ffffff;
+        border-top: 3px solid #ff6b35;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+        padding: 24px 16px 22px;
+        display: flex; flex-direction: column; align-items: center;
+        gap: 12px; text-align: center;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .ct-team-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.10); }
+    .ct-avatar {
+        width: 58px; height: 58px;
+        background: #ff6b35; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Playfair Display', serif;
+        font-size: 20px; font-weight: 700; color: #ffffff;
+        flex-shrink: 0;
+    }
+    .ct-member-name {
+        font-family: 'Poppins', sans-serif;
+        font-size: 13px; font-weight: 600;
+        color: #111; letter-spacing: 0.3px; line-height: 1.3;
+    }
+    .ct-member-enroll {
+        font-family: 'Poppins', sans-serif;
+        font-size: 11px; color: #999; letter-spacing: 0.5px;
+    }
+
+    /* ── FORM PANEL ── */
+    .ct-form-panel {
+        background: #ffffff;
+        border-top: 3px solid #ff6b35;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        padding: 40px 48px;
+    }
+    .ct-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-top: 32px;
+    }
+    .ct-form-grid .full-width { grid-column: 1 / -1; }
+    .ct-field { display: flex; flex-direction: column; gap: 6px; }
+    .ct-field label {
+        font-family: 'Poppins', sans-serif;
+        font-size: 10px; font-weight: 600;
+        letter-spacing: 3px; text-transform: uppercase; color: #999;
+    }
+    .ct-field input,
+    .ct-field select,
+    .ct-field textarea {
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px; color: #111;
+        border: 1px solid #ddd; border-radius: 0;
+        padding: 11px 14px; background: #fafafa;
+        transition: border-color 0.2s; width: 100%;
+        appearance: none; -webkit-appearance: none;
+    }
+    .ct-field select {
+        padding-right: 36px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ff6b35' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        background-color: #fafafa;
+        cursor: pointer;
+    }
+    .ct-field input:focus,
+    .ct-field select:focus,
+    .ct-field textarea:focus { outline: none; border-color: #ff6b35; }
+    .ct-field textarea { resize: vertical; min-height: 130px; line-height: 1.6; }
+
+    /* ── SUBMIT BUTTON ── */
+    #submit-btn {
+        font-family: 'Poppins', sans-serif;
+        font-size: 13px; font-weight: 600;
+        letter-spacing: 2.5px; text-transform: uppercase;
+        color: #ff6b35; border: 2px solid #ff6b35;
+        background: transparent; padding: 13px 36px;
+        cursor: pointer; transition: background 0.25s, color 0.25s;
+        display: inline-flex; align-items: center; gap: 10px;
+    }
+    #submit-btn:hover { background: #ff6b35; color: #ffffff; }
+    #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── FORM MESSAGES ── */
+    .form-msg {
+        display: none; align-items: flex-start; gap: 14px;
+        padding: 18px 24px; margin-top: 24px; border-left: 4px solid;
+    }
+    .form-msg i { font-size: 18px; margin-top: 1px; flex-shrink: 0; }
+    .form-msg p { font-family: 'Poppins', sans-serif; font-size: 13px; line-height: 1.7; }
+    .form-msg--success { background: rgba(22,163,74,0.07); border-color: #16a34a; }
+    .form-msg--success i, .form-msg--success p { color: #15803d; }
+    .form-msg--error { background: rgba(255,107,53,0.07); border-color: #ff6b35; }
+    .form-msg--error i, .form-msg--error p { color: #e05a28; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+        .ct-hero-content { padding: 0 24px 44px; }
+        .ct-form-panel { padding: 24px 20px; }
+        .ct-form-grid { grid-template-columns: 1fr; }
+        .ct-form-grid .full-width { grid-column: 1; }
+        #submit-btn { width: 100%; justify-content: center; }
+        .ct-team-card { min-width: calc(50% - 9px); }
+        .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+        .footer-inner > div:first-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 480px) {
+        .ct-team-card { min-width: 100%; }
+        .footer-inner { grid-template-columns: 1fr; }
+    }
+    </style>
+</head>
+<body>
+
+    <!-- ══════════════════════════════════════════
+         NAVBAR
+    ══════════════════════════════════════════ -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">BharatYatra</a>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="index.html" class="nav-back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ══════════════════════════════════════════
+         SIDEBAR
+    ══════════════════════════════════════════ -->
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
+        <p class="sidebar-tagline">Discover Incredible India</p>
+        <ul class="sidebar-links">
+            <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+            <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+            <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+            <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+            <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+            <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+            <li><a href="contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+        </ul>
+        <p class="sidebar-section-label">Legal &amp; Support</p>
+        <ul class="sidebar-links">
+            <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+            <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+        </ul>
+        <a href="admin/admin-login.html" class="sidebar-login-btn">
+            <i class="fas fa-lock"></i> Admin Login
+        </a>
+    </div>
+
+    <!-- ── OVERLAY ── -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ══════════════════════════════════════════
+         HERO
+    ══════════════════════════════════════════ -->
+    <section id="ct-hero">
+        <div class="ct-hero-bg"></div>
+        <div class="ct-hero-icon">
+            <i class="fas fa-envelope"></i>
+        </div>
+        <div class="ct-hero-content">
+            <span class="ct-eyebrow">Get in Touch</span>
+            <h1>Contact <span>Us</span></h1>
+            <p class="ct-hero-sub">Questions, suggestions, or bug reports — we're listening.</p>
+        </div>
+    </section>
+    <div class="ct-hero-border"></div>
+
+    <!-- ══════════════════════════════════════════
+         MAIN CONTENT
+    ══════════════════════════════════════════ -->
+    <section id="ct-main">
+        <div class="ct-inner">
+
+            <!-- ─── SECTION B: TEAM ─── -->
+            <div id="ct-team">
+                <span class="ct-section-eyebrow">About the Team</span>
+                <h2 class="ct-section-heading">Meet the Makers</h2>
+                <p class="ct-team-body">
+                    BharatYatra is a student project built as part of <strong>Design Engineering II-B</strong> at
+                    <strong>SAL College of Engineering</strong>, Ahmedabad. Our team of five Computer Engineering
+                    students set out to create a comprehensive travel discovery platform for India — covering
+                    destinations, itineraries, medical access, and cultural events across five states.
+                </p>
+
+                <div class="ct-team-row">
+                    <div class="ct-team-card">
+                        <div class="ct-avatar">T1</div>
+                        <p class="ct-member-name">Team Member 1</p>
+                        <p class="ct-member-enroll">231130107001</p>
+                    </div>
+                    <div class="ct-team-card">
+                        <div class="ct-avatar">T2</div>
+                        <p class="ct-member-name">Team Member 2</p>
+                        <p class="ct-member-enroll">231130107002</p>
+                    </div>
+                    <div class="ct-team-card">
+                        <div class="ct-avatar">T3</div>
+                        <p class="ct-member-name">Team Member 3</p>
+                        <p class="ct-member-enroll">231130107003</p>
+                    </div>
+                    <div class="ct-team-card">
+                        <div class="ct-avatar">T4</div>
+                        <p class="ct-member-name">Team Member 4</p>
+                        <p class="ct-member-enroll">231130107004</p>
+                    </div>
+                    <div class="ct-team-card">
+                        <div class="ct-avatar">T5</div>
+                        <p class="ct-member-name">Team Member 5</p>
+                        <p class="ct-member-enroll">231130107005</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── SECTION C: CONTACT FORM ─── -->
+            <div id="ct-form-section">
+                <span class="ct-section-eyebrow">Send a Message</span>
+                <h2 class="ct-section-heading">We'd love to hear from you</h2>
+                <p class="ct-section-sub">Fill in the form below and we'll get back to you. All fields are required.</p>
+
+                <div class="ct-form-panel">
+                    <form id="contact-form" novalidate>
+                        <!-- ── HONEYPOT (hidden from humans, bots fill this) ── -->
+                        <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;" aria-hidden="true">
+                            <label for="f-website">Website</label>
+                            <input type="text" id="f-website" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <div class="ct-form-grid">
+
+                            <!-- Row 1: Category (full width) -->
+                            <div class="ct-field full-width">
+                                <label for="f-category">Category</label>
+                                <select id="f-category" name="category" required>
+                                    <option value="" disabled selected>Select a category</option>
+                                    <option value="Bug Report">Bug Report</option>
+                                    <option value="Suggestion">Suggestion</option>
+                                    <option value="Query">Query</option>
+                                </select>
+                            </div>
+
+                            <!-- Row 2: Name | Age -->
+                            <div class="ct-field">
+                                <label for="f-name">Full Name</label>
+                                <input type="text" id="f-name" name="name" placeholder="Your full name"
+                                       maxlength="100" autocomplete="name" required>
+                            </div>
+                            <div class="ct-field">
+                                <label for="f-age">Age</label>
+                                <input type="number" id="f-age" name="age" placeholder="Your age"
+                                       min="1" max="120" maxlength="3" autocomplete="off" required>
+                            </div>
+
+                            <!-- Row 3: Gender | Phone -->
+                            <div class="ct-field">
+                                <label for="f-gender">Gender</label>
+                                <select id="f-gender" name="gender" required>
+                                    <option value="" disabled selected>Select gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                    <option value="Prefer not to say">Prefer not to say</option>
+                                </select>
+                            </div>
+                            <div class="ct-field">
+                                <label for="f-phone">Phone Number</label>
+                                <input type="tel" id="f-phone" name="phone" placeholder="10-digit mobile number"
+                                       pattern="[0-9]{10}" maxlength="15" inputmode="numeric"
+                                       autocomplete="tel" required>
+                            </div>
+
+                            <!-- Row 4: Email (full width) -->
+                            <div class="ct-field full-width">
+                                <label for="f-email">Email Address</label>
+                                <input type="email" id="f-email" name="email" placeholder="your@email.com"
+                                       maxlength="254" autocomplete="email" required>
+                            </div>
+
+                            <!-- Row 5: Statement (full width) -->
+                            <div class="ct-field full-width">
+                                <label for="f-statement">Your Message</label>
+                                <textarea id="f-statement" name="statement" rows="6"
+                                    placeholder="Describe your bug, suggestion, or query in detail…"
+                                    maxlength="2000" minlength="10" required></textarea>
+                            </div>
+
+                            <!-- Row 6: Submit (full width) -->
+                            <div class="full-width">
+                                <button type="submit" id="submit-btn">
+                                    <i class="fas fa-paper-plane"></i> Send Message
+                                </button>
+                            </div>
+
+                        </div><!-- /ct-form-grid -->
+                    </form>
+
+                    <!-- Success -->
+                    <div class="form-msg form-msg--success" id="msg-success">
+                        <i class="fas fa-check-circle"></i>
+                        <p>Your message has been sent. Thank you!</p>
+                    </div>
+
+                    <!-- Error -->
+                    <div class="form-msg form-msg--error" id="msg-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Something went wrong. Please try again.</p>
+                    </div>
+
+                </div><!-- /ct-form-panel -->
+            </div><!-- /ct-form-section -->
+
+        </div><!-- /ct-inner -->
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         FOOTER
+    ══════════════════════════════════════════ -->
+    <footer id="footer">
+        <div class="footer-inner">
+
+            <!-- Brand -->
+            <div class="footer-brand">
+                <a href="index.html" class="footer-logo">BHARAT YATRA</a>
+                <p class="footer-tagline">Discover the incredible beauty<br>and diversity of India.</p>
+            </div>
+
+            <!-- Explore -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Explore</h4>
+                <ul class="footer-links">
+                    <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+                    <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+                    <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+                    <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+                </ul>
+            </div>
+
+            <!-- Plan -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Plan</h4>
+                <ul class="footer-links">
+                    <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+                    <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+                    <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- Legal -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                    <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+                </ul>
+            </div>
+
+            <!-- Follow Us -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Follow Us</h4>
+                <div class="footer-socials">
+                    <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-btn" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+                <a href="contactus.html" class="footer-contact-btn">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+            </div>
+
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 BharatYatra. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ── SUPABASE JS v2 (SRI — supply-chain attack prevention) ── -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            crossorigin="anonymous"></script>
+
+    <script>
+        /* ─────────────────────────────────────────────────────────
+           SUPABASE CONFIG
+        ───────────────────────────────────────────────────────── */
+        const SUPABASE_URL = 'https://gtpnojbbamoaznlutxap.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE';
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        /* ─────────────────────────────────────────────────────────
+           SECURITY CONFIG
+           Object.freeze() prevents Prototype Pollution attacks from
+           overwriting these security constants at runtime.
+        ───────────────────────────────────────────────────────── */
+        const SECURITY = Object.freeze({
+            MAX_SUBMISSIONS: 3,
+            RATE_WINDOW_MS: 5 * 60 * 1000,
+            MIN_FILL_TIME_MS: 2000,
+            FIELD_LIMITS: Object.freeze({
+                category:  50,
+                name:      100,
+                age:       3,
+                gender:    30,
+                phone:     15,
+                email:     254,
+                statement: 2000
+            })
+        });
+
+        // Track submission timestamps for rate limiting
+        const submissionLog = [];
+        // Record when the page loaded for bot timer check
+        const pageLoadTime = Date.now();
+
+        /* ─────────────────────────────────────────────────────────
+           SIDEBAR
+        ───────────────────────────────────────────────────────── */
+        const sidebar  = document.getElementById('sidebar');
+        const overlay  = document.getElementById('overlay');
+        const openBtn  = document.getElementById('open-sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        function openSidebar()  {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+            document.body.classList.add('no-scroll');
+        }
+        function closeSidebar() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
+
+        openBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+        /* ─────────────────────────────────────────────────────────
+           SANITISE — strip all HTML tags from a string
+        ───────────────────────────────────────────────────────── */
+        function sanitise(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .trim();
+        }
+
+        /* ─────────────────────────────────────────────────────────
+           VALIDATION
+        ───────────────────────────────────────────────────────── */
+        // Freeze these arrays — prevents prototype pollution from injecting extra allowed values
+        const ALLOWED_CATEGORIES = Object.freeze(['Bug Report', 'Suggestion', 'Query']);
+        const ALLOWED_GENDERS    = Object.freeze(['Male', 'Female', 'Other', 'Prefer not to say']);
+
+        // Safe email regex — avoids catastrophic backtracking (ReDoS)
+        // Uses a simple linear check instead of nested quantifiers
+        const EMAIL_REGEX = /^[^\s@]{1,64}@[^\s@]{1,253}\.[a-zA-Z]{2,}$/;
+        const PHONE_REGEX = /^[0-9]{10}$/;
+
+        function validatePayload(p) {
+            const errors = [];
+
+            // Whitelist checks for select fields
+            if (!ALLOWED_CATEGORIES.includes(p.category))
+                errors.push('Invalid category selected.');
+            if (!ALLOWED_GENDERS.includes(p.gender))
+                errors.push('Invalid gender selected.');
+
+            // Name: letters, spaces, dots, hyphens only
+            if (!p.name || p.name.length < 2)
+                errors.push('Full name must be at least 2 characters.');
+            if (!/^[a-zA-Z\s.\-']+$/.test(p.name))
+                errors.push('Name contains invalid characters.');
+
+            // Age: integer between 1 and 120
+            if (!Number.isInteger(p.age) || p.age < 1 || p.age > 120)
+                errors.push('Age must be a number between 1 and 120.');
+
+            // Phone: exactly 10 digits
+            if (!PHONE_REGEX.test(p.phone))
+                errors.push('Phone must be exactly 10 digits.');
+
+            // Email: RFC format
+            if (!EMAIL_REGEX.test(p.email))
+                errors.push('Please enter a valid email address.');
+
+            // Statement: min 10 chars
+            if (!p.statement || p.statement.length < 10)
+                errors.push('Message must be at least 10 characters.');
+
+            return errors;
+        }
+
+        function enforceFieldLimits(p) {
+            // Silently truncate any field that exceeds max length
+            return {
+                category:  p.category.substring(0, SECURITY.FIELD_LIMITS.category),
+                name:      p.name.substring(0, SECURITY.FIELD_LIMITS.name),
+                age:       p.age,
+                gender:    p.gender.substring(0, SECURITY.FIELD_LIMITS.gender),
+                phone:     p.phone.substring(0, SECURITY.FIELD_LIMITS.phone),
+                email:     p.email.substring(0, SECURITY.FIELD_LIMITS.email),
+                statement: p.statement.substring(0, SECURITY.FIELD_LIMITS.statement)
+            };
+        }
+
+        /* ─────────────────────────────────────────────────────────
+           RATE LIMITER
+        ───────────────────────────────────────────────────────── */
+        function isRateLimited() {
+            const now = Date.now();
+            // Remove entries outside the window
+            while (submissionLog.length && submissionLog[0] < now - SECURITY.RATE_WINDOW_MS) {
+                submissionLog.shift();
+            }
+            return submissionLog.length >= SECURITY.MAX_SUBMISSIONS;
+        }
+
+        /* ─────────────────────────────────────────────────────────
+           FORM SUBMIT
+        ───────────────────────────────────────────────────────── */
+        const form      = document.getElementById('contact-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // ── 0. CLEAR ANY PREVIOUS ERRORS ───────────────────
+            document.getElementById('msg-error').style.display = 'none';
+            document.getElementById('msg-success').style.display = 'none';
+
+            // ── 1. BOT TIMER CHECK ──────────────────────────────
+            if (Date.now() - pageLoadTime < SECURITY.MIN_FILL_TIME_MS) {
+                // Silent fail for bots — don't reveal why
+                showMsg('success');
+                form.reset();
+                return;
+            }
+
+            // ── 2. HONEYPOT CHECK ───────────────────────────────
+            const honeypot = document.getElementById('f-website').value;
+            if (honeypot) {
+                // Silent fail — bots shouldn't know they were caught
+                showMsg('success');
+                form.reset();
+                return;
+            }
+
+            // ── 3. RATE LIMIT CHECK ─────────────────────────────
+            if (isRateLimited()) {
+                showError('Too many submissions. Please wait a few minutes before trying again.');
+                return;
+            }
+
+            // ── 4. COLLECT + SANITISE ───────────────────────────
+            const raw = {
+                category:  sanitise(document.getElementById('f-category').value),
+                name:      sanitise(document.getElementById('f-name').value),
+                age:       parseInt(document.getElementById('f-age').value, 10),
+                gender:    sanitise(document.getElementById('f-gender').value),
+                phone:     sanitise(document.getElementById('f-phone').value),
+                email:     sanitise(document.getElementById('f-email').value),
+                statement: sanitise(document.getElementById('f-statement').value)
+            };
+
+            // ── 5. FIELD LENGTH CAPS ────────────────────────────
+            const payload = enforceFieldLimits(raw);
+
+            // ── 6. VALIDATION ───────────────────────────────────
+            const errors = validatePayload(payload);
+            if (errors.length) {
+                showError(errors[0]); // show first error
+                return;
+            }
+
+            // ── 7. SUBMIT ───────────────────────────────────────
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending\u2026';
+
+            try {
+                const { error } = await sb
+                    .from('contact_submissions')
+                    .insert([payload]);
+
+                if (error) throw error;
+
+                // Log timestamp for rate limiting
+                submissionLog.push(Date.now());
+
+                showMsg('success');
+                form.reset();
+
+            } catch (err) {
+                // Do NOT surface raw error to DOM — information leakage risk
+                console.error('Submission error:', err);
+                showMsg('error');
+
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+            }
+        });
+
+        function showMsg(type) {
+            // Hide both first
+            document.getElementById('msg-success').style.display = 'none';
+            document.getElementById('msg-error').style.display = 'none';
+
+            const el = document.getElementById('msg-' + type);
+            el.style.display = 'flex';
+            if (type === 'success') {
+                setTimeout(() => { el.style.display = 'none'; }, 5000);
+            }
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('msg-error');
+            el.querySelector('p').textContent = msg;
+            el.style.display = 'flex';
+        }
+    </script>
+
+</body>
+</html>

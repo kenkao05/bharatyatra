@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://unpkg.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://gtpnojbbamoaznlutxap.supabase.co;
+                 script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com;
+                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+                 font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+                 img-src 'self' data: https:;
+                 frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <title>Admin — Contact Submissions | BharatYatra</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="admin-auth.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* ── VARIABLES ── */
+    :root {
+      --bg:          #071021;
+      --card:        #0b1220;
+      --card2:       #0e1628;
+      --border:      rgba(255,255,255,0.07);
+      --border2:     rgba(255,255,255,0.04);
+      --cyan:        #06b6d4;
+      --cyan-dim:    rgba(6,182,212,0.12);
+      --cyan-glow:   rgba(6,182,212,0.25);
+      --blue:        #4FC3FF;
+      --muted:       #94a3b8;
+      --muted2:      rgba(200,220,235,0.5);
+      --white:       #e8f0f7;
+      --red:         #ef4444;
+      --red-dim:     rgba(239,68,68,0.12);
+      --green:       #22c55e;
+      --green-dim:   rgba(34,197,94,0.12);
+      --amber:       #f59e0b;
+      --amber-dim:   rgba(245,158,11,0.12);
+      --purple:      #a78bfa;
+      --purple-dim:  rgba(167,139,250,0.12);
+      --radius:      14px;
+      --radius-sm:   8px;
+      --header-h:    64px;
+      --transition:  all 0.2s ease;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Subtle grid background */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(6,182,212,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(6,182,212,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none; z-index: 0;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.3); border-radius: 3px; }
+
+    /* ══════════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════════ */
+    #admin-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: rgba(7,16,33,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 16px; }
+
+    .header-logo {
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--cyan); text-decoration: none;
+    }
+
+    .header-divider { width: 1px; height: 20px; background: var(--border); }
+
+    .header-title { font-size: 14px; font-weight: 500; color: var(--muted); letter-spacing: 0.5px; }
+
+    .header-right { display: flex; align-items: center; gap: 12px; }
+
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); border: 1px solid var(--border); background: transparent;
+      padding: 8px 18px; border-radius: 40px; cursor: pointer; text-decoration: none;
+      transition: var(--transition);
+    }
+    .btn-back:hover { color: var(--cyan); border-color: var(--cyan); transform: translateX(-4px); }
+
+    .btn-logout {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 600; color: var(--muted);
+      background: transparent; border: 1px solid var(--border);
+      padding: 8px 18px; border-radius: 40px; cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-logout:hover { color: var(--red); border-color: var(--red); }
+
+    /* ══════════════════════════════════════════
+       MAIN
+    ══════════════════════════════════════════ */
+    #main {
+      position: relative; z-index: 1;
+      max-width: 1400px; margin: 0 auto;
+      padding: calc(var(--header-h) + 40px) 32px 80px;
+    }
+
+    /* ── PAGE TITLE ROW ── */
+    .page-title-row {
+      display: flex; align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 32px; flex-wrap: wrap; gap: 16px;
+    }
+    .page-title { font-size: 28px; font-weight: 700; color: var(--white); letter-spacing: -0.5px; }
+    .page-title span { color: var(--purple); }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px; margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border2);
+      border-radius: var(--radius); padding: 20px 22px;
+      display: flex; align-items: center; gap: 16px;
+      backdrop-filter: blur(8px); transition: var(--transition);
+    }
+    .stat-card:hover { border-color: rgba(6,182,212,0.15); transform: translateY(-1px); }
+    .stat-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .stat-icon.purple { background: var(--purple-dim); color: var(--purple); }
+    .stat-icon.red    { background: var(--red-dim);    color: var(--red); }
+    .stat-icon.amber  { background: var(--amber-dim);  color: var(--amber); }
+    .stat-icon.cyan   { background: var(--cyan-dim);   color: var(--cyan); }
+    .stat-info { flex: 1; min-width: 0; }
+    .stat-num  { font-size: 26px; font-weight: 700; color: var(--white); line-height: 1; font-variant-numeric: tabular-nums; }
+    .stat-lbl  { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative; flex: 1;
+      min-width: 220px; max-width: 380px;
+    }
+    .search-icon {
+      position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 13px; pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); font-family: 'Inter', sans-serif;
+      font-size: 13px; padding: 10px 36px 10px 38px;
+      border-radius: var(--radius-sm); outline: none;
+      transition: var(--transition);
+    }
+    .search-input::placeholder { color: var(--muted2); }
+    .search-input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px var(--purple-dim); }
+
+    .search-clear {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--muted);
+      cursor: pointer; font-size: 12px; padding: 4px;
+      display: none; transition: color 0.2s;
+    }
+    .search-clear:hover { color: var(--white); }
+    .search-clear.visible { display: block; }
+
+    .filter-select {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 500;
+      padding: 10px 34px 10px 14px;
+      border-radius: var(--radius-sm); cursor: pointer; outline: none;
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      transition: var(--transition); min-width: 160px;
+    }
+    .filter-select:focus { border-color: var(--purple); box-shadow: 0 0 0 3px var(--purple-dim); }
+    .filter-select option { background: #0d1829; color: var(--white); }
+
+    .toolbar-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+
+    /* ── RESULT COUNT ── */
+    .result-count { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+    .result-count strong { color: var(--white); }
+
+    /* ── TABLE ── */
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .table-scroll { overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; min-width: 860px; }
+
+    thead tr {
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      padding: 12px 18px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted); text-align: left; white-space: nowrap;
+    }
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--purple); }
+    th.sort-asc  .sort-icon::after { content: ' ↑'; color: var(--purple); }
+    th.sort-desc .sort-icon::after { content: ' ↓'; color: var(--purple); }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border2);
+      transition: background 0.15s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+    td {
+      padding: 14px 18px;
+      font-size: 13px; color: var(--white); vertical-align: middle;
+    }
+
+    .td-name   { font-weight: 600; }
+    .td-sub    { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .td-statement {
+      font-size: 12px; color: var(--muted);
+      max-width: 280px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* ── CATEGORY BADGES ── */
+    .cat-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; padding: 3px 10px;
+      border-radius: 20px; white-space: nowrap;
+    }
+    .cat-bug        { background: var(--red-dim);    color: var(--red); }
+    .cat-suggestion { background: var(--green-dim);  color: var(--green); }
+    .cat-query      { background: var(--cyan-dim);   color: var(--cyan); }
+
+    /* ── GENDER BADGE ── */
+    .gender-badge {
+      font-size: 11px; color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 2px 8px; border-radius: 20px;
+    }
+
+    /* ── DATE ── */
+    .td-date { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    .td-actions { display: flex; gap: 6px; align-items: center; }
+
+    /* Delete button */
+    .btn-del {
+      width: 30px; height: 30px; padding: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 6px; font-size: 12px; border: none; cursor: pointer;
+      background: var(--red-dim); color: var(--red);
+      border: 1px solid rgba(239,68,68,0.2);
+      transition: var(--transition);
+    }
+    .btn-del:hover { background: rgba(239,68,68,0.25); }
+
+    /* View detail button */
+    .btn-view {
+      width: 30px; height: 30px; padding: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 6px; font-size: 12px; border: none; cursor: pointer;
+      background: var(--purple-dim); color: var(--purple);
+      border: 1px solid rgba(167,139,250,0.2);
+      transition: var(--transition);
+    }
+    .btn-view:hover { background: rgba(167,139,250,0.25); }
+
+    /* Empty / loading */
+    .table-empty {
+      padding: 60px 20px; text-align: center;
+      color: var(--muted); font-size: 14px;
+    }
+    .table-empty i { font-size: 36px; display: block; margin-bottom: 14px; opacity: 0.3; }
+
+    .spinner { animation: spin 1s linear infinite; color: var(--cyan); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ══════════════════════════════════════════
+       DETAIL MODAL
+    ══════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(4,10,22,0.88);
+      backdrop-filter: blur(4px);
+      z-index: 2000; display: none;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      background: #0d1829;
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: var(--radius);
+      width: 100%; max-width: 580px;
+      max-height: 90vh; overflow-y: auto;
+      position: relative;
+      animation: modalIn 0.25s ease;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(167,139,250,0.06);
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.96) translateY(-10px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 28px 18px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: #0d1829; z-index: 1;
+    }
+    .modal-title { font-size: 16px; font-weight: 700; color: var(--white); }
+    .modal-title span { color: var(--purple); }
+
+    .modal-close-btn {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--muted); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; transition: var(--transition);
+    }
+    .modal-close-btn:hover { background: var(--red-dim); color: var(--red); border-color: rgba(239,68,68,0.3); }
+
+    .modal-body { padding: 24px 28px 28px; }
+
+    /* Category badge in modal header */
+    .modal-cat-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 22px;
+    }
+
+    /* Detail field grid */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 20px;
+      margin-bottom: 22px;
+    }
+    .detail-item { display: flex; flex-direction: column; gap: 5px; }
+    .detail-item.full { grid-column: 1 / -1; }
+    .detail-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .detail-value {
+      font-size: 13px; color: var(--white);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px; line-height: 1.5;
+      word-break: break-word;
+    }
+    .detail-value.statement-val {
+      line-height: 1.7; font-size: 14px;
+      color: rgba(232,240,247,0.85);
+      white-space: pre-wrap;
+    }
+
+    .detail-date {
+      font-size: 11px; color: var(--muted);
+      padding-top: 14px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .modal-footer {
+      display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+      padding: 16px 28px 22px; border-top: 1px solid var(--border);
+    }
+    .btn-cancel {
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border); padding: 9px 20px;
+      border-radius: var(--radius-sm); font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-cancel:hover { border-color: var(--muted); color: var(--white); }
+    .btn-delete-modal {
+      background: var(--red); color: #fff; border: none;
+      padding: 9px 22px; border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 7px;
+      transition: var(--transition);
+    }
+    .btn-delete-modal:hover { background: #dc2626; transform: translateY(-1px); }
+
+    /* ══════════════════════════════════════════
+       CONFIRM DIALOG
+    ══════════════════════════════════════════ */
+    .confirm-box {
+      max-width: 420px;
+      border-color: rgba(239,68,68,0.2) !important;
+    }
+    .confirm-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--red-dim); color: var(--red);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin: 0 auto 20px;
+    }
+    .confirm-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .confirm-msg { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+    .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+    .btn-confirm-del {
+      background: var(--red); color: #fff; border: none;
+      padding: 10px 28px; border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: var(--transition);
+    }
+    .btn-confirm-del:hover { background: #dc2626; }
+
+    /* ══════════════════════════════════════════
+       TOAST
+    ══════════════════════════════════════════ */
+    #toast {
+      position: fixed; bottom: 28px; right: 28px;
+      z-index: 9999; display: flex; flex-direction: column;
+      gap: 10px; pointer-events: none;
+    }
+    .toast-item {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 13px 18px;
+      font-size: 13px; font-weight: 500; color: var(--white);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      animation: toastIn 0.3s ease; min-width: 280px;
+    }
+    .toast-item.success { border-color: rgba(34,197,94,0.4); }
+    .toast-item.success i { color: var(--green); }
+    .toast-item.error   { border-color: rgba(239,68,68,0.4); }
+    .toast-item.error i { color: var(--red); }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      #main { padding: calc(var(--header-h) + 24px) 16px 60px; }
+      #admin-header { padding: 0 16px; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .search-wrap { max-width: 100%; }
+      .toolbar-right { margin-left: 0; }
+      .header-title { display: none; }
+      .td-statement { display: none; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .detail-item.full { grid-column: 1; }
+    }
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════ -->
+  <header id="admin-header">
+    <div class="header-left">
+      <a href="../index.html" class="header-logo">Bharat Yatra</a>
+      <div class="header-divider"></div>
+      <span class="header-title">Contact Submissions</span>
+    </div>
+    <div class="header-right">
+      <a href="admin-dashboard.html" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Dashboard
+      </a>
+      <button class="btn-logout" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════
+       MAIN
+  ══════════════════════════════════════════ -->
+  <main id="main">
+
+    <!-- Title -->
+    <div class="page-title-row">
+      <h1 class="page-title">Contact <span>Submissions</span></h1>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon purple"><i class="fas fa-inbox"></i></div>
+        <div class="stat-info">
+          <div class="stat-num" id="statTotal">—</div>
+          <div class="stat-lbl">Total Submissions</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red"><i class="fas fa-bug"></i></div>
+        <div class="stat-info">
+          <div class="stat-num" id="statBug">—</div>
+          <div class="stat-lbl">Bug Reports</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber"><i class="fas fa-lightbulb"></i></div>
+        <div class="stat-info">
+          <div class="stat-num" id="statSuggestion">—</div>
+          <div class="stat-lbl">Suggestions</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon cyan"><i class="fas fa-question-circle"></i></div>
+        <div class="stat-info">
+          <div class="stat-num" id="statQuery">—</div>
+          <div class="stat-lbl">Queries</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <!-- Search -->
+      <div class="search-wrap">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search name, email, statement…">
+        <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Clear search">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Category filter -->
+      <select class="filter-select" id="catFilter" onchange="applyFilters()">
+        <option value="">All Categories</option>
+        <option value="Bug Report">Bug Report</option>
+        <option value="Suggestion">Suggestion</option>
+        <option value="Query">Query</option>
+      </select>
+
+      <!-- Sort -->
+      <select class="filter-select" id="sortFilter" onchange="applyFilters()">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+      </select>
+
+      <div class="toolbar-right">
+        <button class="btn-back" style="border-radius:var(--radius-sm);" onclick="resetFilters()">
+          <i class="fas fa-times"></i> Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Result count -->
+    <p class="result-count" id="resultCount">Loading…</p>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th class="sortable" data-col="category" onclick="cycleSortCol('category')">
+                Category <span class="sort-icon"></span>
+              </th>
+              <th class="sortable" data-col="name" onclick="cycleSortCol('name')">
+                Submitter <span class="sort-icon"></span>
+              </th>
+              <th>Contact</th>
+              <th>Demographics</th>
+              <th>Statement</th>
+              <th class="sortable" data-col="created_at" onclick="cycleSortCol('created_at')">
+                Date <span class="sort-icon"></span>
+              </th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="7">
+                <div class="table-empty">
+                  <i class="fas fa-circle-notch spinner"></i>
+                  <p>Loading submissions…</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       DETAIL MODAL
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="modal-box" id="modalBox">
+      <!-- Content injected by JS -->
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TOAST CONTAINER
+  ══════════════════════════════════════════ -->
+  <div id="toast"></div>
+
+  <!-- ══════════════════════════════════════════
+       SCRIPT
+  ══════════════════════════════════════════ -->
+  <script>
+    // sb + BYAuth provided by admin-auth.js
+
+    /* ── STATE ── */
+    let allSubmissions = [];
+    let filteredSubmissions = [];
+    let sortCol = 'created_at';
+    let sortDir = 'desc'; // newest first by default
+
+    /* ── SANITISE ── */
+    function san(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    /* ── FORMAT DATE ── */
+    function formatDate(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      return d.toLocaleDateString('en-IN', {
+        day: '2-digit', month: 'short', year: 'numeric'
+      }) + ' · ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function formatDateShort(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    /* ── CATEGORY BADGE HTML ── */
+    function catBadge(category) {
+      const map = {
+        'Bug Report':  ['cat-bug',        'fa-bug',           'Bug Report'],
+        'Suggestion':  ['cat-suggestion',  'fa-lightbulb',     'Suggestion'],
+        'Query':       ['cat-query',       'fa-question-circle','Query'],
+      };
+      const [cls, icon, label] = map[category] || ['cat-query', 'fa-circle', san(category)];
+      return `<span class="cat-badge ${cls}"><i class="fas ${icon}"></i> ${label}</span>`;
+    }
+
+    /* ── UPDATE STATS ── */
+    function updateStats() {
+      document.getElementById('statTotal').textContent      = allSubmissions.length;
+      document.getElementById('statBug').textContent        = allSubmissions.filter(s => s.category === 'Bug Report').length;
+      document.getElementById('statSuggestion').textContent = allSubmissions.filter(s => s.category === 'Suggestion').length;
+      document.getElementById('statQuery').textContent      = allSubmissions.filter(s => s.category === 'Query').length;
+    }
+
+    /* ── RENDER TABLE ── */
+    function renderTable(data) {
+      const tbody = document.getElementById('tableBody');
+      const count = document.getElementById('resultCount');
+
+      if (!data.length) {
+        tbody.innerHTML = `
+          <tr><td colspan="7">
+            <div class="table-empty">
+              <i class="fas fa-inbox"></i>
+              <p>No submissions match the current filters.</p>
+            </div>
+          </td></tr>`;
+        count.innerHTML = 'Showing <strong>0</strong> submissions';
+        return;
+      }
+
+      count.innerHTML = `Showing <strong>${data.length}</strong> of <strong>${allSubmissions.length}</strong> submission${allSubmissions.length !== 1 ? 's' : ''}`;
+
+      tbody.innerHTML = data.map(s => `
+        <tr>
+          <td>${catBadge(s.category)}</td>
+          <td>
+            <div class="td-name">${san(s.name)}</div>
+            <div class="td-sub">#${s.display_id}</div>
+          </td>
+          <td>
+            <div style="font-size:13px;">${san(s.email)}</div>
+            <div class="td-sub">${san(s.phone)}</div>
+          </td>
+          <td>
+            <span class="gender-badge">${san(s.gender)}</span>
+            <div class="td-sub" style="margin-top:5px;">Age ${san(String(s.age))}</div>
+          </td>
+          <td>
+            <div class="td-statement" title="${san(s.statement)}">${san(s.statement)}</div>
+          </td>
+          <td>
+            <div class="td-date">${formatDateShort(s.created_at)}</div>
+          </td>
+          <td>
+            <div class="td-actions" style="justify-content:flex-end;">
+              <button class="btn-view" onclick="openDetail(${s.id})" title="View full submission">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn-del" onclick="confirmDelete(${s.id}, '${san(s.name).replace(/'/g, "\\'")}')" title="Delete submission">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    /* ── APPLY FILTERS ── */
+    function applyFilters() {
+      const q   = document.getElementById('searchInput').value.toLowerCase().trim();
+      const cat = document.getElementById('catFilter').value;
+      const srt = document.getElementById('sortFilter').value;
+
+      // Toggle clear button
+      document.getElementById('searchClear').classList.toggle('visible', q.length > 0);
+
+      let result = allSubmissions.filter(s => {
+        const okCat    = !cat || s.category === cat;
+        const okSearch = !q  ||
+          s.name.toLowerCase().includes(q)      ||
+          s.email.toLowerCase().includes(q)     ||
+          s.statement.toLowerCase().includes(q) ||
+          s.phone.includes(q);
+        return okCat && okSearch;
+      });
+
+      // Column sort (overrides sort dropdown for column clicks)
+      result = sortByCol(result, sortCol, sortDir);
+
+      // Newest / Oldest override when no column sort active
+      if (sortCol === 'created_at') {
+        if (srt === 'oldest') result.reverse();
+      }
+
+      filteredSubmissions = result;
+      renderTable(result);
+    }
+
+    /* ── SORT ── */
+    function sortByCol(arr, col, dir) {
+      return [...arr].sort((a, b) => {
+        let va = a[col] ?? '';
+        let vb = b[col] ?? '';
+        if (col === 'created_at') { va = new Date(va); vb = new Date(vb); }
+        else { va = String(va).toLowerCase(); vb = String(vb).toLowerCase(); }
+        if (va < vb) return dir === 'asc' ? -1 : 1;
+        if (va > vb) return dir === 'asc' ? 1  : -1;
+        return 0;
+      });
+    }
+
+    function cycleSortCol(col) {
+      document.querySelectorAll('th[data-col]').forEach(th => {
+        th.classList.remove('sort-asc', 'sort-desc');
+      });
+      if (sortCol === col) {
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortCol = col; sortDir = 'asc';
+      }
+      const th = document.querySelector(`th[data-col="${col}"]`);
+      if (th) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      applyFilters();
+    }
+
+    /* ── CLEAR SEARCH ── */
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('searchClear').classList.remove('visible');
+      applyFilters();
+    }
+
+    /* ── RESET ALL FILTERS ── */
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('catFilter').value   = '';
+      document.getElementById('sortFilter').value  = 'newest';
+      document.getElementById('searchClear').classList.remove('visible');
+      sortCol = 'created_at'; sortDir = 'desc';
+      document.querySelectorAll('th[data-col]').forEach(th => th.classList.remove('sort-asc', 'sort-desc'));
+      applyFilters();
+    }
+
+    /* ── FETCH ── */
+    async function loadSubmissions() {
+      document.getElementById('tableBody').innerHTML = `
+        <tr><td colspan="7">
+          <div class="table-empty">
+            <i class="fas fa-circle-notch spinner"></i>
+            <p>Fetching submissions…</p>
+          </div>
+        </td></tr>`;
+      document.getElementById('resultCount').textContent = 'Loading…';
+
+      try {
+        const { data, error } = await sb
+          .from('contact_submissions')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        allSubmissions = data || [];
+        updateStats();
+        applyFilters();
+
+      } catch (err) {
+        document.getElementById('tableBody').innerHTML = `
+          <tr><td colspan="7">
+            <div class="table-empty">
+              <i class="fas fa-exclamation-triangle"></i>
+              <p>Could not load submissions. Check your Supabase configuration.</p>
+            </div>
+          </td></tr>`;
+        document.getElementById('resultCount').textContent = '—';
+      }
+    }
+
+    /* ══════════════════════════════════════════
+       DETAIL MODAL
+    ══════════════════════════════════════════ */
+    let currentDetailId = null;
+
+    function openDetail(id) {
+      const s = allSubmissions.find(x => x.id === id);
+      if (!s) return;
+      currentDetailId = id;
+
+      document.getElementById('modalBox').innerHTML = `
+        <div class="modal-header">
+          <span class="modal-title">Submission <span>#${s.display_id}</span></span>
+          <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="modal-cat-row">
+            ${catBadge(s.category)}
+            <span class="td-date" style="margin-left:auto;">${formatDate(s.created_at)}</span>
+          </div>
+
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">Full Name</div>
+              <div class="detail-value">${san(s.name)}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Age</div>
+              <div class="detail-value">${san(String(s.age))}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Gender</div>
+              <div class="detail-value">${san(s.gender)}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Phone</div>
+              <div class="detail-value">${san(s.phone)}</div>
+            </div>
+            <div class="detail-item full">
+              <div class="detail-label">Email</div>
+              <div class="detail-value">${san(s.email)}</div>
+            </div>
+            <div class="detail-item full">
+              <div class="detail-label">Statement</div>
+              <div class="detail-value statement-val">${san(s.statement)}</div>
+            </div>
+          </div>
+
+          <div class="detail-date">
+            <i class="fas fa-clock" style="color:var(--purple);"></i>
+            Submitted on ${formatDate(s.created_at)}
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal()">Close</button>
+          <button class="btn-delete-modal" onclick="closeModal(); confirmDelete(${s.id}, '${san(s.name).replace(/'/g, "\\'")}')">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      `;
+
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+      currentDetailId = null;
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    /* ══════════════════════════════════════════
+       DELETE
+    ══════════════════════════════════════════ */
+    function confirmDelete(id, name) {
+      document.getElementById('modalBox').innerHTML = `
+        <div class="modal-header">
+          <span class="modal-title">Confirm <span>Delete</span></span>
+          <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" style="text-align:center; padding: 36px 28px 28px;">
+          <div class="confirm-icon"><i class="fas fa-trash"></i></div>
+          <div class="confirm-title">Delete Submission?</div>
+          <div class="confirm-msg">
+            You are about to permanently delete the submission from
+            <strong style="color:var(--white);">${san(name)}</strong>.
+            This action cannot be undone.
+          </div>
+          <div class="confirm-actions">
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="btn-confirm-del" onclick="deleteSubmission(${id})">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </div>
+        </div>
+      `;
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    async function deleteSubmission(id) {
+      const btn = document.querySelector('.btn-confirm-del');
+      if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting…'; }
+
+      const { error } = await sb.from('contact_submissions').delete().eq('id', id);
+
+      if (error) {
+        toast('Error: ' + error.message, 'error');
+        closeModal();
+        return;
+      }
+
+      allSubmissions = allSubmissions.filter(s => s.id !== id);
+      updateStats();
+      applyFilters();
+      closeModal();
+      toast('Submission deleted successfully.');
+    }
+
+    /* ══════════════════════════════════════════
+       TOAST
+    ══════════════════════════════════════════ */
+    function toast(msg, type = 'success') {
+      const container = document.getElementById('toast');
+      const el = document.createElement('div');
+      el.className = `toast-item ${type}`;
+      el.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${san(msg)}`;
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }
+
+    /* ── LOGOUT ── */
+    function handleLogout() {
+      BYAuth.logout('user_initiated');
+    }
+
+    /* ── KEYBOARD ── */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    /* ── SEARCH LIVE INPUT ── */
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('searchInput').addEventListener('input', applyFilters);
+    });
+
+    /* ══════════════════════════════════════════
+       INIT
+    ══════════════════════════════════════════ */
+    document.addEventListener('DOMContentLoaded', async () => {
+      const session = await BYAuth.check();
+      if (!session) return;
+
+      // Set initial sort indicator
+      const th = document.querySelector(`th[data-col="${sortCol}"]`);
+      if (th) th.classList.add('sort-desc');
+
+      await loadSubmissions();
+    });
+  </script>
+
+</body>
+</html>
