@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--
+      SERVER-SIDE HEADERS — set in vercel.json or Nginx alongside these meta equivalents:
+        X-Frame-Options: DENY
+        X-Content-Type-Options: nosniff
+        Referrer-Policy: strict-origin-when-cross-origin
+        Permissions-Policy: geolocation=(), microphone=(), camera=()
+        Strict-Transport-Security: max-age=31536000; includeSubDomains
+    -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+                   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+                   font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+                   img-src 'self' data: https:;
+                   connect-src 'self' https://gtpnojbbamoaznlutxap.supabase.co;
+                   frame-ancestors 'none';
+                   base-uri 'none';
+                   form-action 'self';
+                   object-src 'none';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <title>Colors of India | BharatYatra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        /* ── SHARED STYLES ── */
+        :root {
+            --black: #000000;
+            --red: #C0392B;
+            --white: #FFFFFF;
+            --grey: #1a1a1a;
+            --muted: #999999;
+            --orange: #ff6b35;
+            --sidebar-width: 320px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            overflow-x: hidden;
+        }
+
+        body.no-scroll {
+            overflow: hidden;
+        }
+
+        /* ── NAVBAR ── */
+        #navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 10px 0;
+            background: rgba(8, 8, 8, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff6b35;
+            text-decoration: none;
+            letter-spacing: 3px;
+            flex-shrink: 0;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: #969696;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px 6px;
+            line-height: 1;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .menu-btn:hover {
+            color: #ff6b35;
+        }
+
+        .nav-back-btn {
+            margin-left: 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            color: #969696;
+            border: 1px solid #333;
+            transition: color 0.2s, border-color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .nav-back-btn i {
+            font-size: 12px;
+        }
+
+        .nav-back-btn:hover {
+            color: #ff6b35;
+            border-color: #ff6b35;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: calc(-1 * var(--sidebar-width));
+            width: var(--sidebar-width);
+            height: 100%;
+            background: var(--black);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 50px 36px 40px;
+            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 1px solid #222;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 18px;
+            right: 22px;
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: var(--white);
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px 8px;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--red);
+        }
+
+        .sidebar-tagline {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 13px;
+            color: var(--muted);
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #222;
+        }
+
+        .sidebar-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-links li a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 0;
+            color: #cccccc;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #111;
+            transition: color 0.25s, padding-left 0.25s;
+        }
+
+        .sidebar-links li a i {
+            font-size: 16px;
+            width: 20px;
+            color: var(--red);
+            flex-shrink: 0;
+        }
+
+        .sidebar-links li a:hover {
+            color: var(--white);
+            padding-left: 6px;
+        }
+
+        .sidebar-section-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #444;
+            margin-top: 28px;
+            margin-bottom: 8px;
+            padding-top: 24px;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        .sidebar-login-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 32px;
+            padding: 11px 18px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-decoration: none;
+            color: #ff6b35;
+            border: 1px solid #ff6b35;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        .sidebar-login-btn i {
+            font-size: 13px;
+        }
+
+        .sidebar-login-btn:hover {
+            background: #ff6b35;
+            color: #ffffff;
+        }
+
+        /* ── OVERLAY ── */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.35s ease, visibility 0.35s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ── FOOTER ── */
+        #footer {
+            background: #080808;
+            border-top: 1px solid #1e1e1e;
+            padding: 70px 0 0;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 60px;
+            display: grid;
+            grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr;
+            gap: 48px;
+        }
+
+        .footer-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #ff6b35;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .footer-tagline {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .footer-heading {
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ff6b35;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .footer-links li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #666;
+            text-decoration: none;
+            border-bottom: 1px solid #111;
+            transition: color 0.2s, padding-left 0.2s;
+        }
+
+        .footer-links li a i {
+            font-size: 13px;
+            color: #ff6b35;
+            width: 16px;
+            flex-shrink: 0;
+        }
+
+        .footer-links li a:hover {
+            color: var(--white);
+            padding-left: 4px;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            width: 38px;
+            height: 38px;
+            border: 1px solid #2a2a2a;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 15px;
+            transition: border-color 0.2s, color 0.2s, background 0.2s;
+        }
+
+        .social-btn:hover {
+            border-color: #ff6b35;
+            color: #ff6b35;
+            background: rgba(255, 107, 53, 0.06);
+        }
+
+        .footer-contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #ff6b35;
+            border: 2px solid #ff6b35;
+            padding: 10px 22px;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        .footer-contact-btn:hover {
+            background: #ff6b35;
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #161616;
+            padding: 20px 40px;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            color: #333;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── HERO ── */
+        #evt-hero {
+            position: relative;
+            height: 52vh;
+            min-height: 340px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            overflow: hidden;
+            background: #0b0b0b;
+        }
+
+        .evt-hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 70% 40%, rgba(255, 107, 53, 0.14) 0%, transparent 60%),
+                linear-gradient(160deg, #0b0b0b 0%, #1a0800 100%);
+            z-index: 0;
+        }
+
+        /* Decorative lantern / kite motif */
+        .evt-hero-deco {
+            position: absolute;
+            right: 7%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            opacity: 0.07;
+        }
+
+        .evt-hero-deco svg {
+            width: 300px;
+            height: 300px;
+        }
+
+        .evt-hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 60px 60px;
+            max-width: 900px;
+        }
+
+        .evt-eyebrow {
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #ff6b35;
+            display: block;
+            margin-bottom: 14px;
+        }
+
+        #evt-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.6rem, 6vw, 5rem);
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2px;
+            line-height: 1.05;
+        }
+
+        #evt-hero h1 span {
+            color: #ff6b35;
+        }
+
+        .evt-hero-sub {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .evt-hero-border {
+            height: 4px;
+            background: #ff6b35;
+        }
+
+        /* ── MAIN ── */
+        #evt-main {
+            background: #f2f0ed;
+            padding: 60px 24px 100px;
+        }
+
+        .evt-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+        }
+
+        /* ── FILTER PANEL ── */
+        .evt-filter-panel {
+            background: #ffffff;
+            border-top: 3px solid #ff6b35;
+            padding: 32px 36px;
+            display: flex;
+            align-items: flex-end;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .evt-filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .evt-filter-group label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #999;
+        }
+
+        .evt-filter-group select {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #111;
+            border: 1px solid #ddd;
+            border-radius: 0;
+            padding: 11px 36px 11px 14px;
+            background: #fafafa;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ff6b35' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            transition: border-color 0.2s;
+        }
+
+        .evt-filter-group select:focus {
+            outline: none;
+            border-color: #ff6b35;
+        }
+
+        .evt-filter-btn {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #ff6b35;
+            border: 2px solid #ff6b35;
+            background: transparent;
+            padding: 11px 28px;
+            cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+            white-space: nowrap;
+            align-self: flex-end;
+        }
+
+        .evt-filter-btn:hover {
+            background: #ff6b35;
+            color: #ffffff;
+        }
+
+        /* ── RESULTS HEADER ── */
+        .evt-results-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .evt-results-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-weight: 700;
+            color: #000;
+        }
+
+        .evt-results-count {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ff6b35;
+        }
+
+        /* ── GRID ── */
+        #evt-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .evt-state-msg {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .evt-state-msg i {
+            font-size: 48px;
+            color: #ddd;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .evt-state-msg p {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #999;
+            font-style: italic;
+        }
+
+        /* ── EVENT CARD ── */
+        .evt-card {
+            background: #ffffff;
+            border-top: 3px solid transparent;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            animation: cardIn 0.35s ease both;
+            overflow: hidden;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .evt-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.13);
+            border-top-color: #ff6b35;
+        }
+
+        /* Card Image */
+        .evt-card-img {
+            position: relative;
+            width: 100%;
+            height: 190px;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+
+        .evt-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            display: block;
+        }
+
+        .evt-card:hover .evt-card-img img {
+            transform: scale(1.06);
+        }
+
+        /* Featured badge on image */
+        .evt-featured-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: #ff6b35;
+            color: #fff;
+            padding: 4px 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 2;
+        }
+
+        .evt-featured-badge i {
+            font-size: 8px;
+        }
+
+        /* Fee badge on image */
+        .evt-fee-badge {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 5px 12px;
+            z-index: 2;
+        }
+
+        .fee-free {
+            background: rgba(22, 160, 133, 0.92);
+            color: #fff;
+        }
+
+        .fee-paid {
+            background: rgba(0, 0, 0, 0.75);
+            color: #ff6b35;
+            border: 1px solid #ff6b35;
+        }
+
+        /* Image overlay gradient */
+        .evt-card-img::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.45), transparent);
+            pointer-events: none;
+        }
+
+        /* Card body */
+        .evt-card-body {
+            padding: 20px 22px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .evt-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .evt-card-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            line-height: 1.3;
+            flex: 1;
+        }
+
+        .evt-category-pill {
+            font-family: 'Poppins', sans-serif;
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 9px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .cat-festival {
+            background: rgba(255, 107, 53, 0.10);
+            color: #c4511c;
+        }
+
+        .cat-cultural {
+            background: rgba(155, 89, 182, 0.10);
+            color: #7d3c98;
+        }
+
+        .cat-religious {
+            background: rgba(241, 196, 15, 0.13);
+            color: #b7860b;
+        }
+
+        .cat-concert {
+            background: rgba(52, 152, 219, 0.10);
+            color: #1a6fa0;
+        }
+
+        .cat-food {
+            background: rgba(39, 174, 96, 0.10);
+            color: #1a8048;
+        }
+
+        .cat-adventure {
+            background: rgba(231, 76, 60, 0.10);
+            color: #a93226;
+        }
+
+        .cat-sports {
+            background: rgba(26, 188, 156, 0.10);
+            color: #0e7a6a;
+        }
+
+        /* Date row */
+        .evt-date-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .evt-date-row i {
+            color: #ff6b35;
+            font-size: 11px;
+        }
+
+        /* Venue row */
+        .evt-venue-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .evt-venue-row i {
+            color: #ff6b35;
+            font-size: 11px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        /* Description */
+        .evt-desc {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            font-weight: 300;
+            color: #555;
+            line-height: 1.7;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Card footer */
+        .evt-card-footer {
+            padding: 13px 22px;
+            border-top: 1px solid #f0eeeb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .evt-state-tag {
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #bbb;
+        }
+
+        .evt-detail-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #ff6b35;
+            border: 1.5px solid #ff6b35;
+            padding: 6px 14px;
+            transition: background 0.2s, color 0.2s;
+            cursor: pointer;
+            background: none;
+        }
+
+        .evt-detail-btn:hover {
+            background: #ff6b35;
+            color: #fff;
+        }
+
+        .evt-detail-btn i {
+            font-size: 10px;
+        }
+
+        /* ── MODAL ── */
+        .evt-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .evt-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .evt-modal {
+            background: #fff;
+            max-width: 680px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-top: 4px solid #ff6b35;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .evt-modal-overlay.active .evt-modal {
+            transform: translateY(0);
+        }
+
+        .evt-modal-img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .evt-modal-body {
+            padding: 32px 36px 40px;
+        }
+
+        .evt-modal-eyebrow {
+            font-family: 'Poppins', sans-serif;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ff6b35;
+            margin-bottom: 8px;
+        }
+
+        .evt-modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #000;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .evt-modal-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .evt-modal-meta-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .evt-modal-meta-item i {
+            color: #ff6b35;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+
+        .evt-modal-meta-item span {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        .evt-modal-meta-item .meta-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #bbb;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .evt-modal-desc {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.85;
+        }
+
+        .evt-modal-close {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            background: rgba(0, 0, 0, 0.55);
+            border: none;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            border-radius: 0;
+        }
+
+        .evt-modal-close:hover {
+            background: #ff6b35;
+        }
+
+        .evt-modal-website {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ff6b35;
+            border: 2px solid #ff6b35;
+            padding: 10px 22px;
+            text-decoration: none;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        .evt-modal-website:hover {
+            background: #ff6b35;
+            color: #fff;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            #evt-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 100%;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .menu-btn {
+                font-size: 20px;
+            }
+
+            .evt-hero-content {
+                padding: 0 24px 44px;
+            }
+
+            .evt-filter-panel {
+                padding: 24px 20px;
+                gap: 16px;
+            }
+
+            .evt-filter-group {
+                min-width: 100%;
+            }
+
+            .evt-filter-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            #evt-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+            }
+
+            .footer-inner>div:first-child {
+                grid-column: 1 / -1;
+            }
+
+            .evt-modal-body {
+                padding: 24px 22px 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .evt-modal {
+                max-height: 95vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">BharatYatra</a>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="index.html" class="nav-back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
+        <p class="sidebar-tagline">Discover Incredible India</p>
+        <ul class="sidebar-links">
+            <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+            <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+            <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+            <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+            <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+            <li><a href="events.html"><i class="fas fa-calendar-days"></i> Events</a></li>
+            <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+            <li><a href="contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+        </ul>
+        <p class="sidebar-section-label">Legal &amp; Support</p>
+        <ul class="sidebar-links">
+            <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+            <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+        </ul>
+        <a href="admin/admin-login.html" class="sidebar-login-btn">
+            <i class="fas fa-lock"></i> Admin Login
+        </a>
+    </div>
+
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- HERO -->
+    <section id="evt-hero">
+        <div class="evt-hero-bg"></div>
+        <div class="evt-hero-deco">
+            <!-- Decorative kite / diamond motif -->
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="100,10 190,100 100,190 10,100" fill="none" stroke="#ff6b35" stroke-width="4" />
+                <polygon points="100,40 160,100 100,160 40,100" fill="none" stroke="#ff6b35" stroke-width="2" />
+                <polygon points="100,70 130,100 100,130 70,100" fill="#ff6b35" />
+                <line x1="100" y1="10" x2="100" y2="190" stroke="#ff6b35" stroke-width="1.5" />
+                <line x1="10" y1="100" x2="190" y2="100" stroke="#ff6b35" stroke-width="1.5" />
+            </svg>
+        </div>
+        <div class="evt-hero-content">
+            <span class="evt-eyebrow">Festivals &amp; Cultural Celebrations</span>
+            <h1>Colors of <span>India</span></h1>
+            <p class="evt-hero-sub">Every festival is a brushstroke — from the saffron fire of Navratri to the emerald waterways of Kerala. Explore the living colors that paint India's soul.</p>
+        </div>
+    </section>
+    <div class="evt-hero-border"></div>
+
+    <!-- MAIN -->
+    <section id="evt-main">
+        <div class="evt-inner">
+
+            <!-- Filter Panel -->
+            <div class="evt-filter-panel">
+                <div class="evt-filter-group">
+                    <label for="cat-select">Category</label>
+                    <select id="cat-select">
+                        <option value="">All Categories</option>
+                        <option value="Festival">Festival</option>
+                        <option value="Cultural Show">Cultural Show</option>
+                        <option value="Religious">Religious</option>
+                        <option value="Concert">Concert</option>
+                        <option value="Food &amp; Craft Fair">Food &amp; Craft Fair</option>
+                        <option value="Adventure">Adventure</option>
+                        <option value="Sports">Sports</option>
+                    </select>
+                </div>
+
+                <div class="evt-filter-group">
+                    <label for="month-select">Month</label>
+                    <select id="month-select">
+                        <option value="">All Months</option>
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                </div>
+
+                <button class="evt-filter-btn" id="clear-filters-btn">
+                    <i class="fas fa-times" style="margin-right:6px;"></i>Clear
+                </button>
+            </div>
+
+            <!-- Results Header -->
+            <div class="evt-results-header">
+                <h2 class="evt-results-title">Colors of India</h2>
+                <span class="evt-results-count" id="results-count">Loading…</span>
+            </div>
+
+            <!-- Card Grid -->
+            <div id="evt-grid">
+                <div class="evt-state-msg">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <p>Fetching events…</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- EVENT DETAIL MODAL -->
+    <div class="evt-modal-overlay" id="evt-modal-overlay">
+        <div class="evt-modal" id="evt-modal">
+            <button class="evt-modal-close" id="modal-close-btn"><i class="fas fa-times"></i></button>
+            <img class="evt-modal-img" id="modal-img" src="" alt="">
+            <div class="evt-modal-body">
+                <p class="evt-modal-eyebrow" id="modal-category"></p>
+                <h2 class="evt-modal-title" id="modal-title"></h2>
+                <div class="evt-modal-meta">
+                    <div class="evt-modal-meta-item">
+                        <i class="fas fa-calendar-days"></i>
+                        <span><span class="meta-label">Dates</span><span id="modal-dates"></span></span>
+                    </div>
+                    <div class="evt-modal-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span><span class="meta-label">Venue</span><span id="modal-venue"></span></span>
+                    </div>
+                    <div class="evt-modal-meta-item">
+                        <i class="fas fa-ticket"></i>
+                        <span><span class="meta-label">Entry</span><span id="modal-fee"></span></span>
+                    </div>
+                </div>
+                <p class="evt-modal-desc" id="modal-desc"></p>
+                <a class="evt-modal-website" id="modal-website" href="#" target="_blank" style="display:none;">
+                    <i class="fas fa-external-link-alt"></i> Official Website
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <a href="index.html" class="footer-logo">BHARAT YATRA</a>
+                <p class="footer-tagline">Discover the incredible beauty<br>and diversity of India.</p>
+            </div>
+            <div class="footer-col">
+                <h4 class="footer-heading">Explore</h4>
+                <ul class="footer-links">
+                    <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+                    <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+                    <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+                    <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 class="footer-heading">Plan</h4>
+                <ul class="footer-links">
+                    <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+                    <li><a href="events.html"><i class="fas fa-calendar-days"></i> Events</a></li>
+                    <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+                    <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 class="footer-heading">Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                    <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp;
+                            Conditions</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 class="footer-heading">Follow Us</h4>
+                <div class="footer-socials">
+                    <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-btn" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+                <a href="contactus.html" class="footer-contact-btn">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 BharatYatra. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Supabase JS v2 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        /* ── SUPABASE CONFIG ── */
+        const SUPABASE_URL = 'https://gtpnojbbamoaznlutxap.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE';
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        /* ── FROZEN CONSTANTS — prevent prototype pollution ── */
+        const STATE_NAMES = Object.freeze({ 1: 'Gujarat', 2: 'Rajasthan', 3: 'Kerala', 4: 'Uttarakhand', 5: 'Assam' });
+
+        /* ── APP STATE ── */
+        let allEvents = [];
+
+        /* ── DOM REFS ── */
+        const grid       = document.getElementById('evt-grid');
+        const countEl    = document.getElementById('results-count');
+        const catSelect  = document.getElementById('cat-select');
+        const monthSelect= document.getElementById('month-select');
+        const clearBtn   = document.getElementById('clear-filters-btn');
+
+        /* ── HTML ENTITY ENCODER (XSS prevention — OWASP A03:2025) ──
+         * Encodes & < > " ' ` so DB values cannot inject HTML or JS.
+         * Used on EVERY value from Supabase before it touches the DOM.
+         * Strip-based sanitisers (replace(/<[^>]*>/g,'')) are bypassable
+         * and are NOT used here.
+         * ─────────────────────────────────────────────────────────── */
+        function escHTML(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/`/g, '&#96;');
+        }
+
+        /* ── SIDEBAR ── */
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const openBtn = document.getElementById('open-sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        function openSidebar()  { sidebar.classList.add('active');    overlay.classList.add('active');    document.body.classList.add('no-scroll'); }
+        function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.classList.remove('no-scroll'); }
+
+        openBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSidebar(); closeModal(); } });
+
+        /* ── HELPERS ── */
+        function formatDate(dateStr) {
+            if (!dateStr) return '—';
+            const d = new Date(dateStr + 'T00:00:00');
+            return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function formatDateRange(from, to) {
+            if (!from) return '—';
+            const f = new Date(from + 'T00:00:00');
+            const t = new Date(to   + 'T00:00:00');
+            const opts = { day: 'numeric', month: 'short' };
+            if (from === to) return f.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            if (f.getFullYear() === t.getFullYear())
+                return f.toLocaleDateString('en-IN', opts) + ' – ' + t.toLocaleDateString('en-IN', { ...opts, year: 'numeric' });
+            return formatDate(from) + ' – ' + formatDate(to);
+        }
+
+        function categoryClass(cat) {
+            if (!cat) return 'cat-festival';
+            const c = cat.toLowerCase();
+            if (c.includes('festival'))  return 'cat-festival';
+            if (c.includes('cultural'))  return 'cat-cultural';
+            if (c.includes('religious')) return 'cat-religious';
+            if (c.includes('concert'))   return 'cat-concert';
+            if (c.includes('food'))      return 'cat-food';
+            if (c.includes('adventure')) return 'cat-adventure';
+            if (c.includes('sports'))    return 'cat-sports';
+            return 'cat-festival';
+        }
+
+        /* ── MODAL ── */
+        const modalOverlay = document.getElementById('evt-modal-overlay');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+
+        function openModal(ev) {
+            if (!ev) return;
+
+            /* All values written via textContent — never innerHTML — safe against XSS */
+            const img = document.getElementById('modal-img');
+            img.src = ev.image_url || '';
+            img.alt = ev.name || '';
+
+            document.getElementById('modal-category').textContent = ev.category || '';
+            document.getElementById('modal-title').textContent    = ev.name     || '';
+            document.getElementById('modal-dates').textContent    = formatDateRange(ev.date_from, ev.date_to);
+            document.getElementById('modal-venue').textContent    = ev.city_venue || '—';
+            document.getElementById('modal-fee').textContent      = ev.entry_fee ? '₹' + ev.entry_fee : 'Free Entry';
+            document.getElementById('modal-desc').textContent     = ev.description || '';
+
+            const wsLink = document.getElementById('modal-website');
+            /* Allowlist URLs to https:// only — blocks javascript: URIs */
+            if (ev.website_url && /^https:\/\//i.test(ev.website_url)) {
+                wsLink.href = ev.website_url;
+                wsLink.style.display = 'inline-flex';
+            } else {
+                wsLink.style.display = 'none';
+                wsLink.removeAttribute('href');
+            }
+
+            modalOverlay.classList.add('active');
+            document.body.classList.add('no-scroll');
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
+
+        modalCloseBtn.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+
+        /* ── RENDER ──
+         * Security: renderCards builds cards using escHTML() on all DB values.
+         * The "Details" button uses data-id attribute + event delegation instead of
+         * onclick="openModal(${id})" to prevent onclick injection attacks (OWASP A03:2025).
+         * The onerror inline handler is replaced with a load-time addEventListener.
+         * ─────────────────────────────────────────────────────────────────────────── */
+        function renderCards(events) {
+            if (!events.length) {
+                grid.innerHTML = `
+                    <div class="evt-state-msg">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>No events found for the selected filters.</p>
+                    </div>`;
+                countEl.textContent = '0 results';
+                return;
+            }
+
+            countEl.textContent = `${events.length} event${events.length !== 1 ? 's' : ''}`;
+
+            /* Build HTML using escHTML() on every DB-sourced value */
+            grid.innerHTML = events.map((ev, idx) => `
+                <div class="evt-card" style="animation-delay:${idx * 0.05}s" data-id="${Number(ev.id)}">
+                    <div class="evt-card-img">
+                        <img src="${escHTML(ev.image_url || '')}"
+                             alt="${escHTML(ev.name || '')}"
+                             loading="lazy"
+                             data-fallback="1">
+                        ${ev.is_featured ? `<span class="evt-featured-badge"><i class="fas fa-star"></i> Featured</span>` : ''}
+                        <span class="evt-fee-badge ${ev.entry_fee ? 'fee-paid' : 'fee-free'}">
+                            ${ev.entry_fee ? '₹' + Number(ev.entry_fee).toLocaleString('en-IN') : 'Free Entry'}
+                        </span>
+                    </div>
+                    <div class="evt-card-body">
+                        <div class="evt-card-top">
+                            <p class="evt-card-name">${escHTML(ev.name || '')}</p>
+                            <span class="evt-category-pill ${escHTML(categoryClass(ev.category))}">${escHTML(ev.category || '')}</span>
+                        </div>
+                        <div class="evt-date-row">
+                            <i class="fas fa-calendar-days"></i>
+                            <span>${escHTML(formatDateRange(ev.date_from, ev.date_to))}</span>
+                        </div>
+                        <div class="evt-venue-row">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${escHTML(ev.city_venue || '—')}</span>
+                        </div>
+                        <p class="evt-desc">${escHTML(ev.description || '')}</p>
+                    </div>
+                    <div class="evt-card-footer">
+                        <span class="evt-state-tag">
+                            <i class="fas fa-earth-asia" style="margin-right:4px;color:#ddd;font-size:9px;"></i>
+                            ${escHTML(STATE_NAMES[ev.state_id] || '')}
+                        </span>
+                        <button class="evt-detail-btn" data-id="${Number(ev.id)}">
+                            <i class="fas fa-info-circle"></i> Details
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            /* Attach onerror handlers via addEventListener — not inline attribute.
+             * Inline onerror="..." is blocked by strict CSP and is an injection risk. */
+            grid.querySelectorAll('img[data-fallback]').forEach(img => {
+                img.addEventListener('error', function () { this.style.display = 'none'; });
+            });
+        }
+
+        /* ── EVENT DELEGATION for Details buttons ──
+         * Instead of onclick="${id}" on each button (injection risk), we listen
+         * on the grid container and identify which event was clicked via data-id.
+         * The id is validated as a finite integer before lookup.
+         * ─────────────────────────────────────────────────────────────────────── */
+        grid.addEventListener('click', e => {
+            const btn = e.target.closest('.evt-detail-btn');
+            if (!btn) return;
+            const rawId = btn.getAttribute('data-id');
+            const id    = parseInt(rawId, 10);
+            if (!isFinite(id)) return;
+            const ev = allEvents.find(x => x.id === id);
+            if (ev) openModal(ev);
+        });
+
+        /* ── FILTER ── */
+        function applyFilters() {
+            const cat   = catSelect.value;
+            const month = monthSelect.value;
+
+            const result = allEvents.filter(ev => {
+                const okCat = !cat || ev.category === cat;
+                let okMonth = true;
+                if (month !== '') {
+                    const m    = parseInt(month, 10);
+                    const from = new Date(ev.date_from + 'T00:00:00');
+                    const to   = new Date((ev.date_to || ev.date_from) + 'T00:00:00');
+                    okMonth = from.getMonth() <= m && to.getMonth() >= m
+                           || from.getMonth() === m || to.getMonth() === m;
+                }
+                return okCat && okMonth;
+            });
+
+            renderCards(result);
+        }
+
+        /* ── FETCH ── */
+        async function fetchEvents() {
+            grid.innerHTML = `
+                <div class="evt-state-msg">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <p>Fetching events…</p>
+                </div>`;
+            countEl.textContent = 'Loading…';
+
+            try {
+                const { data, error } = await sb
+                    .from('events')
+                    .select('*')
+                    .order('date_from', { ascending: true });
+
+                if (error) throw error;
+                allEvents = data || [];
+                applyFilters();
+            } catch (_err) {
+                /* Generic error message — never expose internal error details to UI
+                 * (OWASP A10:2025 — Mishandling of Exceptional Conditions) */
+                loadFallbackData();
+            }
+        }
+
+        /* ── FALLBACK DATA (from CSV) ── */
+        function loadFallbackData() {
+            allEvents = [
+                { id: 1, state_id: 1, name: "Rann Utsav", date_from: "2025-11-01", date_to: "2026-02-28", city_venue: "White Rann, Kutch", category: "Festival", description: "A grand three-month carnival held on the shimmering white salt desert of the Rann of Kutch. The festival celebrates Gujarati folk music, traditional dance (Garba, Bhavai), handicraft exhibitions, camel rides, and cultural performances under a full-moon sky. Thousands of tents create a temporary tent city in the desert.", entry_fee: 1000, image_url: "https://images.unsplash.com/photo-1609920658906-8223bd289001?w=800", is_featured: true, website_url: "https://www.rannutsav.com" },
+                { id: 2, state_id: 1, name: "International Kite Festival (Uttarayan)", date_from: "2026-01-14", date_to: "2026-01-15", city_venue: "Sabarmati Riverfront, Ahmedabad", category: "Festival", description: "One of India's most iconic festivals, Uttarayan marks Makar Sankranti with the sky filled with thousands of colourful kites. Professional kite fighters from across the world participate in the two-day International Kite Festival held at Sabarmati Riverfront.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", is_featured: true, website_url: "https://www.gujarattourism.com" },
+                { id: 3, state_id: 1, name: "Navratri Garba — Ahmedabad", date_from: "2025-10-02", date_to: "2025-10-11", city_venue: "GMDC Ground, Ahmedabad", category: "Cultural Show", description: "Gujarat's nine-night Navratri is the world's largest Garba dance celebration, holding a Guinness World Record. Hundreds of thousands of dancers dressed in traditional chaniya cholis and kedias perform the devotional Garba and Dandiya Raas around an effigy of Goddess Amba.", entry_fee: 500, image_url: "https://images.unsplash.com/photo-1598901865264-4f9f7e946462?w=800", is_featured: true, website_url: null },
+                { id: 4, state_id: 1, name: "Modhera Dance Festival", date_from: "2026-01-19", date_to: "2026-01-21", city_venue: "Sun Temple, Modhera", category: "Cultural Show", description: "A three-day classical dance festival held against the stunning backdrop of the 11th-century Sun Temple of Modhera. Classical dancers perform Bharatanatyam, Kathak, Odissi, Kuchipudi, and folk performances illuminated by floodlights on the temple's stepped tank.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800", is_featured: false, website_url: "https://www.gujarattourism.com" },
+                { id: 5, state_id: 1, name: "Vibrant Gujarat Global Summit", date_from: "2025-01-10", date_to: "2025-01-12", city_venue: "Mahatma Mandir Convention Centre, Gandhinagar", category: "Food & Craft Fair", description: "India's largest biennial investment summit draws global investors, industry leaders, heads of state, and diplomats to Gujarat. Beyond business, the public exhibition showcases Gujarat's industrial achievements, startups, traditional crafts, cuisine stalls, and cultural performances.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800", is_featured: false, website_url: "https://www.vibrantgujarat.com" },
+                { id: 6, state_id: 1, name: "Tarnetar Fair", date_from: "2025-08-28", date_to: "2025-08-30", city_venue: "Tarnetar, Surendranagar", category: "Festival", description: "One of Gujarat's oldest and most colourful rural fairs, held near the ancient Trinetreshwar Mahadev Temple. Young tribal men and women in vibrant traditional costumes participate in the unique tradition of embroidered umbrellas, folk songs, and dances as part of matchmaking rituals.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1592085549839-f8c9bd142c8b?w=800", is_featured: false, website_url: null },
+                { id: 7, state_id: 1, name: "Ahmedabad Food Festival", date_from: "2025-12-20", date_to: "2025-12-22", city_venue: "Kankaria Lake, Ahmedabad", category: "Food & Craft Fair", description: "A three-day outdoor food festival celebrating Gujarat's legendary vegetarian cuisine alongside street food from across India. Over 200 food stalls, chef cook-offs, spice workshops, and live music. Expect dhokla, fafda, undhiyu, and innovative fusion takes on Gujarati classics.", entry_fee: 100, image_url: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", is_featured: false, website_url: null },
+                { id: 8, state_id: 2, name: "Jaipur Literature Festival", date_from: "2026-01-29", date_to: "2026-02-02", city_venue: "Hotel Diggi Palace, Jaipur", category: "Cultural Show", description: "The world's largest free literary festival, held annually at the pink-hued Diggi Palace in Jaipur. Over five days, 500+ speakers — Booker Prize winners, Pulitzer laureates, Nobel Prize winners, poets, politicians, and thinkers — engage in debates, readings, and conversations across ten stages.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800", is_featured: true, website_url: "https://www.jaipurliteraturefestival.org" },
+                { id: 9, state_id: 2, name: "Pushkar Camel Fair", date_from: "2025-11-02", date_to: "2025-11-09", city_venue: "Pushkar Fair Ground, Pushkar", category: "Festival", description: "One of the world's largest camel fairs and a UNESCO-recognised intangible cultural heritage event. Over 50,000 camels, horses, and cattle are traded during this week-long spectacle in the sacred town of Pushkar. Beyond trade, the fair features camel races, turban-tying contests, moustache competitions, folk performances.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800", is_featured: true, website_url: "https://www.rajasthantourism.gov.in" },
+                { id: 10, state_id: 2, name: "Desert Festival, Jaisalmer", date_from: "2026-02-11", date_to: "2026-02-13", city_venue: "Sam Sand Dunes, Jaisalmer", category: "Festival", description: "A spectacular three-day celebration set against the golden dunes of the Thar Desert. The festival features turban-tying, moustache, and Mr Desert competitions, camel polo, folk music (Manganiyar and Langa musicians), Rajasthani puppet shows, fire dances, and traditional cuisine.", entry_fee: 500, image_url: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=800", is_featured: true, website_url: "https://www.rajasthantourism.gov.in" },
+                { id: 11, state_id: 2, name: "Elephant Festival, Jaipur", date_from: "2026-03-17", date_to: "2026-03-17", city_venue: "Chaugan Stadium, Jaipur", category: "Cultural Show", description: "Held on the day of Holi, this iconic festival celebrates the majestic elephant. Beautifully decorated elephants parade through the streets before competing in elephant polo, elephant races, and a tug-of-war. Traditional Rajasthani dancers and musicians accompany the procession in a riot of colour.", entry_fee: 200, image_url: "https://images.unsplash.com/photo-1585468274952-66591eb14165?w=800", is_featured: false, website_url: null },
+                { id: 12, state_id: 2, name: "Rajasthan International Folk Festival (RIFF)", date_from: "2025-10-09", date_to: "2025-10-13", city_venue: "Mehrangarh Fort, Jodhpur", category: "Concert", description: "Held within the towering walls of Mehrangarh Fort under a full moon, RIFF brings together folk musicians from Rajasthan and international artists for five nights of magical performances. The Lantern Festival on the final night, where thousands release sky lanterns over the blue city of Jodhpur, is one of India's most memorable spectacles.", entry_fee: 1500, image_url: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800", is_featured: true, website_url: "https://www.jodhpurriff.org" },
+                { id: 13, state_id: 2, name: "Mewar Festival, Udaipur", date_from: "2026-03-29", date_to: "2026-03-31", city_venue: "City Palace Ghats, Udaipur", category: "Religious", description: "A traditional festival heralding the arrival of spring, celebrated with great devotion in the City of Lakes. Women carry decorated images of Isar and Gangaur goddesses in a procession through the old city to the ghats of Lake Pichola, accompanied by folk singers and dancers. The final evening features a royal boat procession on the illuminated lake.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1548013146-72479768bada?w=800", is_featured: false, website_url: null },
+                { id: 14, state_id: 2, name: "Jaipur Heritage International Festival", date_from: "2025-12-17", date_to: "2025-12-21", city_venue: "Albert Hall Museum, Jaipur", category: "Concert", description: "A five-day festival celebrating India's intangible heritage through classical music, dance, theatre, and storytelling at heritage venues across Jaipur including Albert Hall, Amber Fort, and Jantar Mantar. Performances by Padma awardees and rising classical artists make it a premium cultural event.", entry_fee: 800, image_url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800", is_featured: false, website_url: null },
+                { id: 15, state_id: 3, name: "Thrissur Pooram", date_from: "2026-04-28", date_to: "2026-04-29", city_venue: "Thekkinkadu Maidanam, Thrissur", category: "Religious", description: "Considered the mother of all Kerala temple festivals, Thrissur Pooram is a spectacular event featuring ten magnificently caparisoned elephants from two temples facing each other in a competitive display. The event features Panchavadyam percussion, parasol exchange competition, and an explosive fireworks display.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=800", is_featured: true, website_url: null },
+                { id: 16, state_id: 3, name: "Nehru Trophy Boat Race", date_from: "2025-08-09", date_to: "2025-08-09", city_venue: "Punnamada Lake, Alappuzha", category: "Sports", description: "Kerala's most celebrated sporting event, held on the second Saturday of August on the serene Punnamada Lake. Up to 100-oared snake boats (Chundan Vallam), each carrying over 100 rowers, race across the water in a breathtaking spectacle. Thousands of spectators line the banks.", entry_fee: 150, image_url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800", is_featured: true, website_url: "https://www.nehrutrophyboatrace.org" },
+                { id: 17, state_id: 3, name: "Onam Festival — Aranmula Boat Race", date_from: "2025-09-05", date_to: "2025-09-05", city_venue: "Aranmula, Pathanamthitta", category: "Religious", description: "The Aranmula Boat Race is the oldest and most sacred of Kerala's snake boat races, held as a votive offering to Lord Parthasarathy. Unlike competitive races, the Palliyodam snake boats glide in unison as an offering during the Onam festival, accompanied by traditional music.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800", is_featured: false, website_url: null },
+                { id: 18, state_id: 3, name: "Kerala Piravi Cultural Festival", date_from: "2025-11-01", date_to: "2025-11-01", city_venue: "Kanakakunnu Palace, Thiruvananthapuram", category: "Cultural Show", description: "Celebrated on Kerala's foundation day (November 1), the Kerala Piravi festival is marked by grand cultural programmes at Kanakakunnu Palace. Classical Kathakali, Mohiniyattam, Theyyam, and Koodiyattam performances showcase the state's rich performing arts heritage.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800", is_featured: false, website_url: null },
+                { id: 19, state_id: 3, name: "Beypore Beach Music Festival", date_from: "2026-01-10", date_to: "2026-01-12", city_venue: "Beypore Beach, Kozhikode", category: "Concert", description: "A three-day open-air music festival on the historic Beypore Beach — home of the legendary Uru (Arab dhow) boat builders. The festival features Carnatic classical, Hindustani, Kerala folk, and contemporary fusion performances by artists from across India.", entry_fee: 300, image_url: "https://images.unsplash.com/photo-1501386761578-eaa54b5b0484?w=800", is_featured: false, website_url: null },
+                { id: 20, state_id: 3, name: "International Kerala Science Festival", date_from: "2025-12-05", date_to: "2025-12-09", city_venue: "Thiruvananthapuram", category: "Cultural Show", description: "A five-day annual public science festival celebrating Kerala's scientific achievements and literacy. Interactive exhibits, astronomy shows, robotics demonstrations, science film screenings, and talks by eminent scientists make this a unique event for students and adults alike.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1532094349884-543559072462?w=800", is_featured: false, website_url: null },
+                { id: 21, state_id: 3, name: "Cochin Carnival", date_from: "2025-12-26", date_to: "2026-01-01", city_venue: "Fort Kochi, Ernakulam", category: "Festival", description: "A week-long New Year carnival held in the historic Fort Kochi neighbourhood, blending Kerala's Portuguese colonial heritage with vibrant street celebrations. Highlights include the grand New Year's Eve parade, street performances, art installations, beach games, and the burning of a giant effigy.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=800", is_featured: true, website_url: null },
+                { id: 22, state_id: 4, name: "Kumbh Mela — Haridwar", date_from: "2027-01-14", date_to: "2027-04-27", city_venue: "Har Ki Pauri, Haridwar", category: "Religious", description: "The world's largest peaceful gathering, held every 12 years at Haridwar on the banks of the Ganges. Millions of Hindu pilgrims gather for the sacred Shahi Snan (royal bath) on auspicious dates. The Kumbh features processions of saints and Naga Sadhus, religious discourses, and cultural programmes.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800", is_featured: true, website_url: "https://www.kumbh.gov.in" },
+                { id: 23, state_id: 4, name: "International Yoga Festival, Rishikesh", date_from: "2026-03-01", date_to: "2026-03-07", city_venue: "Parmarth Niketan, Rishikesh", category: "Cultural Show", description: "Held on the banks of the Ganges in the world's yoga capital, this week-long festival draws yoga practitioners, spiritual teachers, and wellness enthusiasts from over 100 countries. Daily yoga and pranayama sessions, evening Ganga Aarti, meditation retreats, Ayurvedic workshops, and talks by renowned spiritual masters.", entry_fee: 5000, image_url: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800", is_featured: true, website_url: "https://www.internationalyogafestival.com" },
+                { id: 24, state_id: 4, name: "Valley of Flowers Trek Season", date_from: "2025-07-01", date_to: "2025-10-04", city_venue: "Valley of Flowers National Park, Chamoli", category: "Adventure", description: "The UNESCO World Heritage Valley of Flowers blooms from July to September, carpeting the Himalayan meadow with over 300 species of alpine wildflowers. Trekkers undertake the 38km round trek from Govindghat to witness this natural spectacle. The trail also leads to Hemkund Sahib, a sacred Sikh shrine.", entry_fee: 150, image_url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800", is_featured: true, website_url: null },
+                { id: 25, state_id: 4, name: "Uttarakhand Mahotsav", date_from: "2025-11-09", date_to: "2025-11-11", city_venue: "Parade Ground, Dehradun", category: "Cultural Show", description: "The state foundation day celebration is marked by a grand three-day cultural festival. Folk dances including Choliya, Langvir Nritya, and Jhora, traditional Kumaoni and Garhwali music, local cuisine, and crafts from all 13 districts of Uttarakhand are showcased.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?w=800", is_featured: false, website_url: null },
+                { id: 26, state_id: 4, name: "Rishikesh Yoga & Music Festival", date_from: "2026-02-27", date_to: "2026-03-02", city_venue: "Beatles Ashram, Rishikesh", category: "Concert", description: "An intimate four-day festival held at the iconic Beatles Ashram (Chaurasi Kutia), where the Fab Four famously composed many songs in 1968. The event combines live acoustic and world music performances, sunrise yoga sessions on the Ganges ghats, meditation workshops, and bonfire evenings.", entry_fee: 3000, image_url: "https://images.unsplash.com/photo-1501386761578-eaa54b5b0484?w=800", is_featured: false, website_url: null },
+                { id: 27, state_id: 4, name: "Auli Skiing Competition", date_from: "2026-01-20", date_to: "2026-01-25", city_venue: "Auli Ski Resort, Chamoli", category: "Sports", description: "India's premier skiing destination, Auli, hosts the National Winter Games every January–February. Professional and amateur skiers compete in slalom, giant slalom, and downhill events. On clear days, skiers are treated to panoramic views of Nanda Devi and other Himalayan peaks.", entry_fee: 500, image_url: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800", is_featured: false, website_url: null },
+                { id: 28, state_id: 4, name: "Nanda Devi Raj Jat Yatra", date_from: "2026-09-01", date_to: "2026-09-20", city_venue: "Nauti to Homkund, Chamoli", category: "Religious", description: "Held once every 12 years, this is Uttarakhand's grandest pilgrimage — a 280km journey on foot through remote Himalayan terrain dedicated to Goddess Nanda Devi. Thousands of devotees walk for 20 days, led by a four-horned ram, passing through 22 villages in the Garhwal Himalayas.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800", is_featured: true, website_url: null },
+                { id: 29, state_id: 5, name: "Rongali Bihu (Bohag Bihu)", date_from: "2026-04-14", date_to: "2026-04-20", city_venue: "Statewide, Assam", category: "Festival", description: "The most important festival of Assam, Rongali Bihu marks the Assamese New Year and the arrival of spring. Young men and women perform the energetic Bihu dance in colourful traditional attire in open fields across the state. The Guwahati Bihu Celebration draws the biggest crowds.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?w=800", is_featured: true, website_url: null },
+                { id: 30, state_id: 5, name: "Ambubachi Mela", date_from: "2026-06-22", date_to: "2026-06-26", city_venue: "Kamakhya Temple, Guwahati", category: "Religious", description: "One of India's most significant tantric gatherings, held annually at the ancient Kamakhya Temple atop Nilachal Hill. Hundreds of thousands of pilgrims, Sadhus, and Tantric practitioners from across India converge for the four-day event. The temple reopens with massive celebrations and prasad distribution.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1609766418204-94acd4d91d06?w=800", is_featured: true, website_url: null },
+                { id: 31, state_id: 5, name: "Majuli River Island Festival", date_from: "2025-11-06", date_to: "2025-11-08", city_venue: "Majuli Island, Jorhat", category: "Cultural Show", description: "Celebrated on the world's largest river island, this three-day festival showcases the unique Vaishnavite culture of the Satras (monasteries) of Majuli. Traditional masked dance (Bhaona), Ankiya Nat, pottery-making, boat rides, and the unique Mishing tribal customs and cuisine are presented.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?w=800", is_featured: true, website_url: null },
+                { id: 32, state_id: 5, name: "Kaziranga Elephant Festival", date_from: "2026-02-14", date_to: "2026-02-15", city_venue: "Kohora, Kaziranga", category: "Festival", description: "A two-day festival held at the edge of the famous Kaziranga National Park celebrating the elephant's role in Assamese culture and conservation. Elephant races, elephant polo, elephant beauty pageants, and elephant rides through tea gardens are the main attractions.", entry_fee: 300, image_url: "https://images.unsplash.com/photo-1585468274952-66591eb14165?w=800", is_featured: false, website_url: null },
+                { id: 33, state_id: 5, name: "Brahmaputra Beach Festival", date_from: "2026-01-28", date_to: "2026-02-01", city_venue: "Brahmaputra River Banks, Guwahati", category: "Concert", description: "A five-day music and cultural festival held on the sandy banks of the mighty Brahmaputra River. The festival features folk music from all eight sister states of Northeast India, live bands, DJ nights, river adventure sports, food stalls with Northeastern cuisine, and a craft bazaar.", entry_fee: 200, image_url: "https://images.unsplash.com/photo-1501386761578-eaa54b5b0484?w=800", is_featured: false, website_url: null },
+                { id: 34, state_id: 5, name: "Dehing Patkai Festival", date_from: "2026-01-31", date_to: "2026-02-02", city_venue: "Jeypore Rainforest, Dibrugarh", category: "Adventure", description: "Celebrated inside Asia's largest rainforest reserve, the Dehing Patkai Festival is a unique blend of eco-tourism and cultural celebration. Nature walks, wildlife photography tours, tribal village visits, elephant rides through tea gardens, traditional Ahom and Mishing cultural performances.", entry_fee: 250, image_url: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=800", is_featured: false, website_url: null },
+                { id: 35, state_id: 5, name: "Ali Ai Ligang — Mishing Tribe Festival", date_from: "2026-02-20", date_to: "2026-02-20", city_venue: "Mishing Villages, Dhemaji & Lakhimpur", category: "Cultural Show", description: "The most important spring festival of the Mishing tribe, one of Assam's largest tribal communities. Ali Ai Ligang celebrates the sowing of the first seeds of the agricultural year and is characterised by the Mishing Bihu dance, ritual rice-beer offerings, and prayers for a good harvest.", entry_fee: null, image_url: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?w=800", is_featured: false, website_url: null }
+            ];
+            applyFilters();
+        }
+
+        /* ── EVENT LISTENERS ── */
+        catSelect.addEventListener('change', applyFilters);
+        monthSelect.addEventListener('change', applyFilters);
+        clearBtn.addEventListener('click', () => {
+            catSelect.value = '';
+            monthSelect.value = '';
+            applyFilters();
+        });
+
+        /* ── INIT ── */
+        fetchEvents();
+    </script>
+</body>
+
+</html>

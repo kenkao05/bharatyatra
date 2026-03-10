@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!--
+    SERVER-SIDE HEADERS — configure in Vercel / Nginx alongside these meta equivalents:
+      X-Frame-Options: DENY
+      X-Content-Type-Options: nosniff
+      Referrer-Policy: strict-origin-when-cross-origin
+  -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://unpkg.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://gtpnojbbamoaznlutxap.supabase.co;
+                 script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com;
+                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+                 font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+                 img-src 'self' data: https:;
+                 connect-src 'self' https://gtpnojbbamoaznlutxap.supabase.co;
+                 frame-ancestors 'none';
+                 base-uri 'none';
+                 object-src 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <title>Admin — Events Manager | BharatYatra</title>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <!-- supabase-js MUST load before admin-auth.js — auth.js calls supabase.createClient -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="admin-auth.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* ── ROOT (identical to admin-medical.html) ── */
+    :root {
+      --bg:          #071021;
+      --card:        #0b1220;
+      --card2:       #0e1628;
+      --border:      rgba(255,255,255,0.07);
+      --border2:     rgba(255,255,255,0.04);
+      --cyan:        #06b6d4;
+      --cyan-dim:    rgba(6,182,212,0.12);
+      --cyan-glow:   rgba(6,182,212,0.25);
+      --blue:        #4FC3FF;
+      --muted:       #94a3b8;
+      --muted2:      rgba(200,220,235,0.5);
+      --white:       #e8f0f7;
+      --red:         #ef4444;
+      --red-dim:     rgba(239,68,68,0.12);
+      --green:       #22c55e;
+      --green-dim:   rgba(34,197,94,0.12);
+      --amber:       #f59e0b;
+      --amber-dim:   rgba(245,158,11,0.12);
+      --purple:      #a78bfa;
+      --purple-dim:  rgba(167,139,250,0.12);
+      --radius:      14px;
+      --radius-sm:   8px;
+      --header-h:    64px;
+      --transition:  all 0.2s ease;
+
+      /* Category badge palette */
+      --cat-festival-bg:    rgba(245,158,11,0.12);  --cat-festival-txt:  #f59e0b;
+      --cat-concert-bg:     rgba(167,139,250,0.12); --cat-concert-txt:   #a78bfa;
+      --cat-cultural-bg:    rgba(6,182,212,0.12);   --cat-cultural-txt:  #06b6d4;
+      --cat-religious-bg:   rgba(249,115,22,0.12);  --cat-religious-txt: #f97316;
+      --cat-sports-bg:      rgba(34,197,94,0.12);   --cat-sports-txt:    #22c55e;
+      --cat-food-bg:        rgba(236,72,153,0.12);  --cat-food-txt:      #ec4899;
+      --cat-adventure-bg:   rgba(239,68,68,0.12);   --cat-adventure-txt: #ef4444;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Cyan grid overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(6,182,212,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(6,182,212,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none; z-index: 0;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.3); border-radius: 3px; }
+
+    /* ── HEADER (copied from admin-medical) ── */
+    #admin-header {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: rgba(7,16,33,0.85);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px;
+    }
+    .header-left  { display: flex; align-items: center; gap: 16px; }
+    .header-logo  {
+      font-size: 13px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--cyan); text-decoration: none;
+    }
+    .header-divider { width: 1px; height: 20px; background: var(--border); }
+    .header-title { font-size: 14px; font-weight: 500; color: var(--muted); letter-spacing: 0.5px; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); border: 1px solid var(--border); background: transparent;
+      padding: 8px 18px; border-radius: 40px; cursor: pointer;
+      text-decoration: none; transition: var(--transition);
+    }
+    .btn-back:hover { color: var(--cyan); border-color: var(--cyan); transform: translateX(-4px); }
+    .btn-logout {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 600; color: var(--muted); background: transparent;
+      border: 1px solid var(--border); padding: 8px 18px; border-radius: 40px;
+      cursor: pointer; transition: var(--transition);
+    }
+    .btn-logout:hover { color: var(--red); border-color: var(--red); }
+
+    /* ── MAIN ── */
+    #main {
+      position: relative; z-index: 1;
+      width: 100%;
+      padding: calc(var(--header-h) + 40px) 40px 80px;
+    }
+
+    /* ── PAGE TITLE ── */
+    .page-title-row {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 32px; flex-wrap: wrap; gap: 16px;
+    }
+    .page-title { font-size: 28px; font-weight: 700; color: var(--white); letter-spacing: -0.5px; }
+    .page-title span { color: var(--amber); }
+
+    /* ── STATS ROW (copied from admin-medical) ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 16px; margin-bottom: 36px;
+    }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border2);
+      border-radius: var(--radius); padding: 20px 22px;
+      display: flex; align-items: center; gap: 16px;
+      backdrop-filter: blur(8px); transition: var(--transition);
+    }
+    .stat-card:hover { border-color: rgba(6,182,212,0.15); transform: translateY(-1px); }
+    .stat-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .stat-icon.amber  { background: var(--amber-dim);             color: var(--amber); }
+    .stat-icon.cyan   { background: var(--cyan-dim);              color: var(--cyan); }
+    .stat-icon.green  { background: var(--green-dim);             color: var(--green); }
+    .stat-icon.blue   { background: rgba(79,195,255,0.12);        color: var(--blue); }
+    .stat-info { flex: 1; min-width: 0; }
+    .stat-num  { font-size: 26px; font-weight: 700; color: var(--white); line-height: 1; font-variant-numeric: tabular-nums; }
+    .stat-lbl  { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+
+    /* ── TOOLBAR (copied from admin-medical) ── */
+    .toolbar {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .search-wrap { position: relative; flex: 1; min-width: 220px; max-width: 380px; }
+    .search-icon {
+      position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 13px; pointer-events: none;
+    }
+    .search-input {
+      width: 100%; background: var(--card); border: 1px solid var(--border);
+      color: var(--white); font-family: 'Inter', sans-serif; font-size: 13px;
+      padding: 10px 36px 10px 38px; border-radius: var(--radius-sm);
+      outline: none; transition: var(--transition);
+    }
+    .search-input::placeholder { color: var(--muted2); }
+    .search-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
+    .search-clear {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 12px; padding: 4px; display: none; transition: color 0.2s;
+    }
+    .search-clear:hover { color: var(--white); }
+    .search-clear.visible { display: block; }
+
+    .filter-select {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 500;
+      padding: 10px 34px 10px 14px; border-radius: var(--radius-sm);
+      cursor: pointer; outline: none; appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      transition: var(--transition); min-width: 160px;
+    }
+    .filter-select:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
+    .filter-select option { background: #0d1829; color: var(--white); }
+    .toolbar-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+
+    /* ── BUTTONS (copied from admin-medical) ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+      letter-spacing: 0.5px; padding: 9px 18px; border-radius: var(--radius-sm);
+      border: none; cursor: pointer; transition: var(--transition); white-space: nowrap;
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-primary { background: var(--amber); color: #071021; }
+    .btn-primary:hover { background: #fbbf24; transform: translateY(-1px); }
+    .btn-danger  { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+    .btn-danger:hover { background: rgba(239,68,68,0.25); }
+    .btn-edit    { background: rgba(6,182,212,0.10); color: var(--cyan); border: 1px solid rgba(6,182,212,0.2); }
+    .btn-edit:hover { background: rgba(6,182,212,0.2); }
+    .btn-sm   { padding: 5px 11px; font-size: 11px; }
+    .btn-icon { width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 12px; }
+
+    /* ── RESULT COUNT / SECTION HEADER ── */
+    .result-count { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+    .result-count strong { color: var(--white); }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+    }
+    .section-title {
+      font-size: 13px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--amber);
+    }
+
+    /* ── TABLE (copied from admin-medical) ── */
+    .table-wrap {
+      background: var(--card); border: 1px solid var(--border2);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 720px; table-layout: fixed; }
+    col.col-name    { width: 22%; }
+    col.col-cat     { width: 16%; }
+    col.col-dates   { width: 18%; }
+    col.col-venue   { width: 20%; }
+    col.col-state   { width: 12%; }
+    col.col-actions { width: 12%; }
+    thead tr { background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); }
+    th {
+      padding: 12px 16px; font-size: 10px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+      text-align: left; white-space: nowrap;
+    }
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--amber); }
+    th.sort-asc  .sort-icon::after { content: ' ↑'; color: var(--amber); }
+    th.sort-desc .sort-icon::after { content: ' ↓'; color: var(--amber); }
+    tbody tr { border-bottom: 1px solid var(--border2); transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    td { padding: 13px 16px; font-size: 13px; color: var(--white); vertical-align: middle; }
+
+    .td-name  { font-weight: 600; min-width: 140px; }
+    .td-venue { color: var(--muted); font-size: 12px; }
+    .td-actions { display: flex; gap: 8px; align-items: center; justify-content: flex-end; }
+
+    /* Action buttons — larger and clearly usable */
+    .btn-view-ev {
+      width: 36px; height: 36px; padding: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 8px; font-size: 14px; cursor: pointer;
+      background: var(--cyan-dim); color: var(--cyan);
+      border: 1px solid rgba(6,182,212,0.25);
+      transition: var(--transition);
+    }
+    .btn-view-ev:hover { background: rgba(6,182,212,0.25); }
+    .btn-edit-ev {
+      width: 36px; height: 36px; padding: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 8px; font-size: 14px; cursor: pointer;
+      background: rgba(79,195,255,0.1); color: var(--blue);
+      border: 1px solid rgba(79,195,255,0.2);
+      transition: var(--transition);
+    }
+    .btn-edit-ev:hover { background: rgba(79,195,255,0.22); }
+    .btn-del-ev {
+      width: 36px; height: 36px; padding: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 8px; font-size: 14px; cursor: pointer;
+      background: var(--red-dim); color: var(--red);
+      border: 1px solid rgba(239,68,68,0.2);
+      transition: var(--transition);
+    }
+    .btn-del-ev:hover { background: rgba(239,68,68,0.25); }
+
+    /* Category badges */
+    .cat-badge {
+      display: inline-flex; align-items: center;
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 20px;
+      white-space: nowrap;
+    }
+    .cat-festival  { background: var(--cat-festival-bg);  color: var(--cat-festival-txt); }
+    .cat-concert   { background: var(--cat-concert-bg);   color: var(--cat-concert-txt); }
+    .cat-cultural  { background: var(--cat-cultural-bg);  color: var(--cat-cultural-txt); }
+    .cat-religious { background: var(--cat-religious-bg); color: var(--cat-religious-txt); }
+    .cat-sports    { background: var(--cat-sports-bg);    color: var(--cat-sports-txt); }
+    .cat-food      { background: var(--cat-food-bg);      color: var(--cat-food-txt); }
+    .cat-adventure { background: var(--cat-adventure-bg); color: var(--cat-adventure-txt); }
+
+    /* Mini pills */
+    .pill {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px;
+    }
+    .pill-free     { background: var(--green-dim); color: var(--green); }
+    .pill-paid     { background: var(--cyan-dim);  color: var(--cyan); }
+    .pill-featured { background: var(--amber-dim); color: var(--amber); }
+    .pill-annual   { background: var(--border);    color: var(--muted); }
+
+    .td-actions { display: flex; gap: 6px; align-items: center; justify-content: flex-end; }
+
+    /* Featured toggle button */
+    .feat-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600;
+      padding: 4px 10px; border-radius: 20px; cursor: pointer; border: none;
+      transition: var(--transition); letter-spacing: 0.3px;
+    }
+    .feat-btn.on  { background: var(--amber-dim); color: var(--amber); }
+    .feat-btn.off { background: var(--border);    color: var(--muted); }
+    .feat-btn:hover { filter: brightness(1.25); }
+
+    /* Empty / loading */
+    .table-empty { padding: 60px 20px; text-align: center; color: var(--muted); font-size: 14px; }
+    .table-empty i { font-size: 32px; display: block; margin-bottom: 12px; opacity: 0.35; }
+    .spinner { animation: spin 1s linear infinite; color: var(--cyan); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── DETAIL VIEW MODAL ── */
+    .detail-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px 20px; margin-bottom: 20px;
+    }
+    .detail-item { display: flex; flex-direction: column; gap: 5px; }
+    .detail-item.full { grid-column: 1 / -1; }
+    .detail-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .detail-value {
+      font-size: 13px; color: var(--white);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px; line-height: 1.6; word-break: break-word;
+    }
+    .detail-value.desc-val { line-height: 1.75; color: rgba(232,240,247,0.85); white-space: pre-wrap; }
+    .detail-cat-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .detail-footer-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 16px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 10px;
+    }
+    .detail-flags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    /* ── MODAL OVERLAY ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(4,10,22,0.88);
+      backdrop-filter: blur(4px);
+      z-index: 2000; display: none;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #0d1829; border: 1px solid rgba(245,158,11,0.2);
+      border-radius: var(--radius); width: 100%; max-width: 680px;
+      max-height: 92vh; overflow-y: auto; position: relative;
+      animation: modalIn 0.25s ease;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,158,11,0.06);
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.96) translateY(-10px); }
+      to   { opacity: 1; transform: scale(1)    translateY(0); }
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 28px 18px; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: #0d1829; z-index: 1;
+    }
+    .modal-title { font-size: 16px; font-weight: 700; color: var(--white); }
+    .modal-title span { color: var(--amber); }
+    .modal-close-btn {
+      width: 32px; height: 32px; background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border); color: var(--muted);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; transition: var(--transition);
+    }
+    .modal-close-btn:hover { background: var(--red-dim); color: var(--red); border-color: rgba(239,68,68,0.3); }
+    .modal-body { padding: 24px 28px; }
+
+    /* ── FORM (copied from admin-medical) ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 20px; }
+    .form-col-span { grid-column: 1 / -1; }
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
+    .form-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .form-label .required { color: var(--red); margin-left: 3px; }
+    .form-input, .form-select, .form-textarea {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      color: var(--white); font-family: 'Inter', sans-serif; font-size: 13px;
+      padding: 10px 14px; border-radius: var(--radius-sm); outline: none;
+      transition: var(--transition); width: 100%;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-dim);
+      background: rgba(245,158,11,0.03);
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--muted2); }
+    .form-textarea { resize: vertical; min-height: 90px; line-height: 1.65; }
+    .form-select {
+      appearance: none; -webkit-appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      padding-right: 32px;
+    }
+    .form-select option { background: #0d1829; color: var(--white); }
+    .form-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+    /* Image preview */
+    .img-preview-box {
+      margin-top: 8px; border-radius: var(--radius-sm); overflow: hidden;
+      border: 1px solid var(--border); display: none;
+    }
+    .img-preview-box.visible { display: block; }
+    .img-preview-box img { width: 100%; height: 130px; object-fit: cover; display: block; }
+
+    /* Toggle switches */
+    .toggle-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 0; border-bottom: 1px solid var(--border2);
+    }
+    .toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .toggle-info { flex: 1; }
+    .toggle-lbl  { font-size: 13px; font-weight: 600; color: var(--white); }
+    .toggle-sub  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .toggle { position: relative; display: inline-block; width: 42px; height: 24px; flex-shrink: 0; cursor: pointer; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: rgba(255,255,255,0.07);
+      border-radius: 24px; border: 1px solid var(--border); transition: 0.25s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--muted); left: 2px; top: 2px; transition: 0.25s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--amber); border-color: var(--amber); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); background: #071021; }
+
+    /* Modal footer */
+    .modal-footer {
+      display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+      padding: 18px 28px 22px; border-top: 1px solid var(--border);
+      position: sticky; bottom: 0; background: #0d1829;
+    }
+    .btn-cancel {
+      background: transparent; color: var(--muted); border: 1px solid var(--border);
+      padding: 9px 20px; border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: var(--transition);
+    }
+    .btn-cancel:hover { border-color: var(--muted); color: var(--white); }
+    .btn-save {
+      background: var(--amber); color: #071021; border: none;
+      padding: 9px 24px; border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: var(--transition);
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+    .btn-save:hover { background: #fbbf24; transform: translateY(-1px); }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ── CONFIRM DIALOG (copied from admin-medical) ── */
+    .confirm-box { max-width: 420px; border-color: rgba(239,68,68,0.2) !important; }
+    .confirm-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--red-dim); color: var(--red);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin: 0 auto 20px;
+    }
+    .confirm-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .confirm-msg   { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+    .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+    .btn-confirm-del {
+      background: var(--red); color: #fff; border: none;
+      padding: 10px 28px; border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: var(--transition);
+    }
+    .btn-confirm-del:hover { background: #dc2626; }
+
+    /* ── TOAST (copied from admin-medical) ── */
+    #toast {
+      position: fixed; bottom: 28px; right: 28px;
+      z-index: 9999; display: flex; flex-direction: column;
+      gap: 10px; pointer-events: none;
+    }
+    .toast-item {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 13px 18px;
+      font-size: 13px; font-weight: 500; color: var(--white);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      animation: toastIn 0.3s ease; min-width: 280px;
+    }
+    .toast-item.success { border-color: rgba(245,158,11,0.4); }
+    .toast-item.success i { color: var(--amber); }
+    .toast-item.error   { border-color: rgba(239,68,68,0.4); }
+    .toast-item.error   i { color: var(--red); }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 768px) {
+      #main { padding: calc(var(--header-h) + 24px) 16px 60px; }
+      #admin-header { padding: 0 16px; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .search-wrap { max-width: 100%; }
+      .toolbar-right { margin-left: 0; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-col-span { grid-column: 1; }
+      .header-title { display: none; }
+      .td-desc { display: none; }
+    }
+    @media (max-width: 480px) { .stats-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header id="admin-header">
+    <div class="header-left">
+      <a href="../index.html" class="header-logo">Bharat Yatra</a>
+      <div class="header-divider"></div>
+      <span class="header-title">Events Manager</span>
+    </div>
+    <div class="header-right">
+      <a href="admin-dashboard.html" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Dashboard
+      </a>
+      <button class="btn-logout" onclick="BYAuth.logout('user_initiated')">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN ==================== -->
+  <main id="main">
+
+    <!-- Title -->
+    <div class="page-title-row">
+      <h1 class="page-title">Events <span>Manager</span></h1>
+      <button class="btn btn-primary" onclick="openAddModal()">
+        <i class="fas fa-plus"></i> Add Event
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon amber"><i class="fas fa-calendar-days"></i></div>
+        <div class="stat-info">
+          <div class="stat-num" id="statTotal">—</div>
+          <div class="stat-lbl">Total Events</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon cyan"><i class="fas fa-star"></i></div>
+        <div class="stat-info">
+          <div class="stat-num" id="statFeatured">—</div>
+          <div class="stat-lbl">Featured</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fas fa-ticket"></i></div>
+        <div class="stat-info">
+          <div class="stat-num" id="statFree">—</div>
+          <div class="stat-lbl">Free Entry</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-rotate-right"></i></div>
+        <div class="stat-info">
+          <div class="stat-num" id="statRecurring">—</div>
+          <div class="stat-lbl">Recurring</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="fas fa-search search-icon"></i>
+        <input class="search-input" type="text" id="searchInput"
+               placeholder="Search by name or venue…"
+               oninput="handleSearch(this.value)" autocomplete="off"/>
+        <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Clear">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <select class="filter-select" id="stateFilter" onchange="applyFilters()">
+        <option value="">All States</option>
+        <option value="1">Gujarat</option>
+        <option value="2">Rajasthan</option>
+        <option value="3">Kerala</option>
+        <option value="4">Uttarakhand</option>
+        <option value="5">Assam</option>
+      </select>
+
+      <select class="filter-select" id="categoryFilter" onchange="applyFilters()">
+        <option value="">All Categories</option>
+        <option value="Festival">Festival</option>
+        <option value="Cultural Show">Cultural Show</option>
+        <option value="Religious">Religious</option>
+        <option value="Concert">Concert</option>
+        <option value="Food &amp; Craft Fair">Food &amp; Craft Fair</option>
+        <option value="Adventure">Adventure</option>
+        <option value="Sports">Sports</option>
+      </select>
+
+      <select class="filter-select" id="flagFilter" onchange="applyFilters()">
+        <option value="">All Events</option>
+        <option value="featured">Featured Only</option>
+        <option value="free">Free Entry</option>
+        <option value="recurring">Recurring / Annual</option>
+      </select>
+
+      <div class="toolbar-right">
+        <button class="btn" style="background:transparent;color:var(--muted);border:1px solid var(--border);font-size:12px;padding:8px 14px;"
+                onclick="clearAllFilters()">
+          <i class="fas fa-times"></i> Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Result count -->
+    <div class="result-count" id="resultCount"></div>
+
+    <!-- Section header -->
+    <div class="section-header">
+      <span class="section-title">Events</span>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table id="eventsTable">
+          <colgroup>
+            <col class="col-name">
+            <col class="col-cat">
+            <col class="col-dates">
+            <col class="col-venue">
+            <col class="col-state">
+            <col class="col-actions">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="sortable" data-col="name" onclick="sortBy('name')">
+                <span class="sort-icon">Event Name</span>
+              </th>
+              <th>Category</th>
+              <th class="sortable" data-col="date_from" onclick="sortBy('date_from')">
+                <span class="sort-icon">Dates</span>
+              </th>
+              <th>Venue</th>
+              <th class="sortable" data-col="state_id" onclick="sortBy('state_id')">
+                <span class="sort-icon">State</span>
+              </th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="6">
+                <div class="table-empty">
+                  <i class="fas fa-circle-notch fa-spin spinner"
+                     style="font-size:24px; display:block; margin-bottom:12px;"></i>
+                  Loading events…
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==================== TOAST ==================== -->
+  <div id="toast"></div>
+
+  <!-- ==================== ADD / EDIT MODAL ==================== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box" id="modalBox">
+      <!-- injected by JS -->
+    </div>
+  </div>
+
+  <!-- ==================== DETAIL VIEW MODAL ==================== -->
+  <div class="modal-overlay" id="detailOverlay">
+    <div class="modal-box" id="detailBox" style="max-width:620px; border-color:rgba(6,182,212,0.2);">
+      <!-- injected by JS -->
+    </div>
+  </div>
+
+  <!-- ==================== DELETE CONFIRM ==================== -->
+  <div class="modal-overlay" id="confirmOverlay">
+    <div class="modal-box confirm-box">
+      <div class="modal-body" style="text-align:center; padding:32px 28px;">
+        <div class="confirm-icon"><i class="fas fa-trash"></i></div>
+        <div class="confirm-title" id="confirmTitle">Delete event?</div>
+        <div class="confirm-msg"   id="confirmMsg">This action cannot be undone.</div>
+        <div class="confirm-actions">
+          <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+          <button class="btn-confirm-del" id="confirmOkBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ============================================================
+  //  CONSTANTS
+  // ============================================================
+  const CATEGORIES  = ['Festival','Cultural Show','Religious','Concert','Food & Craft Fair','Adventure','Sports'];
+  const STATE_MAP   = { 1:'Gujarat', 2:'Rajasthan', 3:'Kerala', 4:'Uttarakhand', 5:'Assam' };
+  const CAT_CLASS   = {
+    'Festival':'festival','Cultural Show':'cultural','Religious':'religious',
+    'Concert':'concert','Food & Craft Fair':'food','Adventure':'adventure','Sports':'sports'
+  };
+
+  // ============================================================
+  //  STATE  (mirrors admin-medical pattern exactly)
+  // ============================================================
+  let allEvents = [];   // full dataset from Supabase
+  let filtered  = [];   // currently displayed rows
+  let sortCol   = 'date_from';
+  let sortDir   = 'asc';
+  let pendingConfirmCb = null;
+
+  // ============================================================
+  //  SANITISATION  (identical to admin-medical.html)
+  // ============================================================
+  function san(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/<[^>]*>/g, '')
+      .replace(/javascript:/gi, '')
+      .replace(/on\w+\s*=/gi, '')
+      .trim();
+  }
+  function sanUrl(str) {
+    if (!str) return '';
+    const s = san(str);
+    return /^https?:\/\//i.test(s) ? s : '';
+  }
+
+  // ============================================================
+  //  TOAST  (identical to admin-medical.html)
+  // ============================================================
+  function toast(msg, type = 'success') {
+    const container = document.getElementById('toast');
+    const el = document.createElement('div');
+    el.className = `toast-item ${type}`;
+    el.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${san(msg)}`;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 3800);
+  }
+
+  // ============================================================
+  //  MODAL HELPERS  (identical to admin-medical.html)
+  // ============================================================
+  function openModal(html) {
+    document.getElementById('modalBox').innerHTML = html;
+    document.getElementById('modalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function openConfirm(title, msg, cb) {
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMsg').textContent   = msg;
+    pendingConfirmCb = cb;
+    document.getElementById('confirmOkBtn').onclick = () => { closeConfirm(); cb(); };
+    document.getElementById('confirmOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeConfirm() {
+    document.getElementById('confirmOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+    pendingConfirmCb = null;
+  }
+
+  // Close overlays on backdrop click
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal();
+  });
+  document.getElementById('confirmOverlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeConfirm();
+  });
+  // ESC key closes modals
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeModal(); closeConfirm(); }
+  });
+
+  // ============================================================
+  //  HELPERS
+  // ============================================================
+  function formatDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso + 'T00:00:00').toLocaleDateString('en-IN',
+      { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+  function formatDateRange(from, to) {
+    if (!from) return '—';
+    const f = formatDate(from), t = formatDate(to);
+    return (!to || f === t) ? f : `${f} – ${t}`;
+  }
+
+  // ============================================================
+  //  LOAD EVENTS FROM SUPABASE  (same pattern as admin-medical loadHospitals)
+  // ============================================================
+  async function loadEvents() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = `<tr><td colspan="9">
+      <div class="table-empty">
+        <i class="fas fa-circle-notch fa-spin spinner" style="font-size:24px;display:block;margin-bottom:12px;"></i>
+        Loading events…
+      </div></td></tr>`;
+
+    const { data, error } = await sb
+      .from('events')
+      .select('*')
+      .order('date_from', { ascending: true });
+
+    if (error) {
+      tbody.innerHTML = `<tr><td colspan="9">
+        <div class="table-empty">
+          <i class="fas fa-exclamation-circle" style="color:var(--red)"></i>
+          Failed to load events: ${san(error.message)}
+        </div></td></tr>`;
+      toast('Failed to load events: ' + error.message, 'error');
+      return;
+    }
+
+    allEvents = data || [];
+    updateStats();
+    applyFilters();
+  }
+
+  // ============================================================
+  //  STATS  (same as admin-medical updateStats)
+  // ============================================================
+  function updateStats() {
+    document.getElementById('statTotal').textContent     = allEvents.length;
+    document.getElementById('statFeatured').textContent  = allEvents.filter(e => e.is_featured).length;
+    document.getElementById('statFree').textContent      = allEvents.filter(e => !e.entry_fee).length;
+    document.getElementById('statRecurring').textContent = allEvents.filter(e => e.is_recurring).length;
+  }
+
+  // ============================================================
+  //  SEARCH & FILTER  (same pattern as admin-medical)
+  // ============================================================
+  function handleSearch(val) {
+    document.getElementById('searchClear').classList.toggle('visible', val.length > 0);
+    applyFilters();
+  }
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchClear').classList.remove('visible');
+    applyFilters();
+  }
+  function clearAllFilters() {
+    document.getElementById('searchInput').value    = '';
+    document.getElementById('stateFilter').value    = '';
+    document.getElementById('categoryFilter').value = '';
+    document.getElementById('flagFilter').value     = '';
+    document.getElementById('searchClear').classList.remove('visible');
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const query    = document.getElementById('searchInput').value.trim().toLowerCase();
+    const stateId  = document.getElementById('stateFilter').value;
+    const category = document.getElementById('categoryFilter').value;
+    const flag     = document.getElementById('flagFilter').value;
+
+    filtered = allEvents.filter(e => {
+      const okSearch   = !query    || (e.name||'').toLowerCase().includes(query)
+                                   || (e.city_venue||'').toLowerCase().includes(query);
+      const okState    = !stateId  || String(e.state_id) === stateId;
+      const okCat      = !category || e.category === category;
+      const okFlag     = !flag
+        || (flag === 'featured'  && e.is_featured)
+        || (flag === 'free'      && !e.entry_fee)
+        || (flag === 'recurring' && e.is_recurring);
+      return okSearch && okState && okCat && okFlag;
+    });
+
+    // Sort
+    filtered.sort((a, b) => {
+      let av = a[sortCol] ?? '', bv = b[sortCol] ?? '';
+      if (typeof av === 'string') av = av.toLowerCase();
+      if (typeof bv === 'string') bv = bv.toLowerCase();
+      if (av < bv) return sortDir === 'asc' ? -1 : 1;
+      if (av > bv) return sortDir === 'asc' ?  1 : -1;
+      return 0;
+    });
+
+    renderTable();
+    updateResultCount();
+  }
+
+  function updateResultCount() {
+    const el = document.getElementById('resultCount');
+    const total = allEvents.length, showing = filtered.length;
+    el.innerHTML = showing === total
+      ? `Showing <strong>${total}</strong> event${total !== 1 ? 's' : ''}`
+      : `Showing <strong>${showing}</strong> of <strong>${total}</strong> events`;
+  }
+
+  // ============================================================
+  //  SORT  (same pattern as admin-medical sortBy)
+  // ============================================================
+  function sortBy(col) {
+    sortDir = (sortCol === col) ? (sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
+    sortCol = col;
+    document.querySelectorAll('th.sortable').forEach(th => {
+      th.classList.remove('sort-asc', 'sort-desc');
+      if (th.dataset.col === col) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    });
+    applyFilters();
+  }
+
+  // ============================================================
+  //  RENDER TABLE  (same pattern as admin-medical renderTable)
+  // ============================================================
+  function renderTable() {
+    const tbody = document.getElementById('tableBody');
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="6">
+        <div class="table-empty">
+          <i class="fas fa-calendar-times"></i>No events match the current filters.
+        </div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(e => {
+      const catCls   = CAT_CLASS[e.category] || 'festival';
+      const stateName = STATE_MAP[e.state_id] || `#${e.state_id}`;
+
+      return `
+        <tr>
+          <td><div class="td-name">${san(e.name)}</div></td>
+          <td><span class="cat-badge cat-${catCls}">${san(e.category)}</span></td>
+          <td style="font-size:12px; color:var(--muted); white-space:nowrap;">${formatDateRange(e.date_from, e.date_to)}</td>
+          <td><div class="td-venue">${san(e.city_venue || '—')}</div></td>
+          <td style="font-size:12px; color:var(--muted);">${san(stateName)}</td>
+          <td>
+            <div class="td-actions">
+              <button class="btn-view-ev" onclick="openDetail(${e.id})" title="View details">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn-edit-ev" onclick="openEditModal(${e.id})" title="Edit">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button class="btn-del-ev" onclick="confirmDelete(${e.id}, '${san(e.name).replace(/'/g,"\\'")}');" title="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  // ============================================================
+  //  DETAIL VIEW MODAL
+  // ============================================================
+  function openDetail(id) {
+    const e = allEvents.find(x => x.id === id);
+    if (!e) return;
+
+    const catCls   = CAT_CLASS[e.category] || 'festival';
+    const stateName = STATE_MAP[e.state_id] || `#${e.state_id}`;
+    const fee = (!e.entry_fee || e.entry_fee === 0)
+      ? `<span class="pill pill-free"><i class="fas fa-check"></i> Free</span>`
+      : `<span class="pill pill-paid">₹${Number(e.entry_fee).toLocaleString('en-IN')}</span>`;
+    const flags = [
+      e.is_featured  ? `<span class="pill pill-featured"><i class="fas fa-star"></i> Featured</span>` : '',
+      e.is_recurring ? `<span class="pill pill-annual"><i class="fas fa-rotate-right"></i> Annual</span>` : ''
+    ].filter(Boolean).join(' ');
+
+    document.getElementById('detailBox').innerHTML = `
+      <div class="modal-header">
+        <span class="modal-title">${san(e.name)}</span>
+        <button class="modal-close-btn" onclick="closeDetail()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-cat-row">
+          <span class="cat-badge cat-${catCls}">${san(e.category)}</span>
+          ${fee}
+          ${flags || ''}
+        </div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Dates</div>
+            <div class="detail-value">${formatDateRange(e.date_from, e.date_to)}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">State</div>
+            <div class="detail-value">${san(stateName)}</div>
+          </div>
+          <div class="detail-item full">
+            <div class="detail-label">Venue</div>
+            <div class="detail-value">${san(e.city_venue || '—')}</div>
+          </div>
+          <div class="detail-item full">
+            <div class="detail-label">Description</div>
+            <div class="detail-value desc-val">${san(e.description || '—')}</div>
+          </div>
+        </div>
+        <div class="detail-footer-row">
+          <div class="detail-flags">
+            <button class="feat-btn ${e.is_featured ? 'on' : 'off'}"
+                    onclick="toggleFeatured(${e.id}); closeDetail();" title="Toggle Featured">
+              <i class="fas fa-star"></i> ${e.is_featured ? 'Unfeature' : 'Mark as Featured'}
+            </button>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn-cancel" onclick="closeDetail()">Close</button>
+            <button class="btn btn-edit btn-sm" onclick="closeDetail(); openEditModal(${e.id})">
+              <i class="fas fa-pen"></i> Edit
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('detailOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDetail() {
+    document.getElementById('detailOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('detailOverlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeDetail();
+  });
+
+  // ============================================================
+  //  FORM HTML BUILDER  (same pattern as admin-medical hospitalFormHtml)
+  // ============================================================
+  function eventFormHtml(title, ev = {}) {
+    const catOptions = CATEGORIES.map(c =>
+      `<option value="${c}" ${ev.category === c ? 'selected' : ''}>${c}</option>`
+    ).join('');
+
+    const stateOptions = Object.entries(STATE_MAP).map(([id, name]) =>
+      `<option value="${id}" ${String(ev.state_id) === id ? 'selected' : ''}>${name}</option>`
+    ).join('');
+
+    const imgVal     = san(ev.image_url   || '');
+    const siteVal    = san(ev.website_url || '');
+    const imgVisible = imgVal ? 'visible' : '';
+
+    return `
+      <div class="modal-header">
+        <span class="modal-title">${title}</span>
+        <button class="modal-close-btn" onclick="closeModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+
+          <!-- Event Name -->
+          <div class="form-group form-col-span">
+            <label class="form-label">Event Name <span class="required">*</span></label>
+            <input class="form-input" id="f_name"
+                   placeholder="e.g. Rann Utsav" value="${san(ev.name || '')}">
+          </div>
+
+          <!-- State + Category -->
+          <div class="form-group">
+            <label class="form-label">State <span class="required">*</span></label>
+            <select class="form-select" id="f_state_id">
+              <option value="">— Select State —</option>
+              ${stateOptions}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category <span class="required">*</span></label>
+            <select class="form-select" id="f_category">
+              <option value="">— Select Category —</option>
+              ${catOptions}
+            </select>
+          </div>
+
+          <!-- Date From + Date To -->
+          <div class="form-group">
+            <label class="form-label">Date From <span class="required">*</span></label>
+            <input class="form-input" id="f_date_from" type="date"
+                   value="${ev.date_from ? ev.date_from.slice(0,10) : ''}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date To <span class="required">*</span></label>
+            <input class="form-input" id="f_date_to" type="date"
+                   value="${ev.date_to ? ev.date_to.slice(0,10) : ''}">
+          </div>
+
+          <!-- City / Venue -->
+          <div class="form-group form-col-span">
+            <label class="form-label">City / Venue <span class="required">*</span></label>
+            <input class="form-input" id="f_city_venue"
+                   placeholder="e.g. GMDC Ground, Ahmedabad"
+                   value="${san(ev.city_venue || '')}">
+          </div>
+
+          <!-- Description -->
+          <div class="form-group form-col-span">
+            <label class="form-label">Description <span class="required">*</span></label>
+            <textarea class="form-textarea" id="f_description"
+                      placeholder="Full event description…">${san(ev.description || '')}</textarea>
+          </div>
+
+          <!-- Entry Fee + Image URL -->
+          <div class="form-group">
+            <label class="form-label">Entry Fee (₹)</label>
+            <input class="form-input" id="f_entry_fee" type="number" min="0"
+                   placeholder="Leave blank = Free" value="${ev.entry_fee ?? ''}">
+            <div class="form-hint">Leave blank for free entry</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Image URL</label>
+            <input class="form-input" id="f_image_url"
+                   placeholder="https://…" value="${imgVal}"
+                   oninput="liveImgPreview(this.value)">
+            <div class="form-hint">HTTPS URL only</div>
+            <div class="img-preview-box ${imgVisible}" id="imgPreviewBox">
+              <img src="${imgVal}" alt="Preview"
+                   onerror="document.getElementById('imgPreviewBox').classList.remove('visible')">
+            </div>
+          </div>
+
+          <!-- Website URL -->
+          <div class="form-group form-col-span">
+            <label class="form-label">Website URL</label>
+            <input class="form-input" id="f_website_url"
+                   placeholder="https://…" value="${siteVal}">
+            <div class="form-hint">Must begin with https://. Leave blank if none.</div>
+          </div>
+
+          <!-- Toggles -->
+          <div class="form-group form-col-span">
+            <div class="toggle-row">
+              <label class="toggle">
+                <input type="checkbox" id="f_is_featured" ${ev.is_featured ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+              <div class="toggle-info">
+                <div class="toggle-lbl">Featured Event</div>
+                <div class="toggle-sub">Highlighted on the public events listing page</div>
+              </div>
+            </div>
+            <div class="toggle-row">
+              <label class="toggle">
+                <input type="checkbox" id="f_is_recurring" ${ev.is_recurring ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+              <div class="toggle-info">
+                <div class="toggle-lbl">Annual / Recurring</div>
+                <div class="toggle-sub">Event repeats on similar dates every year</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" id="savBtn" onclick="saveEvent(${ev.id || 'null'})">
+          <i class="fas fa-save"></i> ${ev.id ? 'Update Event' : 'Add Event'}
+        </button>
+      </div>
+    `;
+  }
+
+  // Live image preview while typing URL
+  function liveImgPreview(url) {
+    const box = document.getElementById('imgPreviewBox');
+    if (!box) return;
+    if (url && /^https?:\/\//i.test(url)) {
+      const img = box.querySelector('img');
+      if (img) {
+        img.src = url;
+        img.onerror = () => box.classList.remove('visible');
+        img.onload  = () => box.classList.add('visible');
+      }
+      box.classList.add('visible');
+    } else {
+      box.classList.remove('visible');
+    }
+  }
+
+  // ============================================================
+  //  ADD
+  // ============================================================
+  function openAddModal() {
+    openModal(eventFormHtml('Add <span>Event</span>'));
+  }
+
+  // ============================================================
+  //  EDIT
+  // ============================================================
+  function openEditModal(id) {
+    const ev = allEvents.find(x => x.id === id);
+    if (!ev) return;
+    openModal(eventFormHtml(`Edit — <span>${san(ev.name)}</span>`, ev));
+  }
+
+  // ============================================================
+  //  SAVE  — INSERT or UPDATE via Supabase
+  //  Pattern identical to admin-medical.html saveHospital()
+  // ============================================================
+  async function saveEvent(id) {
+    const btn = document.getElementById('savBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+
+    const g = fid => document.getElementById(fid)?.value ?? '';
+
+    const name        = san(g('f_name'));
+    const stateId     = g('f_state_id');
+    const category    = san(g('f_category'));
+    const dateFrom    = g('f_date_from') || null;
+    const dateTo      = g('f_date_to')   || null;
+    const cityVenue   = san(g('f_city_venue'));
+    const description = san(g('f_description'));
+    const rawFee      = g('f_entry_fee').trim();
+    const entryFee    = rawFee === '' ? null : parseInt(rawFee, 10);
+    const imageUrl    = sanUrl(g('f_image_url'))   || null;
+    const websiteUrl  = sanUrl(g('f_website_url')) || null;
+    const isFeatured  = document.getElementById('f_is_featured')?.checked  || false;
+    const isRecurring = document.getElementById('f_is_recurring')?.checked || false;
+
+    // Validation — same pattern as admin-medical
+    if (!name) {
+      toast('Event name is required.', 'error');
+      btn.disabled = false; btn.innerHTML = `<i class="fas fa-save"></i> ${id ? 'Update Event' : 'Add Event'}`;
+      return;
+    }
+    if (!stateId) {
+      toast('Please select a state.', 'error');
+      btn.disabled = false; btn.innerHTML = `<i class="fas fa-save"></i> ${id ? 'Update Event' : 'Add Event'}`;
+      return;
+    }
+    if (!category) {
+      toast('Please select a category.', 'error');
+      btn.disabled = false; btn.innerHTML = `<i class="fas fa-save"></i> ${id ? 'Update Event' : 'Add Event'}`;
+      return;
+    }
+    if (!dateFrom || !dateTo) {
+      toast('Please set both Date From and Date To.', 'error');
+      btn.disabled = false; btn.innerHTML = `<i class="fas fa-save"></i> ${id ? 'Update Event' : 'Add Event'}`;
+      return;
+    }
+    if (new Date(dateTo) < new Date(dateFrom)) {
+      toast('Date To must be on or after Date From.', 'error');
+      btn.disabled = false; btn.innerHTML = `<i class="fas fa-save"></i> ${id ? 'Update Event' : 'Add Event'}`;
+      return;
+    }
+    if (!cityVenue) {
+      toast('City / Venue is required.', 'error');
+      btn.disabled = false; btn.innerHTML = `<i class="fas fa-save"></i> ${id ? 'Update Event' : 'Add Event'}`;
+      return;
+    }
+    if (!description) {
+      toast('Description is required.', 'error');
+      btn.disabled = false; btn.innerHTML = `<i class="fas fa-save"></i> ${id ? 'Update Event' : 'Add Event'}`;
+      return;
+    }
+
+    const payload = {
+      state_id:     parseInt(stateId),
+      name,
+      date_from:    dateFrom,
+      date_to:      dateTo,
+      city_venue:   cityVenue,
+      category,
+      description,
+      entry_fee:    entryFee,
+      image_url:    imageUrl,
+      website_url:  websiteUrl,
+      is_featured:  isFeatured,
+      is_recurring: isRecurring,
+      updated_at:   new Date().toISOString()
+    };
+
+    let error;
+    if (id) {
+      ({ error } = await sb.from('events').update(payload).eq('id', id));
+    } else {
+      payload.created_at = new Date().toISOString();
+      ({ error } = await sb.from('events').insert(payload));
+    }
+
+    if (error) {
+      toast('Error: ' + error.message, 'error');
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fas fa-save"></i> ${id ? 'Update Event' : 'Add Event'}`;
+      return;
+    }
+
+    toast(id ? 'Event updated!' : 'Event added!');
+    closeModal();
+    await loadEvents();   // fresh Supabase fetch — same as admin-medical
+  }
+
+  // ============================================================
+  //  TOGGLE FEATURED  — direct Supabase PATCH, no full reload
+  // ============================================================
+  async function toggleFeatured(id) {
+    const ev = allEvents.find(x => x.id === id);
+    if (!ev) return;
+    const newVal = !ev.is_featured;
+
+    const { error } = await sb
+      .from('events')
+      .update({ is_featured: newVal, updated_at: new Date().toISOString() })
+      .eq('id', id);
+
+    if (error) { toast('Error: ' + error.message, 'error'); return; }
+
+    ev.is_featured = newVal;
+    updateStats();
+    applyFilters();   // re-render table in-place
+    toast(newVal ? 'Marked as Featured!' : 'Removed from Featured.');
+  }
+
+  // ============================================================
+  //  DELETE  — Supabase DELETE (identical to admin-medical confirmDelete)
+  // ============================================================
+  function confirmDelete(id, name) {
+    openConfirm(
+      `Delete "${name}"?`,
+      'This event will be permanently removed from the database and will no longer appear on public pages. This cannot be undone.',
+      async () => {
+        const { error } = await sb.from('events').delete().eq('id', id);
+        if (error) { toast('Error: ' + error.message, 'error'); return; }
+        toast('Event deleted.');
+        allEvents = allEvents.filter(e => e.id !== id);
+        applyFilters();
+        updateStats();
+      }
+    );
+  }
+
+  // ============================================================
+  //  INIT  (identical structure to admin-medical DOMContentLoaded)
+  // ============================================================
+  document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Auth guard — sb is already initialised by admin-auth.js
+    const session = await BYAuth.check();
+    if (!session) return;
+
+    // 2. Register inactivity reset slot (same as admin-dashboard)
+    window._BYAuthReset = () => document.dispatchEvent(new MouseEvent('mousemove'));
+
+    // 3. Set initial sort indicator
+    const th = document.querySelector(`th[data-col="${sortCol}"]`);
+    if (th) th.classList.add('sort-asc');
+
+    // 4. Load events from Supabase
+    await loadEvents();
+  });
+  </script>
+</body>
+</html>

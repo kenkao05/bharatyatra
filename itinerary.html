@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itinerary Planner | BharatYatra</title>
+
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com 'unsafe-inline';
+        style-src  'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+        font-src   'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src    'self' data: https:;
+        connect-src 'self' https://*.supabase.co;
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'self';
+        object-src 'none';
+    ">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <script>if (window.self !== window.top) { window.top.location = window.self.location; }</script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qALmWA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <style>
+    /* ── ROOT ── */
+    :root {
+        --black:  #000000;
+        --red:    #C0392B;
+        --orange: #ff6b35;
+        --white:  #FFFFFF;
+        --grey:   #1a1a1a;
+        --muted:  #999999;
+        --sidebar-width: 320px;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Poppins', sans-serif; background: var(--white); color: var(--black); overflow-x: hidden; }
+    body.no-scroll { overflow: hidden; }
+
+    /* ── LOADER ── */
+    #loader {
+        position: fixed; inset: 0; z-index: 9999;
+        background: var(--black);
+        display: flex; align-items: center; justify-content: center;
+        transition: opacity 0.7s ease;
+    }
+    #loader.hidden { opacity: 0; pointer-events: none; }
+    #loader-text {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+        color: var(--white); letter-spacing: 3px;
+        opacity: 0; transform: translateY(10px);
+        transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    #loader-text.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── NAVBAR ── */
+    #navbar {
+        position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+        padding: 10px 0;
+        background: rgba(8,8,8,0.92);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+    }
+    .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--orange); text-decoration: none; letter-spacing: 3px; flex-shrink: 0; }
+    .menu-btn { background: none; border: none; color: #969696; font-size: 1.5rem; cursor: pointer; padding: 4px 6px; line-height: 1; transition: color 0.2s; flex-shrink: 0; }
+    .menu-btn:hover { color: var(--orange); }
+    .nav-back-btn { margin-left: 24px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; text-decoration: none; color: #969696; border: 1px solid #333; transition: color 0.2s, border-color 0.2s; flex-shrink: 0; }
+    .nav-back-btn i { font-size: 12px; }
+    .nav-back-btn:hover { color: var(--orange); border-color: var(--orange); }
+
+    /* ── SIDEBAR ── */
+    .sidebar { position: fixed; top: 0; right: calc(-1 * var(--sidebar-width)); width: var(--sidebar-width); height: 100%; background: var(--black); z-index: 2000; overflow-y: auto; padding: 50px 36px 40px; transition: right 0.35s cubic-bezier(0.4,0,0.2,1); border-left: 1px solid #222; }
+    .sidebar.active { right: 0; }
+    .close-btn { position: absolute; top: 18px; right: 22px; background: none; border: none; font-size: 32px; color: var(--white); cursor: pointer; line-height: 1; padding: 4px 8px; transition: color 0.2s; }
+    .close-btn:hover { color: var(--red); }
+    .sidebar-tagline { font-family: 'Playfair Display', serif; font-style: italic; font-size: 13px; color: var(--muted); letter-spacing: 2px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #222; }
+    .sidebar-links { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .sidebar-links li a { display: flex; align-items: center; gap: 14px; padding: 12px 0; color: #cccccc; text-decoration: none; font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 400; letter-spacing: 0.5px; border-bottom: 1px solid #111; transition: color 0.25s, padding-left 0.25s; }
+    .sidebar-links li a i { font-size: 16px; width: 20px; color: var(--red); flex-shrink: 0; }
+    .sidebar-links li a:hover { color: var(--white); padding-left: 6px; }
+    .sidebar-section-label { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #444; margin-top: 28px; margin-bottom: 8px; padding-top: 24px; border-top: 1px solid #1a1a1a; }
+    .sidebar-login-btn { display: flex; align-items: center; gap: 10px; margin-top: 32px; padding: 11px 18px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-decoration: none; color: var(--orange); border: 1px solid var(--orange); transition: background 0.25s, color 0.25s; }
+    .sidebar-login-btn:hover { background: var(--orange); color: #fff; }
+
+    /* ── OVERLAY ── */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1500; opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s ease; }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+    /* ── HERO ── */
+    #itn-hero {
+        position: relative; height: 52vh; min-height: 340px;
+        display: flex; align-items: flex-end; justify-content: flex-start;
+        overflow: hidden; background: #0b0b0b;
+    }
+    .itn-hero-bg {
+        position: absolute; inset: 0;
+        background: radial-gradient(ellipse at 70% 40%, rgba(255,107,53,0.12) 0%, transparent 60%),
+                    linear-gradient(160deg, #0b0b0b 0%, #1a0a06 100%);
+        z-index: 0;
+    }
+    .itn-hero-deco {
+        position: absolute; right: 8%; top: 50%; transform: translateY(-50%);
+        z-index: 1; opacity: 0.07;
+    }
+    .itn-hero-deco svg { width: 280px; height: 280px; }
+    .itn-hero-content { position: relative; z-index: 2; padding: 0 60px 60px; max-width: 900px; }
+    .itn-eyebrow { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 5px; text-transform: uppercase; color: var(--orange); display: block; margin-bottom: 14px; }
+    #itn-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.6rem,6vw,5rem); font-weight: 700; color: #fff; letter-spacing: 2px; line-height: 1.05; }
+    #itn-hero h1 span { color: var(--orange); }
+    .itn-hero-sub { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 300; color: rgba(255,255,255,0.45); margin-top: 14px; letter-spacing: 0.5px; }
+    .itn-hero-border { height: 4px; background: var(--orange); }
+
+    /* ── MAIN ── */
+    #itn-main { background: #f2f0ed; padding: 60px 24px 100px; }
+    .itn-inner { max-width: 1100px; margin: 0 auto; }
+
+    /* ── FORM PANEL ── */
+    .itn-form-panel {
+        background: #fff; border-top: 3px solid var(--orange);
+        padding: 36px 40px; margin-bottom: 36px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .itn-form-title {
+        font-family: 'Playfair Display', serif; font-size: 1.5rem;
+        color: #000; margin-bottom: 28px;
+    }
+    .itn-form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 20px; align-items: flex-end; }
+    .itn-field { display: flex; flex-direction: column; gap: 6px; }
+    .itn-field label { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: #999; }
+    .itn-field select,
+    .itn-field input[type="number"] {
+        font-family: 'Poppins', sans-serif; font-size: 14px; color: #111;
+        border: 1px solid #ddd; border-radius: 0;
+        padding: 11px 36px 11px 14px;
+        background: #fafafa; cursor: pointer; appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ff6b35' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-position: right 14px center;
+        transition: border-color 0.2s;
+    }
+    .itn-field input[type="number"] { background-image: none; padding-right: 14px; }
+    .itn-field select:focus,
+    .itn-field input[type="number"]:focus { outline: none; border-color: var(--orange); }
+    .itn-generate-btn {
+        font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600;
+        letter-spacing: 2.5px; text-transform: uppercase;
+        color: #fff; background: var(--orange);
+        border: 2px solid var(--orange); padding: 11px 28px;
+        cursor: pointer; transition: background 0.25s, color 0.25s;
+        white-space: nowrap; align-self: flex-end;
+    }
+    .itn-generate-btn:hover { background: #e05a28; border-color: #e05a28; }
+    .itn-generate-btn:disabled { background: #ccc; border-color: #ccc; cursor: not-allowed; }
+
+    /* budget chips */
+    .itn-budget-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .budget-chip {
+        font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600;
+        letter-spacing: 1px; text-transform: uppercase;
+        padding: 8px 16px; border: 1.5px solid #ddd;
+        cursor: pointer; transition: all 0.2s; background: #fafafa; color: #777;
+    }
+    .budget-chip.active { border-color: var(--orange); color: var(--orange); background: rgba(255,107,53,0.06); }
+
+    /* ── NOTICE ── */
+    .itn-notice { background: rgba(255,107,53,0.07); border-left: 4px solid var(--orange); padding: 18px 24px; margin-bottom: 40px; display: flex; align-items: flex-start; gap: 14px; }
+    .itn-notice i { color: var(--orange); font-size: 18px; margin-top: 1px; flex-shrink: 0; }
+    .itn-notice p { font-family: 'Poppins', sans-serif; font-size: 13px; color: #555; line-height: 1.7; }
+    .itn-notice strong { color: #000; }
+
+    /* ── RESULT SECTION ── */
+    #itn-result { display: none; }
+    #itn-result.visible { display: block; animation: fadeUp 0.5s ease both; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+    /* result header */
+    .itn-result-header {
+        display: flex; align-items: baseline; justify-content: space-between;
+        margin-bottom: 32px; flex-wrap: wrap; gap: 12px; padding-bottom: 20px;
+        border-bottom: 2px solid #e0ddd9;
+    }
+    .itn-result-title { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem,3vw,2.2rem); color: #000; }
+    .itn-result-meta { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+    .itn-meta-chip {
+        font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
+        letter-spacing: 1.5px; text-transform: uppercase;
+        padding: 5px 12px; background: rgba(255,107,53,0.1); color: var(--orange);
+    }
+    .itn-pdf-btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
+        letter-spacing: 2px; text-transform: uppercase; text-decoration: none;
+        color: var(--orange); border: 2px solid var(--orange); padding: 8px 20px;
+        cursor: pointer; background: transparent; transition: background 0.25s, color 0.25s;
+    }
+    .itn-pdf-btn:hover { background: var(--orange); color: #fff; }
+
+    /* cost summary bar */
+    .itn-cost-bar {
+        background: #000; color: #fff;
+        padding: 20px 28px; margin-bottom: 32px;
+        display: flex; gap: 32px; flex-wrap: wrap; align-items: center;
+    }
+    .cost-stat { display: flex; flex-direction: column; gap: 2px; }
+    .cost-stat-label { font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: #666; }
+    .cost-stat-value { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--orange); }
+
+    /* best time banner */
+    .itn-time-banner {
+        background: rgba(255,107,53,0.07); border-left: 4px solid var(--orange);
+        padding: 14px 20px; margin-bottom: 32px;
+        display: flex; align-items: center; gap: 12px;
+    }
+    .itn-time-banner i { color: var(--orange); font-size: 16px; flex-shrink: 0; }
+    .itn-time-banner p { font-family: 'Poppins', sans-serif; font-size: 13px; color: #555; }
+    .itn-time-banner strong { color: #000; }
+
+    /* ── DAY CARDS ── */
+    .day-cards { display: flex; flex-direction: column; gap: 28px; }
+
+    .day-card {
+        background: #fff; box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+        border-top: 3px solid transparent;
+        animation: cardIn 0.4s ease both;
+        transition: box-shadow 0.25s;
+    }
+    .day-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.1); border-top-color: var(--orange); }
+    @keyframes cardIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+    .day-card-header {
+        display: flex; align-items: center; gap: 20px;
+        padding: 20px 28px; background: #fafafa; border-bottom: 1px solid #f0eeeb;
+    }
+    .day-number-badge {
+        font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;
+        color: var(--orange); min-width: 48px; line-height: 1;
+    }
+    .day-header-info { flex: 1; }
+    .day-district {
+        font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600;
+        letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 3px;
+    }
+    .day-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #000; }
+    .day-hours-badge {
+        font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
+        letter-spacing: 1px; text-transform: uppercase; color: #888;
+        background: #f0eeeb; padding: 5px 12px; white-space: nowrap;
+    }
+    .day-special-badge {
+        font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 700;
+        letter-spacing: 1.5px; text-transform: uppercase;
+        background: rgba(192,57,43,0.1); color: var(--red);
+        padding: 5px 12px; white-space: nowrap;
+    }
+
+    .day-card-body { padding: 24px 28px; display: flex; flex-direction: column; gap: 0; }
+
+    /* attraction rows */
+    .attraction-row {
+        display: flex; gap: 20px; padding: 16px 0;
+        border-bottom: 1px solid #f4f2ef; align-items: flex-start;
+    }
+    .attraction-row:last-of-type { border-bottom: none; }
+
+    .attr-time-col {
+        min-width: 68px; display: flex; flex-direction: column;
+        align-items: center; padding-top: 2px;
+    }
+    .attr-time-icon { width: 32px; height: 32px; background: rgba(255,107,53,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+    .attr-time-icon i { font-size: 13px; color: var(--orange); }
+    .attr-duration { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 1px; color: #bbb; text-align: center; }
+
+    .attr-info { flex: 1; }
+    .attr-name { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 600; color: #000; margin-bottom: 4px; }
+    .attr-short { font-family: 'Poppins', sans-serif; font-size: 12px; color: #888; line-height: 1.5; margin-bottom: 8px; }
+    .attr-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .attr-tag {
+        font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600;
+        letter-spacing: 1.5px; text-transform: uppercase;
+        padding: 3px 8px; background: #f4f2ef; color: #888;
+    }
+    .attr-fee-tag { background: rgba(255,107,53,0.08); color: var(--orange); }
+    .attr-must-tag { background: rgba(192,57,43,0.08); color: var(--red); }
+
+    .attr-best-time { font-family: 'Poppins', sans-serif; font-size: 11px; color: #aaa; margin-top: 6px; font-style: italic; }
+
+    /* accommodation block */
+    .day-accommodation {
+        margin-top: 20px; padding: 18px 20px;
+        background: #f7f5f2; border-left: 3px solid var(--orange);
+        display: flex; align-items: flex-start; gap: 16px;
+    }
+    .accom-icon { color: var(--orange); font-size: 18px; margin-top: 2px; flex-shrink: 0; }
+    .accom-info { flex: 1; }
+    .accom-label { font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: #bbb; margin-bottom: 3px; }
+    .accom-name { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; color: #000; margin-bottom: 2px; }
+    .accom-meta { font-family: 'Poppins', sans-serif; font-size: 12px; color: #888; }
+    .accom-price { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; color: var(--orange); white-space: nowrap; align-self: center; }
+
+    /* day cost footer */
+    .day-cost-footer {
+        padding: 14px 28px; border-top: 1px solid #f0eeeb;
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+        background: #fafafa;
+    }
+    .day-cost-items { font-family: 'Poppins', sans-serif; font-size: 11px; color: #aaa; }
+    .day-cost-total { font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; color: #333; }
+    .day-cost-total span { color: var(--orange); }
+
+    /* full day anchor */
+    .full-day-anchor .day-card-body { padding: 0; }
+    .full-day-banner {
+        padding: 28px 28px;
+        background: linear-gradient(135deg, #1a0a06 0%, #0b0b0b 100%);
+        color: #fff; display: flex; gap: 20px; align-items: center;
+    }
+    .full-day-icon { font-size: 2.5rem; color: var(--orange); flex-shrink: 0; }
+    .full-day-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: #fff; margin-bottom: 4px; }
+    .full-day-desc { font-family: 'Poppins', sans-serif; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+    .full-day-fee { font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600; color: var(--orange); margin-top: 8px; }
+
+    /* ── FOOTER ── */
+    #footer { background: #080808; border-top: 1px solid #1e1e1e; padding: 70px 0 0; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px 60px; display: grid; grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr; gap: 48px; }
+    .footer-logo { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 3px; color: var(--orange); text-decoration: none; display: block; margin-bottom: 16px; }
+    .footer-tagline { font-family: 'Poppins', sans-serif; font-size: 13px; color: #555; line-height: 1.8; }
+    .footer-heading { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 20px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .footer-links li a { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-family: 'Poppins', sans-serif; font-size: 14px; color: #666; text-decoration: none; border-bottom: 1px solid #111; transition: color 0.2s, padding-left 0.2s; }
+    .footer-links li a i { font-size: 13px; color: var(--orange); width: 16px; flex-shrink: 0; }
+    .footer-links li a:hover { color: var(--white); padding-left: 4px; }
+    .footer-socials { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .social-btn { width: 38px; height: 38px; border: 1px solid #2a2a2a; color: #666; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 15px; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+    .social-btn:hover { border-color: var(--orange); color: var(--orange); background: rgba(255,107,53,0.06); }
+    .footer-contact-btn { display: inline-flex; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: var(--orange); border: 2px solid var(--orange); padding: 10px 22px; transition: background 0.25s, color 0.25s; }
+    .footer-contact-btn:hover { background: var(--orange); color: var(--white); }
+    .footer-bottom { border-top: 1px solid #161616; padding: 20px 40px; text-align: center; }
+    .footer-bottom p { font-family: 'Poppins', sans-serif; font-size: 12px; color: #333; letter-spacing: 0.5px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+        .itn-form-grid { grid-template-columns: 1fr 1fr; }
+        .itn-generate-btn { grid-column: 1 / -1; width: 100%; }
+    }
+    @media (max-width: 768px) {
+        :root { --sidebar-width: 100%; }
+        .logo { font-size: 18px; } .menu-btn { font-size: 20px; }
+        .itn-hero-content { padding: 0 24px 44px; }
+        .itn-form-panel { padding: 24px 20px; }
+        .itn-form-grid { grid-template-columns: 1fr; }
+        .itn-generate-btn { width: 100%; }
+        .itn-result-header { flex-direction: column; align-items: flex-start; }
+        .itn-cost-bar { gap: 20px; }
+        .day-card-header { flex-wrap: wrap; gap: 12px; }
+        .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+        .footer-inner > .footer-brand { grid-column: 1 / -1; }
+    }
+    @media (max-width: 480px) {
+        .footer-inner { grid-template-columns: 1fr; }
+        .day-card-body { padding: 16px 16px; }
+        .day-card-header { padding: 16px; }
+        .day-cost-footer { padding: 12px 16px; }
+    }
+    </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader"><p id="loader-text">Planning your journey…</p></div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="logo">BharatYatra</a>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <button class="menu-btn" id="open-sidebar" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+            <a href="index.html" class="nav-back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+    </div>
+</nav>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+    <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
+    <p class="sidebar-tagline">Discover Incredible India</p>
+    <ul class="sidebar-links">
+        <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+        <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+        <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+        <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+        <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+        <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+        <li><a href="contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+    </ul>
+    <p class="sidebar-section-label">Legal &amp; Support</p>
+    <ul class="sidebar-links">
+        <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+        <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+    </ul>
+    <a href="admin/admin-login.html" class="sidebar-login-btn"><i class="fas fa-lock"></i> Admin Login</a>
+</div>
+<div class="overlay" id="overlay"></div>
+
+<!-- HERO -->
+<section id="itn-hero">
+    <div class="itn-hero-bg"></div>
+    <div class="itn-hero-deco">
+        <!-- Route / road icon SVG -->
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="80" r="8" fill="#ff6b35"/>
+            <circle cx="80" cy="20" r="8" fill="#ff6b35"/>
+            <path d="M20 80 Q20 20 80 20" stroke="#ff6b35" stroke-width="4" fill="none"/>
+            <circle cx="50" cy="46" r="4" fill="#ff6b35" opacity="0.6"/>
+            <circle cx="35" cy="63" r="3" fill="#ff6b35" opacity="0.4"/>
+            <circle cx="65" cy="29" r="3" fill="#ff6b35" opacity="0.4"/>
+        </svg>
+    </div>
+    <div class="itn-hero-content">
+        <span class="itn-eyebrow">Trip Planning</span>
+        <h1>Your <span>Itinerary</span></h1>
+        <p class="itn-hero-sub">Pick a state, duration &amp; budget — we'll craft a day-by-day journey tailored for you.</p>
+    </div>
+</section>
+<div class="itn-hero-border"></div>
+
+<!-- MAIN -->
+<section id="itn-main">
+    <div class="itn-inner">
+
+        <!-- Form Panel -->
+        <div class="itn-form-panel">
+            <h2 class="itn-form-title">Plan Your Trip</h2>
+            <div class="itn-form-grid">
+                <div class="itn-field">
+                    <label for="state-select">Destination State</label>
+                    <select id="state-select">
+                        <option value="">Choose a state…</option>
+                        <option value="1">Gujarat</option>
+                        <option value="2">Rajasthan</option>
+                        <option value="3">Kerala</option>
+                        <option value="4">Uttarakhand</option>
+                        <option value="5">Assam</option>
+                    </select>
+                </div>
+                <div class="itn-field">
+                    <label for="days-input">Number of Days</label>
+                    <input type="number" id="days-input" min="1" max="20" placeholder="e.g. 5">
+                </div>
+                <div class="itn-field">
+                    <label>Budget Tier</label>
+                    <div class="itn-budget-chips" id="budget-chips">
+                        <button class="budget-chip active" data-val="budget">Budget</button>
+                        <button class="budget-chip" data-val="mid-range">Mid-range</button>
+                        <button class="budget-chip" data-val="premium">Premium</button>
+                        <button class="budget-chip" data-val="luxury">Luxury</button>
+                    </div>
+                </div>
+                <button class="itn-generate-btn" id="generate-btn">
+                    <i class="fas fa-route" style="margin-right:8px;"></i>Generate
+                </button>
+            </div>
+        </div>
+
+        <!-- Notice -->
+        <div class="itn-notice">
+            <i class="fas fa-info-circle"></i>
+            <p><strong>How it works:</strong> Attractions are grouped by district so each day stays in one area — no unnecessary travel. Full-day experiences (safaris, treks, houseboats) are given their own dedicated day. Entry fees and accommodation costs are estimated based on current data.</p>
+        </div>
+
+        <!-- Result Section (revealed after generate) -->
+        <div id="itn-result">
+            <div class="itn-result-header">
+                <h2 class="itn-result-title" id="result-title">Your Itinerary</h2>
+                <div class="itn-result-meta">
+                    <span class="itn-meta-chip" id="result-days-chip"></span>
+                    <span class="itn-meta-chip" id="result-budget-chip"></span>
+                    <button class="itn-pdf-btn" id="pdf-btn"><i class="fas fa-download"></i> Download PDF</button>
+                </div>
+            </div>
+
+            <!-- Best time banner -->
+            <div class="itn-time-banner" id="time-banner">
+                <i class="fas fa-sun"></i>
+                <p id="time-banner-text"></p>
+            </div>
+
+            <!-- Cost summary -->
+            <div class="itn-cost-bar" id="cost-bar">
+                <div class="cost-stat">
+                    <span class="cost-stat-label">Est. Entry Fees</span>
+                    <span class="cost-stat-value" id="total-fees">—</span>
+                </div>
+                <div class="cost-stat">
+                    <span class="cost-stat-label">Est. Accommodation</span>
+                    <span class="cost-stat-value" id="total-accom">—</span>
+                </div>
+                <div class="cost-stat">
+                    <span class="cost-stat-label">Total Est. Cost</span>
+                    <span class="cost-stat-value" id="total-cost">—</span>
+                </div>
+                <div class="cost-stat" style="margin-left:auto;">
+                    <span class="cost-stat-label">Attractions</span>
+                    <span class="cost-stat-value" id="total-attractions">—</span>
+                </div>
+            </div>
+
+            <!-- Day cards container -->
+            <div class="day-cards" id="day-cards"></div>
+        </div>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <a href="index.html" class="footer-logo">BHARAT YATRA</a>
+            <p class="footer-tagline">Discover the incredible beauty<br>and diversity of India.</p>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Explore</h4>
+            <ul class="footer-links">
+                <li><a href="destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+                <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+                <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+                <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Plan</h4>
+            <ul class="footer-links">
+                <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+                <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+                <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Legal</h4>
+            <ul class="footer-links">
+                <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Follow Us</h4>
+            <div class="footer-socials">
+                <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-btn" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+            </div>
+            <a href="contactus.html" class="footer-contact-btn"><i class="fas fa-envelope"></i> Contact Us</a>
+        </div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2025 BharatYatra. All rights reserved.</p></div>
+</footer>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SUPABASE INIT
+═══════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://gtpnojbbamoaznlutxap.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ═══════════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════════ */
+const HOURS_PER_DAY    = 6.5; // usable activity hours per day (leaving ~1.5h travel buffer)
+const FULL_DAY_ANCHOR  = 6.0; // attractions >= this hours get their own dedicated day
+
+const STATE_META = {
+    1: { name: 'Gujarat',       best: 'October to March' },
+    2: { name: 'Rajasthan',     best: 'October to March' },
+    3: { name: 'Kerala',        best: 'September to March' },
+    4: { name: 'Uttarakhand',   best: 'March to June, September to November' },
+    5: { name: 'Assam',         best: 'October to April' },
+};
+
+const BUDGET_LABELS = {
+    'budget':    'Budget',
+    'mid-range': 'Mid-range',
+    'premium':   'Premium',
+    'luxury':    'Luxury',
+};
+
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+let selectedBudget = 'budget';
+let currentItinerary = null; // saved for PDF
+
+/* ═══════════════════════════════════════════════
+   LOADER + SIDEBAR
+═══════════════════════════════════════════════ */
+window.addEventListener('load', () => {
+    document.getElementById('loader-text').classList.add('visible');
+    setTimeout(() => document.getElementById('loader').classList.add('hidden'), 900);
+});
+
+const sidebar  = document.getElementById('sidebar');
+const overlay  = document.getElementById('overlay');
+const openBtn  = document.getElementById('open-sidebar');
+const closeBtn = document.getElementById('close-sidebar');
+function openSidebar()  { sidebar.classList.add('active'); overlay.classList.add('active'); document.body.classList.add('no-scroll'); }
+function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.classList.remove('no-scroll'); }
+openBtn.addEventListener('click', openSidebar);
+closeBtn.addEventListener('click', closeSidebar);
+overlay.addEventListener('click', closeSidebar);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+/* ═══════════════════════════════════════════════
+   BUDGET CHIPS
+═══════════════════════════════════════════════ */
+document.querySelectorAll('.budget-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+        document.querySelectorAll('.budget-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        selectedBudget = chip.dataset.val;
+    });
+});
+
+/* ═══════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════ */
+function esc(str) { return str === null || str === undefined ? '' : String(str); }
+
+function fmt(num) {
+    if (num === 0) return 'Free';
+    return '₹' + Number(num).toLocaleString('en-IN');
+}
+
+function fmtPrice(num) {
+    return '₹' + Number(num).toLocaleString('en-IN');
+}
+
+function iconForType(type) {
+    if (!type) return 'fas fa-map-marker-alt';
+    const t = type.toLowerCase();
+    if (t.includes('wildlife') || t.includes('safari')) return 'fas fa-paw';
+    if (t.includes('religious') || t.includes('spiritual')) return 'fas fa-place-of-worship';
+    if (t.includes('historical') || t.includes('monument')) return 'fas fa-landmark';
+    if (t.includes('nature') || t.includes('beach')) return 'fas fa-leaf';
+    if (t.includes('museum') || t.includes('cultural')) return 'fas fa-museum';
+    if (t.includes('adventure')) return 'fas fa-mountain';
+    if (t.includes('experience')) return 'fas fa-star';
+    return 'fas fa-map-marker-alt';
+}
+
+function fullDayIcon(type) {
+    if (!type) return 'fas fa-calendar-day';
+    const t = type.toLowerCase();
+    if (t.includes('wildlife') || t.includes('safari')) return 'fas fa-paw';
+    if (t.includes('adventure') || t.includes('trekking')) return 'fas fa-hiking';
+    if (t.includes('experience')) return 'fas fa-ship';
+    if (t.includes('religious') || t.includes('pilgrimage')) return 'fas fa-place-of-worship';
+    return 'fas fa-calendar-day';
+}
+
+/* ═══════════════════════════════════════════════
+   CORE ITINERARY ALGORITHM
+═══════════════════════════════════════════════ */
+function buildItinerary(attractions, accommodations, numDays, budget) {
+    // Step 1: Group attractions by district, order districts by sum of priority scores
+    const districtMap = {};
+    attractions.forEach(a => {
+        const did = a.district_id;
+        if (!districtMap[did]) districtMap[did] = { district_id: did, district_name: a.city || 'District', attractions: [] };
+        districtMap[did].attractions.push(a);
+    });
+
+    // Sort each district's attractions by priority DESC
+    Object.values(districtMap).forEach(d => {
+        d.attractions.sort((x, y) => y.priority_score - x.priority_score);
+        d.score = d.attractions.reduce((s, a) => s + a.priority_score, 0);
+    });
+
+    // Sort districts by aggregate score DESC
+    const districts = Object.values(districtMap).sort((a, b) => b.score - a.score);
+
+    // Build accommodation lookup: attraction_id -> array of accommodations matching budget
+    const accomByAttraction = {};
+    accommodations.forEach(ac => {
+        if (!accomByAttraction[ac.attraction_id]) accomByAttraction[ac.attraction_id] = [];
+        accomByAttraction[ac.attraction_id].push(ac);
+    });
+
+    function getBestAccom(attractionId, budget) {
+        const list = accomByAttraction[attractionId] || [];
+        // Prefer exact budget match, fallback to adjacent tiers
+        const tierOrder = ['budget', 'mid-range', 'premium', 'luxury'];
+        const idx = tierOrder.indexOf(budget);
+        // Try exact, then up, then down
+        const priority = [budget];
+        for (let i = idx + 1; i < tierOrder.length; i++) priority.push(tierOrder[i]);
+        for (let i = idx - 1; i >= 0; i--) priority.push(tierOrder[i]);
+        for (const tier of priority) {
+            const match = list.find(a => a.type === tier);
+            if (match) return match;
+        }
+        return list[0] || null;
+    }
+
+    // Step 2: Flatten attractions in district order, detect full-day anchors
+    const itDays = [];
+    let dayNum = 1;
+    let remaining = numDays;
+
+    for (const district of districts) {
+        if (remaining <= 0) break;
+
+        // Split district attractions into full-day anchors and regular
+        const fullDayOnes = district.attractions.filter(a => a.estimated_time_hours >= FULL_DAY_ANCHOR);
+        const regularOnes = district.attractions.filter(a => a.estimated_time_hours < FULL_DAY_ANCHOR);
+
+        // Handle full-day anchors first
+        for (const fa of fullDayOnes) {
+            if (remaining <= 0) break;
+            const accom = getBestAccom(fa.id, budget);
+            const dayFee = parseInt(fa.entry_fee) || 0;
+            const accomPrice = accom ? parseInt(accom.price_per_night) || 0 : 0;
+            itDays.push({
+                day: dayNum++,
+                district: district.district_name,
+                isFullDay: true,
+                anchor: fa,
+                attractions: [fa],
+                accommodation: accom,
+                totalFee: dayFee,
+                accomCost: accomPrice,
+            });
+            remaining--;
+        }
+
+        // Bin-pack regular attractions into days (6.5h cap)
+        if (regularOnes.length > 0 && remaining > 0) {
+            let dayAttractions = [];
+            let dayHours = 0;
+
+            for (const att of regularOnes) {
+                const attHours = parseFloat(att.estimated_time_hours) || 1;
+                if (dayHours + attHours > HOURS_PER_DAY && dayAttractions.length > 0) {
+                    // Flush current day
+                    if (remaining > 0) {
+                        const topAttr = dayAttractions[0];
+                        const accom = getBestAccom(topAttr.id, budget);
+                        const dayFee = dayAttractions.reduce((s, a) => s + (parseInt(a.entry_fee) || 0), 0);
+                        const accomPrice = accom ? parseInt(accom.price_per_night) || 0 : 0;
+                        itDays.push({
+                            day: dayNum++,
+                            district: district.district_name,
+                            isFullDay: false,
+                            attractions: [...dayAttractions],
+                            accommodation: accom,
+                            totalFee: dayFee,
+                            accomCost: accomPrice,
+                        });
+                        remaining--;
+                    }
+                    dayAttractions = [];
+                    dayHours = 0;
+                }
+                dayAttractions.push(att);
+                dayHours += attHours;
+            }
+
+            // Flush last batch
+            if (dayAttractions.length > 0 && remaining > 0) {
+                const topAttr = dayAttractions[0];
+                const accom = getBestAccom(topAttr.id, budget);
+                const dayFee = dayAttractions.reduce((s, a) => s + (parseInt(a.entry_fee) || 0), 0);
+                const accomPrice = accom ? parseInt(accom.price_per_night) || 0 : 0;
+                itDays.push({
+                    day: dayNum++,
+                    district: district.district_name,
+                    isFullDay: false,
+                    attractions: [...dayAttractions],
+                    accommodation: accom,
+                    totalFee: dayFee,
+                    accomCost: accomPrice,
+                });
+                remaining--;
+            }
+        }
+    }
+
+    // If we ran out of attractions before numDays, that's okay — just return what we have
+    return itDays;
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════════ */
+function renderItinerary(days, stateMeta, numDays, budget) {
+    const resultEl = document.getElementById('itn-result');
+    const dayCardsEl = document.getElementById('day-cards');
+
+    // Title
+    document.getElementById('result-title').textContent = stateMeta.name + ' — ' + days.length + '-Day Itinerary';
+    document.getElementById('result-days-chip').textContent = days.length + ' Days';
+    document.getElementById('result-budget-chip').textContent = BUDGET_LABELS[budget];
+
+    // Best time banner
+    document.getElementById('time-banner-text').innerHTML =
+        '<strong>Best time to visit ' + esc(stateMeta.name) + ':</strong> ' + esc(stateMeta.best) + '. Plan your trip accordingly for the best experience.';
+
+    // Cost summary
+    const totalFees  = days.reduce((s, d) => s + d.totalFee, 0);
+    const totalAccom = days.reduce((s, d) => s + d.accomCost, 0);
+    const totalAttr  = days.reduce((s, d) => s + d.attractions.length, 0);
+    document.getElementById('total-fees').textContent       = fmtPrice(totalFees);
+    document.getElementById('total-accom').textContent      = fmtPrice(totalAccom);
+    document.getElementById('total-cost').textContent       = fmtPrice(totalFees + totalAccom);
+    document.getElementById('total-attractions').textContent = totalAttr + ' places';
+
+    // Day cards
+    dayCardsEl.innerHTML = '';
+    days.forEach((day, idx) => {
+        const card = document.createElement('div');
+        card.className = 'day-card' + (day.isFullDay ? ' full-day-anchor' : '');
+        card.style.animationDelay = (idx * 0.07) + 's';
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'day-card-header';
+
+        const badge = document.createElement('div');
+        badge.className = 'day-number-badge';
+        badge.textContent = String(day.day).padStart(2, '0');
+
+        const headerInfo = document.createElement('div');
+        headerInfo.className = 'day-header-info';
+        const districtEl = document.createElement('div');
+        districtEl.className = 'day-district';
+        districtEl.textContent = esc(day.district);
+        const titleEl = document.createElement('div');
+        titleEl.className = 'day-title';
+        titleEl.textContent = day.isFullDay
+            ? esc(day.anchor.name)
+            : 'Exploring ' + esc(day.district);
+        headerInfo.appendChild(districtEl);
+        headerInfo.appendChild(titleEl);
+
+        if (day.isFullDay) {
+            const specialBadge = document.createElement('span');
+            specialBadge.className = 'day-special-badge';
+            specialBadge.innerHTML = '<i class="fas fa-calendar-check" style="margin-right:5px;"></i>Full Day';
+            header.appendChild(badge);
+            header.appendChild(headerInfo);
+            header.appendChild(specialBadge);
+        } else {
+            const totalH = day.attractions.reduce((s, a) => s + (parseFloat(a.estimated_time_hours) || 0), 0);
+            const hoursBadge = document.createElement('span');
+            hoursBadge.className = 'day-hours-badge';
+            hoursBadge.textContent = totalH.toFixed(1) + 'h activity';
+            header.appendChild(badge);
+            header.appendChild(headerInfo);
+            header.appendChild(hoursBadge);
+        }
+
+        card.appendChild(header);
+
+        // Body
+        const body = document.createElement('div');
+        body.className = 'day-card-body';
+
+        if (day.isFullDay) {
+            // Full-day banner
+            const anchor = day.anchor;
+            const banner = document.createElement('div');
+            banner.className = 'full-day-banner';
+            const iconEl = document.createElement('i');
+            iconEl.className = fullDayIcon(anchor.type);
+            iconEl.style.cssText = 'font-size:2.5rem;color:#ff6b35;flex-shrink:0;';
+            const textEl = document.createElement('div');
+            const titleFD = document.createElement('div');
+            titleFD.className = 'full-day-title';
+            titleFD.textContent = esc(anchor.name);
+            const descFD = document.createElement('div');
+            descFD.className = 'full-day-desc';
+            descFD.textContent = esc(anchor.short_description);
+            const feeFD = document.createElement('div');
+            feeFD.className = 'full-day-fee';
+            feeFD.innerHTML = '<i class="fas fa-ticket-alt" style="margin-right:5px;"></i>Entry: ' + fmt(parseInt(anchor.entry_fee) || 0) +
+                (anchor.guide_available ? ' &nbsp;·&nbsp; <i class="fas fa-user-tie" style="margin-right:4px;"></i>Guide: ' + esc(anchor.guide_price_range) : '');
+            textEl.appendChild(titleFD);
+            textEl.appendChild(descFD);
+            textEl.appendChild(feeFD);
+            if (anchor.best_time_note) {
+                const btFD = document.createElement('div');
+                btFD.className = 'full-day-desc';
+                btFD.style.marginTop = '6px';
+                btFD.innerHTML = '<i class="fas fa-clock" style="margin-right:5px;color:#ff6b35;"></i>' + esc(anchor.best_time_note);
+                textEl.appendChild(btFD);
+            }
+            banner.appendChild(iconEl);
+            banner.appendChild(textEl);
+            body.appendChild(banner);
+        } else {
+            // Regular attraction rows
+            day.attractions.forEach(attr => {
+                const row = document.createElement('div');
+                row.className = 'attraction-row';
+
+                const timeCol = document.createElement('div');
+                timeCol.className = 'attr-time-col';
+                const timeIcon = document.createElement('div');
+                timeIcon.className = 'attr-time-icon';
+                const ti = document.createElement('i');
+                ti.className = iconForType(attr.type);
+                timeIcon.appendChild(ti);
+                const durEl = document.createElement('div');
+                durEl.className = 'attr-duration';
+                durEl.textContent = attr.estimated_time_hours + 'h';
+                timeCol.appendChild(timeIcon);
+                timeCol.appendChild(durEl);
+
+                const infoEl = document.createElement('div');
+                infoEl.className = 'attr-info';
+                const nameEl = document.createElement('div');
+                nameEl.className = 'attr-name';
+                nameEl.textContent = esc(attr.name);
+                const shortEl = document.createElement('div');
+                shortEl.className = 'attr-short';
+                shortEl.textContent = esc(attr.short_description);
+
+                const tagsEl = document.createElement('div');
+                tagsEl.className = 'attr-tags';
+
+                const typeTag = document.createElement('span');
+                typeTag.className = 'attr-tag';
+                typeTag.textContent = esc(attr.type);
+                tagsEl.appendChild(typeTag);
+
+                const feeTag = document.createElement('span');
+                feeTag.className = 'attr-tag attr-fee-tag';
+                feeTag.textContent = 'Entry: ' + fmt(parseInt(attr.entry_fee) || 0);
+                tagsEl.appendChild(feeTag);
+
+                if (attr.is_must_visit) {
+                    const mustTag = document.createElement('span');
+                    mustTag.className = 'attr-tag attr-must-tag';
+                    mustTag.textContent = '★ Must Visit';
+                    tagsEl.appendChild(mustTag);
+                }
+
+                if (attr.guide_available) {
+                    const guideTag = document.createElement('span');
+                    guideTag.className = 'attr-tag';
+                    guideTag.textContent = 'Guide available';
+                    tagsEl.appendChild(guideTag);
+                }
+
+                infoEl.appendChild(nameEl);
+                infoEl.appendChild(shortEl);
+                infoEl.appendChild(tagsEl);
+
+                if (attr.best_time_note) {
+                    const btEl = document.createElement('div');
+                    btEl.className = 'attr-best-time';
+                    btEl.textContent = '⏱ ' + esc(attr.best_time_note);
+                    infoEl.appendChild(btEl);
+                }
+
+                row.appendChild(timeCol);
+                row.appendChild(infoEl);
+                body.appendChild(row);
+            });
+        }
+
+        // Accommodation block
+        if (day.accommodation) {
+            const ac = day.accommodation;
+            const accomEl = document.createElement('div');
+            accomEl.className = 'day-accommodation';
+            const acIcon = document.createElement('i');
+            acIcon.className = 'fas fa-bed accom-icon';
+            const acInfo = document.createElement('div');
+            acInfo.className = 'accom-info';
+            const acLabel = document.createElement('div');
+            acLabel.className = 'accom-label';
+            acLabel.textContent = 'Suggested Stay';
+            const acName = document.createElement('div');
+            acName.className = 'accom-name';
+            acName.textContent = esc(ac.name);
+            const acMeta = document.createElement('div');
+            acMeta.className = 'accom-meta';
+            acMeta.textContent = esc(BUDGET_LABELS[ac.type] || ac.type) + ' · ' +
+                (ac.distance_from_attraction_km ? ac.distance_from_attraction_km + ' km from attraction' : '') +
+                (ac.rating ? ' · ' + ac.rating + '★' : '');
+            acInfo.appendChild(acLabel);
+            acInfo.appendChild(acName);
+            acInfo.appendChild(acMeta);
+            const acPrice = document.createElement('div');
+            acPrice.className = 'accom-price';
+            acPrice.textContent = fmtPrice(parseInt(ac.price_per_night) || 0) + '/night';
+            accomEl.appendChild(acIcon);
+            accomEl.appendChild(acInfo);
+            accomEl.appendChild(acPrice);
+            body.appendChild(accomEl);
+        }
+
+        card.appendChild(body);
+
+        // Day cost footer
+        const costFooter = document.createElement('div');
+        costFooter.className = 'day-cost-footer';
+        const costItems = document.createElement('span');
+        costItems.className = 'day-cost-items';
+        costItems.textContent = day.attractions.length + ' attraction' + (day.attractions.length > 1 ? 's' : '') + ' · Entry fees: ' + fmtPrice(day.totalFee);
+        const costTotal = document.createElement('span');
+        costTotal.className = 'day-cost-total';
+        costTotal.innerHTML = 'Day total: <span>' + fmtPrice(day.totalFee + day.accomCost) + '</span>';
+        costFooter.appendChild(costItems);
+        costFooter.appendChild(costTotal);
+        card.appendChild(costFooter);
+
+        dayCardsEl.appendChild(card);
+    });
+
+    // Show result
+    resultEl.classList.add('visible');
+    setTimeout(() => resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+/* ═══════════════════════════════════════════════
+   GENERATE
+═══════════════════════════════════════════════ */
+document.getElementById('generate-btn').addEventListener('click', async () => {
+    const stateId = parseInt(document.getElementById('state-select').value);
+    const numDays = parseInt(document.getElementById('days-input').value);
+
+    if (!stateId) { alert('Please select a state.'); return; }
+    if (!numDays || numDays < 1 || numDays > 20) { alert('Please enter a valid number of days (1–20).'); return; }
+
+    const btn = document.getElementById('generate-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:8px;"></i>Building…';
+
+    // Hide previous result
+    const resultEl = document.getElementById('itn-result');
+    resultEl.classList.remove('visible');
+
+    try {
+        // Fetch attractions + accommodations in parallel
+        const [attrRes, accomRes] = await Promise.all([
+            sb.from('attractions').select('*').eq('state_id', stateId).order('priority_score', { ascending: false }),
+            sb.from('accommodations').select('*'),
+        ]);
+
+        if (attrRes.error) throw attrRes.error;
+        if (accomRes.error) throw accomRes.error;
+
+        const attractions    = attrRes.data || [];
+        const accommodations = accomRes.data || [];
+        const stateMeta      = STATE_META[stateId];
+
+        if (!attractions.length) {
+            alert('No attraction data found for this state. Please try again later.');
+            return;
+        }
+
+        const days = buildItinerary(attractions, accommodations, numDays, selectedBudget);
+        currentItinerary = { days, stateMeta, numDays, budget: selectedBudget };
+        renderItinerary(days, stateMeta, numDays, selectedBudget);
+
+    } catch (err) {
+        console.error('Itinerary generation error:', err);
+        alert('Could not load data. Please try again later.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-route" style="margin-right:8px;"></i>Generate';
+    }
+});
+
+/* ═══════════════════════════════════════════════
+   PDF EXPORT
+═══════════════════════════════════════════════ */
+document.getElementById('pdf-btn').addEventListener('click', () => {
+    if (!currentItinerary) return;
+    const { days, stateMeta, numDays, budget } = currentItinerary;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+    const orange = [255, 107, 53];
+    const black  = [0, 0, 0];
+    const grey   = [100, 100, 100];
+    const light  = [242, 240, 237];
+    const W = 210, M = 16;
+
+    // Cover band
+    doc.setFillColor(...black);
+    doc.rect(0, 0, W, 52, 'F');
+    doc.setFillColor(...orange);
+    doc.rect(0, 52, W, 4, 'F');
+
+    // Title
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(28);
+    doc.setTextColor(255, 255, 255);
+    doc.text('BharatYatra', M, 22);
+    doc.setFontSize(14);
+    doc.setTextColor(...orange);
+    doc.text(stateMeta.name.toUpperCase() + ' — ' + days.length + '-DAY ITINERARY', M, 34);
+    doc.setFontSize(10);
+    doc.setTextColor(150, 150, 150);
+    doc.text('Budget: ' + BUDGET_LABELS[budget] + '   ·   Best time: ' + stateMeta.best, M, 45);
+
+    // Cost summary box
+    const totalFees  = days.reduce((s, d) => s + d.totalFee, 0);
+    const totalAccom = days.reduce((s, d) => s + d.accomCost, 0);
+    doc.setFillColor(...light);
+    doc.rect(M, 62, W - M * 2, 22, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...grey);
+    doc.text('EST. ENTRY FEES', M + 4, 70);
+    doc.text('EST. ACCOMMODATION', M + 60, 70);
+    doc.text('TOTAL EST. COST', M + 122, 70);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(...orange);
+    doc.text('Rs.' + totalFees.toLocaleString('en-IN'), M + 4, 79);
+    doc.text('Rs.' + totalAccom.toLocaleString('en-IN'), M + 60, 79);
+    doc.text('Rs.' + (totalFees + totalAccom).toLocaleString('en-IN'), M + 122, 79);
+
+    let y = 94;
+
+    days.forEach(day => {
+        // Check if we need a new page
+        const estimatedHeight = day.isFullDay ? 30 : (day.attractions.length * 20) + 30;
+        if (y + estimatedHeight > 275) {
+            doc.addPage();
+            y = 20;
+        }
+
+        // Day header bar
+        doc.setFillColor(...black);
+        doc.rect(M, y, W - M * 2, 10, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(...orange);
+        doc.text('DAY ' + String(day.day).padStart(2, '0'), M + 3, y + 7);
+        doc.setTextColor(255, 255, 255);
+        doc.text(day.district.toUpperCase() + (day.isFullDay ? ' — FULL DAY' : ''), M + 28, y + 7);
+        y += 13;
+
+        if (day.isFullDay && day.anchor) {
+            const a = day.anchor;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(...black);
+            doc.text(esc(a.name), M + 2, y + 6);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(...grey);
+            const lines = doc.splitTextToSize(esc(a.short_description), W - M * 2 - 4);
+            lines.slice(0, 2).forEach((line, li) => { doc.text(line, M + 2, y + 12 + li * 4); });
+            doc.setTextColor(...orange);
+            doc.text('Entry: ' + fmt(parseInt(a.entry_fee) || 0), M + 2, y + 22);
+            y += 28;
+        } else {
+            day.attractions.forEach(a => {
+                if (y > 275) { doc.addPage(); y = 20; }
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9);
+                doc.setTextColor(...black);
+                doc.text('• ' + esc(a.name) + '  (' + a.estimated_time_hours + 'h)', M + 2, y + 5);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7.5);
+                doc.setTextColor(...grey);
+                const lines = doc.splitTextToSize(esc(a.short_description), W - M * 2 - 10);
+                lines.slice(0, 1).forEach((line, li) => doc.text(line, M + 4, y + 10 + li * 3.5));
+                doc.setTextColor(...orange);
+                doc.text('Entry: ' + fmt(parseInt(a.entry_fee) || 0), M + 4, y + 15);
+                y += 19;
+            });
+        }
+
+        // Accommodation line
+        if (day.accommodation) {
+            const ac = day.accommodation;
+            doc.setFillColor(250, 248, 245);
+            doc.rect(M, y, W - M * 2, 10, 'F');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8);
+            doc.setTextColor(...orange);
+            doc.text('Stay: ', M + 3, y + 7);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(...black);
+            doc.text(esc(ac.name) + '  ·  Rs.' + parseInt(ac.price_per_night).toLocaleString('en-IN') + '/night', M + 16, y + 7);
+            y += 13;
+        }
+
+        // Day cost line
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(8);
+        doc.setTextColor(...grey);
+        doc.text('Day total (fees + stay): Rs.' + (day.totalFee + day.accomCost).toLocaleString('en-IN'), M + 2, y + 4);
+        y += 10;
+    });
+
+    // Footer on each page
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= totalPages; p++) {
+        doc.setPage(p);
+        doc.setFillColor(...orange);
+        doc.rect(0, 290, 210, 7, 'F');
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.setTextColor(255, 255, 255);
+        doc.text('BharatYatra  ·  Discover Incredible India  ·  Page ' + p + ' of ' + totalPages, M, 295);
+    }
+
+    doc.save('BharatYatra-' + stateMeta.name + '-' + days.length + 'Day-Itinerary.pdf');
+});
+</script>
+</body>
+</html>

@@ -30,8 +30,7 @@
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
   <title>Admin Dashboard | BharatYatra</title>
   <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qALmWA=="
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         crossorigin="anonymous"
         referrerpolicy="no-referrer"/>
   <script src="https://unpkg.com/@supabase/supabase-js@2"
@@ -61,6 +60,8 @@
       --amber-dim:rgba(245,158,11,0.12);
       --purple:   #a78bfa;
       --purple-dim:rgba(167,139,250,0.12);
+      --orange:   #f97316;
+      --orange-dim:rgba(249,115,22,0.12);
       --radius:   14px;
       --radius-sm:8px;
       --header-h: 64px;
@@ -204,7 +205,7 @@
     /* ── STATS GRID ── */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 12px;
       margin-bottom: 48px;
     }
@@ -425,7 +426,7 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
-      .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
       .nav-grid { grid-template-columns: repeat(2, 1fr); }
       .info-grid { grid-template-columns: 1fr; }
       .info-item { border-right: none; border-bottom: 1px solid var(--border2); }
@@ -519,6 +520,14 @@
         <div class="stat-label">Submissions</div>
       </div>
 
+      <div class="stat-card" style="--accent-color: var(--orange);">
+        <div class="stat-icon-wrap" style="background:var(--orange-dim); color:var(--orange);">
+          <i class="fas fa-calendar-days"></i>
+        </div>
+        <div class="stat-num" id="sEvents"><i class="fas fa-circle-notch fa-spin stat-loading"></i></div>
+        <div class="stat-label">Events</div>
+      </div>
+
     </div>
 
     <!-- Navigation cards -->
@@ -558,6 +567,18 @@
         <div class="nav-card-body">
           <div class="nav-card-title">Contact Submissions</div>
           <div class="nav-card-desc">View and manage contact form submissions. Filter by category and search.</div>
+        </div>
+        <i class="fas fa-arrow-right nav-card-arrow"></i>
+      </a>
+
+      <a class="nav-card" href="admin-events.html"
+         style="--hover-border: rgba(249,115,22,0.3); --hover-color: rgba(249,115,22,0.04);">
+        <div class="nav-card-icon" style="background:var(--orange-dim); color:var(--orange);">
+          <i class="fas fa-calendar-days"></i>
+        </div>
+        <div class="nav-card-body">
+          <div class="nav-card-title">Events Manager</div>
+          <div class="nav-card-desc">Add, edit, and remove state events and festivals displayed on state pages.</div>
         </div>
         <i class="fas fa-arrow-right nav-card-arrow"></i>
       </a>
@@ -668,9 +689,10 @@
         sb.from('accommodations').select('id', { count: 'exact', head: true }),
         sb.from('hospitals').select('id', { count: 'exact', head: true }),
         sb.from('contact_submissions').select('id', { count: 'exact', head: true }),
+        sb.from('events').select('id', { count: 'exact', head: true }),
       ]);
 
-      const ids = ['sStates','sDistricts','sAttractions','sAccommodations','sHospitals','sSubmissions'];
+      const ids = ['sStates','sDistricts','sAttractions','sAccommodations','sHospitals','sSubmissions','sEvents'];
       results.forEach((r, i) => {
         const el = document.getElementById(ids[i]);
         if (!el) return;
