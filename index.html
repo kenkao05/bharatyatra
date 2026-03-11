@@ -102,7 +102,7 @@
     <section id="hero">
         <!-- Background video — add your src when ready -->
         <video id="hero-video" autoplay muted loop playsinline>
-            <!-- <source src="your-video.mp4" type="video/mp4"> -->
+        <source src="styling/index-hero.webm" type="video/webm">
         </video>
         <div class="hero-overlay"></div>
         <h1 id="main-title">BHARAT</h1>
@@ -313,7 +313,7 @@
 
         <!-- Know More button centred between the arrows -->
         <div class="bucketlist-footer">
-            <a href="destinations.html" class="know-more-btn">Know More</a>
+            <a href="experiences.html" class="know-more-btn">Know More</a>
         </div>
     </section>
 
@@ -510,12 +510,18 @@
 
         // ── CAROUSEL STATE ───────────────────────────────────────────
         let currentIndex = 0;
-        let totalCards   = 0;
+        let totalCards   = 0;  // count of REAL cards only
         const CARD_W     = 260; // matches CSS flex: 0 0 260px
         const CARD_GAP   = 20;
-        const VISIBLE    = 3;
-        let autoDir      = 1;   // 1 = forward, -1 = backward (bounce)
+        let visibleCards = 3;  // recalculated dynamically from real viewport width
         let autoTimer    = null;
+
+        // How many cards actually fit in the visible area right now?
+        function calcVisible() {
+            const viewport = document.querySelector('.carousel-viewport');
+            if (!viewport) return 3;
+            return Math.max(1, Math.floor(viewport.offsetWidth / (CARD_W + CARD_GAP)));
+        }
 
         // ── LOAD BUCKETLIST ATTRACTIONS ──────────────────────────────
         async function loadBucketlist() {
@@ -534,7 +540,8 @@
                 const track = document.getElementById('carouselTrack');
                 track.innerHTML = '';
 
-                data.forEach((attraction) => {
+                // ── Helper: build one card element from an attraction ──
+                function buildCard(attraction) {
                     const card = document.createElement('div');
                     card.className = 'bl-card';
 
@@ -567,8 +574,24 @@
                     card.appendChild(content);
 
                     card.addEventListener('click', () => openAttractionModal(attraction.id));
-                    track.appendChild(card);
+                    return card;
+                }
+
+                // Append all real cards
+                data.forEach((attraction) => {
+                    track.appendChild(buildCard(attraction));
                 });
+
+                // ── INFINITE LOOP: append clones of the first N cards ──
+                // We clone enough cards to always fill the viewport at the wrap
+                // point regardless of screen width. visibleCards is recalculated
+                // here (DOM is ready) so the clone count is always accurate.
+                visibleCards = calcVisible();
+                for (let i = 0; i < visibleCards; i++) {
+                    const clone = buildCard(data[i % data.length]);
+                    clone.setAttribute('data-clone', 'true');
+                    track.appendChild(clone);
+                }
 
                 updateCarousel();
                 startAutoScroll();
@@ -580,12 +603,28 @@
         }
 
         // ── CAROUSEL LOGIC ───────────────────────────────────────────
-        function updateCarousel() {
+        function updateCarousel(animate) {
             const track = document.getElementById('carouselTrack');
+            if (animate === false) {
+                // Disable transition for the instant snap-back
+                track.style.transition = 'none';
+            }
             const offset = currentIndex * (CARD_W + CARD_GAP);
             track.style.transform = `translateX(-${offset}px)`;
+
+            if (animate === false) {
+                // Re-enable transition on next frame so future slides animate normally
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        track.style.transition = '';
+                    });
+                });
+            }
+
+            // Arrows are bounded to real cards only — last valid index is the
+            // one where the final real card sits flush at the right edge.
             document.getElementById('prevBtn').disabled = currentIndex === 0;
-            document.getElementById('nextBtn').disabled = currentIndex >= totalCards - VISIBLE;
+            document.getElementById('nextBtn').disabled = currentIndex >= totalCards - visibleCards;
         }
 
         document.getElementById('prevBtn').addEventListener('click', () => {
@@ -594,7 +633,7 @@
         });
         document.getElementById('nextBtn').addEventListener('click', () => {
             resetAutoScroll();
-            if (currentIndex < totalCards - VISIBLE) { currentIndex++; updateCarousel(); }
+            if (currentIndex < totalCards - visibleCards) { currentIndex++; updateCarousel(); }
         });
 
         // Pause auto-scroll while hovering carousel
@@ -604,20 +643,32 @@
         function startAutoScroll() {
             clearInterval(autoTimer);
             autoTimer = setInterval(() => {
-                const maxIndex = totalCards - VISIBLE;
-                if (maxIndex <= 0) return;
-                // Bounce: flip direction at ends
-                if (currentIndex >= maxIndex) { autoDir = -1; }
-                if (currentIndex <= 0)        { autoDir =  1; }
-                currentIndex += autoDir;
-                updateCarousel();
-            }, 2200);
+                if (totalCards === 0) return;
+
+                currentIndex++;
+                updateCarousel(); // animated slide forward
+
+                // If we've slid onto a clone position, wait for the CSS transition
+                // to finish then silently snap back to the matching real card.
+                if (currentIndex >= totalCards) {
+                    setTimeout(() => {
+                        currentIndex = currentIndex - totalCards; // e.g. 10→0, 11→1
+                        updateCarousel(false); // instant, no animation
+                    }, 520); // slightly longer than the 0.5s CSS transition
+                }
+            }, 3000);
         }
 
         function resetAutoScroll() {
             clearInterval(autoTimer);
             startAutoScroll();
         }
+
+        // Recalculate visible count on resize so arrow bounds stay accurate
+        window.addEventListener('resize', () => {
+            visibleCards = calcVisible();
+            updateCarousel();
+        });
 
         // ── ATTRACTION MODAL ─────────────────────────────────────────
         // ── XSS DEFENSE: sanitize all text before inserting into DOM ────

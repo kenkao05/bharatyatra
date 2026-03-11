@@ -76,10 +76,10 @@ body.no-scroll { overflow: hidden; }
        Adjust the last value (0.0 – 1.0) to change opacity:
        0.0 = fully transparent | 0.5 = half | 1.0 = solid black
        ─────────────────────────────────────────── */
-    background: rgba(10, 10, 10, 0.55); /* ← change 0.55 to adjust translucency */
+    background: transparent; /* ← change 0.55 to adjust translucency */
 
-    backdrop-filter: blur(12px);        /* ← change blur amount (0px = no blur) */
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: none;        /* ← change blur amount (0px = no blur) */
+    -webkit-backdrop-filter: none;
     transition: background 0.4s ease;
 }
 
