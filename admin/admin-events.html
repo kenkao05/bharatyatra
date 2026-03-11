@@ -435,13 +435,18 @@
     .form-select option { background: #0d1829; color: var(--white); }
     .form-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
-    /* Image preview */
-    .img-preview-box {
-      margin-top: 8px; border-radius: var(--radius-sm); overflow: hidden;
-      border: 1px solid var(--border); display: none;
+    /* Image preview — single unified preview strip */
+    .img-preview-strip {
+      display: none; margin-top: 8px; border-radius: var(--radius-sm); overflow: hidden;
+      border: 1px solid var(--border); position: relative;
     }
-    .img-preview-box.visible { display: block; }
-    .img-preview-box img { width: 100%; height: 130px; object-fit: cover; display: block; }
+    .img-preview-strip.visible { display: block; }
+    .img-preview-strip img { width: 100%; height: 110px; object-fit: cover; display: block; }
+    .img-preview-strip-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 4px 8px; background: rgba(7,16,33,0.75);
+      font-size: 10px; color: var(--muted); backdrop-filter: blur(4px);
+    }
 
     /* Toggle switches */
     .toggle-row {
@@ -530,6 +535,109 @@
       from { opacity: 0; transform: translateX(20px); }
       to   { opacity: 1; transform: translateX(0); }
     }
+
+    /* ── IMAGE FIELD ── */
+    .img-field-wrap { display: flex; gap: 8px; align-items: stretch; }
+    .img-field-wrap .form-input { flex: 1; }
+    .btn-img-pick {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 38px; flex-shrink: 0; border-radius: var(--radius-sm);
+      border: 1px solid rgba(245,158,11,0.3);
+      background: var(--amber-dim); color: var(--amber);
+      cursor: pointer; font-size: 14px;
+      transition: var(--transition);
+    }
+    .btn-img-pick:hover { background: rgba(245,158,11,0.22); border-color: rgba(245,158,11,0.5); }
+
+    /* ════════════════════════════
+       IMAGE MANAGER MODAL
+    ════════════════════════════ */
+    .imgmgr-folder-pill {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--amber); background: var(--amber-dim);
+      border: 1px solid rgba(245,158,11,0.25);
+      padding: 4px 14px; border-radius: 20px; margin-bottom: 18px;
+    }
+    .imgmgr-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+    .imgmgr-tab {
+      padding: 10px 20px; font-size: 12px; font-weight: 600;
+      color: var(--muted); background: transparent; border: none;
+      cursor: pointer; border-bottom: 2px solid transparent;
+      margin-bottom: -1px; transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+    }
+    .imgmgr-tab.active { color: var(--amber); border-bottom-color: var(--amber); }
+    .imgmgr-tab:hover:not(.active) { color: var(--white); }
+    .imgmgr-panel { display: none; }
+    .imgmgr-panel.active { display: block; }
+
+    .imgmgr-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .imgmgr-refresh {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 7px 13px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: transparent;
+      color: var(--muted); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif;
+    }
+    .imgmgr-refresh:hover { color: var(--amber); border-color: var(--amber); }
+    .imgmgr-count { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+    .imgmgr-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
+      gap: 10px; max-height: 360px; overflow-y: auto; padding-right: 2px;
+    }
+    .imgmgr-thumb {
+      position: relative; border-radius: var(--radius-sm);
+      border: 1px solid var(--border2); overflow: hidden;
+      background: rgba(255,255,255,0.03); cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .imgmgr-thumb:hover { border-color: var(--amber); }
+    .imgmgr-thumb img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+    .imgmgr-thumb-bar { padding: 5px 7px; display: flex; align-items: center; gap: 5px; }
+    .imgmgr-thumb-name { flex: 1; font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .imgmgr-del-btn {
+      width: 20px; height: 20px; border-radius: 4px; border: none;
+      background: var(--red-dim); color: var(--red); font-size: 10px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; transition: var(--transition);
+    }
+    .imgmgr-del-btn:hover { background: rgba(239,68,68,0.28); }
+    .imgmgr-hover-select {
+      position: absolute; inset: 0; background: rgba(245,158,11,0.18);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.15s; pointer-events: none;
+    }
+    .imgmgr-thumb:hover .imgmgr-hover-select { opacity: 1; }
+    .imgmgr-hover-select span {
+      background: var(--amber); color: #071021;
+      font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px;
+    }
+    .imgmgr-empty { text-align: center; padding: 44px 20px; color: var(--muted); font-size: 13px; }
+    .imgmgr-empty i { font-size: 28px; display: block; margin-bottom: 10px; opacity: 0.5; }
+    .imgmgr-spinner { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 44px 20px; color: var(--muted); font-size: 13px; }
+
+    .imgmgr-drop {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 36px 24px; text-align: center; cursor: pointer;
+      transition: var(--transition); position: relative; margin-bottom: 14px;
+    }
+    .imgmgr-drop:hover, .imgmgr-drop.over { border-color: var(--amber); background: var(--amber-dim); }
+    .imgmgr-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .imgmgr-drop-icon { font-size: 30px; color: var(--muted); margin-bottom: 10px; }
+    .imgmgr-drop-title { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+    .imgmgr-drop-sub { font-size: 12px; color: var(--muted); }
+    .imgmgr-file-preview { display: none; margin-top: 10px; }
+    .imgmgr-file-preview img { max-height: 160px; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+    .imgmgr-file-name { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .imgmgr-progress { display: none; margin-top: 12px; }
+    .imgmgr-progress-track { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+    .imgmgr-progress-fill { height: 100%; background: var(--amber); border-radius: 2px; transition: width 0.3s; }
+    .imgmgr-progress-label { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .imgmgr-upload-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+
+    .modal-box.modal-wide { max-width: 860px; }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) { .stats-row { grid-template-columns: 1fr 1fr; } }
@@ -727,6 +835,70 @@
     </div>
   </div>
 
+  <!-- ==================== IMAGE MANAGER ==================== -->
+  <div class="modal-overlay" id="imgMgrOverlay">
+    <div class="modal-box modal-wide" id="imgMgrBox">
+      <div class="modal-header">
+        <span class="modal-title">Image <span>Manager</span></span>
+        <button class="modal-close-btn" onclick="closeImgMgr()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="imgmgr-folder-pill" id="imgMgrFolderPill">events</div>
+        <div class="imgmgr-tabs">
+          <button class="imgmgr-tab active" id="tabBrowse" onclick="switchTab('browse')">
+            <i class="fas fa-images"></i>&nbsp; Browse
+          </button>
+          <button class="imgmgr-tab" id="tabUpload" onclick="switchTab('upload')">
+            <i class="fas fa-cloud-upload-alt"></i>&nbsp; Upload New
+          </button>
+        </div>
+
+        <!-- BROWSE PANEL -->
+        <div class="imgmgr-panel active" id="panel-browse">
+          <div class="imgmgr-toolbar">
+            <button class="imgmgr-refresh" onclick="loadBrowse()">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <span class="imgmgr-count" id="imgCount"></span>
+          </div>
+          <div class="imgmgr-grid" id="imgGrid">
+            <div class="imgmgr-spinner">
+              <i class="fas fa-circle-notch spinner"></i>&nbsp;Loading…
+            </div>
+          </div>
+        </div>
+
+        <!-- UPLOAD PANEL -->
+        <div class="imgmgr-panel" id="panel-upload">
+          <div class="imgmgr-drop" id="imgDrop">
+            <input type="file" id="imgFile" accept="image/jpeg,image/png,image/webp"
+                   onchange="onFileChosen(this.files)">
+            <div class="imgmgr-drop-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <div class="imgmgr-drop-title">Drag &amp; drop or click to select</div>
+            <div class="imgmgr-drop-sub">JPG · PNG · WebP · max 5 MB</div>
+          </div>
+          <div class="imgmgr-file-preview" id="imgFilePreview">
+            <img id="imgPreviewImg" src="" alt="preview">
+            <div class="imgmgr-file-name" id="imgFileName"></div>
+          </div>
+          <div class="imgmgr-progress" id="imgProgress">
+            <div class="imgmgr-progress-track">
+              <div class="imgmgr-progress-fill" id="imgProgressFill" style="width:0%"></div>
+            </div>
+            <div class="imgmgr-progress-label" id="imgProgressLabel">Uploading…</div>
+          </div>
+          <div class="imgmgr-upload-footer">
+            <button class="btn-cancel" onclick="clearUpload()">Clear</button>
+            <button class="btn-save" id="imgUploadBtn" onclick="doUpload()" disabled>
+              <i class="fas fa-upload"></i> Upload &amp; Select
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== DELETE CONFIRM ==================== -->
   <div class="modal-overlay" id="confirmOverlay">
     <div class="modal-box confirm-box">
@@ -746,8 +918,10 @@
   // ============================================================
   //  CONSTANTS
   // ============================================================
-  const CATEGORIES  = ['Festival','Cultural Show','Religious','Concert','Food & Craft Fair','Adventure','Sports'];
-  const STATE_MAP   = { 1:'Gujarat', 2:'Rajasthan', 3:'Kerala', 4:'Uttarakhand', 5:'Assam' };
+  const CATEGORIES     = ['Festival','Cultural Show','Religious','Concert','Food & Craft Fair','Adventure','Sports'];
+  const STATE_MAP      = { 1:'Gujarat', 2:'Rajasthan', 3:'Kerala', 4:'Uttarakhand', 5:'Assam' };
+  const BUCKET         = 'bharatyatra-images';
+  const STORAGE_PUBLIC = 'https://gtpnojbbamoaznlutxap.supabase.co/storage/v1/object/public/' + BUCKET + '/';
   const CAT_CLASS   = {
     'Festival':'festival','Cultural Show':'cultural','Religious':'religious',
     'Concert':'concert','Food & Craft Fair':'food','Adventure':'adventure','Sports':'sports'
@@ -761,6 +935,11 @@
   let sortCol   = 'date_from';
   let sortDir   = 'asc';
   let pendingConfirmCb = null;
+
+  // Image Manager state
+  let _imgField  = null;   // target input id
+  let _imgFolder = null;   // current storage folder
+  let _imgFile   = null;   // staged File object
 
   // ============================================================
   //  SANITISATION  (identical to admin-medical.html)
@@ -824,9 +1003,12 @@
   document.getElementById('confirmOverlay').addEventListener('click', e => {
     if (e.target === e.currentTarget) closeConfirm();
   });
+  document.getElementById('imgMgrOverlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeImgMgr();
+  });
   // ESC key closes modals
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeConfirm(); }
+    if (e.key === 'Escape') { closeModal(); closeConfirm(); closeImgMgr(); }
   });
 
   // ============================================================
@@ -1159,14 +1341,22 @@
             <div class="form-hint">Leave blank for free entry</div>
           </div>
           <div class="form-group">
-            <label class="form-label">Image URL</label>
-            <input class="form-input" id="f_image_url"
-                   placeholder="https://…" value="${imgVal}"
-                   oninput="liveImgPreview(this.value)">
-            <div class="form-hint">HTTPS URL only</div>
-            <div class="img-preview-box ${imgVisible}" id="imgPreviewBox">
+            <label class="form-label">Image</label>
+            <div class="img-field-wrap">
+              <input class="form-input" id="f_image_url"
+                     placeholder="https://… or pick from storage"
+                     value="${imgVal}"
+                     oninput="liveImgPreview(this.value)">
+              <button type="button" class="btn-img-pick"
+                      onclick="openImgMgr('f_image_url','events')"
+                      title="Browse or upload an image">
+                <i class="fas fa-images"></i>
+              </button>
+            </div>
+            <div class="img-preview-strip ${imgVisible}" id="imgPreviewBox">
               <img src="${imgVal}" alt="Preview"
-                   onerror="document.getElementById('imgPreviewBox').classList.remove('visible')">
+                   onerror="this.closest('.img-preview-strip').classList.remove('visible')">
+              <div class="img-preview-strip-label">Image preview</div>
             </div>
           </div>
 
@@ -1206,14 +1396,176 @@
       </div>
       <div class="modal-footer">
         <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn-save" id="savBtn" onclick="saveEvent(${ev.id || 'null'})">
+        <button class="btn-save" id="savBtn" onclick="saveEvent(${ev.id ?? null})">
           <i class="fas fa-save"></i> ${ev.id ? 'Update Event' : 'Add Event'}
         </button>
       </div>
     `;
   }
 
-  // Live image preview while typing URL
+  // ============================================================
+  //  IMAGE MANAGER
+  // ============================================================
+  function openImgMgr(fieldId, folder) {
+    _imgField  = fieldId;
+    _imgFolder = folder;
+    document.getElementById('imgMgrFolderPill').textContent = folder;
+    document.getElementById('imgMgrOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    switchTab('browse');
+    loadBrowse();
+  }
+
+  function closeImgMgr() {
+    document.getElementById('imgMgrOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+    clearUpload();
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tabBrowse').classList.toggle('active', tab === 'browse');
+    document.getElementById('tabUpload').classList.toggle('active', tab === 'upload');
+    document.getElementById('panel-browse').classList.toggle('active', tab === 'browse');
+    document.getElementById('panel-upload').classList.toggle('active', tab === 'upload');
+  }
+
+  async function loadBrowse() {
+    const grid = document.getElementById('imgGrid');
+    const cnt  = document.getElementById('imgCount');
+    grid.innerHTML = '<div class="imgmgr-spinner"><i class="fas fa-circle-notch spinner"></i>&nbsp;Loading…</div>';
+    cnt.textContent = '';
+
+    const { data, error } = await sb.storage
+      .from(BUCKET)
+      .list(_imgFolder, { limit: 300, sortBy: { column: 'created_at', order: 'desc' } });
+
+    if (error) {
+      grid.innerHTML = `<div class="imgmgr-empty"><i class="fas fa-exclamation-triangle" style="color:var(--red)"></i> Failed: ${san(error.message)}</div>`;
+      return;
+    }
+
+    const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder' && f.name !== '.gitkeep');
+
+    if (!files.length) {
+      grid.innerHTML = `<div class="imgmgr-empty"><i class="fas fa-image"></i>No images in <strong>${_imgFolder}</strong> yet.<br><small style="display:block;margin-top:6px;font-size:11px;">Go to Upload New to add one.</small></div>`;
+      cnt.textContent = '0 images';
+      return;
+    }
+
+    cnt.textContent = files.length + ' image' + (files.length !== 1 ? 's' : '');
+    grid.innerHTML = '';
+
+    files.forEach(file => {
+      const url  = STORAGE_PUBLIC + _imgFolder + '/' + file.name;
+      const card = document.createElement('div');
+      card.className = 'imgmgr-thumb';
+      card.onclick   = () => pickImg(url);
+      card.innerHTML = `
+        <div class="imgmgr-hover-select"><span><i class="fas fa-check" style="margin-right:3px;"></i>Select</span></div>
+        <img src="${url}" alt="${file.name}" loading="lazy"
+          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22138%22 height=%22104%22%3E%3Crect fill=%22%230e1628%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2211%22 fill=%22%2394a3b8%22%3ENo preview%3C/text%3E%3C/svg%3E'">
+        <div class="imgmgr-thumb-bar">
+          <span class="imgmgr-thumb-name" title="${file.name}">${file.name}</span>
+          <button class="imgmgr-del-btn" title="Delete" onclick="deleteImg(event,'${file.name}')"><i class="fas fa-trash"></i></button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function pickImg(url) {
+    if (_imgField) {
+      const el = document.getElementById(_imgField);
+      if (el) {
+        el.value = url;
+        liveImgPreview(url);
+      }
+    }
+    closeImgMgr();
+    toast('Image selected');
+  }
+
+  function deleteImg(e, filename) {
+    e.stopPropagation();
+    openConfirm(
+      `Delete "${filename}"?`,
+      'This permanently removes the file from storage. Any record already using this URL will lose its image.',
+      async () => {
+        const { error } = await sb.storage.from(BUCKET).remove([_imgFolder + '/' + filename]);
+        if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+        toast('Image deleted');
+        loadBrowse();
+      }
+    );
+  }
+
+  function onFileChosen(files) {
+    if (!files || !files.length) return;
+    const file = files[0];
+    if (file.size > 5 * 1024 * 1024) { toast('File too large — max 5 MB', 'error'); return; }
+    _imgFile = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('imgPreviewImg').src = ev.target.result;
+      document.getElementById('imgFileName').textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+      document.getElementById('imgFilePreview').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+    document.getElementById('imgUploadBtn').disabled = false;
+  }
+
+  function clearUpload() {
+    _imgFile = null;
+    const fi = document.getElementById('imgFile');
+    if (fi) fi.value = '';
+    document.getElementById('imgFilePreview').style.display  = 'none';
+    document.getElementById('imgPreviewImg').src             = '';
+    document.getElementById('imgFileName').textContent       = '';
+    document.getElementById('imgProgress').style.display     = 'none';
+    document.getElementById('imgProgressFill').style.width   = '0%';
+    document.getElementById('imgUploadBtn').disabled         = true;
+  }
+
+  async function doUpload() {
+    if (!_imgFile) return;
+    const btn = document.getElementById('imgUploadBtn');
+
+    const ext      = (_imgFile.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const base     = _imgFile.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 60);
+    const filename = base + '-' + Date.now() + '.' + ext;
+    const path     = _imgFolder + '/' + filename;
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading…';
+    document.getElementById('imgProgress').style.display    = 'block';
+    document.getElementById('imgProgressFill').style.width  = '40%';
+    document.getElementById('imgProgressLabel').textContent = 'Uploading…';
+
+    const { error } = await sb.storage.from(BUCKET).upload(path, _imgFile, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: _imgFile.type
+    });
+
+    document.getElementById('imgProgressFill').style.width = '100%';
+
+    if (error) {
+      document.getElementById('imgProgressLabel').textContent = 'Upload failed';
+      toast('Upload failed: ' + error.message, 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-upload"></i> Upload &amp; Select';
+      return;
+    }
+
+    document.getElementById('imgProgressLabel').textContent = 'Done!';
+    toast('Uploaded!');
+    pickImg(STORAGE_PUBLIC + path);
+    clearUpload();
+    btn.innerHTML = '<i class="fas fa-upload"></i> Upload &amp; Select';
+  }
+
+  // ============================================================
+  //  LIVE IMAGE PREVIEW (while typing URL)
   function liveImgPreview(url) {
     const box = document.getElementById('imgPreviewBox');
     if (!box) return;
@@ -1324,16 +1676,28 @@
       updated_at:   new Date().toISOString()
     };
 
-    let error;
+    let error, data;
     if (id) {
-      ({ error } = await sb.from('events').update(payload).eq('id', id));
+      ({ error, data } = await sb.from('events').update(payload).eq('id', id).select());
     } else {
       payload.created_at = new Date().toISOString();
-      ({ error } = await sb.from('events').insert(payload));
+      ({ error, data } = await sb.from('events').insert(payload).select());
     }
 
     if (error) {
-      toast('Error: ' + error.message, 'error');
+      // Surface RLS violations clearly instead of silently failing
+      const msg = error.code === '42501'
+        ? 'Permission denied — check RLS policies on the events table.'
+        : 'Error: ' + error.message;
+      toast(msg, 'error');
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fas fa-save"></i> ${id ? 'Update Event' : 'Add Event'}`;
+      return;
+    }
+
+    // Guard against silent RLS block (no error but 0 rows affected)
+    if (!data || data.length === 0) {
+      toast('Save blocked — no rows affected. Check RLS policies.', 'error');
       btn.disabled = false;
       btn.innerHTML = `<i class="fas fa-save"></i> ${id ? 'Update Event' : 'Add Event'}`;
       return;
@@ -1400,6 +1764,12 @@
 
     // 4. Load events from Supabase
     await loadEvents();
+
+    // 5. Image Manager — drag-and-drop zone
+    const dz = document.getElementById('imgDrop');
+    dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('over'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); onFileChosen(e.dataTransfer.files); });
   });
   </script>
 </body>
