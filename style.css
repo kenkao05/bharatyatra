@@ -31,36 +31,119 @@ body {
 
 body.no-scroll { overflow: hidden; }
 
-/* ── LOADING SCREEN ─────────────────────────────── */
+/* ── LOADING SCREEN — OPTION 3: TERRACOTTA MOSAIC ── */
 #loader {
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background: var(--black);
+    background: #f2f0ed;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.7s ease;
+    overflow: hidden;
 }
 
-#loader.hidden {
+/* Tile grid fills the entire loader */
+.lt-grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    z-index: 0;
+}
+
+/* Individual tiles */
+.lt-tile {
+    border: 1px solid rgba(192, 57, 43, 0.09);
     opacity: 0;
-    pointer-events: none;
+    animation: ltTileIn 0.35s ease forwards;
+}
+.lt-ta { background: rgba(255, 107, 53, 0.07); }
+.lt-tb { background: rgba(192,  57, 43, 0.05); }
+.lt-tc { background: rgba(126,  91, 91, 0.04); }
+
+@keyframes ltTileIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to   { opacity: 1; transform: scale(1);   }
 }
 
-#loader-text {
+/* Tile exit — shrink and vanish */
+.lt-tile.lt-exit {
+    animation: ltTileOut 0.4s ease forwards;
+}
+@keyframes ltTileOut {
+    from { opacity: 1; transform: scale(1);    }
+    to   { opacity: 0; transform: scale(0.72); }
+}
+
+/* Centre content */
+.lt-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    text-align: center;
+}
+.lt-inner.lt-inner-exit {
+    animation: ltInnerOut 0.4s ease forwards;
+}
+@keyframes ltInnerOut {
+    to { opacity: 0; transform: translateY(-10px); }
+}
+
+.lt-lotus {
+    font-size: 48px;
+    line-height: 1;
+    opacity: 0;
+    animation: ltFadeUp 0.6s ease 1.4s forwards;
+}
+.lt-logo {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(1.1rem, 3.5vw, 1.8rem);
-    color: var(--white);
-    letter-spacing: 3px;
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 700;
+    color: #1a0a06;
+    letter-spacing: 8px;
     opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.9s ease, transform 0.9s ease;
+    animation: ltFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.6s forwards;
+}
+.lt-logo span { color: #C0392B; }
+
+.lt-dots {
+    display: flex;
+    gap: 9px;
+    opacity: 0;
+    animation: ltFadeUp 0.5s ease 2s forwards;
+}
+.lt-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #C0392B;
+    opacity: 0.2;
+    animation: ltDotPulse 1.2s ease infinite;
+}
+.lt-dot:nth-child(2) { animation-delay: 0.2s; }
+.lt-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes ltDotPulse {
+    0%, 100% { opacity: 0.2; transform: scale(1);   }
+    50%       { opacity: 1;   transform: scale(1.5); }
 }
 
-#loader-text.visible {
-    opacity: 1;
-    transform: translateY(0);
+.lt-sub {
+    font-family: 'Poppins', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #7e5b5b;
+    opacity: 0;
+    animation: ltFadeUp 0.5s ease 2.2s forwards;
+}
+
+@keyframes ltFadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0);    }
 }
 
 /* ── NAVBAR ─────────────────────────────────────── */

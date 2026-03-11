@@ -4,45 +4,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kerala | Bharat Yatra</title>
+  <title>Uttarakhand | Bharat Yatra</title>
 
+  <!-- Security Headers (apply server-side equivalents) -->
   <!--
-    SERVER-SIDE SECURITY HEADERS REQUIRED (set in your web server / CDN config):
-    Strict-Transport-Security: max-age=31536000; includeSubDomains
-    X-Content-Type-Options: nosniff
     X-Frame-Options: DENY
+    X-Content-Type-Options: nosniff
     Referrer-Policy: strict-origin-when-cross-origin
+    Strict-Transport-Security: max-age=31536000; includeSubDomains
     Permissions-Policy: camera=(), microphone=(), geolocation=()
   -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' 'unsafe-inline' https://unpkg.com;
-    style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
-    font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
-    img-src 'self' data: https://images.unsplash.com https://via.placeholder.com https://gtpnojbbamoaznlutxap.supabase.co;
-    connect-src 'self' https://gtpnojbbamoaznlutxap.supabase.co;
-    media-src 'self' ../styling/stateimages/;
-    frame-ancestors 'none';
-    base-uri 'self';
-    form-action 'self';
-    object-src 'none';
-  ">
 
-  <!-- Font Awesome -->
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+      script-src 'self' https://unpkg.com https://cdnjs.cloudflare.com 'unsafe-inline';
+      style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+      font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+      img-src 'self' https: data:;
+      connect-src 'self' https://gtpnojbbamoaznlutxap.supabase.co;
+      frame-ancestors 'none';
+      base-uri 'self';
+      form-action 'self';
+      object-src 'none';
+    ">
+
+  <!-- Referrer Policy -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Font Awesome — NOTE: No AI-generated SRI hash per security report section 6.1 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        crossorigin="anonymous" referrerpolicy="no-referrer">
+    crossorigin="anonymous" referrerpolicy="no-referrer">
 
   <!-- Supabase -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2"
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-  <!-- GSAP — SRI hashes intentionally omitted per Section 6.1 (AI-generated hashes are incorrect).
-       Version is pinned via @3 for supply-chain protection. For production, compute real hashes
-       from https://www.srihash.org or https://cdnjs.com and add integrity= attributes. -->
-  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- GSAP — NOTE: No AI-generated SRI hash per security report section 6.1 -->
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@700&display=swap');
@@ -79,8 +79,6 @@
       background: transparent;
       transition: background 0.4s ease;
     }
-
-
 
     .nav-container {
       max-width: 1400px;
@@ -330,6 +328,7 @@
       position: relative;
     }
 
+    /* Events panel expands to fit all timeline cards — no inner scroll */
     .events-panel {
       width: max-content !important;
       min-width: 100vw;
@@ -355,7 +354,9 @@
     }
 
     @keyframes fadeInVideo {
-      to { opacity: 1; }
+      to {
+        opacity: 1;
+      }
     }
 
     .video-panel::after {
@@ -415,7 +416,9 @@
     }
 
     @keyframes fadeInTitle {
-      to { opacity: 1; }
+      to {
+        opacity: 1;
+      }
     }
 
     .mute-btn {
@@ -442,6 +445,12 @@
       background: var(--state-accent);
       border-color: var(--state-accent);
       transform: scale(1.1);
+    }
+
+    @media (max-height: 800px) {
+      .video-panel video {
+        object-position: center 35%;
+      }
     }
 
     /* ==================== PANEL 2: ATTRACTIONS ==================== */
@@ -683,8 +692,15 @@
     }
 
     @keyframes modalSlideIn {
-      from { opacity: 0; transform: translateY(-50px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .modal-close {
@@ -764,7 +780,7 @@
       font-size: 15px;
     }
 
-    /* ==================== PANEL 4: EVENTS TIMELINE ==================== */
+    /* ==================== PANEL 5: EVENTS TIMELINE ==================== */
     .events-panel {
       background: #f9f6f2;
       display: flex;
@@ -785,6 +801,7 @@
       margin-top: 10px;
     }
 
+    /* Category filter pills */
     .events-category-bar {
       display: flex;
       gap: 10px;
@@ -816,12 +833,14 @@
       color: #fff;
     }
 
+    /* Timeline container — no inner scroll; panel expands to content */
     .events-timeline {
       flex: 1;
       position: relative;
       overflow: visible;
       padding-bottom: 16px;
     }
+
 
     .events-loading {
       display: flex;
@@ -832,6 +851,7 @@
       padding: 60px 0;
     }
 
+    /* The horizontal track inside the timeline */
     .timeline-track {
       display: flex;
       align-items: center;
@@ -841,6 +861,7 @@
       gap: 0;
     }
 
+    /* Central horizontal line */
     .timeline-track::before {
       content: '';
       position: absolute;
@@ -853,6 +874,7 @@
       z-index: 0;
     }
 
+    /* Each event node wrapper */
     .tl-node {
       position: relative;
       display: flex;
@@ -863,6 +885,7 @@
       cursor: pointer;
     }
 
+    /* Alternate cards above/below the line */
     .tl-node:nth-child(odd) {
       flex-direction: column;
       padding-bottom: 60px;
@@ -873,6 +896,7 @@
       padding-top: 60px;
     }
 
+    /* The dot on the line */
     .tl-dot {
       width: 14px;
       height: 14px;
@@ -891,6 +915,7 @@
       transform: scale(1.3);
     }
 
+    /* Connector line from dot to card */
     .tl-connector {
       width: 1.5px;
       height: 36px;
@@ -903,6 +928,7 @@
       background: #ff6b35;
     }
 
+    /* The card */
     .tl-card {
       background: #fff;
       border: 1px solid #ece8e2;
@@ -986,9 +1012,11 @@
       border: 1px solid #fde68a;
     }
 
+    /* hidden node when filtered */
     .tl-node.hidden {
       display: none;
     }
+
 
     /* ==================== EVENT MODAL ==================== */
     .event-modal-content {
@@ -1264,31 +1292,83 @@
 
     /* ==================== RESPONSIVE ==================== */
     @media (max-width: 1024px) {
-      .nav-links { display: none; }
-      .horizontal { height: auto; }
-      .track { flex-direction: column; width: 100vw; height: auto; }
-      .panel { width: 100vw; height: auto; min-height: 100vh; }
-      .attractions-grid { flex-direction: column; align-items: center; }
+      .nav-links {
+        display: none;
+      }
+
+      .horizontal {
+        height: auto;
+      }
+
+      .track {
+        flex-direction: column;
+        width: 100vw;
+        height: auto;
+      }
+
+      .panel {
+        width: 100vw;
+        height: auto;
+        min-height: 100vh;
+      }
+
+      .attractions-grid {
+        flex-direction: column;
+        align-items: center;
+      }
+
       .attraction-card:nth-child(1),
       .attraction-card:nth-child(2),
-      .attraction-card:nth-child(3) { width: 100%; max-width: 400px; align-self: center; }
+      .attraction-card:nth-child(3) {
+        width: 100%;
+        max-width: 400px;
+        align-self: center;
+      }
+
       .attraction-card:nth-child(1) .attraction-image,
       .attraction-card:nth-child(2) .attraction-image,
-      .attraction-card:nth-child(3) .attraction-image { width: 100%; height: 300px; }
-      .districts-grid { flex-direction: column; align-items: center; }
-      .district-card { width: 100%; max-width: 400px; }
-      .scroll-progress { display: none; }
+      .attraction-card:nth-child(3) .attraction-image {
+        width: 100%;
+        height: 300px;
+      }
+
+      .districts-grid {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .district-card {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .scroll-progress {
+        display: none;
+      }
     }
 
     @media (max-width: 768px) {
-      .panel-title { font-size: 36px; }
-      .modal-body { padding: 20px; }
-      .modal-info { grid-template-columns: 1fr; }
+      .panel-title {
+        font-size: 36px;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .modal-info {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 
 <body>
+
+  <!-- Clickjacking framebusting (defence-in-depth alongside CSP frame-ancestors) -->
+  <script>
+    if (window.top !== window.self) { window.top.location = window.self.location; }
+  </script>
 
   <!-- ==================== NAVBAR ==================== -->
   <nav id="navbar">
@@ -1296,7 +1376,7 @@
       <a href="../index.html" class="logo">BharatYatra</a>
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
-        <li><a href="../districts/keraladistrict.html">Districts</a></li>
+        <li><a href="../districts/uttarakhanddistrict.html">Districts</a></li>
         <li><a href="../experiences.html">Experiences</a></li>
       </ul>
       <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
@@ -1345,11 +1425,11 @@
         <!-- PANEL 1: VIDEO -->
         <div class="panel video-panel">
           <video id="heroVideo" autoplay muted loop playsinline>
-            <source src="../styling/stateimages/kerala-intro.mkv" type="video/mp4">
+            <source src="../styling/stateimages/uttarakhand-intro.mkv" type="video/mp4">
           </video>
           <div class="video-overlay">
-            <h1 class="video-title">Kerala</h1>
-            <div class="video-tagline">God's Own Country</div>
+            <h1 class="video-title"></h1>
+            <div class="video-tagline">Land of Gods and Mountains</div>
           </div>
           <button class="mute-btn" id="muteBtn">
             <i class="fas fa-volume-mute"></i>
@@ -1367,7 +1447,7 @@
           <h2 class="panel-title">Popular Districts</h2>
           <div class="districts-grid" id="districtsGrid"></div>
           <div style="text-align: center;">
-            <a href="../districts/keraladistrict.html" class="visit-all-btn">
+            <a href="../districts/uttarakhanddistrict.html" class="visit-all-btn">
               Visit All Districts <i class="fas fa-arrow-right"></i>
             </a>
           </div>
@@ -1384,7 +1464,7 @@
           </div>
         </div>
 
-        <!-- BUFFER -->
+        <!-- BUFFER: prevents last event card from clipping -->
         <div class="buffer-panel"></div>
 
       </div>
@@ -1395,11 +1475,13 @@
   <footer id="footer">
     <div class="footer-inner">
 
+      <!-- Brand -->
       <div class="footer-brand">
         <a href="../index.html" class="footer-logo">BHARAT YATRA</a>
         <p class="footer-tagline">Discover the incredible beauty<br>and diversity of India.</p>
       </div>
 
+      <!-- Explore -->
       <div class="footer-col">
         <h4 class="footer-heading">Explore</h4>
         <ul class="footer-links">
@@ -1409,6 +1491,7 @@
         </ul>
       </div>
 
+      <!-- Plan -->
       <div class="footer-col">
         <h4 class="footer-heading">Plan</h4>
         <ul class="footer-links">
@@ -1418,6 +1501,7 @@
         </ul>
       </div>
 
+      <!-- Legal -->
       <div class="footer-col">
         <h4 class="footer-heading">Legal</h4>
         <ul class="footer-links">
@@ -1426,6 +1510,7 @@
         </ul>
       </div>
 
+      <!-- Connect -->
       <div class="footer-col">
         <h4 class="footer-heading">Follow Us</h4>
         <div class="footer-socials">
@@ -1445,10 +1530,10 @@
     </div>
   </footer>
 
-  <!-- ==================== ATTRACTION MODAL ==================== -->
+  <!-- ==================== MODALS ==================== -->
   <div class="modal" id="attractionModal">
     <div class="modal-content">
-      <button class="modal-close" onclick="closeModal('attractionModal')">×</button>
+      <button class="modal-close" id="attractionModalCloseBtn">&#215;</button>
       <img id="modalImage" class="modal-image" src="" alt="">
       <div class="modal-body">
         <h2 id="modalName"></h2>
@@ -1461,7 +1546,7 @@
   <!-- ==================== EVENT MODAL ==================== -->
   <div class="modal" id="eventModal">
     <div class="modal-content event-modal-content">
-      <button class="modal-close" onclick="closeModal('eventModal')">&#215;</button>
+      <button class="modal-close" id="eventModalCloseBtn">&#215;</button>
       <div class="event-modal-hero" id="eventModalHero">
         <div class="event-modal-hero-overlay">
           <span class="event-modal-cat" id="eventModalCat"></span>
@@ -1472,12 +1557,13 @@
         <div class="event-modal-meta-row">
           <div class="event-meta-chip"><i class="fas fa-calendar-alt"></i><span id="eventModalDates"></span></div>
           <div class="event-meta-chip"><i class="fas fa-map-marker-alt"></i><span id="eventModalVenue"></span></div>
-          <div class="event-meta-chip fee-chip" id="eventModalFeeChip"><i class="fas fa-ticket-alt"></i><span id="eventModalFee"></span></div>
+          <div class="event-meta-chip fee-chip" id="eventModalFeeChip"><i class="fas fa-ticket-alt"></i><span
+              id="eventModalFee"></span></div>
         </div>
         <p class="event-modal-desc" id="eventModalDesc"></p>
         <div class="event-modal-footer-row">
           <div id="eventModalRecurring"></div>
-          <a class="event-modal-website" id="eventModalWebsite" href="#" target="_blank" rel="noopener">
+          <a class="event-modal-website hidden" id="eventModalWebsite" href="#" target="_blank" rel="noopener noreferrer">
             <i class="fas fa-external-link-alt"></i> Official Website
           </a>
         </div>
@@ -1486,12 +1572,29 @@
   </div>
 
   <script>
+    // ==================== SECURITY: HTML ENTITY ENCODER ====================
+    // Prevents XSS when DB data must go into innerHTML context.
+    // Never use strip-based sanitisers — entity encoding is the correct approach.
+    function escHTML(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/`/g, '&#96;');
+    }
+
     // ==================== SUPABASE SETUP ====================
-    const SUPABASE_CONFIG = Object.freeze({
-      url: "https://gtpnojbbamoaznlutxap.supabase.co",
-      anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE"
+    // Config frozen to prevent prototype pollution / mutable config attacks
+    const CONFIG = Object.freeze({
+      SUPABASE_URL: "https://gtpnojbbamoaznlutxap.supabase.co",
+      SUPABASE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE",
+      STATE_ID: 4
     });
-    const supabaseClient = supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+
+    const supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
 
     // ==================== NAVBAR SCROLL ====================
     const navbar = document.getElementById('navbar');
@@ -1520,12 +1623,6 @@
     closeBtn.addEventListener('click', closeSidebar);
     overlay.addEventListener('click', closeSidebar);
 
-    document.querySelectorAll('.modal').forEach(m => {
-      m.addEventListener('click', (e) => {
-        if (e.target === m) closeModal(m.id);
-      });
-    });
-
     // ==================== MUTE/UNMUTE VIDEO ====================
     const video = document.getElementById('heroVideo');
     const muteBtn = document.getElementById('muteBtn');
@@ -1534,88 +1631,37 @@
     muteBtn.addEventListener('click', () => {
       isMuted = !isMuted;
       video.muted = isMuted;
-      muteBtn.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+      // Use textContent-safe icon swap — no innerHTML injection
+      muteBtn.innerHTML = isMuted
+        ? '<i class="fas fa-volume-mute"></i>'
+        : '<i class="fas fa-volume-up"></i>';
     });
 
-    // ==================== SECURITY: HTML ENTITY ENCODER ====================
-    // Encodes & < > " ' ` to prevent XSS when DB values go into innerHTML context
-    function escHTML(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/`/g, '&#96;');
-    }
+    // ==================== MODAL CLOSE BUTTONS (event delegation — no onclick attrs) ====================
+    document.getElementById('attractionModalCloseBtn').addEventListener('click', () => closeModal('attractionModal'));
+    document.getElementById('eventModalCloseBtn').addEventListener('click', () => closeModal('eventModal'));
 
-    // ==================== IMAGE OVERRIDES ====================
-    // Fix broken/duplicate Supabase image URLs with verified thematic images
-    const DISTRICT_IMAGES = {
-      'Kochi':             'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=800',
-      'Munnar':            'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?w=800',
-      'Alleppey':          'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800',
-      'Thekkady':          'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=800',
-      'Kovalam':           'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800',
-      'Wayanad':           'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800',
-      'Thiruvananthapuram':'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=800',
-    };
+    // Close modals when clicking the dark backdrop
+    document.querySelectorAll('.modal').forEach(m => {
+      m.addEventListener('click', (e) => {
+        if (e.target === m) closeModal(m.id);
+      });
+    });
 
-    const ATTRACTION_IMAGES = {
-      72:  'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=800', // Fort Kochi - Chinese fishing nets
-      73:  'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800', // Mattancherry Palace
-      74:  'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=800', // Marine Drive
-      75:  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800',   // Paradesi Synagogue
-      76:  'https://images.unsplash.com/photo-1558769132-cb1aea1c8b50?w=800',   // Kathakali
-      77:  'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?w=800', // Tea Plantations
-      78:  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800', // Eravikulam NP
-      79:  'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800', // Mattupetty Dam
-      80:  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800', // Top Station
-      81:  'https://images.unsplash.com/photo-1580654712603-eb43273aff33?w=800', // Attukal Waterfalls
-      82:  'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800',   // Houseboat Cruise
-      83:  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', // Alleppey Beach
-      84:  'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800', // Ambalapuzha Temple
-      85:  'https://images.unsplash.com/photo-1554080353-a576cf803bda?w=800',   // Nehru Trophy Boat Race
-      86:  'https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=800', // Marari Beach
-      87:  'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=800',   // Periyar Wildlife
-      88:  'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?w=800', // Spice Plantations
-      89:  'https://images.unsplash.com/photo-1549366021-9f761d450615?w=800',   // Elephant Junction
-      90:  'https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?w=800', // Mangla Devi Temple
-      91:  'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800',   // Bamboo Rafting
-      92:  'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800',   // Lighthouse Beach
-      93:  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', // Vizhinjam
-      94:  'https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=800', // Samudra Beach
-      95:  'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800', // Halcyon Castle
-      96:  'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800',   // Ayurveda Centers
-      97:  'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800', // Edakkal Caves
-      98:  'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800', // Wayanad Wildlife
-      99:  'https://images.unsplash.com/photo-1580654712603-eb43273aff33?w=800', // Soochipara Waterfalls
-      100: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800', // Banasura Dam
-      101: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800', // Chembra Peak
-      102: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800', // Padmanabhaswamy Temple
-      103: 'https://images.unsplash.com/photo-1558769132-cb1aea1c8b50?w=800',   // Napier Museum
-      104: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', // Shanghumukham Beach
-      105: 'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800', // Kuthiramalika Palace
-      106: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800', // Ponmudi
-    };
-
-    function fixImg(url, id) {
-      if (id !== undefined && ATTRACTION_IMAGES[id]) return ATTRACTION_IMAGES[id];
-      return url;
-    }
-
-    function fixDistrictImg(name, url) {
-      return DISTRICT_IMAGES[name] || url;
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+      document.body.style.overflow = 'auto';
     }
 
     // ==================== LOAD ATTRACTIONS ====================
+    // Uses DOM API (createElement + textContent) for all DB data — never innerHTML with DB values.
+    // data-id attribute + event delegation — no onclick="${id}" injection.
     async function loadAttractions() {
       try {
         const { data, error } = await supabaseClient
           .from("attractions")
           .select("*")
-          .eq("state_id", 3)
+          .eq("state_id", CONFIG.STATE_ID)
           .order("priority_score", { ascending: false })
           .limit(3);
 
@@ -1625,25 +1671,45 @@
         container.innerHTML = "";
 
         data.forEach(attraction => {
+          // Build card with DOM API — no innerHTML with DB data
           const card = document.createElement('div');
           card.className = 'attraction-card';
-          // data-id delegation — never inject attraction.id into onclick= attribute
-          const safeId = parseInt(attraction.id, 10);
-          card.innerHTML = `
-            <img src="${escHTML(fixImg(attraction.image_url, attraction.id))}" alt="${escHTML(attraction.name)}" class="attraction-image">
-            <div class="attraction-content">
-              <h3 data-attraction-id="${escHTML(String(safeId))}">${escHTML(attraction.name)}</h3>
-            </div>
-          `;
-          card.addEventListener('click', () => openAttractionModal(safeId));
+          card.dataset.id = String(parseInt(attraction.id, 10));
+
+          const img = document.createElement('img');
+          img.src = attraction.image_url || '';
+          img.alt = attraction.name || '';
+          img.className = 'attraction-image';
+
+          const content = document.createElement('div');
+          content.className = 'attraction-content';
+
+          const h3 = document.createElement('h3');
+          h3.textContent = attraction.name; // textContent — safe, no XSS
+          h3.dataset.action = 'open-attraction';
+          h3.dataset.id = String(parseInt(attraction.id, 10));
+
+          content.appendChild(h3);
+          card.appendChild(img);
+          card.appendChild(content);
           container.appendChild(card);
         });
 
         window.attractionsData = data;
       } catch (err) {
-        console.error("Error loading attractions:", err);
+        console.error("Error loading attractions");
+        // Generic error — never expose err.message to UI (security report §3.1)
       }
     }
+
+    // Event delegation for attraction cards — no onclick attribute injection
+    document.getElementById('attractionsGrid').addEventListener('click', (e) => {
+      const target = e.target.closest('[data-action="open-attraction"]');
+      if (!target) return;
+      const id = parseInt(target.dataset.id, 10);
+      if (!Number.isInteger(id)) return; // Validate ID as integer
+      openAttractionModal(id);
+    });
 
     // ==================== LOAD DISTRICTS ====================
     async function loadDistricts() {
@@ -1656,7 +1722,7 @@
             image_url,
             attractions ( id )
           `)
-          .eq("state_id", 3);
+          .eq("state_id", CONFIG.STATE_ID);
 
         if (error) throw error;
 
@@ -1674,130 +1740,136 @@
         container.innerHTML = "";
 
         districtsWithCount.forEach(district => {
-          // Build via createElement to avoid innerHTML+= pattern (causes re-parse of entire container)
-          const safeDistId = parseInt(district.id, 10);
+          // DOM API construction — no innerHTML with DB data
           const card = document.createElement('div');
           card.className = 'district-card';
-          card.dataset.districtId = String(safeDistId);
-          card.innerHTML = `
-            <img src="${escHTML(fixDistrictImg(district.name, district.image_url))}" alt="${escHTML(district.name)}">
-            <div class="district-info">
-              <h3>${escHTML(district.name)}</h3>
-              <span><i class="fas fa-map-marked-alt"></i> ${escHTML(String(district.count))} attractions</span>
-            </div>
-          `;
-          card.addEventListener('click', () => openDistrictModal(safeDistId));
+          card.dataset.id = String(parseInt(district.id, 10));
+          card.dataset.action = 'open-district';
+
+          const img = document.createElement('img');
+          img.src = district.image_url || '';
+          img.alt = district.name || '';
+
+          const info = document.createElement('div');
+          info.className = 'district-info';
+
+          const h3 = document.createElement('h3');
+          h3.textContent = district.name; // safe textContent
+
+          const span = document.createElement('span');
+          const icon = document.createElement('i');
+          icon.className = 'fas fa-map-marked-alt';
+          span.appendChild(icon);
+          span.appendChild(document.createTextNode(' ' + district.count + ' attractions'));
+
+          info.appendChild(h3);
+          info.appendChild(span);
+          card.appendChild(img);
+          card.appendChild(info);
           container.appendChild(card);
         });
       } catch (err) {
-        console.error("Error loading districts:", err);
+        console.error("Error loading districts");
       }
     }
 
-    // ==================== MODAL FUNCTIONS ====================
+    // Event delegation for district cards — no onclick attribute injection
+    document.getElementById('districtsGrid').addEventListener('click', (e) => {
+      const card = e.target.closest('[data-action="open-district"]');
+      if (!card) return;
+      window.location.href = '../districts/uttarakhanddistrict.html';
+    });
+
+    // ==================== ATTRACTION MODAL ====================
     function openAttractionModal(attractionId) {
-      const attraction = window.attractionsData.find(a => a.id === attractionId);
+      const attraction = window.attractionsData && window.attractionsData.find(a => a.id === attractionId);
       if (!attraction) return;
 
-      document.getElementById('modalImage').src = fixImg(attraction.image_url, attraction.id);
-      document.getElementById('modalName').textContent = attraction.name;
-      document.getElementById('modalDescription').textContent = attraction.description || attraction.short_description || '';
+      // Safe image src — only allow https URLs
+      const safeImgUrl = (attraction.image_url && attraction.image_url.startsWith('https://'))
+        ? attraction.image_url : '';
+      document.getElementById('modalImage').src = safeImgUrl;
+      document.getElementById('modalImage').alt = attraction.name || '';
 
-      let infoHtml = '';
+      // Use textContent for all DB text — no innerHTML with DB strings
+      document.getElementById('modalName').textContent = attraction.name || '';
+      document.getElementById('modalDescription').textContent =
+        attraction.description || attraction.short_description || '';
+
+      // Build info grid with DOM API
+      const infoContainer = document.getElementById('modalInfo');
+      infoContainer.innerHTML = ''; // clear static content only — no DB data here
+
+      const infoItems = [];
 
       if (attraction.entry_fee !== undefined && attraction.entry_fee !== null) {
-        infoHtml += `
-          <div class="info-item">
-            <i class="fas fa-ticket-alt"></i>
-            <div>
-              <strong>Entry Fee</strong>
-              <span>&#8377;${attraction.entry_fee === 0 ? 'Free' : escHTML(String(attraction.entry_fee))}</span>
-            </div>
-          </div>
-        `;
+        infoItems.push({
+          icon: 'fas fa-ticket-alt',
+          label: 'Entry Fee',
+          value: attraction.entry_fee === 0 ? 'Free' : '₹' + attraction.entry_fee
+        });
       }
-
       if (attraction.estimated_time_hours) {
-        infoHtml += `
-          <div class="info-item">
-            <i class="fas fa-clock"></i>
-            <div>
-              <strong>Time Needed</strong>
-              <span>${escHTML(String(attraction.estimated_time_hours))} hours</span>
-            </div>
-          </div>
-        `;
+        infoItems.push({
+          icon: 'fas fa-clock',
+          label: 'Time Needed',
+          value: attraction.estimated_time_hours + ' hours'
+        });
       }
-
       if (attraction.best_time_note) {
-        infoHtml += `
-          <div class="info-item">
-            <i class="fas fa-calendar-alt"></i>
-            <div>
-              <strong>Best Time</strong>
-              <span>${escHTML(attraction.best_time_note)}</span>
-            </div>
-          </div>
-        `;
+        infoItems.push({
+          icon: 'fas fa-calendar-alt',
+          label: 'Best Time',
+          value: attraction.best_time_note
+        });
       }
-
       if (attraction.address || attraction.city) {
-        infoHtml += `
-          <div class="info-item">
-            <i class="fas fa-map-marker-alt"></i>
-            <div>
-              <strong>Location</strong>
-              <span>${escHTML(attraction.address || attraction.city || '')}</span>
-            </div>
-          </div>
-        `;
+        infoItems.push({
+          icon: 'fas fa-map-marker-alt',
+          label: 'Location',
+          value: attraction.address || attraction.city || ''
+        });
       }
-
       if (attraction.contact_phone) {
-        infoHtml += `
-          <div class="info-item">
-            <i class="fas fa-phone"></i>
-            <div>
-              <strong>Contact</strong>
-              <span>${escHTML(attraction.contact_phone)}</span>
-            </div>
-          </div>
-        `;
+        infoItems.push({
+          icon: 'fas fa-phone',
+          label: 'Contact',
+          value: attraction.contact_phone
+        });
       }
-
       if (attraction.guide_available) {
-        infoHtml += `
-          <div class="info-item">
-            <i class="fas fa-user-tie"></i>
-            <div>
-              <strong>Guide Available</strong>
-              <span>${escHTML(attraction.guide_price_range || 'Yes')}</span>
-            </div>
-          </div>
-        `;
+        infoItems.push({
+          icon: 'fas fa-user-tie',
+          label: 'Guide Available',
+          value: attraction.guide_price_range || 'Yes'
+        });
       }
 
-      document.getElementById('modalInfo').innerHTML = infoHtml;
+      infoItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'info-item';
+
+        const i = document.createElement('i');
+        i.className = item.icon;
+
+        const textDiv = document.createElement('div');
+
+        const strong = document.createElement('strong');
+        strong.textContent = item.label; // static label — safe
+
+        const span = document.createElement('span');
+        span.textContent = item.value; // DB value via textContent — safe
+
+        textDiv.appendChild(strong);
+        textDiv.appendChild(span);
+        div.appendChild(i);
+        div.appendChild(textDiv);
+        infoContainer.appendChild(div);
+      });
+
       document.getElementById('attractionModal').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
-
-    function openDistrictModal(districtId) {
-      window.location.href = '../districts/keraladistrict.html';
-    }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove('active');
-      document.body.style.overflow = 'auto';
-    }
-
-    document.querySelectorAll('.modal').forEach(modal => {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          closeModal(modal.id);
-        }
-      });
-    });
 
     // ==================== LOAD EVENTS ====================
     const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -1816,12 +1888,12 @@
       const { data, error } = await supabaseClient
         .from('events')
         .select('*')
-        .eq('state_id', 3)
+        .eq('state_id', CONFIG.STATE_ID)
         .order('date_from', { ascending: true });
 
       if (error || !data || data.length === 0) {
         document.getElementById('eventsTimeline').innerHTML =
-          '<div class="events-loading">No events found for Kerala.</div>';
+          '<div class="events-loading">No events found for Uttarakhand.</div>';
         return;
       }
 
@@ -1833,16 +1905,20 @@
     function buildCategoryPills(events) {
       const bar = document.getElementById('eventsCategoryBar');
       const cats = ['All', ...new Set(events.map(e => e.category))];
-      bar.innerHTML = cats.map((c, i) =>
-        `<button class="cat-pill ${i === 0 ? 'active' : ''}" data-cat="${escHTML(c)}">${escHTML(c)}</button>`
-      ).join('');
 
-      bar.querySelectorAll('.cat-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
+      // Build pills with DOM API — no innerHTML with DB category names
+      bar.innerHTML = '';
+      cats.forEach((c, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-pill' + (i === 0 ? ' active' : '');
+        btn.dataset.cat = c; // safe data attribute
+        btn.textContent = c; // textContent — safe
+        btn.addEventListener('click', () => {
           bar.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-          pill.classList.add('active');
-          filterTimeline(pill.dataset.cat);
+          btn.classList.add('active');
+          filterTimeline(c);
         });
+        bar.appendChild(btn);
       });
     }
 
@@ -1864,34 +1940,69 @@
       events.forEach(ev => {
         const node = document.createElement('div');
         node.className = 'tl-node';
-        node.dataset.cat = ev.category;
+        node.dataset.cat = ev.category || ''; // safe data attr
 
-        const feeLabel = ev.entry_fee == null
-          ? '<span class="tl-fee">Free</span>'
-          : `<span class="tl-fee">&#8377;${escHTML(ev.entry_fee.toLocaleString())}</span>`;
+        // Build card with DOM API — no inline onclick on DB data
+        const card = document.createElement('div');
+        card.className = 'tl-card';
 
-        const featuredBadge = ev.is_featured
-          ? '<span class="tl-featured">&#9733; Featured</span>'
-          : '';
+        const dateEl = document.createElement('div');
+        dateEl.className = 'tl-date';
+        dateEl.textContent = formatDateRange(ev.date_from, ev.date_to);
 
-        // formatDateRange only uses computed date values — safe. ev.name, ev.city_venue, ev.category are DB strings — must escHTML
-        node.innerHTML = `
-          <div class="tl-card">
-            <div class="tl-date">${escHTML(formatDateRange(ev.date_from, ev.date_to))}</div>
-            <div class="tl-name">${escHTML(ev.name)}</div>
-            <div class="tl-venue"><i class="fas fa-map-pin"></i>${escHTML(ev.city_venue)}</div>
-            <div class="tl-badges">
-              <span class="tl-cat">${escHTML(ev.category)}</span>
-              ${feeLabel}
-              ${featuredBadge}
-            </div>
-          </div>
-          <div class="tl-connector"></div>
-          <div class="tl-dot"></div>
-          <div class="tl-connector"></div>
-        `;
+        const nameEl = document.createElement('div');
+        nameEl.className = 'tl-name';
+        nameEl.textContent = ev.name; // safe textContent
 
-        node.addEventListener('click', () => openEventModal(ev));
+        const venueEl = document.createElement('div');
+        venueEl.className = 'tl-venue';
+        const pinIcon = document.createElement('i');
+        pinIcon.className = 'fas fa-map-pin';
+        venueEl.appendChild(pinIcon);
+        venueEl.appendChild(document.createTextNode(ev.city_venue || ''));
+
+        const badges = document.createElement('div');
+        badges.className = 'tl-badges';
+
+        const catBadge = document.createElement('span');
+        catBadge.className = 'tl-cat';
+        catBadge.textContent = ev.category || '';
+
+        const feeBadge = document.createElement('span');
+        feeBadge.className = 'tl-fee';
+        feeBadge.textContent = ev.entry_fee == null ? 'Free' : '₹' + ev.entry_fee.toLocaleString();
+
+        badges.appendChild(catBadge);
+        badges.appendChild(feeBadge);
+
+        if (ev.is_featured) {
+          const featBadge = document.createElement('span');
+          featBadge.className = 'tl-featured';
+          featBadge.textContent = '★ Featured';
+          badges.appendChild(featBadge);
+        }
+
+        card.appendChild(dateEl);
+        card.appendChild(nameEl);
+        card.appendChild(venueEl);
+        card.appendChild(badges);
+
+        const conn1 = document.createElement('div');
+        conn1.className = 'tl-connector';
+        const dot = document.createElement('div');
+        dot.className = 'tl-dot';
+        const conn2 = document.createElement('div');
+        conn2.className = 'tl-connector';
+
+        node.appendChild(card);
+        node.appendChild(conn1);
+        node.appendChild(dot);
+        node.appendChild(conn2);
+
+        // Event delegation-ready: store event id safely in data attr
+        node.dataset.eventId = String(parseInt(ev.id, 10));
+        node.dataset.action = 'open-event';
+
         track.appendChild(node);
       });
 
@@ -1903,6 +2014,16 @@
       }
     }
 
+    // Event delegation for timeline nodes — no onclick with DB data
+    document.getElementById('eventsTimeline').addEventListener('click', (e) => {
+      const node = e.target.closest('[data-action="open-event"]');
+      if (!node) return;
+      const id = parseInt(node.dataset.eventId, 10);
+      if (!Number.isInteger(id)) return;
+      const ev = allEvents.find(ev => ev.id === id);
+      if (ev) openEventModal(ev);
+    });
+
     // ==================== OPEN EVENT MODAL ====================
     function openEventModal(ev) {
       const MONTH_FULL = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -1913,23 +2034,24 @@
         return `${d.getUTCDate()} ${MONTH_FULL[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
       }
 
+      // Hero image — validate https-only URLs
       const hero = document.getElementById('eventModalHero');
-      // Validate URL before using in CSS property — prevents CSS injection via malicious url()
-      if (ev.image_url && /^https?:\/\//.test(ev.image_url)) {
+      if (ev.image_url && ev.image_url.startsWith('https://')) {
         hero.style.backgroundImage = `url('${escHTML(ev.image_url)}')`;
       } else {
-        hero.style.backgroundImage = `linear-gradient(135deg, #1a1a1a 0%, #003d1a 100%)`;
+        hero.style.backgroundImage = `linear-gradient(135deg, #1a1a1a 0%, #1a3d2e 100%)`;
       }
 
-      document.getElementById('eventModalCat').textContent = ev.category;
-      document.getElementById('eventModalTitle').textContent = ev.name;
+      // All DB text via textContent — no innerHTML with DB values
+      document.getElementById('eventModalCat').textContent = ev.category || '';
+      document.getElementById('eventModalTitle').textContent = ev.name || '';
 
       const sameDay = ev.date_from === ev.date_to;
       document.getElementById('eventModalDates').textContent = sameDay
         ? fullDate(ev.date_from)
         : `${fullDate(ev.date_from)} — ${fullDate(ev.date_to)}`;
 
-      document.getElementById('eventModalVenue').textContent = ev.city_venue;
+      document.getElementById('eventModalVenue').textContent = ev.city_venue || '';
 
       const feeChip = document.getElementById('eventModalFeeChip');
       const feeSpan = document.getElementById('eventModalFee');
@@ -1937,22 +2059,32 @@
         feeSpan.textContent = 'Free Entry';
         feeChip.classList.add('free-chip');
       } else {
-        feeSpan.textContent = `₹${ev.entry_fee.toLocaleString()} entry`;
+        feeSpan.textContent = '₹' + ev.entry_fee.toLocaleString() + ' entry';
         feeChip.classList.remove('free-chip');
       }
 
       document.getElementById('eventModalDesc').textContent = ev.description || '';
 
+      // Recurring badge — DOM API
       const recurringEl = document.getElementById('eventModalRecurring');
-      recurringEl.innerHTML = ev.is_recurring
-        ? '<span class="event-recurring-badge"><i class="fas fa-redo"></i> Annual event</span>'
-        : '';
+      recurringEl.innerHTML = '';
+      if (ev.is_recurring) {
+        const badge = document.createElement('span');
+        badge.className = 'event-recurring-badge';
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-redo';
+        badge.appendChild(icon);
+        badge.appendChild(document.createTextNode(' Annual event'));
+        recurringEl.appendChild(badge);
+      }
 
+      // Website link — validate URL before placing in href
       const websiteEl = document.getElementById('eventModalWebsite');
-      if (ev.website_url) {
+      if (ev.website_url && ev.website_url.startsWith('https://')) {
         websiteEl.href = ev.website_url;
         websiteEl.classList.remove('hidden');
       } else {
+        websiteEl.href = '#';
         websiteEl.classList.add('hidden');
       }
 
@@ -1962,8 +2094,9 @@
 
     function initHorizontalScroll() {
       if (window.innerWidth > 1024) {
-        const track  = document.querySelector(".track");
-        const panels = gsap.utils.toArray(".panel");
+        const track       = document.querySelector(".track");
+        const panels      = gsap.utils.toArray(".panel");
+
         const totalScroll = () => track.scrollWidth - window.innerWidth;
 
         gsap.to(track, {

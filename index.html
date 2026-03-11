@@ -56,9 +56,19 @@
 </head>
 <body>
 
-    <!-- ===== LOADING SCREEN ===== -->
+    <!-- ===== LOADING SCREEN — OPTION 3: TERRACOTTA MOSAIC ===== -->
     <div id="loader">
-        <p id="loader-text">Loading Your Adventures...</p>
+        <div class="lt-grid" id="loaderTileGrid"></div>
+        <div class="lt-inner">
+            <div class="lt-lotus">🪷</div>
+            <div class="lt-logo">BHARAT<span>YATRA</span></div>
+            <div class="lt-dots">
+                <div class="lt-dot"></div>
+                <div class="lt-dot"></div>
+                <div class="lt-dot"></div>
+            </div>
+            <div class="lt-sub">Discover Incredible India</div>
+        </div>
     </div>
 
     <!-- ===== NAVBAR ===== -->
@@ -424,15 +434,83 @@
             scale: 1.5
         });
 
-        // ── LOADING SCREEN ───────────────────────────────────────────
-        const loader     = document.getElementById('loader');
-        const loaderText = document.getElementById('loader-text');
+        // ── LOADING SCREEN — OPTION 3: TERRACOTTA MOSAIC ───────────
+        const loader = document.getElementById('loader');
 
-        setTimeout(() => loaderText.classList.add('visible'), 150);
+        // Build the tile mosaic that fills the full viewport
+        function buildLoaderTiles() {
+            const grid = document.getElementById('loaderTileGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            const S    = 72; // tile size px
+            const cols = Math.ceil(window.innerWidth  / S) + 1;
+            const rows = Math.ceil(window.innerHeight / S) + 1;
+            grid.style.gridTemplateColumns = 'repeat(' + cols + ', ' + S + 'px)';
+            grid.style.gridTemplateRows    = 'repeat(' + rows + ', ' + S + 'px)';
+            const cx = cols / 2, cy = rows / 2;
+            const maxDist = Math.sqrt(cx * cx + cy * cy);
+            const cls = ['lt-ta', 'lt-tb', 'lt-tc'];
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const t    = document.createElement('div');
+                    const dist = Math.sqrt((c - cx) ** 2 + (r - cy) ** 2);
+                    t.className          = 'lt-tile ' + cls[(r + c) % 3];
+                    t.style.animationDelay = (dist / maxDist * 1.2).toFixed(2) + 's';
+                    grid.appendChild(t);
+                }
+            }
+        }
+
+        // Play the exit animation then hide the loader
+        function triggerLoaderExit() {
+            const grid = document.getElementById('loaderTileGrid');
+            if (grid) {
+                const tiles = Array.from(grid.children);
+                const cols  = parseInt(
+                    (grid.style.gridTemplateColumns.match(/repeat\((\d+)/) || [0,10])[1]
+                );
+                const rows = Math.ceil(tiles.length / cols);
+                const cx = cols / 2, cy = rows / 2;
+                const maxDist = Math.sqrt(cx * cx + cy * cy);
+                tiles.forEach((t, i) => {
+                    const c = i % cols, r = Math.floor(i / cols);
+                    const dist  = Math.sqrt((c - cx) ** 2 + (r - cy) ** 2);
+                    // Centre tiles exit first, edges last
+                    t.style.animationDelay = ((1 - dist / maxDist) * 0.55).toFixed(2) + 's';
+                    t.classList.add('lt-exit');
+                });
+            }
+            const inner = document.querySelector('.lt-inner');
+            if (inner) inner.classList.add('lt-inner-exit');
+            // Remove from DOM after exit animation (~950ms total)
+            setTimeout(() => { loader.style.display = 'none'; }, 950);
+        }
+
+        buildLoaderTiles();
+
+        // ── LOADER MINIMUM DISPLAY TIME ──────────────────────────────
+        // triggerLoaderExit() is called by the Supabase fetch callback.
+        // We wrap it so it only fires once BOTH conditions are met:
+        //   1. The fetch has finished (data ready or error)
+        //   2. At least MIN_MS milliseconds have passed since page load
+        // This guarantees the animation always plays fully on fast connections.
+        const LOADER_MIN_MS = 3200;
+        let loaderDataReady = false;
+        let loaderTimerDone = false;
+        let loaderExitFired = false;
+
+        function maybeExitLoader() {
+            if (loaderExitFired) return;
+            if (loaderDataReady && loaderTimerDone) {
+                loaderExitFired = true;
+                triggerLoaderExit();
+            }
+        }
+
         setTimeout(() => {
-            loader.classList.add('hidden');
-            setTimeout(() => loader.style.display = 'none', 700);
-        }, 2000);
+            loaderTimerDone = true;
+            maybeExitLoader();
+        }, LOADER_MIN_MS);
 
         // ── SIDEBAR TOGGLE ───────────────────────────────────────────
         const sidebar  = document.getElementById('sidebar');
@@ -595,10 +673,16 @@
 
                 updateCarousel();
                 startAutoScroll();
+                // Data is ready — signal loader gate, exit only if min timer also done
+                loaderDataReady = true;
+                maybeExitLoader();
             } catch (err) {
                 console.error('Bucketlist load error:', err);
                 document.getElementById('carouselTrack').innerHTML =
                     '<p style="color:#999;padding:40px">Could not load attractions.</p>';
+                // Exit loader even on error so page isn't stuck
+                loaderDataReady = true;
+                maybeExitLoader();
             }
         }
 
