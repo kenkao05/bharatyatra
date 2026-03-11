@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kerala | Bharat Yatra</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <!-- Supabase -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <!-- GSAP -->
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@700&display=swap');
+
+    :root {
+      --state-primary: #000000;
+      --state-secondary: #ffffff;
+      --state-accent: #8B0000;
+      --state-accent-dark: #660000;
+      --text-muted: #666;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Georgia', 'Times New Roman', serif;
+    }
+
+    body {
+      background: #f4f4f4;
+      overflow-x: hidden;
+    }
+
+    /* ==================== NAVBAR ==================== */
+    #navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px 0;
+      z-index: 1000;
+      background: transparent;
+      transition: background 0.4s ease;
+    }
+
+    #navbar.scrolled {
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      font-style: normal;
+      color: #ff6b35;
+      text-decoration: none;
+      letter-spacing: 3px;
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #969696;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #ff6b35;
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: #969696;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 4px 6px;
+      line-height: 1;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .menu-btn:hover {
+      color: #ff6b35;
+    }
+
+    /* ==================== SIDEBAR ==================== */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 320px;
+      height: 100%;
+      background: #000;
+      z-index: 2000;
+      overflow-y: auto;
+      padding: 50px 36px 40px;
+      transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      border-left: 1px solid #222;
+    }
+
+    .sidebar.active {
+      right: 0;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      background: none;
+      border: none;
+      font-size: 32px;
+      color: #fff;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+      transition: color 0.2s;
+    }
+
+    .close-btn:hover {
+      color: #ff6b35;
+    }
+
+    .sidebar-tagline {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 13px;
+      color: #555;
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #222;
+    }
+
+    .sidebar-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sidebar-links li a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      color: #ccc;
+      text-decoration: none;
+      font-family: 'Georgia', serif;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #111;
+      transition: color 0.25s, padding-left 0.25s;
+    }
+
+    .sidebar-links li a i {
+      font-size: 15px;
+      width: 20px;
+      color: #ff6b35;
+      flex-shrink: 0;
+    }
+
+    .sidebar-links li a:hover {
+      color: #fff;
+      padding-left: 6px;
+    }
+
+    .sidebar-section-label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #444;
+      margin-top: 28px;
+      margin-bottom: 8px;
+      padding-top: 24px;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .sidebar-login-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+      padding: 11px 18px;
+      font-family: 'Georgia', serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-decoration: none;
+      color: #ff6b35;
+      border: 1px solid #ff6b35;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .sidebar-login-btn i { font-size: 13px; }
+
+    .sidebar-login-btn:hover {
+      background: #ff6b35;
+      color: #ffffff;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1500;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ==================== SCROLL PROGRESS ==================== */
+    .scroll-progress {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      z-index: 100;
+      display: flex;
+      gap: 12px;
+    }
+
+    .progress-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .progress-dot.active {
+      background: var(--state-accent);
+      transform: scale(1.3);
+    }
+
+    /* ==================== HORIZONTAL SCROLL ==================== */
+    .horizontal-wrapper {
+      position: relative;
+    }
+
+    .horizontal {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .track {
+      display: flex;
+      height: 100vh;
+      width: max-content;
+    }
+
+    .panel {
+      width: 100vw;
+      height: 100vh;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .events-panel {
+      width: max-content !important;
+      min-width: 100vw;
+    }
+
+    /* ==================== PANEL 1: VIDEO ==================== */
+    .video-panel {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #000000;
+    }
+
+    .video-panel video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+      animation: fadeInVideo 2s ease forwards;
+    }
+
+    @keyframes fadeInVideo {
+      to { opacity: 1; }
+    }
+
+    .video-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right,
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0.2),
+          rgba(0, 0, 0, 0));
+      z-index: 1;
+    }
+
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      gap: 20px;
+      max-width: 70vw;
+      margin: auto;
+      text-align: center;
+    }
+
+    .video-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(80px, 12vw, 160px);
+      font-weight: 700;
+      color: var(--state-secondary);
+      text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.7);
+      letter-spacing: 8px;
+      opacity: 0;
+      animation: fadeInTitle 1.5s ease 0.5s forwards;
+    }
+
+    .video-tagline {
+      font-family: 'Georgia', serif;
+      font-size: clamp(18px, 2vw, 28px);
+      color: var(--state-secondary);
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      opacity: 0;
+      animation: fadeInTitle 1.5s ease 1s forwards;
+    }
+
+    .video-tagline::before,
+    .video-tagline::after {
+      content: "";
+      width: 60px;
+      height: 2px;
+      background: var(--state-accent);
+    }
+
+    @keyframes fadeInTitle {
+      to { opacity: 1; }
+    }
+
+    .mute-btn {
+      position: absolute;
+      bottom: 40px;
+      left: 40px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid var(--state-secondary);
+      color: var(--state-secondary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      z-index: 3;
+      backdrop-filter: blur(10px);
+    }
+
+    .mute-btn:hover {
+      background: var(--state-accent);
+      border-color: var(--state-accent);
+      transform: scale(1.1);
+    }
+
+    /* ==================== PANEL 2: ATTRACTIONS ==================== */
+    .attractions-panel {
+      background: #ffffff;
+      padding: 80px 60px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .panel-title {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--state-primary);
+      margin-bottom: 50px;
+      letter-spacing: -1px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .panel-title::after {
+      content: "";
+      position: absolute;
+      bottom: -12px;
+      left: 0;
+      width: 80px;
+      height: 4px;
+      background: var(--state-accent);
+      border-radius: 4px;
+    }
+
+    .attractions-grid {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .attraction-card {
+      cursor: pointer;
+      text-align: center;
+      border: 3px solid transparent;
+      transition: var(--transition);
+    }
+
+    .attraction-card:hover {
+      border-color: var(--state-accent);
+    }
+
+    .attraction-card:nth-child(1) {
+      width: 200px;
+      align-self: flex-end;
+    }
+
+    .attraction-card:nth-child(1) .attraction-image {
+      width: 200px;
+      height: 200px;
+    }
+
+    .attraction-card:nth-child(2) {
+      width: 400px;
+      align-self: flex-end;
+    }
+
+    .attraction-card:nth-child(2) .attraction-image {
+      width: 400px;
+      height: 400px;
+    }
+
+    .attraction-card:nth-child(3) {
+      width: 240px;
+      align-self: flex-start;
+    }
+
+    .attraction-card:nth-child(3) .attraction-image {
+      width: 240px;
+      height: 240px;
+    }
+
+    .attraction-image {
+      width: 100%;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(0.2);
+      transition: var(--transition);
+    }
+
+    .attraction-card:hover .attraction-image {
+      filter: grayscale(0);
+    }
+
+    .attraction-content {
+      padding: 15px 0 0 0;
+    }
+
+    .attraction-content h3 {
+      font-size: 18px;
+      color: var(--state-primary);
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .attraction-content h3:hover {
+      color: var(--state-accent);
+    }
+
+    /* ==================== PANEL 3: DISTRICTS ==================== */
+    .districts-panel {
+      background: #000000;
+      color: #ffffff;
+      padding: 80px 60px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .districts-panel .panel-title {
+      color: #ffffff;
+    }
+
+    .districts-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+
+    .district-card {
+      background: #ffffff;
+      border-radius: 0;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      width: 280px;
+      border: 3px solid var(--state-accent);
+    }
+
+    .district-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(139, 0, 0, 0.5);
+    }
+
+    .district-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      filter: grayscale(0.3);
+      transition: var(--transition);
+    }
+
+    .district-card:hover img {
+      filter: grayscale(0);
+    }
+
+    .district-info {
+      padding: 20px;
+      background: #ffffff;
+    }
+
+    .district-info h3 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #000000;
+    }
+
+    .district-info span {
+      color: #666;
+      font-size: 15px;
+    }
+
+    .district-info span i {
+      color: var(--state-accent);
+    }
+
+    .visit-all-btn {
+      display: inline-block;
+      background: var(--state-accent);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 0;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: var(--transition);
+      margin: 0 auto;
+      width: auto;
+      border: 2px solid var(--state-accent);
+    }
+
+    .visit-all-btn:hover {
+      background: var(--state-accent-dark);
+      border-color: var(--state-accent-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(139, 0, 0, 0.4);
+    }
+
+    .buffer-panel {
+      width: 2vw;
+      height: 100vh;
+      flex-shrink: 0;
+      background: #f9f6f2;
+    }
+
+    /* ==================== MODALS ==================== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 0;
+      max-width: 700px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalSlideIn 0.3s ease;
+      border: 4px solid var(--state-accent);
+    }
+
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--state-accent);
+      color: white;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 10;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      background: var(--state-accent-dark);
+      transform: rotate(90deg);
+    }
+
+    .modal-image {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+      border-radius: 0;
+      filter: grayscale(0.2);
+    }
+
+    .modal-body {
+      padding: 40px;
+    }
+
+    .modal-body h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: var(--state-primary);
+    }
+
+    .modal-body p {
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
+    .modal-info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 2px solid var(--state-accent);
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .info-item i {
+      color: var(--state-accent);
+      font-size: 20px;
+    }
+
+    .info-item div strong {
+      display: block;
+      color: var(--state-primary);
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .info-item div span {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    /* ==================== PANEL 4: EVENTS TIMELINE ==================== */
+    .events-panel {
+      background: #f9f6f2;
+      display: flex;
+      flex-direction: column;
+      padding: 60px 60px 40px;
+    }
+
+    .events-panel .panel-title {
+      color: #000;
+      flex-shrink: 0;
+    }
+
+    .events-timeline-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
+      margin-top: 10px;
+    }
+
+    .events-category-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      margin-bottom: 28px;
+    }
+
+    .cat-pill {
+      padding: 6px 18px;
+      border: 1.5px solid #ddd;
+      background: #fff;
+      color: #555;
+      font-size: 12px;
+      font-family: 'Georgia', serif;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-pill:hover {
+      border-color: #ff6b35;
+      color: #ff6b35;
+    }
+
+    .cat-pill.active {
+      background: #ff6b35;
+      border-color: #ff6b35;
+      color: #fff;
+    }
+
+    .events-timeline {
+      flex: 1;
+      position: relative;
+      overflow: visible;
+      padding-bottom: 16px;
+    }
+
+    .events-loading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #aaa;
+      font-size: 14px;
+      padding: 60px 0;
+    }
+
+    .timeline-track {
+      display: flex;
+      align-items: center;
+      position: relative;
+      min-width: max-content;
+      padding: 60px 300px 20px 40px;
+      gap: 0;
+    }
+
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, #e0d8d0 40px, #e0d8d0 calc(100% - 40px), transparent);
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+
+    .tl-node {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 220px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .tl-node:nth-child(odd) {
+      flex-direction: column;
+      padding-bottom: 60px;
+    }
+
+    .tl-node:nth-child(even) {
+      flex-direction: column-reverse;
+      padding-top: 60px;
+    }
+
+    .tl-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2.5px solid #ccc;
+      z-index: 2;
+      flex-shrink: 0;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      margin: 8px 0;
+    }
+
+    .tl-node:hover .tl-dot {
+      border-color: #ff6b35;
+      background: #ff6b35;
+      transform: scale(1.3);
+    }
+
+    .tl-connector {
+      width: 1.5px;
+      height: 36px;
+      background: #ddd;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .tl-node:hover .tl-connector {
+      background: #ff6b35;
+    }
+
+    .tl-card {
+      background: #fff;
+      border: 1px solid #ece8e2;
+      width: 180px;
+      padding: 14px 16px;
+      flex-shrink: 0;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+
+    .tl-node:hover .tl-card {
+      border-color: #ff6b35;
+      box-shadow: 0 4px 20px rgba(255, 107, 53, 0.10);
+      transform: translateY(-3px);
+    }
+
+    .tl-date {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #ff6b35;
+      font-family: 'Georgia', serif;
+      margin-bottom: 6px;
+    }
+
+    .tl-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #111;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .tl-venue {
+      font-size: 11px;
+      color: #888;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .tl-venue i {
+      color: #ff6b35;
+      font-size: 10px;
+    }
+
+    .tl-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tl-cat {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      background: #fff5f1;
+      color: #ff6b35;
+      border: 1px solid #ffd5c2;
+    }
+
+    .tl-fee {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .tl-featured {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      background: #fffbeb;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+
+    .tl-node.hidden {
+      display: none;
+    }
+
+    /* ==================== EVENT MODAL ==================== */
+    .event-modal-content {
+      max-width: 680px;
+      border: none;
+      overflow: hidden;
+    }
+
+    .event-modal-hero {
+      position: relative;
+      height: 260px;
+      background: #111 center/cover no-repeat;
+    }
+
+    .event-modal-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.15) 60%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px 32px;
+      gap: 8px;
+    }
+
+    .event-modal-cat {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #ff6b35;
+      background: rgba(255, 107, 53, 0.15);
+      border: 1px solid rgba(255, 107, 53, 0.4);
+      padding: 3px 10px;
+      align-self: flex-start;
+    }
+
+    .event-modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    .event-modal-body {
+      padding: 28px 32px 32px;
+      background: #fff;
+    }
+
+    .event-modal-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .event-meta-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: #444;
+      background: #f6f3ef;
+      padding: 7px 14px;
+      border: 1px solid #ece8e2;
+    }
+
+    .event-meta-chip i {
+      color: #ff6b35;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .fee-chip.free-chip {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    .fee-chip.free-chip i,
+    .fee-chip.free-chip span {
+      color: #16a34a;
+    }
+
+    .event-modal-desc {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.85;
+      margin-bottom: 24px;
+      border-top: 1px solid #f0ede8;
+      padding-top: 20px;
+    }
+
+    .event-modal-footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .event-recurring-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #888;
+      border: 1px solid #e5e1db;
+      padding: 5px 12px;
+    }
+
+    .event-recurring-badge i {
+      color: #ff6b35;
+      font-size: 11px;
+    }
+
+    .event-modal-website {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #ff6b35;
+      border: 1.5px solid #ff6b35;
+      padding: 8px 20px;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .event-modal-website:hover {
+      background: #ff6b35;
+      color: #fff;
+    }
+
+    .event-modal-website.hidden {
+      display: none;
+    }
+
+    /* ==================== FOOTER ==================== */
+    #footer {
+      background: #080808;
+      border-top: 1px solid #1e1e1e;
+      padding: 70px 0 0;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px 60px;
+      display: grid;
+      grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr;
+      gap: 48px;
+    }
+
+    .footer-logo {
+      font-family: 'Georgia', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: #ff6b35;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .footer-tagline {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.8;
+    }
+
+    .footer-heading {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #ff6b35;
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .footer-links li a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #666;
+      text-decoration: none;
+      border-bottom: 1px solid #111;
+      transition: color 0.2s, padding-left 0.2s;
+    }
+
+    .footer-links li a i {
+      font-size: 13px;
+      color: #ff6b35;
+      width: 16px;
+      flex-shrink: 0;
+    }
+
+    .footer-links li a:hover {
+      color: #fff;
+      padding-left: 4px;
+    }
+
+    .footer-socials {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .social-btn {
+      width: 38px;
+      height: 38px;
+      border: 1px solid #2a2a2a;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 15px;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .social-btn:hover {
+      border-color: #ff6b35;
+      color: #ff6b35;
+      background: rgba(255, 107, 53, 0.06);
+    }
+
+    .footer-contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #ff6b35;
+      border: 2px solid #ff6b35;
+      padding: 10px 22px;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .footer-contact-btn:hover {
+      background: #ff6b35;
+      color: #fff;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #161616;
+      padding: 20px 40px;
+      text-align: center;
+    }
+
+    .footer-bottom p {
+      font-size: 12px;
+      color: #333;
+      letter-spacing: 0.5px;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 1024px) {
+      .nav-links { display: none; }
+      .horizontal { height: auto; }
+      .track { flex-direction: column; width: 100vw; height: auto; }
+      .panel { width: 100vw; height: auto; min-height: 100vh; }
+      .attractions-grid { flex-direction: column; align-items: center; }
+      .attraction-card:nth-child(1),
+      .attraction-card:nth-child(2),
+      .attraction-card:nth-child(3) { width: 100%; max-width: 400px; align-self: center; }
+      .attraction-card:nth-child(1) .attraction-image,
+      .attraction-card:nth-child(2) .attraction-image,
+      .attraction-card:nth-child(3) .attraction-image { width: 100%; height: 300px; }
+      .districts-grid { flex-direction: column; align-items: center; }
+      .district-card { width: 100%; max-width: 400px; }
+      .scroll-progress { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .panel-title { font-size: 36px; }
+      .modal-body { padding: 20px; }
+      .modal-info { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <nav id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo">BharatYatra</a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../districts/keraladistrict.html">Districts</a></li>
+        <li><a href="../experiences.html">Experiences</a></li>
+      </ul>
+      <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <div class="sidebar" id="sidebar">
+    <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
+    <p class="sidebar-tagline">Discover Incredible India</p>
+    <ul class="sidebar-links">
+      <li><a href="../destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+      <li><a href="../experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+      <li><a href="../travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+      <li><a href="../colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+      <li><a href="../itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+      <li><a href="../medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+      <li><a href="../contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+    </ul>
+    <p class="sidebar-section-label">Legal &amp; Support</p>
+    <ul class="sidebar-links">
+      <li><a href="../faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+      <li><a href="../privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+      <li><a href="../terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+    </ul>
+    <a href="../admin/admin-login.html" class="sidebar-login-btn">
+      <i class="fas fa-lock"></i> Admin Login
+    </a>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- ==================== SCROLL PROGRESS ==================== -->
+  <div class="scroll-progress">
+    <div class="progress-dot active" data-panel="0"></div>
+    <div class="progress-dot" data-panel="1"></div>
+    <div class="progress-dot" data-panel="2"></div>
+    <div class="progress-dot" data-panel="3"></div>
+  </div>
+
+  <!-- ==================== HORIZONTAL SCROLL ==================== -->
+  <div class="horizontal-wrapper">
+    <section class="horizontal">
+      <div class="track">
+
+        <!-- PANEL 1: VIDEO -->
+        <div class="panel video-panel">
+          <video id="heroVideo" autoplay muted loop playsinline>
+            <source src="../styling/stateimages/kerala-intro.mkv" type="video/mp4">
+          </video>
+          <div class="video-overlay">
+            <h1 class="video-title">Kerala</h1>
+            <div class="video-tagline">God's Own Country</div>
+          </div>
+          <button class="mute-btn" id="muteBtn">
+            <i class="fas fa-volume-mute"></i>
+          </button>
+        </div>
+
+        <!-- PANEL 2: ATTRACTIONS -->
+        <div class="panel attractions-panel">
+          <h2 class="panel-title">Famous Attractions</h2>
+          <div class="attractions-grid" id="attractionsGrid"></div>
+        </div>
+
+        <!-- PANEL 3: DISTRICTS -->
+        <div class="panel districts-panel">
+          <h2 class="panel-title">Popular Districts</h2>
+          <div class="districts-grid" id="districtsGrid"></div>
+          <div style="text-align: center;">
+            <a href="../districts/keraladistrict.html" class="visit-all-btn">
+              Visit All Districts <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- PANEL 4: EVENTS TIMELINE -->
+        <div class="panel events-panel">
+          <h2 class="panel-title">Events &amp; Festivals</h2>
+          <div class="events-timeline-wrap">
+            <div class="events-category-bar" id="eventsCategoryBar"></div>
+            <div class="events-timeline" id="eventsTimeline">
+              <div class="events-loading"><i class="fas fa-circle-notch fa-spin"></i> Loading events…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUFFER -->
+        <div class="buffer-panel"></div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer id="footer">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <a href="../index.html" class="footer-logo">BHARAT YATRA</a>
+        <p class="footer-tagline">Discover the incredible beauty<br>and diversity of India.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Explore</h4>
+        <ul class="footer-links">
+          <li><a href="../destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
+          <li><a href="../experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+          <li><a href="../travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+          <li><a href="../colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Plan</h4>
+        <ul class="footer-links">
+          <li><a href="../itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+          <li><a href="../medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+          <li><a href="../faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Legal</h4>
+        <ul class="footer-links">
+          <li><a href="../privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+          <li><a href="../terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Follow Us</h4>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="social-btn" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+        </div>
+        <a href="../contactus.html" class="footer-contact-btn">
+          <i class="fas fa-envelope"></i> Contact Us
+        </a>
+      </div>
+
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 BharatYatra. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== ATTRACTION MODAL ==================== -->
+  <div class="modal" id="attractionModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('attractionModal')">×</button>
+      <img id="modalImage" class="modal-image" src="" alt="">
+      <div class="modal-body">
+        <h2 id="modalName"></h2>
+        <p id="modalDescription"></p>
+        <div class="modal-info" id="modalInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== EVENT MODAL ==================== -->
+  <div class="modal" id="eventModal">
+    <div class="modal-content event-modal-content">
+      <button class="modal-close" onclick="closeModal('eventModal')">&#215;</button>
+      <div class="event-modal-hero" id="eventModalHero">
+        <div class="event-modal-hero-overlay">
+          <span class="event-modal-cat" id="eventModalCat"></span>
+          <h2 class="event-modal-title" id="eventModalTitle"></h2>
+        </div>
+      </div>
+      <div class="event-modal-body">
+        <div class="event-modal-meta-row">
+          <div class="event-meta-chip"><i class="fas fa-calendar-alt"></i><span id="eventModalDates"></span></div>
+          <div class="event-meta-chip"><i class="fas fa-map-marker-alt"></i><span id="eventModalVenue"></span></div>
+          <div class="event-meta-chip fee-chip" id="eventModalFeeChip"><i class="fas fa-ticket-alt"></i><span id="eventModalFee"></span></div>
+        </div>
+        <p class="event-modal-desc" id="eventModalDesc"></p>
+        <div class="event-modal-footer-row">
+          <div id="eventModalRecurring"></div>
+          <a class="event-modal-website" id="eventModalWebsite" href="#" target="_blank" rel="noopener">
+            <i class="fas fa-external-link-alt"></i> Official Website
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== SUPABASE SETUP ====================
+    const supabaseClient = supabase.createClient(
+      "https://gtpnojbbamoaznlutxap.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE"
+    );
+
+    // ==================== NAVBAR SCROLL ====================
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ==================== SIDEBAR FUNCTIONALITY ====================
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const openBtn = document.getElementById('open-sidebar');
+    const closeBtn = document.getElementById('close-sidebar');
+
+    openBtn.addEventListener('click', () => {
+      sidebar.classList.add('active');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+
+    const closeSidebar = () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    };
+
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    document.querySelectorAll('.modal').forEach(m => {
+      m.addEventListener('click', (e) => {
+        if (e.target === m) closeModal(m.id);
+      });
+    });
+
+    // ==================== MUTE/UNMUTE VIDEO ====================
+    const video = document.getElementById('heroVideo');
+    const muteBtn = document.getElementById('muteBtn');
+    let isMuted = true;
+
+    muteBtn.addEventListener('click', () => {
+      isMuted = !isMuted;
+      video.muted = isMuted;
+      muteBtn.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+    });
+
+    // ==================== IMAGE OVERRIDES ====================
+    // Fix broken/duplicate Supabase image URLs with verified thematic images
+    const DISTRICT_IMAGES = {
+      'Kochi':             'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=800',
+      'Munnar':            'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?w=800',
+      'Alleppey':          'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800',
+      'Thekkady':          'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=800',
+      'Kovalam':           'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800',
+      'Wayanad':           'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800',
+      'Thiruvananthapuram':'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=800',
+    };
+
+    const ATTRACTION_IMAGES = {
+      72:  'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=800', // Fort Kochi - Chinese fishing nets
+      73:  'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800', // Mattancherry Palace
+      74:  'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=800', // Marine Drive
+      75:  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800',   // Paradesi Synagogue
+      76:  'https://images.unsplash.com/photo-1558769132-cb1aea1c8b50?w=800',   // Kathakali
+      77:  'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?w=800', // Tea Plantations
+      78:  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800', // Eravikulam NP
+      79:  'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800', // Mattupetty Dam
+      80:  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800', // Top Station
+      81:  'https://images.unsplash.com/photo-1580654712603-eb43273aff33?w=800', // Attukal Waterfalls
+      82:  'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800',   // Houseboat Cruise
+      83:  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', // Alleppey Beach
+      84:  'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800', // Ambalapuzha Temple
+      85:  'https://images.unsplash.com/photo-1554080353-a576cf803bda?w=800',   // Nehru Trophy Boat Race
+      86:  'https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=800', // Marari Beach
+      87:  'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=800',   // Periyar Wildlife
+      88:  'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?w=800', // Spice Plantations
+      89:  'https://images.unsplash.com/photo-1549366021-9f761d450615?w=800',   // Elephant Junction
+      90:  'https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?w=800', // Mangla Devi Temple
+      91:  'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800',   // Bamboo Rafting
+      92:  'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800',   // Lighthouse Beach
+      93:  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', // Vizhinjam
+      94:  'https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=800', // Samudra Beach
+      95:  'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800', // Halcyon Castle
+      96:  'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800',   // Ayurveda Centers
+      97:  'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800', // Edakkal Caves
+      98:  'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800', // Wayanad Wildlife
+      99:  'https://images.unsplash.com/photo-1580654712603-eb43273aff33?w=800', // Soochipara Waterfalls
+      100: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800', // Banasura Dam
+      101: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800', // Chembra Peak
+      102: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800', // Padmanabhaswamy Temple
+      103: 'https://images.unsplash.com/photo-1558769132-cb1aea1c8b50?w=800',   // Napier Museum
+      104: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', // Shanghumukham Beach
+      105: 'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800', // Kuthiramalika Palace
+      106: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800', // Ponmudi
+    };
+
+    function fixImg(url, id) {
+      if (id !== undefined && ATTRACTION_IMAGES[id]) return ATTRACTION_IMAGES[id];
+      return url;
+    }
+
+    function fixDistrictImg(name, url) {
+      return DISTRICT_IMAGES[name] || url;
+    }
+
+    // ==================== LOAD ATTRACTIONS ====================
+    async function loadAttractions() {
+      try {
+        const { data, error } = await supabaseClient
+          .from("attractions")
+          .select("*")
+          .eq("state_id", 3)
+          .order("priority_score", { ascending: false })
+          .limit(3);
+
+        if (error) throw error;
+
+        const container = document.getElementById("attractionsGrid");
+        container.innerHTML = "";
+
+        data.forEach(attraction => {
+          const card = document.createElement('div');
+          card.className = 'attraction-card';
+          card.innerHTML = `
+            <img src="${fixImg(attraction.image_url, attraction.id)}" alt="${attraction.name}" class="attraction-image">
+            <div class="attraction-content">
+              <h3 onclick="openAttractionModal(${attraction.id})">${attraction.name}</h3>
+            </div>
+          `;
+          card.addEventListener('click', () => openAttractionModal(attraction.id));
+          container.appendChild(card);
+        });
+
+        window.attractionsData = data;
+      } catch (err) {
+        console.error("Error loading attractions:", err);
+      }
+    }
+
+    // ==================== LOAD DISTRICTS ====================
+    async function loadDistricts() {
+      try {
+        const { data, error } = await supabaseClient
+          .from("districts")
+          .select(`
+            id,
+            name,
+            image_url,
+            attractions ( id )
+          `)
+          .eq("state_id", 3);
+
+        if (error) throw error;
+
+        const districtsWithCount = data
+          .map(d => ({
+            id: d.id,
+            name: d.name,
+            image_url: d.image_url,
+            count: d.attractions.length
+          }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 4);
+
+        const container = document.getElementById("districtsGrid");
+        container.innerHTML = "";
+
+        districtsWithCount.forEach(district => {
+          container.innerHTML += `
+            <div class="district-card" onclick="openDistrictModal(${district.id})">
+              <img src="${fixDistrictImg(district.name, district.image_url)}" alt="${district.name}">
+              <div class="district-info">
+                <h3>${district.name}</h3>
+                <span><i class="fas fa-map-marked-alt"></i> ${district.count} attractions</span>
+              </div>
+            </div>
+          `;
+        });
+      } catch (err) {
+        console.error("Error loading districts:", err);
+      }
+    }
+
+    // ==================== MODAL FUNCTIONS ====================
+    function openAttractionModal(attractionId) {
+      const attraction = window.attractionsData.find(a => a.id === attractionId);
+      if (!attraction) return;
+
+      document.getElementById('modalImage').src = fixImg(attraction.image_url, attraction.id);
+      document.getElementById('modalName').textContent = attraction.name;
+      document.getElementById('modalDescription').textContent = attraction.description || attraction.short_description || '';
+
+      let infoHtml = '';
+
+      if (attraction.entry_fee !== undefined && attraction.entry_fee !== null) {
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-ticket-alt"></i>
+            <div>
+              <strong>Entry Fee</strong>
+              <span>&#8377;${attraction.entry_fee === 0 ? 'Free' : attraction.entry_fee}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      if (attraction.estimated_time_hours) {
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-clock"></i>
+            <div>
+              <strong>Time Needed</strong>
+              <span>${attraction.estimated_time_hours} hours</span>
+            </div>
+          </div>
+        `;
+      }
+
+      if (attraction.best_time_note) {
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-calendar-alt"></i>
+            <div>
+              <strong>Best Time</strong>
+              <span>${attraction.best_time_note}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      if (attraction.address || attraction.city) {
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <strong>Location</strong>
+              <span>${attraction.address || attraction.city || ''}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      if (attraction.contact_phone) {
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-phone"></i>
+            <div>
+              <strong>Contact</strong>
+              <span>${attraction.contact_phone}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      if (attraction.guide_available) {
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-user-tie"></i>
+            <div>
+              <strong>Guide Available</strong>
+              <span>${attraction.guide_price_range || 'Yes'}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('modalInfo').innerHTML = infoHtml;
+      document.getElementById('attractionModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function openDistrictModal(districtId) {
+      window.location.href = '../districts/keraladistrict.html';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal(modal.id);
+        }
+      });
+    });
+
+    // ==================== LOAD EVENTS ====================
+    const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    function formatDateRange(from, to) {
+      const d1 = new Date(from), d2 = new Date(to);
+      const m1 = MONTH_SHORT[d1.getUTCMonth()], m2 = MONTH_SHORT[d2.getUTCMonth()];
+      const day1 = d1.getUTCDate(), day2 = d2.getUTCDate();
+      if (m1 === m2) return `${day1}–${day2} ${m1}`;
+      return `${day1} ${m1} – ${day2} ${m2}`;
+    }
+
+    let allEvents = [];
+
+    async function loadEvents() {
+      const { data, error } = await supabaseClient
+        .from('events')
+        .select('*')
+        .eq('state_id', 3)
+        .order('date_from', { ascending: true });
+
+      if (error || !data || data.length === 0) {
+        document.getElementById('eventsTimeline').innerHTML =
+          '<div class="events-loading">No events found for Kerala.</div>';
+        return;
+      }
+
+      allEvents = data;
+      buildCategoryPills(data);
+      renderTimeline(data);
+    }
+
+    function buildCategoryPills(events) {
+      const bar = document.getElementById('eventsCategoryBar');
+      const cats = ['All', ...new Set(events.map(e => e.category))];
+      bar.innerHTML = cats.map((c, i) =>
+        `<button class="cat-pill ${i === 0 ? 'active' : ''}" data-cat="${c}">${c}</button>`
+      ).join('');
+
+      bar.querySelectorAll('.cat-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          bar.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          filterTimeline(pill.dataset.cat);
+        });
+      });
+    }
+
+    function filterTimeline(cat) {
+      document.querySelectorAll('.tl-node').forEach(node => {
+        if (cat === 'All' || node.dataset.cat === cat) {
+          node.classList.remove('hidden');
+        } else {
+          node.classList.add('hidden');
+        }
+      });
+    }
+
+    function renderTimeline(events) {
+      const container = document.getElementById('eventsTimeline');
+      const track = document.createElement('div');
+      track.className = 'timeline-track';
+
+      events.forEach(ev => {
+        const node = document.createElement('div');
+        node.className = 'tl-node';
+        node.dataset.cat = ev.category;
+
+        const feeLabel = ev.entry_fee == null
+          ? '<span class="tl-fee">Free</span>'
+          : `<span class="tl-fee">&#8377;${ev.entry_fee.toLocaleString()}</span>`;
+
+        const featuredBadge = ev.is_featured
+          ? '<span class="tl-featured">&#9733; Featured</span>'
+          : '';
+
+        node.innerHTML = `
+          <div class="tl-card">
+            <div class="tl-date">${formatDateRange(ev.date_from, ev.date_to)}</div>
+            <div class="tl-name">${ev.name}</div>
+            <div class="tl-venue"><i class="fas fa-map-pin"></i>${ev.city_venue}</div>
+            <div class="tl-badges">
+              <span class="tl-cat">${ev.category}</span>
+              ${feeLabel}
+              ${featuredBadge}
+            </div>
+          </div>
+          <div class="tl-connector"></div>
+          <div class="tl-dot"></div>
+          <div class="tl-connector"></div>
+        `;
+
+        node.addEventListener('click', () => openEventModal(ev));
+        track.appendChild(node);
+      });
+
+      container.innerHTML = '';
+      container.appendChild(track);
+
+      if (window.innerWidth > 1024) {
+        setTimeout(() => { ScrollTrigger.refresh(); }, 50);
+      }
+    }
+
+    // ==================== OPEN EVENT MODAL ====================
+    function openEventModal(ev) {
+      const MONTH_FULL = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+
+      function fullDate(str) {
+        const d = new Date(str);
+        return `${d.getUTCDate()} ${MONTH_FULL[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+      }
+
+      const hero = document.getElementById('eventModalHero');
+      if (ev.image_url) {
+        hero.style.backgroundImage = `url('${ev.image_url}')`;
+      } else {
+        hero.style.backgroundImage = `linear-gradient(135deg, #1a1a1a 0%, #003d1a 100%)`;
+      }
+
+      document.getElementById('eventModalCat').textContent = ev.category;
+      document.getElementById('eventModalTitle').textContent = ev.name;
+
+      const sameDay = ev.date_from === ev.date_to;
+      document.getElementById('eventModalDates').textContent = sameDay
+        ? fullDate(ev.date_from)
+        : `${fullDate(ev.date_from)} — ${fullDate(ev.date_to)}`;
+
+      document.getElementById('eventModalVenue').textContent = ev.city_venue;
+
+      const feeChip = document.getElementById('eventModalFeeChip');
+      const feeSpan = document.getElementById('eventModalFee');
+      if (ev.entry_fee == null) {
+        feeSpan.textContent = 'Free Entry';
+        feeChip.classList.add('free-chip');
+      } else {
+        feeSpan.textContent = `₹${ev.entry_fee.toLocaleString()} entry`;
+        feeChip.classList.remove('free-chip');
+      }
+
+      document.getElementById('eventModalDesc').textContent = ev.description || '';
+
+      const recurringEl = document.getElementById('eventModalRecurring');
+      recurringEl.innerHTML = ev.is_recurring
+        ? '<span class="event-recurring-badge"><i class="fas fa-redo"></i> Annual event</span>'
+        : '';
+
+      const websiteEl = document.getElementById('eventModalWebsite');
+      if (ev.website_url) {
+        websiteEl.href = ev.website_url;
+        websiteEl.classList.remove('hidden');
+      } else {
+        websiteEl.classList.add('hidden');
+      }
+
+      document.getElementById('eventModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function initHorizontalScroll() {
+      if (window.innerWidth > 1024) {
+        const track  = document.querySelector(".track");
+        const panels = gsap.utils.toArray(".panel");
+        const totalScroll = () => track.scrollWidth - window.innerWidth;
+
+        gsap.to(track, {
+          x: () => -totalScroll(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".horizontal",
+            pin: true,
+            scrub: 1,
+            end: () => "+=" + totalScroll(),
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const scrolled = self.progress * totalScroll();
+              let cumulative = 0;
+              let active = 0;
+              for (let i = 0; i < panels.length; i++) {
+                cumulative += panels[i].offsetWidth;
+                if (scrolled < cumulative - panels[i].offsetWidth * 0.5) {
+                  active = i;
+                  break;
+                }
+                active = i;
+              }
+              document.querySelectorAll('.progress-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === active);
+              });
+            }
+          }
+        });
+
+        document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+          dot.addEventListener('click', () => {
+            let offset = 0;
+            for (let i = 0; i < index; i++) offset += panels[i].offsetWidth;
+            const st = ScrollTrigger.getAll()[0];
+            if (st) {
+              const targetScroll = st.start + (offset / totalScroll()) * (st.end - st.start);
+              gsap.to(window, { scrollTo: targetScroll, duration: 1, ease: "power2.inOut" });
+            }
+          });
+        });
+      }
+    }
+
+    // ==================== INITIALIZE ====================
+    window.addEventListener('load', () => {
+      loadAttractions();
+      loadDistricts();
+      loadEvents();
+
+      setTimeout(() => {
+        initHorizontalScroll();
+      }, 500);
+    });
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 250);
+    });
+  </script>
+</body>
+
+</html>
