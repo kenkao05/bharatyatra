@@ -132,6 +132,25 @@
 
     .menu-btn:hover { color: var(--orange); }
 
+    .nav-back-btn {
+      margin-left: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      color: #969696;
+      border: 1px solid #333;
+      transition: color 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+    }
+    .nav-back-btn i { font-size: 12px; }
+    .nav-back-btn:hover { color: #ff6b35; border-color: #ff6b35; }
+
     /* ==================== SIDEBAR ==================== */
     .sidebar {
       position: fixed;
@@ -1095,9 +1114,12 @@
         <li><a href="../states/kerala.html">Kerala</a></li>
         <li><a href="../experiences.html">Experiences</a></li>
       </ul>
-      <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
-        <i class="fas fa-bars"></i>
-      </button>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <a href="#" onclick="history.back(); return false;" class="nav-back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+      </div>
     </div>
   </nav>
 
