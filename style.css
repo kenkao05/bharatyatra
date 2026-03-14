@@ -493,6 +493,7 @@ body.no-scroll { overflow: hidden; }
 .carousel-viewport {
     flex: 1;
     overflow: hidden;
+    touch-action: pan-y; /* allow vertical scroll, intercept horizontal swipe */
 }
 
 .carousel-track {
@@ -968,12 +969,422 @@ body.no-scroll { overflow: hidden; }
     letter-spacing: 0.5px;
 }
 
-/* ── MOBILE ──────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE STYLES
+   Breakpoints:
+     Large Tablet  — max-width: 1024px
+     Tablet        — max-width: 768px
+     Mobile        — max-width: 480px
+══════════════════════════════════════════════════════════════ */
+
+/* ── LARGE TABLET  (769px – 1024px) ──────────────────────── */
+@media (max-width: 1024px) {
+
+    /* Navbar */
+    .nav-container {
+        padding: 0 24px;
+    }
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    /* Map section */
+    #map-section {
+        padding: 60px 20px 50px;
+    }
+    .map-card {
+        max-width: 480px;
+        padding: 28px 28px 20px;
+    }
+
+    /* Bucketlist / Carousel */
+    #bucketlist-section {
+        padding: 60px 0 56px;
+    }
+    .carousel-wrapper {
+        padding: 0 20px;
+        gap: 12px;
+    }
+    .bl-card {
+        flex: 0 0 220px;
+        width: 220px;
+        height: 340px;
+    }
+
+    /* Modal */
+    .bl-modal-body {
+        padding: 28px 28px 32px;
+    }
+    .bl-modal-image {
+        height: 260px;
+    }
+
+    /* Portals section */
+    #portals-section {
+        padding: 80px 24px;
+    }
+
+    /* Footer — collapse to 3-column grid */
+    .footer-inner {
+        grid-template-columns: 1.4fr 1fr 1fr;
+        gap: 36px;
+        padding: 0 24px 50px;
+    }
+    /* Brand col takes full first row */
+    .footer-brand {
+        grid-column: 1 / -1;
+    }
+}
+
+
+/* ── TABLET  (481px – 768px) ──────────────────────────────── */
 @media (max-width: 768px) {
+
+    /* Sidebar — full-width slide-in on tablet/mobile */
+    :root {
+        --sidebar-width: 85vw;
+    }
+
+    /* Navbar */
+    .nav-container {
+        padding: 0 18px;
+    }
+    .logo {
+        font-size: 1.3rem;
+        letter-spacing: 2px;
+    }
+    .menu-btn {
+        font-size: 1.4rem;
+    }
+
+    /* Hero */
+    #main-title {
+        letter-spacing: 8px;
+    }
+
+    /* Map section */
+    #map-section {
+        padding: 50px 16px 40px;
+        border-top-width: 3px;
+    }
+    .map-section-header {
+        margin-bottom: 28px;
+    }
+    .map-card {
+        max-width: 100%;
+        padding: 20px 16px 16px;
+        border-radius: 14px;
+    }
+    .map-hint {
+        font-size: 11px;
+        margin-top: 14px;
+    }
+
+    /* Bucketlist section */
+    #bucketlist-section {
+        padding: 50px 0 48px;
+    }
+    .bucketlist-title {
+        padding: 0 16px;
+    }
+    .bucketlist-sub {
+        padding: 0 16px;
+        margin-bottom: 32px;
+    }
+
+    /* Carousel — 1.5-card peek layout:
+       Cards are sized so one full card + half of next card
+       are visible. Arrows are hidden; swipe/auto-scroll drives it. */
+    .carousel-wrapper {
+        padding: 0;
+        gap: 0;
+    }
+    .carousel-btn {
+        display: none; /* hidden on tablet — auto-scroll + touch handles navigation */
+    }
+    .carousel-viewport {
+        /* Allow the peek: overflow visible on right side */
+        overflow: visible;
+        /* But clip only vertically so cards don't bleed outside section */
+        clip-path: inset(0 0 0 0);
+        padding: 0 16px;
+    }
+    .carousel-track {
+        gap: 14px;
+        /* Slight padding-right so next card peeks in */
+        padding-right: 40px;
+    }
+    .bl-card {
+        /* Width = viewport width * 0.65 so ~1.5 cards fill the screen */
+        flex: 0 0 calc(65vw - 16px);
+        width: calc(65vw - 16px);
+        height: 320px;
+    }
+
+    /* Disable hover lift on touch — keeps interaction clean */
+    .bl-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Know More button */
+    .bucketlist-footer {
+        margin-top: 28px;
+        padding: 0 16px;
+    }
+    .know-more-btn {
+        width: 100%;
+        text-align: center;
+        padding: 13px 0;
+    }
+
+    /* Attraction Modal */
+    .bl-modal {
+        padding: 12px;
+        align-items: flex-end; /* slide up from bottom on mobile */
+    }
+    .bl-modal-content {
+        max-height: 92vh;
+        border-width: 3px;
+    }
+    .bl-modal-image {
+        height: 200px;
+    }
+    .bl-modal-body {
+        padding: 22px 20px 28px;
+    }
+    .bl-modal-body h2 {
+        font-size: 22px;
+    }
+    .bl-modal-info {
+        grid-template-columns: 1fr; /* stack info items */
+        gap: 14px;
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+
+    /* Portals section */
+    #portals-section {
+        padding: 60px 20px;
+        border-bottom-width: 3px;
+    }
+    .portals-title {
+        font-size: clamp(1.6rem, 6vw, 2.4rem);
+    }
+    .portals-desc {
+        font-size: 14px;
+    }
+    .portals-btn {
+        padding: 13px 36px;
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Footer — 2-column grid */
+    .footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        padding: 0 20px 44px;
+    }
+    .footer-brand {
+        grid-column: 1 / -1;
+    }
+    .footer-bottom {
+        padding: 18px 20px;
+    }
+}
+
+
+/* ── MOBILE  (≤ 480px) ────────────────────────────────────── */
+@media (max-width: 480px) {
+
+    /* Sidebar — true full-screen on small phones */
     :root {
         --sidebar-width: 100%;
     }
+    .sidebar {
+        padding: 50px 24px 36px;
+        border-left: none;
+    }
 
-    .logo { font-size: 18px; }
-    .menu-btn { font-size: 20px; }
+    /* Navbar */
+    .nav-container {
+        padding: 0 14px;
+    }
+    .logo {
+        font-size: 1.1rem;
+        letter-spacing: 1.5px;
+    }
+    .menu-btn {
+        font-size: 1.3rem;
+    }
+
+    /* Hero */
+    #main-title {
+        letter-spacing: 5px;
+        /* clamp already handles font-size, just tighten tracking */
+    }
+
+    /* Map section */
+    #map-section {
+        padding: 40px 12px 32px;
+    }
+    .map-section-header {
+        margin-bottom: 22px;
+    }
+    .map-eyebrow {
+        font-size: 10px;
+        letter-spacing: 3px;
+    }
+    .map-card {
+        padding: 14px 12px 12px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .map-hint {
+        font-size: 10px;
+        margin-top: 10px;
+    }
+
+    /* Bucketlist section */
+    #bucketlist-section {
+        padding: 40px 0 40px;
+    }
+    .bucketlist-title {
+        padding: 0 14px;
+        font-size: clamp(1.4rem, 6vw, 1.9rem);
+    }
+    .bucketlist-sub {
+        padding: 0 14px;
+        font-size: 13px;
+        margin-bottom: 24px;
+    }
+
+    /* Carousel cards — almost full width on small phones, still 1.5 peek */
+    .carousel-viewport {
+        padding: 0 12px;
+    }
+    .bl-card {
+        flex: 0 0 calc(78vw - 12px);
+        width: calc(78vw - 12px);
+        height: 300px;
+    }
+    .bl-card-name {
+        font-size: 16px;
+    }
+    .bl-card-location {
+        font-size: 9px;
+        letter-spacing: 2px;
+    }
+
+    /* Modal — full-width bottom sheet feel */
+    .bl-modal {
+        padding: 0;
+        align-items: flex-end;
+    }
+    .bl-modal-content {
+        width: 100%;
+        max-height: 95vh;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        border-top: 4px solid #ff6b35;
+        border-radius: 0;
+    }
+    .bl-modal-image {
+        height: 180px;
+    }
+    .bl-modal-body {
+        padding: 18px 16px 24px;
+    }
+    .bl-modal-body h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    .bl-modal-body p {
+        font-size: 13px;
+        line-height: 1.7;
+    }
+    .bl-modal-info {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 16px;
+        padding-top: 16px;
+    }
+    .bl-info-item i {
+        font-size: 16px;
+    }
+    .bl-info-item strong {
+        font-size: 10px;
+    }
+    .bl-info-item span {
+        font-size: 13px;
+    }
+
+    /* Portals section */
+    #portals-section {
+        padding: 48px 16px;
+    }
+    .portals-eyebrow {
+        font-size: 10px;
+        letter-spacing: 3px;
+    }
+    .portals-title {
+        font-size: clamp(1.5rem, 7vw, 2rem);
+    }
+    .portals-desc {
+        font-size: 13px;
+        line-height: 1.75;
+    }
+    .portals-btn {
+        padding: 13px 0;
+        width: 100%;
+        text-align: center;
+        letter-spacing: 2px;
+    }
+
+    /* Footer — single column */
+    .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 0 16px 36px;
+    }
+    .footer-brand {
+        grid-column: 1 / -1;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #1a1a1a;
+    }
+    .footer-logo {
+        font-size: 1.2rem;
+    }
+    .footer-tagline {
+        font-size: 12px;
+    }
+    .footer-heading {
+        margin-bottom: 14px;
+    }
+    .footer-links li a {
+        font-size: 13px;
+        padding: 10px 0;
+    }
+    .footer-socials {
+        gap: 8px;
+    }
+    .social-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    .footer-contact-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 11px 0;
+        font-size: 11px;
+    }
+    .footer-bottom {
+        padding: 16px 16px;
+    }
+    .footer-bottom p {
+        font-size: 11px;
+    }
 }

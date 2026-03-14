@@ -589,17 +589,50 @@
         // ── CAROUSEL STATE ───────────────────────────────────────────
         let currentIndex = 0;
         let totalCards   = 0;  // count of REAL cards only
-        const CARD_W     = 260; // matches CSS flex: 0 0 260px
-        const CARD_GAP   = 20;
         let visibleCards = 3;  // recalculated dynamically from real viewport width
         let autoTimer    = null;
 
-        // How many cards actually fit in the visible area right now?
+        // Dynamically read the actual rendered card width (respects CSS media queries)
+        function getCardMetrics() {
+            const track = document.getElementById('carouselTrack');
+            if (!track) return { cardW: 260, gap: 20 };
+            const firstCard = track.querySelector('.bl-card:not([data-clone])');
+            if (!firstCard) return { cardW: 260, gap: 20 };
+            const cardW = firstCard.getBoundingClientRect().width;
+            const gap   = parseFloat(getComputedStyle(track).gap) || 20;
+            return { cardW, gap };
+        }
+
+        // How many full cards fit in the visible area right now?
         function calcVisible() {
             const viewport = document.querySelector('.carousel-viewport');
             if (!viewport) return 3;
-            return Math.max(1, Math.floor(viewport.offsetWidth / (CARD_W + CARD_GAP)));
+            const { cardW, gap } = getCardMetrics();
+            return Math.max(1, Math.floor(viewport.offsetWidth / (cardW + gap)));
         }
+
+        // ── TOUCH / SWIPE SUPPORT ────────────────────────────────────
+        let touchStartX = 0;
+        let touchEndX   = 0;
+
+        document.querySelector('.carousel-viewport').addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.querySelector('.carousel-viewport').addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 40) {
+                resetAutoScroll();
+                if (diff > 0 && currentIndex < totalCards - 1) {
+                    currentIndex++;
+                    updateCarousel();
+                } else if (diff < 0 && currentIndex > 0) {
+                    currentIndex--;
+                    updateCarousel();
+                }
+            }
+        }, { passive: true });
 
         // ── LOAD BUCKETLIST ATTRACTIONS ──────────────────────────────
         async function loadBucketlist() {
@@ -693,7 +726,8 @@
                 // Disable transition for the instant snap-back
                 track.style.transition = 'none';
             }
-            const offset = currentIndex * (CARD_W + CARD_GAP);
+            const { cardW, gap } = getCardMetrics();
+            const offset = currentIndex * (cardW + gap);
             track.style.transform = `translateX(-${offset}px)`;
 
             if (animate === false) {
@@ -751,6 +785,10 @@
         // Recalculate visible count on resize so arrow bounds stay accurate
         window.addEventListener('resize', () => {
             visibleCards = calcVisible();
+            // Clamp index in case it's now out of range at new screen size
+            if (currentIndex > totalCards - visibleCards) {
+                currentIndex = Math.max(0, totalCards - visibleCards);
+            }
             updateCarousel();
         });
 
