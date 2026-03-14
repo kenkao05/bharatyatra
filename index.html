@@ -422,6 +422,9 @@
         gsap.registerPlugin(ScrollTrigger);
 
         // ── BHARAT SCROLL ANIMATION ──────────────────────────────────
+        // On mobile the extreme letterSpacing causes horizontal overflow.
+        // Cap the end value based on screen width.
+        const isMobile = window.innerWidth <= 768;
         gsap.to("#main-title", {
             scrollTrigger: {
                 trigger: "#hero",
@@ -429,7 +432,7 @@
                 end: "bottom top",
                 scrub: 1
             },
-            letterSpacing: "100px",
+            letterSpacing: isMobile ? "20px" : "100px",
             opacity: 0,
             scale: 1.5
         });
