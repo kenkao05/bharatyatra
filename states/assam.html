@@ -4,45 +4,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Uttarakhand | Bharat Yatra</title>
+  <title>Assam | Bharat Yatra</title>
 
-  <!-- Security Headers (apply server-side equivalents) -->
-  <!--
-    X-Frame-Options: DENY
-    X-Content-Type-Options: nosniff
-    Referrer-Policy: strict-origin-when-cross-origin
-    Strict-Transport-Security: max-age=31536000; includeSubDomains
-    Permissions-Policy: camera=(), microphone=(), geolocation=()
-  -->
-
-  <!-- Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy"
-    content="
-      default-src 'self';
-      script-src 'self' https://unpkg.com https://cdnjs.cloudflare.com 'unsafe-inline';
-      style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
-      font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-      img-src 'self' https: data:;
-      connect-src 'self' https://gtpnojbbamoaznlutxap.supabase.co;
-      frame-ancestors 'none';
-      base-uri 'self';
-      form-action 'self';
-      object-src 'none';
-    ">
-
-  <!-- Referrer Policy -->
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-
-  <!-- Font Awesome — NOTE: No AI-generated SRI hash per security report section 6.1 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
   <!-- Supabase -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-  <!-- GSAP — NOTE: No AI-generated SRI hash per security report section 6.1 -->
-  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- GSAP -->
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@700&display=swap');
@@ -240,8 +212,7 @@
       0%   { transform: translateY(0) scale(1);       opacity: 0.5; }
       50%  { transform: translateY(-30px) scale(1.2); opacity: 0.9; }
       100% { transform: translateY(0) scale(1);       opacity: 0.5; }
-    }    
-
+    }
 
     /* ==================== SIDEBAR ==================== */
     .sidebar {
@@ -360,7 +331,6 @@
       background: #ff6b35;
       color: #ffffff;
     }
-
     .overlay {
       position: fixed;
       inset: 0;
@@ -1482,18 +1452,13 @@
     </div>
   </div>
 
-  <!-- Clickjacking framebusting (defence-in-depth alongside CSP frame-ancestors) -->
-  <script>
-    if (window.top !== window.self) { window.top.location = window.self.location; }
-  </script>
-
   <!-- ==================== NAVBAR ==================== -->
   <nav id="navbar">
     <div class="nav-container">
       <a href="../index.html" class="logo">BharatYatra</a>
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
-        <li><a href="../districts/uttarakhanddistrict.html">Districts</a></li>
+        <li><a href="../districts/assamdistrict.html">Districts</a></li>
         <li><a href="../experiences.html">Experiences</a></li>
       </ul>
       <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
@@ -1507,6 +1472,7 @@
     <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
     <p class="sidebar-tagline">Discover Incredible India</p>
     <ul class="sidebar-links">
+      <li><a href="../destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
       <li><a href="../experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
       <li><a href="../travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
       <li><a href="../colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
@@ -1542,11 +1508,11 @@
         <!-- PANEL 1: VIDEO -->
         <div class="panel video-panel">
           <video id="heroVideo" autoplay muted loop playsinline>
-            <source src="../styling/stateimages/uttarakhand-intro.mkv" type="video/mp4">
+            <source src="../styling/stateimages/assam-intro.mkv" type="video/mp4">
           </video>
           <div class="video-overlay">
             <h1 class="video-title"></h1>
-            <div class="video-tagline">Land of Gods and Mountains</div>
+            <div class="video-tagline">Gateway to Northeast India</div>
           </div>
           <button class="mute-btn" id="muteBtn">
             <i class="fas fa-volume-mute"></i>
@@ -1564,7 +1530,7 @@
           <h2 class="panel-title">Popular Districts</h2>
           <div class="districts-grid" id="districtsGrid"></div>
           <div style="text-align: center;">
-            <a href="../districts/uttarakhanddistrict.html" class="visit-all-btn">
+            <a href="../districts/assamdistrict.html" class="visit-all-btn">
               Visit All Districts <i class="fas fa-arrow-right"></i>
             </a>
           </div>
@@ -1602,6 +1568,7 @@
       <div class="footer-col">
         <h4 class="footer-heading">Explore</h4>
         <ul class="footer-links">
+          <li><a href="../destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
           <li><a href="../experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
           <li><a href="../travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
           <li><a href="../colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
@@ -1650,7 +1617,7 @@
   <!-- ==================== MODALS ==================== -->
   <div class="modal" id="attractionModal">
     <div class="modal-content">
-      <button class="modal-close" id="attractionModalCloseBtn">&#215;</button>
+      <button class="modal-close" onclick="closeModal('attractionModal')">×</button>
       <img id="modalImage" class="modal-image" src="" alt="">
       <div class="modal-body">
         <h2 id="modalName"></h2>
@@ -1663,7 +1630,7 @@
   <!-- ==================== EVENT MODAL ==================== -->
   <div class="modal" id="eventModal">
     <div class="modal-content event-modal-content">
-      <button class="modal-close" id="eventModalCloseBtn">&#215;</button>
+      <button class="modal-close" onclick="closeModal('eventModal')">&#215;</button>
       <div class="event-modal-hero" id="eventModalHero">
         <div class="event-modal-hero-overlay">
           <span class="event-modal-cat" id="eventModalCat"></span>
@@ -1680,7 +1647,7 @@
         <p class="event-modal-desc" id="eventModalDesc"></p>
         <div class="event-modal-footer-row">
           <div id="eventModalRecurring"></div>
-          <a class="event-modal-website hidden" id="eventModalWebsite" href="#" target="_blank" rel="noopener noreferrer">
+          <a class="event-modal-website" id="eventModalWebsite" href="#" target="_blank" rel="noopener">
             <i class="fas fa-external-link-alt"></i> Official Website
           </a>
         </div>
@@ -1689,29 +1656,11 @@
   </div>
 
   <script>
-    // ==================== SECURITY: HTML ENTITY ENCODER ====================
-    // Prevents XSS when DB data must go into innerHTML context.
-    // Never use strip-based sanitisers — entity encoding is the correct approach.
-    function escHTML(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/`/g, '&#96;');
-    }
-
     // ==================== SUPABASE SETUP ====================
-    // Config frozen to prevent prototype pollution / mutable config attacks
-    const CONFIG = Object.freeze({
-      SUPABASE_URL: "https://gtpnojbbamoaznlutxap.supabase.co",
-      SUPABASE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE",
-      STATE_ID: 4
-    });
-
-    const supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+    const supabaseClient = supabase.createClient(
+      "https://gtpnojbbamoaznlutxap.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE"
+    );
 
     // ==================== NAVBAR SCROLL ====================
     const navbar = document.getElementById('navbar');
@@ -1740,6 +1689,13 @@
     closeBtn.addEventListener('click', closeSidebar);
     overlay.addEventListener('click', closeSidebar);
 
+    // Close any modal when clicking the dark backdrop
+    document.querySelectorAll('.modal').forEach(m => {
+      m.addEventListener('click', (e) => {
+        if (e.target === m) closeModal(m.id);
+      });
+    });
+
     // ==================== MUTE/UNMUTE VIDEO ====================
     const video = document.getElementById('heroVideo');
     const muteBtn = document.getElementById('muteBtn');
@@ -1748,37 +1704,16 @@
     muteBtn.addEventListener('click', () => {
       isMuted = !isMuted;
       video.muted = isMuted;
-      // Use textContent-safe icon swap — no innerHTML injection
-      muteBtn.innerHTML = isMuted
-        ? '<i class="fas fa-volume-mute"></i>'
-        : '<i class="fas fa-volume-up"></i>';
+      muteBtn.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
     });
-
-    // ==================== MODAL CLOSE BUTTONS (event delegation — no onclick attrs) ====================
-    document.getElementById('attractionModalCloseBtn').addEventListener('click', () => closeModal('attractionModal'));
-    document.getElementById('eventModalCloseBtn').addEventListener('click', () => closeModal('eventModal'));
-
-    // Close modals when clicking the dark backdrop
-    document.querySelectorAll('.modal').forEach(m => {
-      m.addEventListener('click', (e) => {
-        if (e.target === m) closeModal(m.id);
-      });
-    });
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove('active');
-      document.body.style.overflow = 'auto';
-    }
 
     // ==================== LOAD ATTRACTIONS ====================
-    // Uses DOM API (createElement + textContent) for all DB data — never innerHTML with DB values.
-    // data-id attribute + event delegation — no onclick="${id}" injection.
     async function loadAttractions() {
       try {
         const { data, error } = await supabaseClient
           .from("attractions")
           .select("*")
-          .eq("state_id", CONFIG.STATE_ID)
+          .eq("state_id", 5)
           .order("priority_score", { ascending: false })
           .limit(3);
 
@@ -1788,47 +1723,24 @@
         container.innerHTML = "";
 
         data.forEach(attraction => {
-          // Build card with DOM API — no innerHTML with DB data
           const card = document.createElement('div');
           card.className = 'attraction-card';
-          card.dataset.id = String(parseInt(attraction.id, 10));
-
-          const img = document.createElement('img');
-          img.src = attraction.image_url || '';
-          img.alt = attraction.name || '';
-          img.className = 'attraction-image';
-
-          const content = document.createElement('div');
-          content.className = 'attraction-content';
-
-          const h3 = document.createElement('h3');
-          h3.textContent = attraction.name; // textContent — safe, no XSS
-          h3.dataset.action = 'open-attraction';
-          h3.dataset.id = String(parseInt(attraction.id, 10));
-
-          content.appendChild(h3);
-          card.appendChild(img);
-          card.appendChild(content);
+          card.innerHTML = `
+            <img src="${attraction.image_url}" alt="${attraction.name}" class="attraction-image">
+            <div class="attraction-content">
+              <h3 onclick="openAttractionModal(${attraction.id})">${attraction.name}</h3>
+            </div>
+          `;
           container.appendChild(card);
         });
 
         window.attractionsData = data;
         loaderFetchDone();
-      } catch (err) {
-        console.error("Error loading attractions");
-        // Generic error — never expose err.message to UI (security report §3.1)
+      } catch (error) {
+        console.error("Error loading attractions:", error);
         loaderFetchDone();
       }
     }
-
-    // Event delegation for attraction cards — no onclick attribute injection
-    document.getElementById('attractionsGrid').addEventListener('click', (e) => {
-      const target = e.target.closest('[data-action="open-attraction"]');
-      if (!target) return;
-      const id = parseInt(target.dataset.id, 10);
-      if (!Number.isInteger(id)) return; // Validate ID as integer
-      openAttractionModal(id);
-    });
 
     // ==================== LOAD DISTRICTS ====================
     async function loadDistricts() {
@@ -1841,7 +1753,7 @@
             image_url,
             attractions ( id )
           `)
-          .eq("state_id", CONFIG.STATE_ID);
+          .eq("state_id", 5);
 
         if (error) throw error;
 
@@ -1859,137 +1771,127 @@
         container.innerHTML = "";
 
         districtsWithCount.forEach(district => {
-          // DOM API construction — no innerHTML with DB data
-          const card = document.createElement('div');
-          card.className = 'district-card';
-          card.dataset.id = String(parseInt(district.id, 10));
-          card.dataset.action = 'open-district';
-
-          const img = document.createElement('img');
-          img.src = district.image_url || '';
-          img.alt = district.name || '';
-
-          const info = document.createElement('div');
-          info.className = 'district-info';
-
-          const h3 = document.createElement('h3');
-          h3.textContent = district.name; // safe textContent
-
-          const span = document.createElement('span');
-          const icon = document.createElement('i');
-          icon.className = 'fas fa-map-marked-alt';
-          span.appendChild(icon);
-          span.appendChild(document.createTextNode(' ' + district.count + ' attractions'));
-
-          info.appendChild(h3);
-          info.appendChild(span);
-          card.appendChild(img);
-          card.appendChild(info);
-          container.appendChild(card);
+          container.innerHTML += `
+            <div class="district-card" onclick="openDistrictModal(${district.id})">
+              <img src="${district.image_url}" alt="${district.name}">
+              <div class="district-info">
+                <h3>${district.name}</h3>
+                <span><i class="fas fa-map-marked-alt"></i> ${district.count} attractions</span>
+              </div>
+            </div>
+          `;
         });
-      } catch (err) {
-        console.error("Error loading districts");
+        loaderFetchDone();
+      } catch (error) {
+        console.error("Error loading districts:", error);
+        loaderFetchDone();
       }
     }
-    loaderFetchDone();
 
-    // Event delegation for district cards — no onclick attribute injection
-    document.getElementById('districtsGrid').addEventListener('click', (e) => {
-      const card = e.target.closest('[data-action="open-district"]');
-      if (!card) return;
-      window.location.href = '../districts/uttarakhanddistrict.html';
-    });
-
-    // ==================== ATTRACTION MODAL ====================
+    // ==================== MODAL FUNCTIONS ====================
     function openAttractionModal(attractionId) {
-      const attraction = window.attractionsData && window.attractionsData.find(a => a.id === attractionId);
+      const attraction = window.attractionsData.find(a => a.id === attractionId);
       if (!attraction) return;
 
-      // Safe image src — only allow https URLs
-      const safeImgUrl = (attraction.image_url && attraction.image_url.startsWith('https://'))
-        ? attraction.image_url : '';
-      document.getElementById('modalImage').src = safeImgUrl;
-      document.getElementById('modalImage').alt = attraction.name || '';
+      document.getElementById('modalImage').src = attraction.image_url;
+      document.getElementById('modalName').textContent = attraction.name;
+      document.getElementById('modalDescription').textContent = attraction.description || attraction.short_description || '';
 
-      // Use textContent for all DB text — no innerHTML with DB strings
-      document.getElementById('modalName').textContent = attraction.name || '';
-      document.getElementById('modalDescription').textContent =
-        attraction.description || attraction.short_description || '';
-
-      // Build info grid with DOM API
-      const infoContainer = document.getElementById('modalInfo');
-      infoContainer.innerHTML = ''; // clear static content only — no DB data here
-
-      const infoItems = [];
+      let infoHtml = '';
 
       if (attraction.entry_fee !== undefined && attraction.entry_fee !== null) {
-        infoItems.push({
-          icon: 'fas fa-ticket-alt',
-          label: 'Entry Fee',
-          value: attraction.entry_fee === 0 ? 'Free' : '₹' + attraction.entry_fee
-        });
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-ticket-alt"></i>
+            <div>
+              <strong>Entry Fee</strong>
+              <span>₹${attraction.entry_fee === 0 ? 'Free' : attraction.entry_fee}</span>
+            </div>
+          </div>
+        `;
       }
+
       if (attraction.estimated_time_hours) {
-        infoItems.push({
-          icon: 'fas fa-clock',
-          label: 'Time Needed',
-          value: attraction.estimated_time_hours + ' hours'
-        });
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-clock"></i>
+            <div>
+              <strong>Time Needed</strong>
+              <span>${attraction.estimated_time_hours} hours</span>
+            </div>
+          </div>
+        `;
       }
+
       if (attraction.best_time_note) {
-        infoItems.push({
-          icon: 'fas fa-calendar-alt',
-          label: 'Best Time',
-          value: attraction.best_time_note
-        });
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-calendar-alt"></i>
+            <div>
+              <strong>Best Time</strong>
+              <span>${attraction.best_time_note}</span>
+            </div>
+          </div>
+        `;
       }
+
       if (attraction.address || attraction.city) {
-        infoItems.push({
-          icon: 'fas fa-map-marker-alt',
-          label: 'Location',
-          value: attraction.address || attraction.city || ''
-        });
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <strong>Location</strong>
+              <span>${attraction.address || attraction.city || ''}</span>
+            </div>
+          </div>
+        `;
       }
+
       if (attraction.contact_phone) {
-        infoItems.push({
-          icon: 'fas fa-phone',
-          label: 'Contact',
-          value: attraction.contact_phone
-        });
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-phone"></i>
+            <div>
+              <strong>Contact</strong>
+              <span>${attraction.contact_phone}</span>
+            </div>
+          </div>
+        `;
       }
+
       if (attraction.guide_available) {
-        infoItems.push({
-          icon: 'fas fa-user-tie',
-          label: 'Guide Available',
-          value: attraction.guide_price_range || 'Yes'
-        });
+        infoHtml += `
+          <div class="info-item">
+            <i class="fas fa-user-tie"></i>
+            <div>
+              <strong>Guide Available</strong>
+              <span>${attraction.guide_price_range || 'Yes'}</span>
+            </div>
+          </div>
+        `;
       }
 
-      infoItems.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'info-item';
-
-        const i = document.createElement('i');
-        i.className = item.icon;
-
-        const textDiv = document.createElement('div');
-
-        const strong = document.createElement('strong');
-        strong.textContent = item.label; // static label — safe
-
-        const span = document.createElement('span');
-        span.textContent = item.value; // DB value via textContent — safe
-
-        textDiv.appendChild(strong);
-        textDiv.appendChild(span);
-        div.appendChild(i);
-        div.appendChild(textDiv);
-        infoContainer.appendChild(div);
-      });
-
+      document.getElementById('modalInfo').innerHTML = infoHtml;
       document.getElementById('attractionModal').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
+
+    function openDistrictModal(districtId) {
+      window.location.href = '../districts/assamdistrict.html';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal(modal.id);
+        }
+      });
+    });
 
     // ==================== LOAD EVENTS ====================
     const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -2008,12 +1910,12 @@
       const { data, error } = await supabaseClient
         .from('events')
         .select('*')
-        .eq('state_id', CONFIG.STATE_ID)
+        .eq('state_id', 5)
         .order('date_from', { ascending: true });
 
       if (error || !data || data.length === 0) {
         document.getElementById('eventsTimeline').innerHTML =
-          '<div class="events-loading">No events found for Uttarakhand.</div>';
+          '<div class="events-loading">No events found for Assam.</div>';
         loaderFetchDone();
         return;
       }
@@ -2027,20 +1929,17 @@
     function buildCategoryPills(events) {
       const bar = document.getElementById('eventsCategoryBar');
       const cats = ['All', ...new Set(events.map(e => e.category))];
+      bar.innerHTML = cats.map((c, i) =>
+        `<button class="cat-pill ${i === 0 ? 'active' : ''}" data-cat="${c}">${c}</button>`
+      ).join('');
 
-      // Build pills with DOM API — no innerHTML with DB category names
-      bar.innerHTML = '';
-      cats.forEach((c, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'cat-pill' + (i === 0 ? ' active' : '');
-        btn.dataset.cat = c; // safe data attribute
-        btn.textContent = c; // textContent — safe
-        btn.addEventListener('click', () => {
+      bar.querySelectorAll('.cat-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
           bar.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-          btn.classList.add('active');
-          filterTimeline(c);
+          pill.classList.add('active');
+          const cat = pill.dataset.cat;
+          filterTimeline(cat);
         });
-        bar.appendChild(btn);
       });
     }
 
@@ -2062,89 +1961,44 @@
       events.forEach(ev => {
         const node = document.createElement('div');
         node.className = 'tl-node';
-        node.dataset.cat = ev.category || ''; // safe data attr
+        node.dataset.cat = ev.category;
 
-        // Build card with DOM API — no inline onclick on DB data
-        const card = document.createElement('div');
-        card.className = 'tl-card';
+        const feeLabel = ev.entry_fee == null
+          ? '<span class="tl-fee">Free</span>'
+          : `<span class="tl-fee">&#8377;${ev.entry_fee.toLocaleString()}</span>`;
 
-        const dateEl = document.createElement('div');
-        dateEl.className = 'tl-date';
-        dateEl.textContent = formatDateRange(ev.date_from, ev.date_to);
+        const featuredBadge = ev.is_featured
+          ? '<span class="tl-featured">&#9733; Featured</span>'
+          : '';
 
-        const nameEl = document.createElement('div');
-        nameEl.className = 'tl-name';
-        nameEl.textContent = ev.name; // safe textContent
+        node.innerHTML = `
+          <div class="tl-card">
+            <div class="tl-date">${formatDateRange(ev.date_from, ev.date_to)}</div>
+            <div class="tl-name">${ev.name}</div>
+            <div class="tl-venue"><i class="fas fa-map-pin"></i>${ev.city_venue}</div>
+            <div class="tl-badges">
+              <span class="tl-cat">${ev.category}</span>
+              ${feeLabel}
+              ${featuredBadge}
+            </div>
+          </div>
+          <div class="tl-connector"></div>
+          <div class="tl-dot"></div>
+          <div class="tl-connector"></div>
+        `;
 
-        const venueEl = document.createElement('div');
-        venueEl.className = 'tl-venue';
-        const pinIcon = document.createElement('i');
-        pinIcon.className = 'fas fa-map-pin';
-        venueEl.appendChild(pinIcon);
-        venueEl.appendChild(document.createTextNode(ev.city_venue || ''));
-
-        const badges = document.createElement('div');
-        badges.className = 'tl-badges';
-
-        const catBadge = document.createElement('span');
-        catBadge.className = 'tl-cat';
-        catBadge.textContent = ev.category || '';
-
-        const feeBadge = document.createElement('span');
-        feeBadge.className = 'tl-fee';
-        feeBadge.textContent = ev.entry_fee == null ? 'Free' : '₹' + ev.entry_fee.toLocaleString();
-
-        badges.appendChild(catBadge);
-        badges.appendChild(feeBadge);
-
-        if (ev.is_featured) {
-          const featBadge = document.createElement('span');
-          featBadge.className = 'tl-featured';
-          featBadge.textContent = '★ Featured';
-          badges.appendChild(featBadge);
-        }
-
-        card.appendChild(dateEl);
-        card.appendChild(nameEl);
-        card.appendChild(venueEl);
-        card.appendChild(badges);
-
-        const conn1 = document.createElement('div');
-        conn1.className = 'tl-connector';
-        const dot = document.createElement('div');
-        dot.className = 'tl-dot';
-        const conn2 = document.createElement('div');
-        conn2.className = 'tl-connector';
-
-        node.appendChild(card);
-        node.appendChild(conn1);
-        node.appendChild(dot);
-        node.appendChild(conn2);
-
-        // Event delegation-ready: store event id safely in data attr
-        node.dataset.eventId = String(parseInt(ev.id, 10));
-        node.dataset.action = 'open-event';
-
+        node.addEventListener('click', () => openEventModal(ev));
         track.appendChild(node);
       });
 
       container.innerHTML = '';
       container.appendChild(track);
 
+      // Recalculate GSAP scroll distance now that event cards are in the DOM
       if (window.innerWidth > 1024) {
         setTimeout(() => { ScrollTrigger.refresh(); }, 50);
       }
     }
-
-    // Event delegation for timeline nodes — no onclick with DB data
-    document.getElementById('eventsTimeline').addEventListener('click', (e) => {
-      const node = e.target.closest('[data-action="open-event"]');
-      if (!node) return;
-      const id = parseInt(node.dataset.eventId, 10);
-      if (!Number.isInteger(id)) return;
-      const ev = allEvents.find(ev => ev.id === id);
-      if (ev) openEventModal(ev);
-    });
 
     // ==================== OPEN EVENT MODAL ====================
     function openEventModal(ev) {
@@ -2156,57 +2010,53 @@
         return `${d.getUTCDate()} ${MONTH_FULL[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
       }
 
-      // Hero image — validate https-only URLs
+      // Hero image
       const hero = document.getElementById('eventModalHero');
-      if (ev.image_url && ev.image_url.startsWith('https://')) {
-        hero.style.backgroundImage = `url('${escHTML(ev.image_url)}')`;
+      if (ev.image_url) {
+        hero.style.backgroundImage = `url('${ev.image_url}')`;
       } else {
-        hero.style.backgroundImage = `linear-gradient(135deg, #1a1a1a 0%, #1a3d2e 100%)`;
+        hero.style.backgroundImage = `linear-gradient(135deg, #1a1a1a 0%, #003d1a 100%)`;
       }
 
-      // All DB text via textContent — no innerHTML with DB values
-      document.getElementById('eventModalCat').textContent = ev.category || '';
-      document.getElementById('eventModalTitle').textContent = ev.name || '';
+      // Title & category
+      document.getElementById('eventModalCat').textContent = ev.category;
+      document.getElementById('eventModalTitle').textContent = ev.name;
 
+      // Dates
       const sameDay = ev.date_from === ev.date_to;
       document.getElementById('eventModalDates').textContent = sameDay
         ? fullDate(ev.date_from)
         : `${fullDate(ev.date_from)} — ${fullDate(ev.date_to)}`;
 
-      document.getElementById('eventModalVenue').textContent = ev.city_venue || '';
+      // Venue
+      document.getElementById('eventModalVenue').textContent = ev.city_venue;
 
+      // Fee
       const feeChip = document.getElementById('eventModalFeeChip');
       const feeSpan = document.getElementById('eventModalFee');
       if (ev.entry_fee == null) {
         feeSpan.textContent = 'Free Entry';
         feeChip.classList.add('free-chip');
       } else {
-        feeSpan.textContent = '₹' + ev.entry_fee.toLocaleString() + ' entry';
+        feeSpan.textContent = `₹${ev.entry_fee.toLocaleString()} entry`;
         feeChip.classList.remove('free-chip');
       }
 
+      // Description
       document.getElementById('eventModalDesc').textContent = ev.description || '';
 
-      // Recurring badge — DOM API
+      // Recurring badge
       const recurringEl = document.getElementById('eventModalRecurring');
-      recurringEl.innerHTML = '';
-      if (ev.is_recurring) {
-        const badge = document.createElement('span');
-        badge.className = 'event-recurring-badge';
-        const icon = document.createElement('i');
-        icon.className = 'fas fa-redo';
-        badge.appendChild(icon);
-        badge.appendChild(document.createTextNode(' Annual event'));
-        recurringEl.appendChild(badge);
-      }
+      recurringEl.innerHTML = ev.is_recurring
+        ? '<span class="event-recurring-badge"><i class="fas fa-redo"></i> Annual event</span>'
+        : '';
 
-      // Website link — validate URL before placing in href
+      // Website link
       const websiteEl = document.getElementById('eventModalWebsite');
-      if (ev.website_url && ev.website_url.startsWith('https://')) {
+      if (ev.website_url) {
         websiteEl.href = ev.website_url;
         websiteEl.classList.remove('hidden');
       } else {
-        websiteEl.href = '#';
         websiteEl.classList.add('hidden');
       }
 
