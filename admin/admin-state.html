@@ -295,6 +295,34 @@
     .imgmgr-progress-label { font-size: 11px; color: var(--muted); margin-top: 6px; }
     .imgmgr-upload-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
 
+    /* ── CATEGORY PICKER ── */
+    .catpkr-search-wrap { position: relative; margin-bottom: 14px; }
+    .catpkr-search-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 13px; pointer-events: none; }
+    .catpkr-search { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--white); font-family: 'Inter', sans-serif; font-size: 13px; padding: 10px 14px 10px 36px; border-radius: var(--radius-sm); outline: none; transition: var(--transition); }
+    .catpkr-search:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); background: rgba(6,182,212,0.04); }
+    .catpkr-search::placeholder { color: var(--muted2); }
+    .catpkr-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .catpkr-count { font-size: 11px; color: var(--muted); }
+    .catpkr-hint { font-size: 11px; color: var(--muted); font-style: italic; }
+    .catpkr-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 280px; overflow-y: auto; padding-right: 4px; margin-bottom: 16px; }
+    .catpkr-grid::-webkit-scrollbar { width: 4px; }
+    .catpkr-grid::-webkit-scrollbar-track { background: transparent; }
+    .catpkr-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+    .catpkr-pill { display: inline-flex; align-items: center; gap: 5px; padding: 6px 13px; border-radius: 20px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--muted); font-size: 12px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; transition: var(--transition); white-space: nowrap; user-select: none; }
+    .catpkr-pill:hover { border-color: rgba(6,182,212,0.4); background: var(--cyan-dim); color: var(--cyan); }
+    .catpkr-pill.selected { border-color: var(--cyan); background: var(--cyan-dim); color: var(--cyan); font-weight: 600; }
+    .catpkr-order { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: var(--cyan); color: #071021; font-size: 9px; font-weight: 800; flex-shrink: 0; }
+    .catpkr-empty { width: 100%; text-align: center; padding: 32px 20px; color: var(--muted); font-size: 13px; }
+    .catpkr-empty i { display: block; font-size: 24px; margin-bottom: 8px; opacity: 0.4; }
+    .catpkr-confirm-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid var(--border); padding-top: 16px; margin-top: 4px; }
+    .catpkr-preview-wrap { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .catpkr-preview-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+    .catpkr-preview { font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.2s; }
+    .catpkr-confirm-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .cat-field-wrap { display: flex; gap: 8px; align-items: stretch; }
+    .cat-field-wrap .form-input { flex: 1; cursor: default; caret-color: transparent; }
+    .cat-field-wrap .form-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       #main { padding: calc(var(--header-h) + 24px) 16px 60px; }
@@ -423,6 +451,37 @@
     </div>
   </div>
 
+  <!-- CATEGORY PICKER MODAL -->
+  <div class="modal-overlay" id="catPickerOverlay">
+    <div class="modal-box" style="max-width:540px;">
+      <div class="modal-header">
+        <span class="modal-title">Select <span>Category</span></span>
+        <button class="modal-close-btn" onclick="closeCatPicker()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="catpkr-search-wrap">
+          <i class="fas fa-search"></i>
+          <input class="catpkr-search" id="catPkrSearch" type="text" placeholder="Search tags…" oninput="filterCats(this.value)">
+        </div>
+        <div class="catpkr-meta">
+          <span class="catpkr-count" id="catPkrCount"></span>
+          <span class="catpkr-hint"><i class="fas fa-info-circle" style="margin-right:4px;"></i>Select 1 or 2 tags — order matters</span>
+        </div>
+        <div class="catpkr-grid" id="catPkrGrid"></div>
+        <div class="catpkr-confirm-bar" id="catConfirmBar">
+          <div class="catpkr-preview-wrap">
+            <span class="catpkr-preview-label">Result</span>
+            <span class="catpkr-preview" id="catPreview">No category selected</span>
+          </div>
+          <div class="catpkr-confirm-actions">
+            <button type="button" class="btn-cancel" onclick="clearCatPick()">Clear</button>
+            <button type="button" class="btn-save" onclick="confirmCatPick()"><i class="fas fa-check"></i> Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- CONFIRM MODAL -->
   <div class="modal-overlay" id="confirmOverlay">
     <div class="modal-box confirm-box">
@@ -537,8 +596,105 @@
 
   function closeImgMgr() {
     document.getElementById('imgMgrOverlay').classList.remove('active');
-    document.body.style.overflow = '';
+    // Do NOT reset body overflow here — the attraction modal is still open beneath.
     clearUpload();
+  }
+
+  // ─────────────────────────────────────────────────────────
+  //  CATEGORY PICKER
+  // ─────────────────────────────────────────────────────────
+  // Single-word tags derived from all compound category values in the DB
+  const catTags = ['Adventure','Agricultural','Archaeological','Architecture','Arts','Beach','Birdwatching','Botanical','Conservation','Crafts','Cultural','Desert','Eco-tourism','Education','Engineering','Experience','Extreme Sports','Festival','Health','Heritage','Market','Modern','Museum','Nature','Performance','Pilgrimage','Recreation','Rural','Safari','Scenic','Science','Shopping','Spiritual','Sports','Trekking','Urban','Water Sports','Wildlife','Winter Sports'];
+
+  let _catField      = null;  // input id to write the final value into
+  let _catSelected   = [];    // ordered array of 0–2 selected tags [primary, secondary]
+
+  function openCatPicker() {
+    _catField = 'f_category';
+    // Parse current value back into selected tags
+    const current = document.getElementById(_catField)?.value || '';
+    _catSelected = current ? current.split('/').map(s => s.trim()).filter(Boolean) : [];
+    // Reset search
+    const searchEl = document.getElementById('catPkrSearch');
+    searchEl.value = '';
+    renderCatPills(catTags);
+    updateCatConfirmBar();
+    document.getElementById('catPickerOverlay').classList.add('active');
+    setTimeout(() => searchEl.focus(), 50);
+  }
+
+  function closeCatPicker() {
+    document.getElementById('catPickerOverlay').classList.remove('active');
+    // Do NOT reset body overflow — the attraction modal is still open beneath.
+  }
+
+  function renderCatPills(list) {
+    const grid  = document.getElementById('catPkrGrid');
+    const count = document.getElementById('catPkrCount');
+    count.textContent = list.length + ' tag' + (list.length === 1 ? '' : 's');
+    if (!list.length) {
+      grid.innerHTML = '<div class="catpkr-empty"><i class="fas fa-search"></i>No tags match your search.</div>';
+      return;
+    }
+    grid.innerHTML = list.map(tag => {
+      const idx   = _catSelected.indexOf(tag);
+      const isSel = idx !== -1;
+      const order = isSel ? (idx === 0 ? '<span class="catpkr-order">1</span>' : '<span class="catpkr-order">2</span>') : '';
+      return `<button type="button" class="catpkr-pill${isSel ? ' selected' : ''}" onclick="toggleCatTag('${tag}')">${order}${tag}</button>`;
+    }).join('');
+  }
+
+  function toggleCatTag(tag) {
+    const idx = _catSelected.indexOf(tag);
+    if (idx !== -1) {
+      // Already selected — deselect it
+      _catSelected.splice(idx, 1);
+    } else {
+      if (_catSelected.length >= 2) {
+        // Already have 2 — drop the oldest (first), push new one as secondary
+        _catSelected.shift();
+      }
+      _catSelected.push(tag);
+    }
+    // Re-render current filtered list
+    const q = document.getElementById('catPkrSearch').value.trim().toLowerCase();
+    const filtered = q ? catTags.filter(c => c.toLowerCase().includes(q)) : catTags;
+    renderCatPills(filtered);
+    updateCatConfirmBar();
+  }
+
+  function updateCatConfirmBar() {
+    const bar     = document.getElementById('catConfirmBar');
+    const preview = document.getElementById('catPreview');
+    if (_catSelected.length === 0) {
+      preview.textContent = 'No category selected';
+      preview.style.color = 'var(--muted)';
+    } else {
+      preview.textContent = _catSelected.join('/');
+      preview.style.color = 'var(--cyan)';
+    }
+  }
+
+  function filterCats(query) {
+    const q = query.trim().toLowerCase();
+    const filtered = q ? catTags.filter(c => c.toLowerCase().includes(q)) : catTags;
+    renderCatPills(filtered);
+  }
+
+  function confirmCatPick() {
+    if (_catField) {
+      const el = document.getElementById(_catField);
+      if (el) el.value = _catSelected.join('/') || '';
+    }
+    closeCatPicker();
+  }
+
+  function clearCatPick() {
+    _catSelected = [];
+    const q = document.getElementById('catPkrSearch').value.trim().toLowerCase();
+    const filtered = q ? catTags.filter(c => c.toLowerCase().includes(q)) : catTags;
+    renderCatPills(filtered);
+    updateCatConfirmBar();
   }
 
   function switchTab(tab) {
@@ -696,14 +852,26 @@
     dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); onFileChosen(e.dataTransfer.files); });
 
     // backdrop dismiss
-    ['modalOverlay','imgMgrOverlay','confirmOverlay'].forEach(id => {
+    ['modalOverlay','imgMgrOverlay','catPickerOverlay','confirmOverlay'].forEach(id => {
       document.getElementById(id).addEventListener('click', e => {
         if (e.target.id === id) {
+          // Stop propagation for overlays that sit above the main modal
+          // so clicks don't fall through and accidentally close the attraction form
+          if (id === 'imgMgrOverlay')    { e.stopPropagation(); closeImgMgr();    return; }
+          if (id === 'catPickerOverlay') { e.stopPropagation(); closeCatPicker(); return; }
           if (id === 'modalOverlay')   closeModal();
-          if (id === 'imgMgrOverlay')  closeImgMgr();
           if (id === 'confirmOverlay') closeConfirm();
         }
       });
+    });
+
+    // Escape key — close only the topmost active overlay
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      if (document.getElementById('catPickerOverlay').classList.contains('active')) { closeCatPicker(); }
+      else if (document.getElementById('imgMgrOverlay').classList.contains('active')) { closeImgMgr(); }
+      else if (document.getElementById('confirmOverlay').classList.contains('active')) { closeConfirm(); }
+      else { closeModal(); }
     });
   });
 
@@ -1001,7 +1169,6 @@
   // ─────────────────────────────────────────────────────────
   function attractionFormHTML(title, a = {}, districtId) {
     const types = ['Historical','Religious','Wildlife','Nature','Beach','Adventure','Cultural','Heritage','Museum','Scenic','Recreation','Spiritual'];
-    const cats  = ['Heritage','Spiritual','Wildlife','Nature','Adventure','Cultural','Scenic','Recreation','Beach','Historical'];
     return `
       <div class="modal-header">
         <span class="modal-title">${title}</span>
@@ -1040,10 +1207,15 @@
 
           <div class="form-group">
             <label class="form-label">Category</label>
-            <select class="form-select" id="f_category">
-              <option value="">— Select category —</option>
-              ${cats.map(c=>`<option value="${c}" ${a.category===c?'selected':''}>${c}</option>`).join('')}
-            </select>
+            <div class="cat-field-wrap">
+              <input class="form-input" id="f_category" readonly
+                value="${a.category||''}"
+                placeholder="— Select category —"
+                onclick="openCatPicker()">
+              <button type="button" class="btn-img-pick" onclick="openCatPicker()">
+                <i class="fas fa-tag"></i> Browse
+              </button>
+            </div>
           </div>
 
           <div class="form-group form-col-span">
