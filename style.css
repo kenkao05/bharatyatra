@@ -1,0 +1,1400 @@
+/* ═══════════════════════════════════════════════
+   BharatYatra — style_new.css
+   Brand: Black #000000 | Red #C0392B | White #FFFFFF
+   Fonts: Playfair Display (headings) | Poppins (UI)
+═══════════════════════════════════════════════ */
+
+:root {
+    --black:  #000000;
+    --red:    #C0392B;
+    --white:  #FFFFFF;
+    --grey:   #1a1a1a;
+    --muted:  #999999;
+    --sidebar-width: 320px;
+}
+
+/* ── RESET ─────────────────────────────────────── */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden; /* prevent GSAP letterSpacing from creating horizontal scroll */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    overflow-x: hidden;
+    /* Ensure no child element can blow out the width */
+    max-width: 100vw;
+}
+
+body.no-scroll { overflow: hidden; }
+
+/* ── LOADING SCREEN — OPTION 3: TERRACOTTA MOSAIC ── */
+#loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #f2f0ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Tile grid fills the entire loader */
+.lt-grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    z-index: 0;
+}
+
+/* Individual tiles */
+.lt-tile {
+    border: 1px solid rgba(192, 57, 43, 0.09);
+    opacity: 0;
+    animation: ltTileIn 0.35s ease forwards;
+}
+.lt-ta { background: rgba(255, 107, 53, 0.07); }
+.lt-tb { background: rgba(192,  57, 43, 0.05); }
+.lt-tc { background: rgba(126,  91, 91, 0.04); }
+
+@keyframes ltTileIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to   { opacity: 1; transform: scale(1);   }
+}
+
+/* Tile exit — shrink and vanish */
+.lt-tile.lt-exit {
+    animation: ltTileOut 0.4s ease forwards;
+}
+@keyframes ltTileOut {
+    from { opacity: 1; transform: scale(1);    }
+    to   { opacity: 0; transform: scale(0.72); }
+}
+
+/* Centre content */
+.lt-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    text-align: center;
+    width: 100%;
+    padding: 0 16px;
+}
+.lt-inner.lt-inner-exit {
+    animation: ltInnerOut 0.4s ease forwards;
+}
+@keyframes ltInnerOut {
+    to { opacity: 0; transform: translateY(-10px); }
+}
+
+.lt-lotus {
+    font-size: 48px;
+    line-height: 1;
+    opacity: 0;
+    animation: ltFadeUp 0.6s ease 1.4s forwards;
+}
+.lt-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 10vw, 6rem);
+    font-weight: 700;
+    color: #1a0a06;
+    letter-spacing: clamp(2px, 1.5vw, 8px);
+    opacity: 0;
+    animation: ltFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.6s forwards;
+    max-width: 90vw;
+    white-space: nowrap;
+}
+.lt-logo span { color: #C0392B; }
+
+.lt-dots {
+    display: flex;
+    gap: 9px;
+    opacity: 0;
+    animation: ltFadeUp 0.5s ease 2s forwards;
+}
+.lt-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #C0392B;
+    opacity: 0.2;
+    animation: ltDotPulse 1.2s ease infinite;
+}
+.lt-dot:nth-child(2) { animation-delay: 0.2s; }
+.lt-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes ltDotPulse {
+    0%, 100% { opacity: 0.2; transform: scale(1);   }
+    50%       { opacity: 1;   transform: scale(1.5); }
+}
+
+.lt-sub {
+    font-family: 'Poppins', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #7e5b5b;
+    opacity: 0;
+    animation: ltFadeUp 0.5s ease 2.2s forwards;
+}
+
+@keyframes ltFadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── NAVBAR ─────────────────────────────────────── */
+#navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 10px 0;
+
+    /* ── TRANSLUCENCY CONTROLS ─────────────────────
+       Adjust the last value (0.0 – 1.0) to change opacity:
+       0.0 = fully transparent | 0.5 = half | 1.0 = solid black
+       ─────────────────────────────────────────── */
+    background: transparent; /* ← change 0.55 to adjust translucency */
+
+    backdrop-filter: none;        /* ← change blur amount (0px = no blur) */
+    -webkit-backdrop-filter: none;
+    transition: background 0.4s ease;
+}
+
+#navbar.scrolled {
+    background: rgba(8, 8, 8, 0.92);   /* ← opacity when scrolled */
+    box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-style: normal;
+    color: #ff6b35;
+    text-decoration: none;
+    letter-spacing: 3px;
+    flex-shrink: 0;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    color: #969696;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 4px 6px;
+    line-height: 1;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.menu-btn:hover {
+    color: #ff6b35;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────── */
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: calc(-1 * var(--sidebar-width));
+    width: var(--sidebar-width);
+    height: 100%;
+    background: var(--black);
+    z-index: 2000;
+    overflow-y: auto;
+    padding: 50px 36px 40px;
+    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 1px solid #222;
+}
+
+.sidebar.active {
+    right: 0;
+}
+
+.close-btn {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: var(--white);
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: var(--red);
+}
+
+.sidebar-tagline {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #222;
+}
+
+.sidebar-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar-links li a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    color: #cccccc;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #111;
+    transition: color 0.25s, padding-left 0.25s;
+}
+
+.sidebar-links li a i {
+    font-size: 16px;
+    width: 20px;
+    color: var(--red);
+    flex-shrink: 0;
+}
+
+.sidebar-links li a:hover {
+    color: var(--white);
+    padding-left: 6px;
+}
+
+.sidebar-section-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #444;
+    margin-top: 28px;
+    margin-bottom: 8px;
+    padding-top: 24px;
+    border-top: 1px solid #1a1a1a;
+}
+
+.sidebar-login-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 32px;
+    padding: 11px 18px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: #ff6b35;
+    border: 1px solid #ff6b35;
+    transition: background 0.25s, color 0.25s;
+}
+
+.sidebar-login-btn i {
+    font-size: 13px;
+}
+
+.sidebar-login-btn:hover {
+    background: #ff6b35;
+    color: var(--white);
+}
+
+/* ── OVERLAY ─────────────────────────────────────── */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ── HERO SECTION ────────────────────────────── */
+#hero {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    max-width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* critical — clips GSAP letterSpacing animation */
+    background: #0b0b0b;
+}
+
+#hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1;
+}
+
+#main-title {
+    position: relative;
+    z-index: 2;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(4rem, 15vw, 12rem);
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 12px;
+    text-align: center;
+    user-select: none;
+}
+
+/* ── MAP SECTION ─────────────────────────────────── */
+#map-section {
+    background: #f2f0ed;
+    padding: 80px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-top: 4px solid #ff6b35;
+}
+
+.map-section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.map-eyebrow {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #ff6b35;
+    margin-bottom: 10px;
+}
+
+.map-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: 1px;
+}
+
+.map-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.10);
+    padding: 36px 36px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 580px;
+    width: 100%;
+}
+
+#india-map {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+#india-map path {
+    fill: #7e5b5b;
+    transition: fill 0.2s ease, opacity 0.2s ease;
+}
+
+#india-map path:hover {
+    fill: #C0392B;
+    opacity: 1 !important;
+}
+
+.map-hint {
+    margin-top: 18px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    color: #999999;
+    letter-spacing: 0.3px;
+    text-align: center;
+}
+
+/* ── BUCKETLIST SECTION ──────────────────────────── */
+#bucketlist-section {
+    background: #f2f0ed;
+    padding: 80px 0 70px;
+    overflow: hidden; /* clips carousel peek — must stay here */
+}
+
+.bucketlist-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    color: var(--black);
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.bucketlist-sub {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 48px;
+}
+
+/* Carousel wrapper — arrows + viewport row */
+.carousel-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 40px;
+    position: relative;
+}
+
+.carousel-viewport {
+    flex: 1;
+    overflow: hidden;
+    touch-action: pan-y; /* allow vertical scroll, intercept horizontal swipe */
+}
+
+.carousel-track {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+/* Pause auto-scroll on hover */
+.carousel-viewport:hover .carousel-track {
+    animation-play-state: paused;
+}
+
+/* Arrow buttons */
+.carousel-btn {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    background: var(--white);
+    border: 2px solid #ff6b35;
+    color: #ff6b35;
+    border-radius: 0;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+    z-index: 2;
+}
+
+.carousel-btn:hover:not(:disabled) {
+    background: #ff6b35;
+    color: var(--white);
+}
+
+.carousel-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* ── CARDS — original index style, fixed shape ── */
+.bl-card {
+    flex: 0 0 260px;
+    width: 260px;
+    height: 380px;
+    position: relative;
+    cursor: pointer;
+    border-radius: 0;
+    overflow: hidden;
+    border: 3px solid transparent;
+    transition: border-color 0.25s, transform 0.3s ease, box-shadow 0.3s ease;
+    background: #1a1a1a;
+}
+
+.bl-card:hover {
+    border-color: #ff6b35;
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+}
+
+.bl-card-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(0.15) brightness(0.85);
+    transition: transform 0.5s ease, filter 0.4s ease;
+}
+
+.bl-card:hover .bl-card-img {
+    transform: scale(1.06);
+    filter: grayscale(0) brightness(0.75);
+}
+
+/* Gradient overlay — always visible at bottom */
+.bl-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 55%, transparent 100%);
+    z-index: 1;
+}
+
+/* Label at the bottom — always visible */
+.bl-card-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    padding: 20px 18px;
+}
+
+.bl-card-location {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #ff6b35;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.bl-card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+/* Know More button row */
+.bucketlist-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 36px;
+}
+
+.know-more-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ff6b35;
+    border: 2px solid #ff6b35;
+    padding: 12px 40px;
+    transition: background 0.25s, color 0.25s;
+}
+
+.know-more-btn:hover {
+    background: #ff6b35;
+    color: var(--white);
+}
+
+.carousel-loading {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    padding: 40px 0;
+    font-style: italic;
+}
+
+/* ── ATTRACTION MODAL ────────────────────────────── */
+.bl-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.bl-modal.active {
+    display: flex;
+}
+
+.bl-modal-content {
+    background: var(--white);
+    border: 4px solid #ff6b35;
+    border-radius: 0;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: blModalIn 0.3s ease;
+}
+
+@keyframes blModalIn {
+    from { opacity: 0; transform: translateY(-40px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.bl-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    background: #ff6b35;
+    color: var(--white);
+    border: none;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.bl-modal-close:hover {
+    background: #e05a28;
+    transform: rotate(90deg);
+}
+
+.bl-modal-image {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(0.15);
+}
+
+.bl-modal-body {
+    padding: 36px 40px 40px;
+}
+
+.bl-modal-body h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 14px;
+}
+
+.bl-modal-body p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 12px;
+}
+
+.bl-modal-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-top: 28px;
+    padding-top: 28px;
+    border-top: 2px solid #ff6b35;
+}
+
+.bl-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.bl-info-item i {
+    color: #ff6b35;
+    font-size: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.bl-info-item strong {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 4px;
+}
+
+.bl-info-item span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: var(--black);
+}
+
+/* ── STATE TOURISM PORTALS SECTION ──────────────── */
+#portals-section {
+    background: #f2f0ed;
+    padding: 110px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-bottom: 4px solid #ff6b35;
+}
+
+.portals-inner {
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.portals-eyebrow {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #ff6b35;
+}
+
+.portals-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.15;
+    letter-spacing: 1px;
+}
+
+.portals-desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    color: #777;
+    line-height: 1.8;
+    max-width: 520px;
+}
+
+.portals-btn {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ff6b35;
+    border: 2px solid #ff6b35;
+    padding: 14px 48px;
+    transition: background 0.25s, color 0.25s;
+}
+
+.portals-btn:hover {
+    background: #ff6b35;
+    color: var(--white);
+}
+
+/* ── FOOTER ──────────────────────────────────────── */
+#footer {
+    background: #080808;
+    border-top: 1px solid #1e1e1e;
+    padding: 70px 0 0;
+    width: 100%;
+    overflow-x: hidden; /* prevent any footer child from creating horizontal scroll */
+}
+
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr;
+    gap: 48px;
+}
+
+.footer-logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #ff6b35;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.footer-tagline {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.8;
+}
+
+.footer-heading {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #ff6b35;
+    margin-bottom: 20px;
+}
+
+.footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.footer-links li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #666;
+    text-decoration: none;
+    border-bottom: 1px solid #111;
+    transition: color 0.2s, padding-left 0.2s;
+}
+
+.footer-links li a i {
+    font-size: 13px;
+    color: #ff6b35;
+    width: 16px;
+    flex-shrink: 0;
+}
+
+.footer-links li a:hover {
+    color: var(--white);
+    padding-left: 4px;
+}
+
+.footer-socials {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.social-btn {
+    width: 38px;
+    height: 38px;
+    border: 1px solid #2a2a2a;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 15px;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.social-btn:hover {
+    border-color: #ff6b35;
+    color: #ff6b35;
+    background: rgba(255,107,53,0.06);
+}
+
+.footer-contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ff6b35;
+    border: 2px solid #ff6b35;
+    padding: 10px 22px;
+    transition: background 0.25s, color 0.25s;
+}
+
+.footer-contact-btn:hover {
+    background: #ff6b35;
+    color: var(--white);
+}
+
+.footer-bottom {
+    border-top: 1px solid #161616;
+    padding: 20px 40px;
+    text-align: center;
+}
+
+.footer-bottom p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #333;
+    letter-spacing: 0.5px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE STYLES
+   Breakpoints:
+     Large Tablet  — max-width: 1024px
+     Tablet        — max-width: 768px
+     Mobile        — max-width: 480px
+══════════════════════════════════════════════════════════════ */
+
+/* ── LARGE TABLET  (769px – 1024px) ──────────────────────── */
+@media (max-width: 1024px) {
+
+    /* Navbar */
+    .nav-container {
+        padding: 0 24px;
+    }
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    /* Map section */
+    #map-section {
+        padding: 60px 20px 50px;
+    }
+    .map-card {
+        max-width: 480px;
+        padding: 28px 28px 20px;
+    }
+
+    /* Bucketlist / Carousel */
+    #bucketlist-section {
+        padding: 60px 0 56px;
+    }
+    .carousel-wrapper {
+        padding: 0 20px;
+        gap: 12px;
+    }
+    .bl-card {
+        flex: 0 0 220px;
+        width: 220px;
+        height: 340px;
+    }
+
+    /* Modal */
+    .bl-modal-body {
+        padding: 28px 28px 32px;
+    }
+    .bl-modal-image {
+        height: 260px;
+    }
+
+    /* Portals section */
+    #portals-section {
+        padding: 80px 24px;
+    }
+
+    /* Footer — collapse to 3-column grid */
+    .footer-inner {
+        grid-template-columns: 1.4fr 1fr 1fr;
+        gap: 36px;
+        padding: 0 24px 50px;
+    }
+    /* Brand col takes full first row */
+    .footer-brand {
+        grid-column: 1 / -1;
+    }
+}
+
+
+/* ── TABLET  (481px – 768px) ──────────────────────────────── */
+@media (max-width: 768px) {
+
+    /* Sidebar — full-width slide-in on tablet/mobile */
+    :root {
+        --sidebar-width: 85vw;
+    }
+
+    /* Navbar */
+    .nav-container {
+        padding: 0 18px;
+    }
+    .logo {
+        font-size: 1.3rem;
+        letter-spacing: 2px;
+    }
+    .menu-btn {
+        font-size: 1.4rem;
+    }
+
+    /* Hero */
+    #main-title {
+        letter-spacing: 8px;
+    }
+
+    /* Map section */
+    #map-section {
+        padding: 50px 16px 40px;
+        border-top-width: 3px;
+    }
+    .map-section-header {
+        margin-bottom: 28px;
+    }
+    .map-card {
+        max-width: 100%;
+        padding: 20px 16px 16px;
+        border-radius: 14px;
+    }
+    .map-hint {
+        font-size: 11px;
+        margin-top: 14px;
+    }
+
+    /* Bucketlist section */
+    #bucketlist-section {
+        padding: 50px 0 48px;
+    }
+    .bucketlist-title {
+        padding: 0 16px;
+    }
+    .bucketlist-sub {
+        padding: 0 16px;
+        margin-bottom: 32px;
+    }
+
+    /* Carousel — 1.5-card peek layout.
+       The section itself has overflow:hidden so the peeking card
+       is clipped by the section edge, not the viewport edge.
+       This avoids any horizontal page overflow. */
+    .carousel-wrapper {
+        padding: 0 16px;
+        gap: 0;
+        overflow: hidden; /* section clips the peek — no page bleed */
+    }
+    .carousel-btn {
+        display: none; /* hidden on tablet — swipe + auto-scroll drives navigation */
+    }
+    .carousel-viewport {
+        overflow: visible; /* let the next card peek through */
+        padding: 0;
+    }
+    .carousel-track {
+        gap: 14px;
+    }
+    .bl-card {
+        /* ~65% of screen = 1 full card visible, ~half of next card peeking */
+        flex: 0 0 65vw;
+        width: 65vw;
+        height: 320px;
+    }
+
+    /* Disable hover lift on touch — keeps interaction clean */
+    .bl-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Know More button */
+    .bucketlist-footer {
+        margin-top: 28px;
+        padding: 0 16px;
+    }
+    .know-more-btn {
+        width: 100%;
+        text-align: center;
+        padding: 13px 0;
+    }
+
+    /* Attraction Modal */
+    .bl-modal {
+        padding: 12px;
+        align-items: flex-end; /* slide up from bottom on mobile */
+    }
+    .bl-modal-content {
+        max-height: 92vh;
+        border-width: 3px;
+    }
+    .bl-modal-image {
+        height: 200px;
+    }
+    .bl-modal-body {
+        padding: 22px 20px 28px;
+    }
+    .bl-modal-body h2 {
+        font-size: 22px;
+    }
+    .bl-modal-info {
+        grid-template-columns: 1fr; /* stack info items */
+        gap: 14px;
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+
+    /* Portals section */
+    #portals-section {
+        padding: 60px 20px;
+        border-bottom-width: 3px;
+    }
+    .portals-title {
+        font-size: clamp(1.6rem, 6vw, 2.4rem);
+    }
+    .portals-desc {
+        font-size: 14px;
+    }
+    .portals-btn {
+        padding: 13px 36px;
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Footer — 2-column grid */
+    .footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        padding: 0 20px 44px;
+    }
+    .footer-brand {
+        grid-column: 1 / -1;
+    }
+    .footer-bottom {
+        padding: 18px 20px;
+    }
+}
+
+
+/* ── MOBILE  (≤ 480px) ────────────────────────────────────── */
+@media (max-width: 480px) {
+
+    /* Sidebar — true full-screen on small phones */
+    :root {
+        --sidebar-width: 100%;
+    }
+    .sidebar {
+        padding: 50px 24px 36px;
+        border-left: none;
+    }
+
+    /* Navbar */
+    .nav-container {
+        padding: 0 14px;
+    }
+    .logo {
+        font-size: 1.1rem;
+        letter-spacing: 1.5px;
+    }
+    .menu-btn {
+        font-size: 1.3rem;
+    }
+
+    /* Hero */
+    #main-title {
+        letter-spacing: 5px;
+        /* clamp already handles font-size, just tighten tracking */
+    }
+
+    /* Map section */
+    #map-section {
+        padding: 40px 12px 32px;
+    }
+    .map-section-header {
+        margin-bottom: 22px;
+    }
+    .map-eyebrow {
+        font-size: 10px;
+        letter-spacing: 3px;
+    }
+    .map-card {
+        padding: 14px 12px 12px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .map-hint {
+        font-size: 10px;
+        margin-top: 10px;
+    }
+
+    /* Bucketlist section */
+    #bucketlist-section {
+        padding: 40px 0 40px;
+    }
+    .bucketlist-title {
+        padding: 0 14px;
+        font-size: clamp(1.4rem, 6vw, 1.9rem);
+    }
+    .bucketlist-sub {
+        padding: 0 14px;
+        font-size: 13px;
+        margin-bottom: 24px;
+    }
+
+    /* Carousel cards — wider on small phones, still 1.5 peek */
+    .carousel-viewport {
+        padding: 0;
+    }
+    .bl-card {
+        flex: 0 0 75vw;
+        width: 75vw;
+        height: 300px;
+    }
+    .bl-card-name {
+        font-size: 16px;
+    }
+    .bl-card-location {
+        font-size: 9px;
+        letter-spacing: 2px;
+    }
+
+    /* Modal — full-width bottom sheet feel */
+    .bl-modal {
+        padding: 0;
+        align-items: flex-end;
+    }
+    .bl-modal-content {
+        width: 100%;
+        max-height: 95vh;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        border-top: 4px solid #ff6b35;
+        border-radius: 0;
+    }
+    .bl-modal-image {
+        height: 180px;
+    }
+    .bl-modal-body {
+        padding: 18px 16px 24px;
+    }
+    .bl-modal-body h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    .bl-modal-body p {
+        font-size: 13px;
+        line-height: 1.7;
+    }
+    .bl-modal-info {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 16px;
+        padding-top: 16px;
+    }
+    .bl-info-item i {
+        font-size: 16px;
+    }
+    .bl-info-item strong {
+        font-size: 10px;
+    }
+    .bl-info-item span {
+        font-size: 13px;
+    }
+
+    /* Portals section */
+    #portals-section {
+        padding: 48px 16px;
+    }
+    .portals-eyebrow {
+        font-size: 10px;
+        letter-spacing: 3px;
+    }
+    .portals-title {
+        font-size: clamp(1.5rem, 7vw, 2rem);
+    }
+    .portals-desc {
+        font-size: 13px;
+        line-height: 1.75;
+    }
+    .portals-btn {
+        padding: 13px 0;
+        width: 100%;
+        text-align: center;
+        letter-spacing: 2px;
+    }
+
+    /* Footer — single column */
+    .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 0 16px 36px;
+    }
+    .footer-brand {
+        grid-column: 1 / -1;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #1a1a1a;
+    }
+    .footer-logo {
+        font-size: 1.2rem;
+    }
+    .footer-tagline {
+        font-size: 12px;
+    }
+    .footer-heading {
+        margin-bottom: 14px;
+    }
+    .footer-links li a {
+        font-size: 13px;
+        padding: 10px 0;
+    }
+    .footer-socials {
+        gap: 8px;
+    }
+    .social-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    .footer-contact-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 11px 0;
+        font-size: 11px;
+    }
+    .footer-bottom {
+        padding: 16px 16px;
+    }
+    .footer-bottom p {
+        font-size: 11px;
+    }
+}
