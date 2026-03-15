@@ -856,7 +856,7 @@
       <p class="hero-eyebrow">Mission LiFE &nbsp;·&nbsp; Lifestyle for Environment</p>
       <h1>Travel for <span>Life</span></h1>
       <p class="hero-sub">A global movement towards conscious, sustainable travel — protecting India's natural wonders, heritage, and communities for generations to come.</p>
-      <a href="#what-is" class="hero-cta"><i class="fas fa-leaf"></i> Discover the Movement</a>
+      <a href="https://pledge.mygov.in/travel-for-life/" class="hero-cta" target="_blank" rel="noopener noreferrer"><i class="fas fa-leaf"></i> Take the Pledge</a>
     </div>
     <div class="hero-scroll"><i class="fas fa-chevron-down"></i></div>
   </section>
@@ -1150,12 +1150,6 @@
     closeBtn.addEventListener('click', closeSidebar);
     overlay.addEventListener('click', closeSidebar);
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
-
-    // ── SMOOTH SCROLL FOR HERO CTA ──
-    document.querySelector('.hero-cta').addEventListener('click', e => {
-      e.preventDefault();
-      document.querySelector('#what-is').scrollIntoView({ behavior: 'smooth' });
-    });
 
         /* ── LOADER LOGIC ── */
         const LOADER_MIN_MS = 3400;

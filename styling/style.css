@@ -89,6 +89,8 @@ body.no-scroll { overflow: hidden; }
     align-items: center;
     gap: 18px;
     text-align: center;
+    width: 100%;
+    padding: 0 16px;
 }
 .lt-inner.lt-inner-exit {
     animation: ltInnerOut 0.4s ease forwards;
@@ -105,12 +107,14 @@ body.no-scroll { overflow: hidden; }
 }
 .lt-logo {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(3rem, 7vw, 6rem);
+    font-size: clamp(2rem, 10vw, 6rem);
     font-weight: 700;
     color: #1a0a06;
-    letter-spacing: 8px;
+    letter-spacing: clamp(2px, 1.5vw, 8px);
     opacity: 0;
     animation: ltFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.6s forwards;
+    max-width: 90vw;
+    white-space: nowrap;
 }
 .lt-logo span { color: #C0392B; }
 
