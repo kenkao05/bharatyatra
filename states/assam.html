@@ -6,6 +6,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Assam | Bharat Yatra</title>
 
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+      script-src 'self' https://unpkg.com https://cdnjs.cloudflare.com 'unsafe-inline';
+      style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+      font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+      img-src 'self' https: data:;
+      connect-src 'self' https://gtpnojbbamoaznlutxap.supabase.co;
+      frame-ancestors 'none';
+      base-uri 'self';
+      form-action 'self';
+      object-src 'none';
+    ">
+
+  <!-- Referrer Policy -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Anti-Clickjacking framebusting -->
+  <script>
+    if (window.top !== window.self) { window.top.location = window.self.location; }
+  </script>
+
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -52,10 +75,17 @@
       transition: background 0.4s ease;
     }
 
+    #navbar.scrolled {
+      background: rgba(8, 8, 8, 0.92);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
     .nav-container {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 0 40px;
+      padding: 0 clamp(16px, 4vw, 40px);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -168,6 +198,7 @@
       position: relative; z-index: 2;
       display: flex; flex-direction: column;
       align-items: center; gap: 16px; text-align: center;
+      width: 100%; padding: 0 20px;
     }
     .l-eye {
       font-family: 'Poppins', sans-serif;
@@ -178,11 +209,12 @@
     }
     .l-logo {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(4rem, 9vw, 8rem);
+      font-size: clamp(2.2rem, 10vw, 8rem);
       font-weight: 700; color: #1a0a06;
-      letter-spacing: 6px; line-height: 1;
+      letter-spacing: clamp(2px, 1.5vw, 6px); line-height: 1;
       opacity: 0; transform: translateY(28px);
       animation: lFadeUp 1s cubic-bezier(0.22,1,0.36,1) 1.2s forwards;
+      white-space: nowrap; max-width: 90vw;
     }
     .l-logo em { color: #C0392B; font-style: normal; }
     .l-rule {
@@ -445,20 +477,23 @@
       justify-content: center;
       z-index: 2;
       gap: 20px;
-      max-width: 70vw;
+      max-width: 90vw;
+      width: 100%;
       margin: auto;
       text-align: center;
+      padding: 0 20px;
     }
 
     .video-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(80px, 12vw, 160px);
+      font-size: clamp(2.5rem, 10vw, 160px);
       font-weight: 700;
       color: var(--state-secondary);
       text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.7);
-      letter-spacing: 8px;
+      letter-spacing: clamp(2px, 1.5vw, 8px);
       opacity: 0;
       animation: fadeInTitle 1.5s ease 0.5s forwards;
+      max-width: 90vw;
     }
 
     .video-tagline {
@@ -476,9 +511,10 @@
     .video-tagline::before,
     .video-tagline::after {
       content: "";
-      width: 60px;
+      width: clamp(20px, 5vw, 60px);
       height: 2px;
       background: var(--state-accent);
+      flex-shrink: 0;
     }
 
     @keyframes fadeInTitle {
@@ -522,7 +558,7 @@
     /* ==================== PANEL 2: ATTRACTIONS ==================== */
     .attractions-panel {
       background: #ffffff;
-      padding: 80px 60px;
+      padding: 80px clamp(20px, 5vw, 60px);
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -631,7 +667,7 @@
     .districts-panel {
       background: #000000;
       color: #ffffff;
-      padding: 80px 60px;
+      padding: 80px clamp(20px, 5vw, 60px);
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -851,7 +887,7 @@
       background: #f9f6f2;
       display: flex;
       flex-direction: column;
-      padding: 60px 60px 40px;
+      padding: 60px clamp(20px, 5vw, 60px) 40px;
     }
 
     .events-panel .panel-title {
@@ -1411,6 +1447,70 @@
       .scroll-progress {
         display: none;
       }
+
+      /* ── EVENTS: switch from horizontal timeline to vertical ── */
+
+      /* Panel expands to fit all cards — override max-content width + fixed height */
+      .events-panel {
+        width: 100vw !important;
+        min-height: auto;
+        padding-bottom: 60px;
+      }
+
+      /* Track becomes a vertical column with a left-side line */
+      .timeline-track {
+        flex-direction: column;
+        min-width: unset;
+        width: 100%;
+        padding: 0 0 0 44px;
+        gap: 0;
+        align-items: stretch;
+      }
+
+      /* Vertical line runs down the left side */
+      .timeline-track::before {
+        top: 0;
+        bottom: 0;
+        left: 18px;
+        right: auto;
+        width: 2px;
+        height: auto;
+        background: linear-gradient(to bottom, transparent, #e0d8d0 40px, #e0d8d0 calc(100% - 40px), transparent);
+        transform: none;
+      }
+
+      /* Each node: position relative so dot can be placed absolutely on the line */
+      .tl-node {
+        flex-direction: column !important;
+        align-items: stretch;
+        width: 100%;
+        padding: 0 0 24px 0 !important;
+        position: relative;
+        gap: 0;
+      }
+
+      /* Connectors hidden — not needed in vertical layout */
+      .tl-connector {
+        display: none;
+      }
+
+      /* Dot: absolutely placed on the vertical line */
+      .tl-dot {
+        position: absolute;
+        left: -33px;
+        top: 18px;
+        margin: 0;
+        flex-shrink: 0;
+        z-index: 3;
+        background: #fff;
+      }
+
+      /* Card fills full width */
+      .tl-card {
+        width: 100%;
+        flex: none;
+        margin-left: 0;
+      }
     }
 
     @media (max-width: 768px) {
@@ -1425,6 +1525,113 @@
       .modal-info {
         grid-template-columns: 1fr;
       }
+
+      /* Video panel — size to video's natural aspect ratio instead of forcing 100vh */
+      .video-panel {
+        height: 56vw;
+        min-height: 240px;
+        max-height: 75vh;
+      }
+
+      .video-panel video {
+        object-fit: contain;
+        object-position: center center;
+        background: #000;
+      }
+
+      /* Gradient overlay updated for contain layout */
+      .video-panel::after {
+        background: linear-gradient(to bottom,
+            rgba(0,0,0,0.3),
+            rgba(0,0,0,0.1) 40%,
+            rgba(0,0,0,0.4));
+      }
+
+      /* Video panel text */
+      .video-tagline {
+        font-size: clamp(13px, 3.5vw, 18px);
+        gap: 10px;
+      }
+
+      /* Mute button — move away from edge */
+      .mute-btn {
+        bottom: 20px;
+        left: 20px;
+        width: 42px;
+        height: 42px;
+      }
+
+      /* Panel headings bigger on mobile */
+      .panel-title {
+        font-size: 36px;
+      }
+
+      /* Smaller cards on mobile */
+      .attraction-card:nth-child(1) .attraction-image,
+      .attraction-card:nth-child(2) .attraction-image,
+      .attraction-card:nth-child(3) .attraction-image {
+        height: 180px;
+      }
+
+      .district-card img {
+        height: 160px;
+      }
+
+      .district-info {
+        padding: 12px 16px;
+      }
+
+      .district-info h3 {
+        font-size: 18px;
+        margin-bottom: 4px;
+      }
+
+      .district-info span {
+        font-size: 13px;
+      }
+
+      .attraction-content h3 {
+        font-size: 15px;
+      }
+
+      /* Modals — full width on mobile */
+      .modal-content {
+        max-width: 100%;
+        border-width: 2px;
+      }
+      .modal-image {
+        height: 220px;
+      }
+      .event-modal-hero {
+        height: 200px;
+      }
+      .event-modal-body,
+      .event-modal-hero-overlay {
+        padding: 20px;
+      }
+      .event-modal-meta-row {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* Footer */
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        padding: 0 20px 40px;
+      }
+      .footer-inner > .footer-brand { grid-column: 1 / -1; }
+      .footer-bottom { padding: 16px 20px; }
+
+      /* Sidebar full width */
+      .sidebar { width: 100%; right: -100%; }
+    }
+
+    @media (max-width: 480px) {
+      .footer-inner { grid-template-columns: 1fr; }
+      .event-meta-chip { font-size: 12px; }
+      .events-category-bar { gap: 8px; }
+      .cat-pill { padding: 5px 12px; font-size: 11px; }
     }
   </style>
 </head>

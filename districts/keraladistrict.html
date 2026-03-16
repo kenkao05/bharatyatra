@@ -85,7 +85,7 @@
     .nav-container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 40px;
+      padding: 0 clamp(16px, 4vw, 40px);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -200,6 +200,7 @@
       position: relative; z-index: 2;
       display: flex; flex-direction: column;
       align-items: center; gap: 16px; text-align: center;
+      width: 100%; padding: 0 20px;
     }
     .l-eye {
       font-family: 'Poppins', sans-serif;
@@ -210,11 +211,12 @@
     }
     .l-logo {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(4rem, 9vw, 8rem);
+      font-size: clamp(2.2rem, 10vw, 8rem);
       font-weight: 700; color: #1a0a06;
-      letter-spacing: 6px; line-height: 1;
+      letter-spacing: clamp(2px, 1.5vw, 6px); line-height: 1;
       opacity: 0; transform: translateY(28px);
       animation: lFadeUp 1s cubic-bezier(0.22,1,0.36,1) 1.2s forwards;
+      white-space: nowrap; max-width: 90vw;
     }
     .l-logo em { color: #C0392B; font-style: normal; }
     .l-rule {
@@ -375,7 +377,7 @@
     /* ==================== PAGE HEADER ==================== */
     .page-header {
       background: #080808;
-      padding: 60px 40px 50px;
+      padding: 60px clamp(16px, 4vw, 40px) 50px;
       text-align: center;
       color: white;
       border-bottom: 4px solid var(--orange);
@@ -400,7 +402,7 @@
     .search-filter-section {
       max-width: 1400px;
       margin: 40px auto;
-      padding: 0 40px;
+      padding: 0 clamp(16px, 4vw, 40px);
     }
 
     .search-filter-container {
@@ -487,7 +489,7 @@
     .districts-section {
       max-width: 1400px;
       margin: 40px auto;
-      padding: 0 40px;
+      padding: 0 clamp(16px, 4vw, 40px);
     }
 
     .section-title {
@@ -582,7 +584,7 @@
     .district-acc-section {
       max-width: 1400px;
       margin: 40px auto;
-      padding: 0 40px 60px;
+      padding: 0 clamp(16px, 4vw, 40px) 60px;
       background: transparent;
     }
 
@@ -1057,7 +1059,7 @@
     .footer-inner {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 40px 60px;
+      padding: 0 clamp(16px, 4vw, 40px) 60px;
       display: grid;
       grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr;
       gap: 48px;
@@ -1185,16 +1187,87 @@
     @media (max-width: 1024px) {
       .nav-links { display: none; }
       .districts-grid { grid-template-columns: repeat(2, 1fr); }
-      .district-acc-container { grid-template-columns: 1fr; height: auto; }
-      .da-left { height: 300px; }
+      .map-container { flex-direction: column; }
+
+      /* Stack the district+accommodations panel vertically on tablet */
+      .district-acc-container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .da-left {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        max-height: 300px;
+      }
     }
 
     @media (max-width: 768px) {
-      .districts-grid { grid-template-columns: 1fr; }
-      .search-filter-container { flex-direction: column; }
-      .page-header h1 { font-size: 32px; }
+      /* Loader */
+      .l-eye { letter-spacing: 4px; }
+
+      /* Nav */
+      .nav-back-btn { margin-left: 8px; padding: 5px 10px; font-size: 12px; }
+
+      /* Page header */
+      .page-header { padding: 40px clamp(16px, 4vw, 40px) 36px; }
+      .page-header h1 { font-size: 28px; letter-spacing: 1px; }
+      .page-header p { font-size: 13px; }
+
+      /* Search & filter */
+      .search-filter-container {
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+      }
+      .search-box { min-width: unset; width: 100%; }
+      .filter-group { flex-wrap: wrap; width: 100%; }
+      .filter-select { flex: 1; min-width: 0; font-size: 14px; }
+      .toggle-btn { font-size: 14px; width: 100%; justify-content: center; }
+
+      /* Districts grid */
+      .districts-grid { grid-template-columns: 1fr; gap: 20px; }
+      .district-card-image { height: 180px; }
+      .district-card-content h3 { font-size: 20px; }
+
+      /* District + Accommodations panel */
+      .district-acc-container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .da-left {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        max-height: 280px;
+      }
+      .da-right { min-height: 320px; }
+      .da-acc-list { padding: 14px 16px 20px; }
+      .da-right-header { padding: 14px 16px; }
+      .da-inline-filters { padding: 10px 16px; gap: 8px; }
+
+      /* Modal */
+      .modal-content { border-width: 2px; }
+      .modal-image { height: 200px; }
       .modal-body { padding: 20px; }
+      .modal-body h2 { font-size: 24px; }
       .attractions-grid-modal { grid-template-columns: 1fr; }
+
+      /* Footer */
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        padding: 0 20px 40px;
+      }
+      .footer-inner > .footer-brand { grid-column: 1 / -1; }
+      .footer-bottom { padding: 16px 20px; }
+
+      /* Sidebar full width */
+      .sidebar { width: 100%; right: -100%; }
+    }
+
+    @media (max-width: 480px) {
+      .footer-inner { grid-template-columns: 1fr; }
+      .da-acc-meta { flex-direction: column; gap: 8px; }
+      .section-title { font-size: 28px; }
     }
   </style>
 </head>
