@@ -439,6 +439,46 @@
       .welcome-title { font-size: 24px; }
       .admin-email { display: none; }
     }
+
+    /* ==================== CUSTOM CURSOR ==================== */
+    @media (pointer: fine) {
+      *, *::before, *::after { cursor: none !important; }
+
+      .cursor-dot {
+        position: fixed;
+        top: 0; left: 0;
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: rgba(99, 179, 237, 0.95);
+        pointer-events: none;
+        z-index: 99999;
+        transform: translate(-50%, -50%);
+        will-change: transform;
+        box-shadow:
+          0 0 6px 2px  rgba(99, 179, 237, 0.8),
+          0 0 18px 6px rgba(99, 179, 237, 0.35),
+          0 0 36px 10px rgba(147, 197, 253, 0.15);
+        transition: width 0.15s ease, height 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .cursor-dot.hovering {
+        width: 14px; height: 14px;
+        box-shadow:
+          0 0 10px 4px  rgba(99, 179, 237, 1),
+          0 0 28px 10px rgba(99, 179, 237, 0.5),
+          0 0 55px 18px rgba(147, 197, 253, 0.25);
+      }
+
+      .cursor-particle {
+        position: fixed;
+        top: 0; left: 0;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 99998;
+        transform: translate(-50%, -50%);
+        will-change: transform, opacity;
+      }
+    }
   </style>
 </head>
 <body>
@@ -724,5 +764,85 @@
 
       loadStats();
     });
+  </script>
+
+  <!-- ==================== CUSTOM CURSOR ==================== -->
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <script>
+  (function () {
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+
+    const dot = document.getElementById('cursorDot');
+    let mouseX = -200, mouseY = -200;
+    let prevX  = -200, prevY  = -200;
+
+    const POOL_SIZE = 28;
+    const pool = Array.from({ length: POOL_SIZE }, () => {
+      const el = document.createElement('div');
+      el.className = 'cursor-particle';
+      el.style.opacity = '0';
+      document.body.appendChild(el);
+      return { el, active: false, x: 0, y: 0, vx: 0, vy: 0, life: 0, maxLife: 0, size: 0 };
+    });
+
+    function getParticle() { return pool.find(p => !p.active) || pool[0]; }
+
+    function spawnParticle(x, y, speedX, speedY) {
+      const p     = getParticle();
+      p.active    = true;
+      p.x         = x; p.y = y;
+      p.vx        = speedX * 0.25 + (Math.random() - 0.5) * 1.8;
+      p.vy        = speedY * 0.25 + (Math.random() - 0.5) * 1.8;
+      p.size      = 2 + Math.random() * 2.5;
+      p.maxLife   = 28 + Math.random() * 22;
+      p.life      = p.maxLife;
+      const hue   = 200 + Math.random() * 40;
+      p.el.style.width      = p.size + 'px';
+      p.el.style.height     = p.size + 'px';
+      p.el.style.background = `hsl(${hue}, 90%, 72%)`;
+      p.el.style.boxShadow  = `0 0 ${p.size * 2}px hsl(${hue}, 90%, 72%)`;
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      prevX = mouseX; prevY = mouseY;
+      mouseX = e.clientX; mouseY = e.clientY;
+      const dx = mouseX - prevX, dy = mouseY - prevY;
+      const count = Math.min(Math.floor(Math.sqrt(dx*dx+dy*dy) * 0.4), 4);
+      for (let i = 0; i < count; i++) spawnParticle(mouseX, mouseY, dx, dy);
+    });
+
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest('a, button, input, label, select, textarea, [role="button"]'))
+        dot.classList.add('hovering');
+    });
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.closest('a, button, input, label, select, textarea, [role="button"]'))
+        dot.classList.remove('hovering');
+    });
+
+    document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; });
+
+    function animate() {
+      dot.style.left = mouseX + 'px';
+      dot.style.top  = mouseY + 'px';
+
+      pool.forEach(p => {
+        if (!p.active) return;
+        if (--p.life <= 0) { p.active = false; p.el.style.opacity = '0'; return; }
+        p.vx *= 0.91; p.vy *= 0.91;
+        p.x  += p.vx; p.y  += p.vy;
+        const progress = p.life / p.maxLife;
+        p.el.style.left      = p.x + 'px';
+        p.el.style.top       = p.y + 'px';
+        p.el.style.opacity   = (progress * 0.75).toFixed(3);
+        p.el.style.transform = `translate(-50%,-50%) scale(${(0.4 + progress * 0.6).toFixed(3)})`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+  })();
   </script>
 </body>

@@ -1654,6 +1654,45 @@
       .events-category-bar { gap: 8px; }
       .cat-pill { padding: 5px 12px; font-size: 11px; }
     }
+    /* ==================== CUSTOM CURSOR ==================== */
+    @media (pointer: fine) {
+      *, *::before, *::after { cursor: none !important; }
+
+      .cursor-dot {
+        position: fixed;
+        top: 0; left: 0;
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: #8B0000;
+        pointer-events: none;
+        z-index: 99999;
+        transform: translate(-50%, -50%);
+        will-change: transform;
+        mix-blend-mode: multiply;
+      }
+
+      .cursor-dot.hovering {
+        width: 16px; height: 16px;
+        background: #660000;
+      }
+
+      .cursor-dot {
+        opacity: 1;
+        transition: width 0.3s ease, height 0.3s ease, background 0.3s ease, opacity 0.3s ease;
+      }
+
+      .cursor-trail {
+        position: fixed;
+        top: 0; left: 0;
+        border-radius: 50%;
+        border: 1.5px solid #8B0000;
+        background: transparent;
+        pointer-events: none;
+        z-index: 99998;
+        transform: translate(-50%, -50%);
+        will-change: transform, opacity;
+      }
+    }
   </style>
 </head>
 
@@ -2410,6 +2449,86 @@
       }, 250);
     });
   </script>
+    <!-- ==================== CUSTOM CURSOR ==================== -->
+    <div class="cursor-dot" id="cursorDot"></div>
+
+    <script>
+    (function () {
+      if (!window.matchMedia('(pointer: fine)').matches) return;
+
+      const TRAIL_COUNT = 8;
+      const dot = document.getElementById('cursorDot');
+
+      const trails = Array.from({ length: TRAIL_COUNT }, (_, i) => {
+        const el = document.createElement('div');
+        el.className = 'cursor-trail';
+        const size = 18 + i * 11;
+        el.style.cssText = `width:${size}px;height:${size}px;opacity:0;`;
+        document.body.appendChild(el);
+        return { el, x: 0, y: 0, size };
+      });
+
+      let mouseX = -200, mouseY = -200;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      document.addEventListener('mouseover', (e) => {
+        if (e.target.closest('a, button, [data-action], .attraction-card, .district-card, .tl-node, .cat-pill, .da-list-item, .district-card-btn')) {
+          dot.classList.add('hovering');
+        }
+      });
+
+      document.addEventListener('mouseout', (e) => {
+        if (e.target.closest('a, button, [data-action], .attraction-card, .district-card, .tl-node, .cat-pill, .da-list-item, .district-card-btn')) {
+          dot.classList.remove('hovering');
+        }
+      });
+
+      document.addEventListener('mouseleave', () => {
+        dot.style.opacity = '0';
+        trails.forEach(t => t.el.style.opacity = '0');
+      });
+      document.addEventListener('mouseenter', () => {
+        dot.style.opacity = '1';
+      });
+
+      const positions = Array(TRAIL_COUNT).fill(null).map(() => ({ x: -200, y: -200 }));
+      const SPEEDS = trails.map((_, i) => 0.28 - i * 0.022);
+
+      function animate() {
+        dot.style.left = mouseX + 'px';
+        dot.style.top  = mouseY + 'px';
+
+        positions[0].x += (mouseX - positions[0].x) * SPEEDS[0];
+        positions[0].y += (mouseY - positions[0].y) * SPEEDS[0];
+
+        for (let i = 1; i < TRAIL_COUNT; i++) {
+          positions[i].x += (positions[i - 1].x - positions[i].x) * SPEEDS[i];
+          positions[i].y += (positions[i - 1].y - positions[i].y) * SPEEDS[i];
+        }
+
+        trails.forEach((t, i) => {
+          t.el.style.left = positions[i].x + 'px';
+          t.el.style.top  = positions[i].y + 'px';
+          const dx = positions[i].x - mouseX;
+          const dy = positions[i].y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const baseOpacity = (1 - i / TRAIL_COUNT) * 0.55;
+          const distFade = Math.max(0, 1 - dist / 180);
+          t.el.style.opacity = (baseOpacity * distFade).toFixed(3);
+          const colorAlpha = Math.max(0.08, 1 - i / TRAIL_COUNT);
+          t.el.style.borderColor = `rgba(139, 0, 0, ${colorAlpha.toFixed(2)})`;
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    })();
+    </script>
 </body>
 
 </html>
