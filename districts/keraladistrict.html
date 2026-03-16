@@ -37,13 +37,13 @@
     :root {
       --black:  #000000;
       --red:    #C0392B;
-      --orange: #ff6b35;
+      --orange: #8B0000;
       --white:  #FFFFFF;
       --grey:   #1a1a1a;
       --muted:  #999999;
       --bg:     #f2f0ed;
-      --state-accent: #ff6b35;
-      --state-accent-dark: #e05a28;
+      --state-accent: #8B0000;
+      --state-accent-dark: #660000;
       --heading-color: #000000;
       --text-muted: #666666;
       --border-color: #e0e0e0;
@@ -149,7 +149,7 @@
       flex-shrink: 0;
     }
     .nav-back-btn i { font-size: 12px; }
-    .nav-back-btn:hover { color: #ff6b35; border-color: #ff6b35; }
+    .nav-back-btn:hover { color: #8B0000; border-color: #8B0000; }
 
     /* ==================== LOADER — CREAM SUNRISE ==================== */
     #loader {
@@ -350,15 +350,15 @@
       font-weight: 600;
       letter-spacing: 1px;
       text-decoration: none;
-      color: #ff6b35;
-      border: 1px solid #ff6b35;
+      color: #8B0000;
+      border: 1px solid #8B0000;
       transition: background 0.25s, color 0.25s;
     }
 
     .sidebar-login-btn i { font-size: 13px; }
 
     .sidebar-login-btn:hover {
-      background: #ff6b35;
+      background: #8B0000;
       color: #ffffff;
     }
 
@@ -493,7 +493,7 @@
     }
 
     .section-title {
-      font-size: 36px;
+      font-size: 48px;
       font-weight: 700;
       margin-bottom: 30px;
       color: var(--heading-color);
@@ -533,7 +533,7 @@
 
     .district-card-image {
       width: 100%;
-      height: 220px;
+      height: 160px;
       object-fit: cover;
       filter: grayscale(0.2);
       transition: var(--transition);
@@ -542,19 +542,19 @@
     .district-card:hover .district-card-image { filter: grayscale(0); }
 
     .district-card-content {
-      padding: 20px;
+      padding: 14px 16px;
     }
 
     .district-card-content h3 {
-      font-size: 24px;
-      margin-bottom: 10px;
+      font-size: 18px;
+      margin-bottom: 6px;
       color: var(--heading-color);
     }
 
     .district-card-content .attraction-count {
       color: var(--text-muted);
-      font-size: 15px;
-      margin-bottom: 15px;
+      font-size: 13px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -1225,9 +1225,12 @@
       .toggle-btn { font-size: 14px; width: 100%; justify-content: center; }
 
       /* Districts grid */
-      .districts-grid { grid-template-columns: 1fr; gap: 20px; }
-      .district-card-image { height: 180px; }
-      .district-card-content h3 { font-size: 20px; }
+      .districts-grid { grid-template-columns: 1fr; gap: 16px; }
+      .district-card-image { height: 130px; }
+      .district-card-content { padding: 10px 12px; }
+      .district-card-content h3 { font-size: 15px; margin-bottom: 4px; }
+      .district-card-content .attraction-count { font-size: 12px; margin-bottom: 8px; }
+      .section-title { font-size: 42px; }
 
       /* District + Accommodations panel */
       .district-acc-container {
@@ -1267,7 +1270,7 @@
     @media (max-width: 480px) {
       .footer-inner { grid-template-columns: 1fr; }
       .da-acc-meta { flex-direction: column; gap: 8px; }
-      .section-title { font-size: 28px; }
+      .section-title { font-size: 34px; }
     }
   </style>
 </head>

@@ -1958,12 +1958,20 @@
         data.forEach(attraction => {
           const card = document.createElement('div');
           card.className = 'attraction-card';
-          card.innerHTML = `
-            <img src="${attraction.image_url}" alt="${attraction.name}" class="attraction-image">
-            <div class="attraction-content">
-              <h3 onclick="openAttractionModal(${attraction.id})">${attraction.name}</h3>
-            </div>
-          `;
+          const safeId = parseInt(attraction.id, 10);
+          card.onclick = () => openAttractionModal(safeId);
+          card.style.cursor = 'pointer';
+          const img = document.createElement('img');
+          img.src = attraction.image_url || '';
+          img.alt = attraction.name || '';
+          img.className = 'attraction-image';
+          const content = document.createElement('div');
+          content.className = 'attraction-content';
+          const h3 = document.createElement('h3');
+          h3.textContent = attraction.name;
+          content.appendChild(h3);
+          card.appendChild(img);
+          card.appendChild(content);
           container.appendChild(card);
         });
 

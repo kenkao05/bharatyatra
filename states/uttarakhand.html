@@ -2008,6 +2008,7 @@
           const card = document.createElement('div');
           card.className = 'attraction-card';
           card.dataset.id = String(parseInt(attraction.id, 10));
+          card.dataset.action = 'open-attraction'; // entire card is clickable
 
           const img = document.createElement('img');
           img.src = attraction.image_url || '';
@@ -2019,8 +2020,6 @@
 
           const h3 = document.createElement('h3');
           h3.textContent = attraction.name; // textContent — safe, no XSS
-          h3.dataset.action = 'open-attraction';
-          h3.dataset.id = String(parseInt(attraction.id, 10));
 
           content.appendChild(h3);
           card.appendChild(img);
