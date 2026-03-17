@@ -12,7 +12,7 @@
                  frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-  <title>Admin — Hospital Manager | BharatYatra</title>
+  <title>Admin — Content Manager | BharatYatra</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="admin-auth.js"></script>
@@ -38,15 +38,13 @@
       --green-dim:   rgba(34,197,94,0.12);
       --amber:       #f59e0b;
       --amber-dim:   rgba(245,158,11,0.12);
-      --purple:      #a78bfa;
-      --purple-dim:  rgba(167,139,250,0.12);
       --radius:      14px;
       --radius-sm:   8px;
       --header-h:    64px;
       --transition:  all 0.2s ease;
     }
 
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
     body {
       font-family: 'Inter', system-ui, sans-serif;
@@ -56,644 +54,285 @@
       overflow-x: hidden;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(6,182,212,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(6,182,212,0.025) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.3); border-radius: 3px; }
 
     /* ── HEADER ── */
     #admin-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
+      position: fixed; top: 0; left: 0; right: 0;
       height: var(--header-h);
       background: rgba(7,16,33,0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
+      z-index: 1000; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 32px;
     }
-
     .header-left { display: flex; align-items: center; gap: 16px; }
-
-    .header-logo {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--cyan);
-      text-decoration: none;
-    }
-
+    .header-logo { font-size: 13px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); text-decoration: none; }
     .header-divider { width: 1px; height: 20px; background: var(--border); }
-
     .header-title { font-size: 14px; font-weight: 500; color: var(--muted); letter-spacing: 0.5px; }
-
     .header-right { display: flex; align-items: center; gap: 12px; }
-
-    .btn-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      background: transparent;
-      padding: 8px 18px;
-      border-radius: 40px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: var(--transition);
-    }
+    .btn-back { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); background: transparent; padding: 8px 18px; border-radius: 40px; cursor: pointer; text-decoration: none; transition: var(--transition); transform: translateX(0); }
     .btn-back:hover { color: var(--cyan); border-color: var(--cyan); transform: translateX(-4px); }
-
-    .btn-logout {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      background: transparent;
-      border: 1px solid var(--border);
-      padding: 8px 18px;
-      border-radius: 40px;
-      cursor: pointer;
-      transition: var(--transition);
-    }
+    .btn-logout { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--muted); background: transparent; border: 1px solid var(--border); padding: 8px 18px; border-radius: 40px; cursor: pointer; transition: var(--transition); }
     .btn-logout:hover { color: var(--red); border-color: var(--red); }
 
     /* ── MAIN ── */
-    #main {
-      position: relative;
-      z-index: 1;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: calc(var(--header-h) + 40px) 32px 80px;
-    }
+    #main { max-width: 1200px; margin: 0 auto; padding: calc(var(--header-h) + 40px) 32px 80px; }
 
-    /* ── PAGE TITLE ── */
-    .page-title-row {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 32px;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
+    .page-title-row { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
     .page-title { font-size: 28px; font-weight: 700; color: var(--white); letter-spacing: -0.5px; }
-    .page-title span { color: var(--green); }
+    .page-title span { color: var(--cyan); }
 
-    /* ── STATS ROW ── */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 36px;
-    }
+    .state-selector-row { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+    .selector-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+    .state-select { background: var(--card); border: 1px solid var(--border); color: var(--white); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; padding: 10px 36px 10px 16px; border-radius: var(--radius-sm); cursor: pointer; outline: none; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; transition: var(--transition); min-width: 200px; }
+    .state-select:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
 
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius);
-      padding: 20px 22px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      backdrop-filter: blur(8px);
-      transition: var(--transition);
-    }
-    .stat-card:hover { border-color: rgba(6,182,212,0.15); transform: translateY(-1px); }
-
-    .stat-icon {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-    .stat-icon.green  { background: var(--green-dim);  color: var(--green); }
-    .stat-icon.cyan   { background: var(--cyan-dim);   color: var(--cyan); }
-    .stat-icon.amber  { background: var(--amber-dim);  color: var(--amber); }
-    .stat-icon.purple { background: var(--purple-dim); color: var(--purple); }
-
+    /* ── STATS ── */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 22px; display: flex; align-items: center; gap: 16px; backdrop-filter: blur(8px); }
+    .stat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .stat-icon.cyan  { background: var(--cyan-dim);  color: var(--cyan); }
+    .stat-icon.blue  { background: rgba(79,195,255,0.12); color: var(--blue); }
+    .stat-icon.green { background: var(--green-dim); color: var(--green); }
+    .stat-icon.amber { background: var(--amber-dim); color: var(--amber); }
     .stat-info { flex: 1; min-width: 0; }
-    .stat-num  { font-size: 26px; font-weight: 700; color: var(--white); line-height: 1; }
-    .stat-lbl  { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+    .stat-num { font-size: 26px; font-weight: 700; color: var(--white); line-height: 1; }
+    .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
 
-    /* ── TOOLBAR ── */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .search-wrap {
-      position: relative;
-      flex: 1;
-      min-width: 220px;
-      max-width: 380px;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 13px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-size: 13px;
-      pointer-events: none;
-    }
-
-    .search-input {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--white);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      padding: 10px 36px 10px 38px;
-      border-radius: var(--radius-sm);
-      outline: none;
-      transition: var(--transition);
-    }
-    .search-input::placeholder { color: var(--muted2); }
-    .search-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
-
-    .search-clear {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 12px;
-      padding: 4px;
-      display: none;
-      transition: color 0.2s;
-    }
-    .search-clear:hover { color: var(--white); }
-    .search-clear.visible { display: block; }
-
-    .filter-select {
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--white);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      padding: 10px 34px 10px 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      outline: none;
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      transition: var(--transition);
-      min-width: 170px;
-    }
-    .filter-select:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
-    .filter-select option { background: #0d1829; color: var(--white); }
-
-    .toolbar-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+    /* ── SECTION HEADER ── */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-title { font-size: 13px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--cyan); }
 
     /* ── BUTTONS ── */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      padding: 9px 18px;
-      border-radius: var(--radius-sm);
-      border: none;
-      cursor: pointer;
-      transition: var(--transition);
-      white-space: nowrap;
-    }
-
-    .btn-primary { background: var(--green); color: #071021; }
-    .btn-primary:hover { background: #4ade80; transform: translateY(-1px); }
-
-    .btn-ghost {
-      background: var(--green-dim);
-      color: var(--green);
-      border: 1px solid rgba(34,197,94,0.2);
-    }
-    .btn-ghost:hover { background: rgba(34,197,94,0.2); }
-
+    .btn { display: inline-flex; align-items: center; gap: 7px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; padding: 8px 16px; border-radius: var(--radius-sm); border: none; cursor: pointer; transition: var(--transition); white-space: nowrap; }
+    .btn-primary { background: var(--cyan); color: #071021; }
+    .btn-primary:hover { background: #22d3ee; transform: translateY(-1px); }
+    .btn-ghost { background: var(--cyan-dim); color: var(--cyan); border: 1px solid rgba(6,182,212,0.2); }
+    .btn-ghost:hover { background: rgba(6,182,212,0.2); }
     .btn-danger { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
     .btn-danger:hover { background: rgba(239,68,68,0.25); }
-
     .btn-edit { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
     .btn-edit:hover { background: rgba(245,158,11,0.2); }
-
     .btn-sm { padding: 5px 11px; font-size: 11px; }
     .btn-icon { width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 12px; }
 
-    /* ── RESULT COUNT ── */
-    .result-count {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-    .result-count strong { color: var(--white); }
+    /* ── IMAGE FIELD ── */
+    .img-field-wrap { display: flex; gap: 8px; align-items: stretch; }
+    .img-field-wrap .form-input { flex: 1; }
+    .btn-img-pick { display: inline-flex; align-items: center; gap: 5px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid rgba(6,182,212,0.25); background: var(--cyan-dim); color: var(--cyan); cursor: pointer; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; white-space: nowrap; transition: var(--transition); flex-shrink: 0; }
+    .btn-img-pick:hover { background: rgba(6,182,212,0.22); }
+    .img-current-preview { margin-top: 8px; max-height: 80px; border-radius: 6px; border: 1px solid var(--border); display: block; }
 
-    /* ── TABLE ── */
-    .table-wrap {
-      background: var(--card);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
+    /* ── DISTRICT ACCORDION ── */
+    .district-list { display: flex; flex-direction: column; gap: 10px; }
+    .district-card { background: var(--card); border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s; }
+    .district-card.open { border-color: rgba(6,182,212,0.25); }
+    .district-row { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; user-select: none; transition: background 0.15s; }
+    .district-row:hover { background: rgba(255,255,255,0.02); }
+    .district-chevron { color: var(--muted); font-size: 12px; transition: transform 0.25s; flex-shrink: 0; }
+    .district-card.open .district-chevron { transform: rotate(90deg); color: var(--cyan); }
+    .district-name { flex: 1; font-size: 15px; font-weight: 600; color: var(--white); }
+    .badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+    .badge-cyan  { background: var(--cyan-dim);  color: var(--cyan); }
+    .badge-blue  { background: rgba(79,195,255,0.12); color: var(--blue); }
+    .badge-green { background: var(--green-dim); color: var(--green); }
+    .badge-amber { background: var(--amber-dim); color: var(--amber); }
+    .badge-red   { background: var(--red-dim);   color: var(--red); }
+    .badge-muted { background: rgba(148,163,184,0.1); color: var(--muted); }
+    .district-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .district-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--border2); }
+    .district-card.open .district-body { display: block; }
 
-    .table-scroll { overflow-x: auto; }
+    /* ── ATTRACTION LIST ── */
+    .attraction-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+    .attraction-item { background: var(--card2); border: 1px solid var(--border2); border-radius: var(--radius-sm); overflow: hidden; }
+    .attraction-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; }
+    .attraction-row:hover { background: rgba(255,255,255,0.02); }
+    .attraction-chevron { color: var(--muted); font-size: 11px; transition: transform 0.2s; flex-shrink: 0; }
+    .attraction-item.open .attraction-chevron { transform: rotate(90deg); color: var(--blue); }
+    .attraction-score { width: 32px; height: 32px; border-radius: 8px; background: var(--cyan-dim); color: var(--cyan); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .attraction-info { flex: 1; min-width: 0; }
+    .attraction-name { font-size: 13px; font-weight: 600; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .attraction-meta { font-size: 11px; color: var(--muted); margin-top: 2px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .attraction-badges { display: flex; gap: 5px; flex-shrink: 0; flex-wrap: wrap; }
+    .attraction-actions { display: flex; gap: 5px; flex-shrink: 0; }
+    .attraction-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border2); }
+    .attraction-item.open .attraction-body { display: block; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 720px;
-    }
+    /* ── ACCOMMODATION LIST ── */
+    .acc-section-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 10px; }
+    .acc-section-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+    .acc-list { display: flex; flex-direction: column; gap: 6px; }
+    .acc-row { display: flex; align-items: center; gap: 10px; background: rgba(7,16,33,0.5); border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 10px 14px; }
+    .acc-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--white); }
+    .acc-meta { display: flex; gap: 8px; align-items: center; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
+    .acc-meta span { display: flex; align-items: center; gap: 4px; }
+    .acc-meta i { color: var(--cyan); font-size: 10px; }
+    .acc-actions { display: flex; gap: 5px; flex-shrink: 0; }
+    .no-items { text-align: center; padding: 20px; color: var(--muted); font-size: 13px; font-style: italic; }
 
-    thead tr {
-      background: rgba(255,255,255,0.02);
-      border-bottom: 1px solid var(--border);
-    }
-
-    th {
-      padding: 12px 18px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    th.sortable { cursor: pointer; user-select: none; }
-    th.sortable:hover { color: var(--cyan); }
-    th.sort-asc .sort-icon::after  { content: ' ↑'; color: var(--cyan); }
-    th.sort-desc .sort-icon::after { content: ' ↓'; color: var(--cyan); }
-
-    tbody tr {
-      border-bottom: 1px solid var(--border2);
-      transition: background 0.15s;
-    }
-    tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: rgba(255,255,255,0.02); }
-
-    td {
-      padding: 14px 18px;
-      font-size: 13px;
-      color: var(--white);
-      vertical-align: middle;
-    }
-
-    .td-name { font-weight: 600; }
-    .td-city { color: var(--muted); font-size: 12px; margin-top: 2px; }
-
-    .td-address {
-      font-size: 12px;
-      color: var(--muted);
-      max-width: 300px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .td-phone { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-
-    /* Type badges */
-    .type-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 20px;
-      white-space: nowrap;
-    }
-    .type-govt     { background: var(--cyan-dim);   color: var(--cyan); }
-    .type-aiims    { background: rgba(79,195,255,0.12); color: var(--blue); }
-    .type-private  { background: var(--amber-dim);  color: var(--amber); }
-    .type-ayurvedic{ background: var(--green-dim);  color: var(--green); }
-
-    /* Rating stars */
-    .rating-wrap {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .rating-num {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--amber);
-    }
-    .stars { font-size: 11px; color: var(--amber); letter-spacing: 1px; }
-
-    .td-actions { display: flex; gap: 6px; align-items: center; }
-
-    /* Empty / loading */
-    .table-empty {
-      padding: 60px 20px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-    }
-    .table-empty i { font-size: 32px; display: block; margin-bottom: 12px; opacity: 0.3; }
-
+    /* ── LOADING ── */
+    .loading-state { display: flex; align-items: center; gap: 12px; padding: 40px 20px; color: var(--muted); font-size: 14px; }
     .spinner { animation: spin 1s linear infinite; color: var(--cyan); }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── MODAL OVERLAY ── */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(4,10,22,0.88);
-      backdrop-filter: blur(4px);
-      z-index: 2000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(4,10,22,0.88); backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.active { display: flex; }
 
-    .modal-box {
-      background: #0d1829;
-      border: 1px solid rgba(34,197,94,0.2);
-      border-radius: var(--radius);
-      width: 100%;
-      max-width: 620px;
-      max-height: 90vh;
-      overflow-y: auto;
-      position: relative;
-      animation: modalIn 0.25s ease;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(34,197,94,0.06);
-    }
-
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.96) translateY(-10px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 22px 28px 18px;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: #0d1829;
-      z-index: 1;
-    }
-
+    /* ── MODAL BOX ── */
+    .modal-box { background: #0d1829; border: 1px solid rgba(6,182,212,0.2); border-radius: var(--radius); width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; position: relative; animation: modalIn 0.25s ease; box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(6,182,212,0.08); }
+    .modal-box.modal-wide { max-width: 860px; }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 28px 18px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: #0d1829; z-index: 1; }
     .modal-title { font-size: 16px; font-weight: 700; color: var(--white); }
-    .modal-title span { color: var(--green); }
-
-    .modal-close-btn {
-      width: 32px; height: 32px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 16px;
-      transition: var(--transition);
-    }
+    .modal-title span { color: var(--cyan); }
+    .modal-close-btn { width: 32px; height: 32px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--muted); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: var(--transition); }
     .modal-close-btn:hover { background: var(--red-dim); color: var(--red); border-color: rgba(239,68,68,0.3); }
-
     .modal-body { padding: 24px 28px; }
 
     /* ── FORM ── */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 20px; }
+    .form-grid.one-col { grid-template-columns: 1fr; }
     .form-col-span { grid-column: 1 / -1; }
     .form-group { display: flex; flex-direction: column; gap: 7px; }
-
-    .form-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
+    .form-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
     .form-label .required { color: var(--red); margin-left: 3px; }
-
-    .form-input, .form-select {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      color: var(--white);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      padding: 10px 14px;
-      border-radius: var(--radius-sm);
-      outline: none;
-      transition: var(--transition);
-      width: 100%;
-    }
-    .form-input:focus, .form-select:focus {
-      border-color: var(--green);
-      box-shadow: 0 0 0 3px var(--green-dim);
-      background: rgba(34,197,94,0.04);
-    }
-    .form-input::placeholder { color: var(--muted2); }
-
-    .form-select {
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 32px;
-    }
+    .form-input, .form-select, .form-textarea { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--white); font-family: 'Inter', sans-serif; font-size: 13px; padding: 10px 14px; border-radius: var(--radius-sm); outline: none; transition: var(--transition); width: 100%; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); background: rgba(6,182,212,0.04); }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--muted2); }
+    .form-select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
     .form-select option { background: #0d1829; color: var(--white); }
-
+    .form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+    .toggle-group { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+    .toggle-label { font-size: 13px; color: var(--white); flex: 1; }
+    .toggle-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+    .toggle-slider::before { content: ''; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+    .toggle input:checked + .toggle-slider { background: var(--cyan); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
     .form-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .score-input-wrap { display: flex; align-items: center; gap: 10px; }
+    .score-input-wrap .form-input { max-width: 80px; text-align: center; font-weight: 700; font-size: 16px; }
+    .score-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
+    .score-bar-fill { height: 100%; background: var(--cyan); border-radius: 3px; transition: width 0.3s ease; }
 
-    /* Rating input visual */
-    .rating-input-wrap { display: flex; align-items: center; gap: 10px; }
-    .rating-input-wrap .form-input { max-width: 90px; text-align: center; font-weight: 700; font-size: 15px; }
-    .rating-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
-    .rating-bar-fill { height: 100%; background: var(--amber); border-radius: 3px; transition: width 0.3s ease; }
-
-    .modal-footer {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
-      padding: 18px 28px 22px;
-      border-top: 1px solid var(--border);
-    }
-
-    .btn-cancel {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 9px 20px;
-      border-radius: var(--radius-sm);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-    }
+    /* ── MODAL FOOTER ── */
+    .modal-footer { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 18px 28px 22px; border-top: 1px solid var(--border); }
+    .btn-cancel { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 9px 20px; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: var(--transition); }
     .btn-cancel:hover { border-color: var(--muted); color: var(--white); }
-
-    .btn-save {
-      background: var(--green);
-      color: #071021;
-      border: none;
-      padding: 9px 24px;
-      border-radius: var(--radius-sm);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-    .btn-save:hover { background: #4ade80; transform: translateY(-1px); }
+    .btn-save { background: var(--cyan); color: #071021; border: none; padding: 9px 24px; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 7px; }
+    .btn-save:hover { background: #22d3ee; transform: translateY(-1px); }
     .btn-save:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    /* ── CONFIRM DIALOG ── */
-    .confirm-box {
-      max-width: 420px;
-      border-color: rgba(239,68,68,0.2) !important;
-    }
-    .confirm-icon {
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      background: var(--red-dim);
-      color: var(--red);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin: 0 auto 20px;
-    }
+    /* ── CONFIRM ── */
+    .confirm-box { max-width: 420px; text-align: center; padding: 10px; }
+    .confirm-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--red-dim); color: var(--red); display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 20px; }
     .confirm-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
     .confirm-msg { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
     .confirm-actions { display: flex; gap: 10px; justify-content: center; }
-    .btn-confirm-del {
-      background: var(--red);
-      color: #fff;
-      border: none;
-      padding: 10px 28px;
-      border-radius: var(--radius-sm);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-    }
+    .btn-confirm-del { background: var(--red); color: #fff; border: none; padding: 10px 28px; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition); }
     .btn-confirm-del:hover { background: #dc2626; }
 
     /* ── TOAST ── */
-    #toast {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      pointer-events: none;
-    }
-    .toast-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 13px 18px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--white);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-      animation: toastIn 0.3s ease;
-      min-width: 280px;
-    }
+    #toast { position: fixed; bottom: 28px; right: 28px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toast-item { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 13px 18px; font-size: 13px; font-weight: 500; color: var(--white); box-shadow: 0 8px 30px rgba(0,0,0,0.4); animation: toastIn 0.3s ease; min-width: 280px; }
     .toast-item.success { border-color: rgba(34,197,94,0.4); }
     .toast-item.success i { color: var(--green); }
     .toast-item.error { border-color: rgba(239,68,68,0.4); }
     .toast-item.error i { color: var(--red); }
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateX(20px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* ── SECTION HEADER ── */
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .section-title {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--green);
-    }
+    /* ════════════════════════════
+       IMAGE MANAGER
+    ════════════════════════════ */
+    .imgmgr-folder-pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--cyan); background: var(--cyan-dim); border: 1px solid rgba(6,182,212,0.2); padding: 4px 14px; border-radius: 20px; margin-bottom: 18px; }
+
+    .imgmgr-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+    .imgmgr-tab { padding: 10px 20px; font-size: 12px; font-weight: 600; color: var(--muted); background: transparent; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: var(--transition); font-family: 'Inter', sans-serif; }
+    .imgmgr-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+    .imgmgr-tab:hover:not(.active) { color: var(--white); }
+    .imgmgr-panel { display: none; }
+    .imgmgr-panel.active { display: block; }
+
+    .imgmgr-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .imgmgr-refresh { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+    .imgmgr-refresh:hover { color: var(--cyan); border-color: var(--cyan); }
+    .imgmgr-count { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+    .imgmgr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(138px, 1fr)); gap: 10px; max-height: 360px; overflow-y: auto; padding-right: 2px; }
+    .imgmgr-thumb { position: relative; border-radius: var(--radius-sm); border: 1px solid var(--border2); overflow: hidden; background: rgba(255,255,255,0.03); cursor: pointer; transition: border-color 0.15s; }
+    .imgmgr-thumb:hover { border-color: var(--cyan); }
+    .imgmgr-thumb img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+    .imgmgr-thumb-bar { padding: 5px 7px; display: flex; align-items: center; gap: 5px; }
+    .imgmgr-thumb-name { flex: 1; font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .imgmgr-del-btn { width: 20px; height: 20px; border-radius: 4px; border: none; background: var(--red-dim); color: var(--red); font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: var(--transition); }
+    .imgmgr-del-btn:hover { background: rgba(239,68,68,0.28); }
+    .imgmgr-hover-select { position: absolute; inset: 0; background: rgba(6,182,212,0.18); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s; pointer-events: none; }
+    .imgmgr-thumb:hover .imgmgr-hover-select { opacity: 1; }
+    .imgmgr-hover-select span { background: var(--cyan); color: #071021; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px; }
+    .imgmgr-empty { text-align: center; padding: 44px 20px; color: var(--muted); font-size: 13px; }
+    .imgmgr-empty i { font-size: 28px; display: block; margin-bottom: 10px; opacity: 0.5; }
+    .imgmgr-spinner { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 44px 20px; color: var(--muted); font-size: 13px; }
+
+    .imgmgr-drop { border: 2px dashed var(--border); border-radius: var(--radius); padding: 36px 24px; text-align: center; cursor: pointer; transition: var(--transition); position: relative; margin-bottom: 14px; }
+    .imgmgr-drop:hover, .imgmgr-drop.over { border-color: var(--cyan); background: var(--cyan-dim); }
+    .imgmgr-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .imgmgr-drop-icon { font-size: 30px; color: var(--muted); margin-bottom: 10px; }
+    .imgmgr-drop-title { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+    .imgmgr-drop-sub { font-size: 12px; color: var(--muted); }
+    .imgmgr-file-preview { display: none; margin-top: 10px; }
+    .imgmgr-file-preview img { max-height: 160px; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+    .imgmgr-file-name { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .imgmgr-progress { display: none; margin-top: 12px; }
+    .imgmgr-progress-track { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+    .imgmgr-progress-fill { height: 100%; background: var(--cyan); border-radius: 2px; transition: width 0.3s; }
+    .imgmgr-progress-label { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .imgmgr-upload-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+
+    /* ── CATEGORY PICKER ── */
+    .catpkr-search-wrap { position: relative; margin-bottom: 14px; }
+    .catpkr-search-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 13px; pointer-events: none; }
+    .catpkr-search { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--white); font-family: 'Inter', sans-serif; font-size: 13px; padding: 10px 14px 10px 36px; border-radius: var(--radius-sm); outline: none; transition: var(--transition); }
+    .catpkr-search:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); background: rgba(6,182,212,0.04); }
+    .catpkr-search::placeholder { color: var(--muted2); }
+    .catpkr-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .catpkr-count { font-size: 11px; color: var(--muted); }
+    .catpkr-hint { font-size: 11px; color: var(--muted); font-style: italic; }
+    .catpkr-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 280px; overflow-y: auto; padding-right: 4px; margin-bottom: 16px; }
+    .catpkr-grid::-webkit-scrollbar { width: 4px; }
+    .catpkr-grid::-webkit-scrollbar-track { background: transparent; }
+    .catpkr-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+    .catpkr-pill { display: inline-flex; align-items: center; gap: 5px; padding: 6px 13px; border-radius: 20px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--muted); font-size: 12px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; transition: var(--transition); white-space: nowrap; user-select: none; }
+    .catpkr-pill:hover { border-color: rgba(6,182,212,0.4); background: var(--cyan-dim); color: var(--cyan); }
+    .catpkr-pill.selected { border-color: var(--cyan); background: var(--cyan-dim); color: var(--cyan); font-weight: 600; }
+    .catpkr-order { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: var(--cyan); color: #071021; font-size: 9px; font-weight: 800; flex-shrink: 0; }
+    .catpkr-empty { width: 100%; text-align: center; padding: 32px 20px; color: var(--muted); font-size: 13px; }
+    .catpkr-empty i { display: block; font-size: 24px; margin-bottom: 8px; opacity: 0.4; }
+    .catpkr-confirm-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid var(--border); padding-top: 16px; margin-top: 4px; }
+    .catpkr-preview-wrap { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .catpkr-preview-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+    .catpkr-preview { font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.2s; }
+    .catpkr-confirm-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .cat-field-wrap { display: flex; gap: 8px; align-items: stretch; }
+    .cat-field-wrap .form-input { flex: 1; cursor: default; caret-color: transparent; }
+    .cat-field-wrap .form-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       #main { padding: calc(var(--header-h) + 24px) 16px 60px; }
-      #admin-header { padding: 0 16px; }
       .stats-row { grid-template-columns: 1fr 1fr; }
-      .toolbar { flex-direction: column; align-items: stretch; }
-      .search-wrap { max-width: 100%; }
-      .toolbar-right { margin-left: 0; }
       .form-grid { grid-template-columns: 1fr; }
       .form-col-span { grid-column: 1; }
-      .td-address { display: none; }
-      .header-title { display: none; }
+      .attraction-badges { display: none; }
+      .imgmgr-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
     }
-
-    @media (max-width: 480px) {
-      .stats-row { grid-template-columns: 1fr; }
-    }
-
+  
     /* ==================== CUSTOM CURSOR ==================== */
     @media (pointer: fine) {
       *, *::before, *::after { cursor: none !important; }
@@ -733,169 +372,163 @@
         will-change: transform, opacity;
       }
     }
-  </style>
+</style>
 </head>
 <body>
 
-  <!-- ==================== HEADER ==================== -->
+  <!-- HEADER -->
   <header id="admin-header">
     <div class="header-left">
       <a href="../index.html" class="header-logo">Bharat Yatra</a>
       <div class="header-divider"></div>
-      <span class="header-title">Hospital Manager</span>
+      <span class="header-title">Content Manager</span>
     </div>
     <div class="header-right">
-      <a href="admin-dashboard.html" class="btn-back">
-        <i class="fas fa-arrow-left"></i> Dashboard
-      </a>
-      <button class="btn-logout" onclick="handleLogout()">
-        <i class="fas fa-sign-out-alt"></i> Logout
-      </button>
+      <a href="admin-dashboard.html" class="btn-back"><i class="fas fa-arrow-left"></i> Dashboard</a>
+      <button class="btn-logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
   </header>
 
-  <!-- ==================== MAIN ==================== -->
+  <!-- MAIN -->
   <main id="main">
-
-    <!-- Title -->
     <div class="page-title-row">
-      <h1 class="page-title">Hospital <span>Manager</span></h1>
-      <button class="btn btn-primary" onclick="openAddModal()">
-        <i class="fas fa-plus"></i> Add Hospital
+      <h1 class="page-title">Content <span>Manager</span></h1>
+    </div>
+
+    <div class="state-selector-row">
+      <span class="selector-label">State</span>
+      <select class="state-select" id="stateSelect">
+        <option value="">— Select a state —</option>
+      </select>
+      <button class="btn btn-primary" onclick="openAddDistrictModal()">
+        <i class="fas fa-plus"></i> Add District
       </button>
     </div>
 
-    <!-- Stats -->
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-icon green"><i class="fas fa-hospital-alt"></i></div>
-        <div class="stat-info">
-          <div class="stat-num" id="statTotal">—</div>
-          <div class="stat-lbl">Total Hospitals</div>
-        </div>
+        <div class="stat-icon cyan"><i class="fas fa-map"></i></div>
+        <div class="stat-info"><div class="stat-num" id="statDistricts">—</div><div class="stat-lbl">Districts</div></div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon cyan"><i class="fas fa-landmark"></i></div>
-        <div class="stat-info">
-          <div class="stat-num" id="statGovt">—</div>
-          <div class="stat-lbl">Government &amp; AIIMS</div>
-        </div>
+        <div class="stat-icon blue"><i class="fas fa-landmark"></i></div>
+        <div class="stat-info"><div class="stat-num" id="statAttractions">—</div><div class="stat-lbl">Attractions</div></div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon amber"><i class="fas fa-clinic-medical"></i></div>
-        <div class="stat-info">
-          <div class="stat-num" id="statPrivate">—</div>
-          <div class="stat-lbl">Private</div>
-        </div>
+        <div class="stat-icon green"><i class="fas fa-bed"></i></div>
+        <div class="stat-info"><div class="stat-num" id="statAccommodations">—</div><div class="stat-lbl">Accommodations</div></div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon purple"><i class="fas fa-leaf"></i></div>
-        <div class="stat-info">
-          <div class="stat-num" id="statAyush">—</div>
-          <div class="stat-lbl">Ayurvedic / AYUSH</div>
-        </div>
+        <div class="stat-icon amber"><i class="fas fa-star"></i></div>
+        <div class="stat-info"><div class="stat-num" id="statFeatured">—</div><div class="stat-lbl">Featured</div></div>
       </div>
     </div>
 
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <div class="search-wrap">
-        <i class="fas fa-search search-icon"></i>
-        <input
-          class="search-input"
-          type="text"
-          id="searchInput"
-          placeholder="Search by name or city…"
-          oninput="handleSearch(this.value)"
-          autocomplete="off"
-        />
-        <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Clear search">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-
-      <select class="filter-select" id="stateFilter" onchange="applyFilters()">
-        <option value="">All States</option>
-      </select>
-
-      <select class="filter-select" id="typeFilter" onchange="applyFilters()">
-        <option value="">All Types</option>
-        <option value="Government">Government</option>
-        <option value="AIIMS / Central Govt">AIIMS / Central Govt</option>
-        <option value="Private">Private</option>
-        <option value="Ayurvedic / AYUSH">Ayurvedic / AYUSH</option>
-      </select>
-
-      <div class="toolbar-right">
-        <button class="btn btn-primary" onclick="openAddModal()" style="display:none" id="toolbarAddBtn">
-          <i class="fas fa-plus"></i> Add Hospital
-        </button>
-      </div>
-    </div>
-
-    <!-- Result count -->
-    <div class="result-count" id="resultCount"></div>
-
-    <!-- Section header -->
     <div class="section-header">
-      <span class="section-title">Hospitals</span>
+      <span class="section-title">Districts &amp; Content</span>
     </div>
-
-    <!-- Table -->
-    <div class="table-wrap">
-      <div class="table-scroll">
-        <table id="hospitalTable">
-          <thead>
-            <tr>
-              <th class="sortable" data-col="name" onclick="sortBy('name')">
-                <span class="sort-icon">Name</span>
-              </th>
-              <th>Type</th>
-              <th class="sortable" data-col="city" onclick="sortBy('city')">
-                <span class="sort-icon">City</span>
-              </th>
-              <th>Address</th>
-              <th>Phone</th>
-              <th class="sortable" data-col="rating" onclick="sortBy('rating')">
-                <span class="sort-icon">Rating</span>
-              </th>
-              <th>State</th>
-              <th style="text-align:right">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            <tr>
-              <td colspan="8">
-                <div class="table-empty">
-                  <i class="fas fa-circle-notch fa-spin spinner" style="font-size:24px; display:block; margin-bottom:12px;"></i>
-                  Loading hospitals…
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div id="districtList">
+      <div class="no-items">Select a state above to load content.</div>
     </div>
-
   </main>
 
-  <!-- ==================== TOAST CONTAINER ==================== -->
   <div id="toast"></div>
 
-  <!-- ==================== MODAL OVERLAY ==================== -->
+  <!-- MAIN MODAL (forms) -->
   <div class="modal-overlay" id="modalOverlay">
-    <div class="modal-box" id="modalBox">
-      <!-- dynamic content injected here -->
+    <div class="modal-box" id="modalBox"></div>
+  </div>
+
+  <!-- IMAGE MANAGER MODAL -->
+  <div class="modal-overlay" id="imgMgrOverlay">
+    <div class="modal-box modal-wide" id="imgMgrBox">
+      <div class="modal-header">
+        <span class="modal-title">Image <span>Manager</span></span>
+        <button class="modal-close-btn" onclick="closeImgMgr()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="imgmgr-folder-pill" id="imgMgrFolderPill">attractions</div>
+        <div class="imgmgr-tabs">
+          <button class="imgmgr-tab active" id="tabBrowse" onclick="switchTab('browse')"><i class="fas fa-images"></i>&nbsp; Browse</button>
+          <button class="imgmgr-tab" id="tabUpload" onclick="switchTab('upload')"><i class="fas fa-cloud-upload-alt"></i>&nbsp; Upload New</button>
+        </div>
+
+        <!-- BROWSE -->
+        <div class="imgmgr-panel active" id="panel-browse">
+          <div class="imgmgr-toolbar">
+            <button class="imgmgr-refresh" onclick="loadBrowse()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <span class="imgmgr-count" id="imgCount"></span>
+          </div>
+          <div class="imgmgr-grid" id="imgGrid">
+            <div class="imgmgr-spinner"><i class="fas fa-circle-notch spinner"></i>&nbsp;Loading…</div>
+          </div>
+        </div>
+
+        <!-- UPLOAD -->
+        <div class="imgmgr-panel" id="panel-upload">
+          <div class="imgmgr-drop" id="imgDrop">
+            <input type="file" id="imgFile" accept="image/jpeg,image/png,image/webp" onchange="onFileChosen(this.files)">
+            <div class="imgmgr-drop-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <div class="imgmgr-drop-title">Drag & drop or click to select</div>
+            <div class="imgmgr-drop-sub">JPG · PNG · WebP · max 5 MB</div>
+          </div>
+          <div class="imgmgr-file-preview" id="imgFilePreview">
+            <img id="imgPreviewImg" src="" alt="preview">
+            <div class="imgmgr-file-name" id="imgFileName"></div>
+          </div>
+          <div class="imgmgr-progress" id="imgProgress">
+            <div class="imgmgr-progress-track"><div class="imgmgr-progress-fill" id="imgProgressFill" style="width:0%"></div></div>
+            <div class="imgmgr-progress-label" id="imgProgressLabel">Uploading…</div>
+          </div>
+          <div class="imgmgr-upload-footer">
+            <button class="btn-cancel" onclick="clearUpload()">Clear</button>
+            <button class="btn-save" id="imgUploadBtn" onclick="doUpload()" disabled>
+              <i class="fas fa-upload"></i> Upload &amp; Select
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ==================== CONFIRM OVERLAY ==================== -->
+  <!-- CATEGORY PICKER MODAL -->
+  <div class="modal-overlay" id="catPickerOverlay">
+    <div class="modal-box" style="max-width:540px;">
+      <div class="modal-header">
+        <span class="modal-title">Select <span>Category</span></span>
+        <button class="modal-close-btn" onclick="closeCatPicker()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="catpkr-search-wrap">
+          <i class="fas fa-search"></i>
+          <input class="catpkr-search" id="catPkrSearch" type="text" placeholder="Search tags…" oninput="filterCats(this.value)">
+        </div>
+        <div class="catpkr-meta">
+          <span class="catpkr-count" id="catPkrCount"></span>
+          <span class="catpkr-hint"><i class="fas fa-info-circle" style="margin-right:4px;"></i>Select 1 or 2 tags — order matters</span>
+        </div>
+        <div class="catpkr-grid" id="catPkrGrid"></div>
+        <div class="catpkr-confirm-bar" id="catConfirmBar">
+          <div class="catpkr-preview-wrap">
+            <span class="catpkr-preview-label">Result</span>
+            <span class="catpkr-preview" id="catPreview">No category selected</span>
+          </div>
+          <div class="catpkr-confirm-actions">
+            <button type="button" class="btn-cancel" onclick="clearCatPick()">Clear</button>
+            <button type="button" class="btn-save" onclick="confirmCatPick()"><i class="fas fa-check"></i> Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM MODAL -->
   <div class="modal-overlay" id="confirmOverlay">
     <div class="modal-box confirm-box">
-      <div class="modal-body" style="text-align:center; padding:32px 28px;">
+      <div class="modal-body" style="text-align:center;padding:32px 28px;">
         <div class="confirm-icon"><i class="fas fa-trash"></i></div>
-        <div class="confirm-title" id="confirmTitle">Delete hospital?</div>
-        <div class="confirm-msg" id="confirmMsg">This action cannot be undone.</div>
+        <div class="confirm-title" id="confirmTitle">Delete item?</div>
+        <div class="confirm-msg"   id="confirmMsg">This action cannot be undone.</div>
         <div class="confirm-actions">
           <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
           <button class="btn-confirm-del" id="confirmOkBtn">Delete</button>
@@ -905,515 +538,1058 @@
   </div>
 
   <script>
-  // ============================================================
-  //  CONSTANTS
-  // ============================================================
-  const HOSPITAL_TYPES = [
-    'Government',
-    'AIIMS / Central Govt',
-    'Private',
-    'Ayurvedic / AYUSH'
-  ];
+  // ─────────────────────────────────────────────────────────
+  //  CONFIG
+  // ─────────────────────────────────────────────────────────
+  const BUCKET         = 'bharatyatra-images';
+  const STORAGE_PUBLIC = 'https://gtpnojbbamoaznlutxap.supabase.co/storage/v1/object/public/' + BUCKET + '/';
 
-  // ============================================================
-  //  STATE
-  // ============================================================
-  let allHospitals  = [];   // full dataset from Supabase
-  let allStates     = [];   // [{ id, name }]
-  let filtered      = [];   // currently displayed rows
-  let sortCol       = 'name';
-  let sortDir       = 'asc';
-  let pendingConfirmCb = null;
-
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
   //  AUTH
-  // ============================================================
-  async function handleLogout() {
-    BYAuth.logout('user_initiated');
-  }
+  // ─────────────────────────────────────────────────────────
+  async function handleLogout() { BYAuth.logout('user_initiated'); }
 
-  // ============================================================
-  //  SANITISATION
-  // ============================================================
-  function san(str) {
+  // ─────────────────────────────────────────────────────────
+  //  SANITISE
+  // ─────────────────────────────────────────────────────────
+  function sanitiseText(str) {
     if (!str) return '';
-    return String(str)
-      .replace(/<[^>]*>/g, '')
-      .replace(/javascript:/gi, '')
-      .replace(/on\w+\s*=/gi, '')
-      .trim();
+    return String(str).replace(/<[^>]*>/g,'').replace(/javascript:/gi,'').replace(/on\w+\s*=/gi,'').trim();
+  }
+  function sanitiseUrl(str) {
+    if (!str) return '';
+    const s = str.trim();
+    if (s && !/^https?:\/\//i.test(s)) return '';
+    return s;
   }
 
-  function sanNum(str, min, max) {
-    const v = parseFloat(str);
-    if (isNaN(v)) return null;
-    if (min !== undefined && v < min) return min;
-    if (max !== undefined && v > max) return max;
-    return v;
-  }
+  // ─────────────────────────────────────────────────────────
+  //  APP STATE
+  // ─────────────────────────────────────────────────────────
+  let currentStateId = null;
+  let currentStateName = '';
+  let allData = { districts: [], attractions: [], accommodations: [] };
 
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
   //  TOAST
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
   function toast(msg, type = 'success') {
-    const container = document.getElementById('toast');
+    const t = document.getElementById('toast');
     const el = document.createElement('div');
     el.className = `toast-item ${type}`;
-    el.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${san(msg)}`;
-    container.appendChild(el);
-    setTimeout(() => el.remove(), 3800);
+    el.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
+    t.appendChild(el);
+    setTimeout(() => el.remove(), 3500);
   }
 
-  // ============================================================
-  //  MODAL HELPERS
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  MAIN MODAL
+  // ─────────────────────────────────────────────────────────
   function openModal(html) {
     document.getElementById('modalBox').innerHTML = html;
     document.getElementById('modalOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
+    const si = document.getElementById('f_priority_score');
+    if (si) updateScoreBar(si.value);
   }
-
   function closeModal() {
     document.getElementById('modalOverlay').classList.remove('active');
     document.body.style.overflow = '';
   }
+  function updateScoreBar(val) {
+    const f = document.getElementById('scoreBarFill');
+    if (f) f.style.width = (val / 10 * 100) + '%';
+  }
 
-  function openConfirm(title, msg, cb) {
+  // ─────────────────────────────────────────────────────────
+  //  CONFIRM
+  // ─────────────────────────────────────────────────────────
+  function openConfirm(title, msg, onOk) {
     document.getElementById('confirmTitle').textContent = title;
     document.getElementById('confirmMsg').textContent   = msg;
-    pendingConfirmCb = cb;
-    document.getElementById('confirmOkBtn').onclick = () => { closeConfirm(); cb(); };
+    document.getElementById('confirmOkBtn').onclick     = () => { closeConfirm(); onOk(); };
     document.getElementById('confirmOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
   }
-
   function closeConfirm() {
     document.getElementById('confirmOverlay').classList.remove('active');
     document.body.style.overflow = '';
-    pendingConfirmCb = null;
   }
 
-  // Close overlays on backdrop click
-  document.getElementById('modalOverlay').addEventListener('click', e => {
-    if (e.target === e.currentTarget) closeModal();
-  });
-  document.getElementById('confirmOverlay').addEventListener('click', e => {
-    if (e.target === e.currentTarget) closeConfirm();
-  });
+  // ─────────────────────────────────────────────────────────
+  //  IMAGE MANAGER
+  //  Folders: 'states' | 'districts' | 'attractions'
+  // ─────────────────────────────────────────────────────────
+  let _imgField  = null;   // target input id
+  let _imgFolder = null;   // current storage folder
+  let _imgFile   = null;   // staged File object
 
-  // ESC key closes modals
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      closeModal();
-      closeConfirm();
+  function openImgMgr(fieldId, folder) {
+    _imgField  = fieldId;
+    _imgFolder = folder;
+    document.getElementById('imgMgrFolderPill').textContent = folder;
+    document.getElementById('imgMgrOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    switchTab('browse');
+    loadBrowse();
+  }
+
+  function closeImgMgr() {
+    document.getElementById('imgMgrOverlay').classList.remove('active');
+    // Do NOT reset body overflow here — the attraction modal is still open beneath.
+    clearUpload();
+  }
+
+  // ─────────────────────────────────────────────────────────
+  //  CATEGORY PICKER
+  // ─────────────────────────────────────────────────────────
+  // Single-word tags derived from all compound category values in the DB
+  const catTags = ['Adventure','Agricultural','Archaeological','Architecture','Arts','Beach','Birdwatching','Botanical','Conservation','Crafts','Cultural','Desert','Eco-tourism','Education','Engineering','Experience','Extreme Sports','Festival','Health','Heritage','Market','Modern','Museum','Nature','Performance','Pilgrimage','Recreation','Rural','Safari','Scenic','Science','Shopping','Spiritual','Sports','Trekking','Urban','Water Sports','Wildlife','Winter Sports'];
+
+  let _catField      = null;  // input id to write the final value into
+  let _catSelected   = [];    // ordered array of 0–2 selected tags [primary, secondary]
+
+  function openCatPicker() {
+    _catField = 'f_category';
+    // Parse current value back into selected tags
+    const current = document.getElementById(_catField)?.value || '';
+    _catSelected = current ? current.split('/').map(s => s.trim()).filter(Boolean) : [];
+    // Reset search
+    const searchEl = document.getElementById('catPkrSearch');
+    searchEl.value = '';
+    renderCatPills(catTags);
+    updateCatConfirmBar();
+    document.getElementById('catPickerOverlay').classList.add('active');
+    setTimeout(() => searchEl.focus(), 50);
+  }
+
+  function closeCatPicker() {
+    document.getElementById('catPickerOverlay').classList.remove('active');
+    // Do NOT reset body overflow — the attraction modal is still open beneath.
+  }
+
+  function renderCatPills(list) {
+    const grid  = document.getElementById('catPkrGrid');
+    const count = document.getElementById('catPkrCount');
+    count.textContent = list.length + ' tag' + (list.length === 1 ? '' : 's');
+    if (!list.length) {
+      grid.innerHTML = '<div class="catpkr-empty"><i class="fas fa-search"></i>No tags match your search.</div>';
+      return;
     }
-  });
-
-  // ============================================================
-  //  TYPE BADGE
-  // ============================================================
-  function typeBadge(type) {
-    const map = {
-      'Government':        ['type-govt',      'fa-building'],
-      'AIIMS / Central Govt': ['type-aiims',  'fa-star'],
-      'Private':           ['type-private',   'fa-clinic-medical'],
-      'Ayurvedic / AYUSH': ['type-ayurvedic', 'fa-leaf'],
-    };
-    const [cls, icon] = map[type] || ['badge-muted', 'fa-hospital'];
-    return `<span class="type-badge ${cls}"><i class="fas ${icon}"></i>${type || '—'}</span>`;
+    grid.innerHTML = list.map(tag => {
+      const idx   = _catSelected.indexOf(tag);
+      const isSel = idx !== -1;
+      const order = isSel ? (idx === 0 ? '<span class="catpkr-order">1</span>' : '<span class="catpkr-order">2</span>') : '';
+      return `<button type="button" class="catpkr-pill${isSel ? ' selected' : ''}" onclick="toggleCatTag('${tag}')">${order}${tag}</button>`;
+    }).join('');
   }
 
-  // ============================================================
-  //  RATING RENDER
-  // ============================================================
-  function ratingHtml(r) {
-    if (r == null || r === '') return '<span style="color:var(--muted)">—</span>';
-    const num = parseFloat(r);
-    const full  = Math.floor(num);
-    const half  = num - full >= 0.25 && num - full < 0.75 ? 1 : 0;
-    const empty = 5 - full - half;
-    let stars = '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
-    return `<div class="rating-wrap"><span class="rating-num">${num.toFixed(1)}</span><span class="stars">${stars}</span></div>`;
+  function toggleCatTag(tag) {
+    const idx = _catSelected.indexOf(tag);
+    if (idx !== -1) {
+      // Already selected — deselect it
+      _catSelected.splice(idx, 1);
+    } else {
+      if (_catSelected.length >= 2) {
+        // Already have 2 — drop the oldest (first), push new one as secondary
+        _catSelected.shift();
+      }
+      _catSelected.push(tag);
+    }
+    // Re-render current filtered list
+    const q = document.getElementById('catPkrSearch').value.trim().toLowerCase();
+    const filtered = q ? catTags.filter(c => c.toLowerCase().includes(q)) : catTags;
+    renderCatPills(filtered);
+    updateCatConfirmBar();
   }
 
-  // ============================================================
-  //  STATE NAME LOOKUP
-  // ============================================================
-  function stateName(stateId) {
-    const s = allStates.find(x => String(x.id) === String(stateId));
-    return s ? s.name : `State ${stateId}`;
+  function updateCatConfirmBar() {
+    const bar     = document.getElementById('catConfirmBar');
+    const preview = document.getElementById('catPreview');
+    if (_catSelected.length === 0) {
+      preview.textContent = 'No category selected';
+      preview.style.color = 'var(--muted)';
+    } else {
+      preview.textContent = _catSelected.join('/');
+      preview.style.color = 'var(--cyan)';
+    }
   }
 
-  // ============================================================
-  //  LOAD DATA
-  // ============================================================
-  async function loadStates() {
-    const { data, error } = await sb.from('states').select('id, name').order('name');
-    if (error) { toast('Could not load states: ' + error.message, 'error'); return; }
-    allStates = data || [];
-
-    const sel = document.getElementById('stateFilter');
-    allStates.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.id;
-      opt.textContent = s.name;
-      sel.appendChild(opt);
-    });
+  function filterCats(query) {
+    const q = query.trim().toLowerCase();
+    const filtered = q ? catTags.filter(c => c.toLowerCase().includes(q)) : catTags;
+    renderCatPills(filtered);
   }
 
-  async function loadHospitals() {
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = `<tr><td colspan="8"><div class="table-empty"><i class="fas fa-circle-notch fa-spin spinner" style="font-size:24px; display:block; margin-bottom:12px;"></i>Loading…</div></td></tr>`;
+  function confirmCatPick() {
+    if (_catField) {
+      const el = document.getElementById(_catField);
+      if (el) el.value = _catSelected.join('/') || '';
+    }
+    closeCatPicker();
+  }
 
-    const { data, error } = await sb
-      .from('hospitals')
-      .select('*')
-      .order('name');
+  function clearCatPick() {
+    _catSelected = [];
+    const q = document.getElementById('catPkrSearch').value.trim().toLowerCase();
+    const filtered = q ? catTags.filter(c => c.toLowerCase().includes(q)) : catTags;
+    renderCatPills(filtered);
+    updateCatConfirmBar();
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tabBrowse').classList.toggle('active', tab === 'browse');
+    document.getElementById('tabUpload').classList.toggle('active', tab === 'upload');
+    document.getElementById('panel-browse').classList.toggle('active', tab === 'browse');
+    document.getElementById('panel-upload').classList.toggle('active', tab === 'upload');
+  }
+
+  // ── Browse ───────────────────────────────────────────────
+  async function loadBrowse() {
+    const grid = document.getElementById('imgGrid');
+    const cnt  = document.getElementById('imgCount');
+    grid.innerHTML = '<div class="imgmgr-spinner"><i class="fas fa-circle-notch spinner"></i>&nbsp;Loading…</div>';
+    cnt.textContent = '';
+
+    const { data, error } = await sb.storage
+      .from(BUCKET)
+      .list(_imgFolder, { limit: 300, sortBy: { column: 'created_at', order: 'desc' } });
 
     if (error) {
-      tbody.innerHTML = `<tr><td colspan="8"><div class="table-empty"><i class="fas fa-exclamation-circle" style="color:var(--red)"></i>Failed to load hospitals: ${san(error.message)}</div></td></tr>`;
-      toast('Failed to load hospitals: ' + error.message, 'error');
+      grid.innerHTML = `<div class="imgmgr-empty"><i class="fas fa-exclamation-triangle" style="color:var(--red)"></i>Failed: ${error.message}</div>`;
       return;
     }
 
-    allHospitals = data || [];
-    applyFilters();
+    const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder' && f.name !== '.gitkeep');
+
+    if (!files.length) {
+      grid.innerHTML = `<div class="imgmgr-empty"><i class="fas fa-image"></i>No images in <strong>${_imgFolder}</strong> yet.<br><small style="display:block;margin-top:6px;font-size:11px;">Go to Upload New to add one.</small></div>`;
+      cnt.textContent = '0 images';
+      return;
+    }
+
+    cnt.textContent = files.length + ' image' + (files.length !== 1 ? 's' : '');
+    grid.innerHTML = '';
+
+    files.forEach(file => {
+      const url  = STORAGE_PUBLIC + _imgFolder + '/' + file.name;
+      const card = document.createElement('div');
+      card.className = 'imgmgr-thumb';
+      card.onclick   = () => pickImg(url);
+      card.innerHTML = `
+        <div class="imgmgr-hover-select"><span><i class="fas fa-check" style="margin-right:3px;"></i>Select</span></div>
+        <img src="${url}" alt="${file.name}" loading="lazy"
+          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22138%22 height=%22104%22%3E%3Crect fill=%22%230e1628%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2211%22 fill=%22%2394a3b8%22%3ENo preview%3C/text%3E%3C/svg%3E'">
+        <div class="imgmgr-thumb-bar">
+          <span class="imgmgr-thumb-name" title="${file.name}">${file.name}</span>
+          <button class="imgmgr-del-btn" title="Delete" onclick="deleteImg(event,'${file.name}')"><i class="fas fa-trash"></i></button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function pickImg(url) {
+    if (_imgField) {
+      const el = document.getElementById(_imgField);
+      if (el) el.value = url;
+      // update inline preview if rendered in the form
+      const prev = document.getElementById(_imgField + '_prev');
+      if (prev) { prev.src = url; prev.style.display = 'block'; }
+    }
+    closeImgMgr();
+    toast('Image selected');
+  }
+
+  function deleteImg(e, filename) {
+    e.stopPropagation();
+    openConfirm(
+      `Delete "${filename}"?`,
+      'This permanently removes the file from Supabase Storage. Any record already using this URL will lose its image.',
+      async () => {
+        const { error } = await sb.storage.from(BUCKET).remove([_imgFolder + '/' + filename]);
+        if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+        toast('Image deleted');
+        loadBrowse();
+      }
+    );
+  }
+
+  // ── Upload ───────────────────────────────────────────────
+  function onFileChosen(files) {
+    if (!files || !files.length) return;
+    const file = files[0];
+    if (file.size > 5 * 1024 * 1024) { toast('File too large — max 5 MB', 'error'); return; }
+    _imgFile = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('imgPreviewImg').src = ev.target.result;
+      document.getElementById('imgFileName').textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+      document.getElementById('imgFilePreview').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+    document.getElementById('imgUploadBtn').disabled = false;
+  }
+
+  function clearUpload() {
+    _imgFile = null;
+    const fi = document.getElementById('imgFile');
+    if (fi) fi.value = '';
+    document.getElementById('imgFilePreview').style.display  = 'none';
+    document.getElementById('imgPreviewImg').src             = '';
+    document.getElementById('imgFileName').textContent       = '';
+    document.getElementById('imgProgress').style.display     = 'none';
+    document.getElementById('imgProgressFill').style.width   = '0%';
+    document.getElementById('imgUploadBtn').disabled         = true;
+  }
+
+  async function doUpload() {
+    if (!_imgFile) return;
+    const btn = document.getElementById('imgUploadBtn');
+
+    const ext      = (_imgFile.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+    const base     = _imgFile.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0, 60);
+    const filename = base + '-' + Date.now() + '.' + ext;
+    const path     = _imgFolder + '/' + filename;
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading…';
+    document.getElementById('imgProgress').style.display   = 'block';
+    document.getElementById('imgProgressFill').style.width = '40%';
+    document.getElementById('imgProgressLabel').textContent = 'Uploading…';
+
+    const { error } = await sb.storage.from(BUCKET).upload(path, _imgFile, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: _imgFile.type
+    });
+
+    document.getElementById('imgProgressFill').style.width = '100%';
+
+    if (error) {
+      document.getElementById('imgProgressLabel').textContent = 'Upload failed';
+      toast('Upload failed: ' + error.message, 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-upload"></i> Upload &amp; Select';
+      return;
+    }
+
+    document.getElementById('imgProgressLabel').textContent = 'Done!';
+    toast('Uploaded!');
+    pickImg(STORAGE_PUBLIC + path);
+    clearUpload();
+    btn.innerHTML = '<i class="fas fa-upload"></i> Upload &amp; Select';
+  }
+
+  // ─────────────────────────────────────────────────────────
+  //  DOM READY
+  // ─────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    // drag-and-drop
+    const dz = document.getElementById('imgDrop');
+    dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('over'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); onFileChosen(e.dataTransfer.files); });
+
+    // backdrop dismiss
+    ['modalOverlay','imgMgrOverlay','catPickerOverlay','confirmOverlay'].forEach(id => {
+      document.getElementById(id).addEventListener('click', e => {
+        if (e.target.id === id) {
+          // Stop propagation for overlays that sit above the main modal
+          // so clicks don't fall through and accidentally close the attraction form
+          if (id === 'imgMgrOverlay')    { e.stopPropagation(); closeImgMgr();    return; }
+          if (id === 'catPickerOverlay') { e.stopPropagation(); closeCatPicker(); return; }
+          if (id === 'modalOverlay')   closeModal();
+          if (id === 'confirmOverlay') closeConfirm();
+        }
+      });
+    });
+
+    // Escape key — close only the topmost active overlay
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      if (document.getElementById('catPickerOverlay').classList.contains('active')) { closeCatPicker(); }
+      else if (document.getElementById('imgMgrOverlay').classList.contains('active')) { closeImgMgr(); }
+      else if (document.getElementById('confirmOverlay').classList.contains('active')) { closeConfirm(); }
+      else { closeModal(); }
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────
+  //  LOAD STATES
+  // ─────────────────────────────────────────────────────────
+  async function loadStates() {
+    const { data, error } = await sb.from('states').select('id, name').order('name');
+    if (error || !data) return;
+    const sel = document.getElementById('stateSelect');
+    data.forEach(s => {
+      const o = document.createElement('option');
+      o.value = s.id; o.textContent = s.name;
+      sel.appendChild(o);
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────
+  //  LOAD STATE DATA
+  // ─────────────────────────────────────────────────────────
+  async function loadStateData(stateId) {
+    currentStateId = stateId;
+    currentStateName = document.getElementById('stateSelect').options[document.getElementById('stateSelect').selectedIndex].text;
+
+    document.getElementById('districtList').innerHTML =
+      '<div class="loading-state"><i class="fas fa-circle-notch spinner"></i> Loading content…</div>';
+
+    const [dRes, aRes] = await Promise.all([
+      sb.from('districts').select('*').eq('state_id', stateId).order('name'),
+      sb.from('attractions').select('*').eq('state_id', stateId).order('priority_score', { ascending: false })
+    ]);
+
+    if (dRes.error || aRes.error) { toast('Failed to load data', 'error'); return; }
+
+    const attrIds = (aRes.data || []).map(a => a.id);
+    let accData = [];
+    if (attrIds.length) {
+      const accRes = await sb.from('accommodations').select('*').in('attraction_id', attrIds).order('name');
+      accData = accRes.data || [];
+    }
+
+    allData.districts      = dRes.data || [];
+    allData.attractions    = aRes.data || [];
+    allData.accommodations = accData;
+
+    updateStats();
+    renderDistrictList();
+  }
+
+  function updateStats() {
+    const featured = allData.attractions.filter(a => a.is_state_featured).length;
+    document.getElementById('statDistricts').textContent      = allData.districts.length;
+    document.getElementById('statAttractions').textContent    = allData.attractions.length;
+    document.getElementById('statAccommodations').textContent = allData.accommodations.length;
+    document.getElementById('statFeatured').textContent       = featured;
+  }
+
+  // ─────────────────────────────────────────────────────────
+  //  RENDER DISTRICTS
+  // ─────────────────────────────────────────────────────────
+  function renderDistrictList() {
+    const container = document.getElementById('districtList');
+    if (!allData.districts.length) {
+      container.innerHTML = '<div class="no-items">No districts found for this state.</div>';
+      return;
+    }
+    container.innerHTML = '';
+    allData.districts.forEach(d => {
+      const n    = allData.attractions.filter(a => a.district_id === d.id).length;
+      const card = document.createElement('div');
+      card.className = 'district-card';
+      card.id = `district-${d.id}`;
+      card.innerHTML = `
+        <div class="district-row" onclick="toggleDistrict(${d.id})">
+          <i class="fas fa-chevron-right district-chevron"></i>
+          <span class="district-name">${d.name}</span>
+          <span class="badge badge-cyan">${n} attraction${n!==1?'s':''}</span>
+          <div class="district-actions" onclick="event.stopPropagation()">
+            <button class="btn btn-edit btn-sm btn-icon" title="Edit" onclick="openEditDistrictModal(${d.id})"><i class="fas fa-pen"></i></button>
+            <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="confirmDeleteDistrict(${d.id},'${d.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        <div class="district-body" id="district-body-${d.id}">${renderAttractionsHTML(d.id)}</div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function toggleDistrict(id) { document.getElementById(`district-${id}`).classList.toggle('open'); }
+
+  // ─────────────────────────────────────────────────────────
+  //  RENDER ATTRACTIONS
+  // ─────────────────────────────────────────────────────────
+  function renderAttractionsHTML(districtId) {
+    const list = allData.attractions.filter(a => a.district_id === districtId);
+    let html = `
+      <div class="section-header" style="margin-top:14px;">
+        <span class="section-title" style="color:var(--blue);font-size:11px;">Attractions</span>
+        <button class="btn btn-ghost btn-sm" onclick="openAddAttractionModal(${districtId})"><i class="fas fa-plus"></i> Add Attraction</button>
+      </div>
+      <div class="attraction-list" id="attr-list-${districtId}">
+    `;
+    if (!list.length) {
+      html += '<div class="no-items" style="font-size:12px;padding:12px;">No attractions yet.</div>';
+    } else {
+      list.forEach(a => {
+        html += `
+          <div class="attraction-item" id="attr-${a.id}">
+            <div class="attraction-row" onclick="toggleAttraction(${a.id})">
+              <i class="fas fa-chevron-right attraction-chevron"></i>
+              <div class="attraction-score">${a.priority_score}</div>
+              <div class="attraction-info">
+                <div class="attraction-name">${a.name}</div>
+                <div class="attraction-meta">
+                  <span>${a.type||'—'}</span><span>•</span><span>${a.category||'—'}</span>
+                  ${a.entry_fee?`<span>• ₹${a.entry_fee}</span>`:'<span>• Free</span>'}
+                </div>
+              </div>
+              <div class="attraction-badges">
+                ${a.is_must_visit    ?'<span class="badge badge-amber">Must Visit</span>':''}
+                ${a.is_state_featured?'<span class="badge badge-cyan">Featured</span>'  :''}
+                ${a.guide_available  ?'<span class="badge badge-green">Guide</span>'    :''}
+              </div>
+              <div class="attraction-actions" onclick="event.stopPropagation()">
+                <button class="btn btn-edit btn-sm btn-icon" title="Edit" onclick="openEditAttractionModal(${a.id})"><i class="fas fa-pen"></i></button>
+                <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="confirmDeleteAttraction(${a.id},'${a.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+            <div class="attraction-body" id="attr-body-${a.id}">${renderAccommodationsHTML(a.id)}</div>
+          </div>
+        `;
+      });
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function toggleAttraction(id) { document.getElementById(`attr-${id}`).classList.toggle('open'); }
+
+  // ─────────────────────────────────────────────────────────
+  //  RENDER ACCOMMODATIONS
+  // ─────────────────────────────────────────────────────────
+  function renderAccommodationsHTML(attractionId) {
+    const accs = allData.accommodations.filter(a => a.attraction_id === attractionId);
+    let html = `
+      <div class="acc-section-header">
+        <span class="acc-section-label">Accommodations</span>
+        <button class="btn btn-ghost btn-sm" onclick="openAddAccommodationModal(${attractionId})"><i class="fas fa-plus"></i> Add</button>
+      </div>
+      <div class="acc-list">
+    `;
+    if (!accs.length) {
+      html += '<div class="no-items" style="font-size:11px;padding:8px 0;">No accommodations linked.</div>';
+    } else {
+      accs.forEach(acc => {
+        const stars = acc.rating ? '★'.repeat(Math.round(acc.rating)) : '—';
+        html += `
+          <div class="acc-row">
+            <div class="acc-name">${acc.name}</div>
+            <div class="acc-meta">
+              <span class="badge badge-muted" style="font-size:10px;">${acc.type||'—'}</span>
+              ${acc.price_per_night?`<span><i class="fas fa-rupee-sign"></i>₹${acc.price_per_night.toLocaleString()}/night</span>`:''}
+              ${acc.rating?`<span><i class="fas fa-star"></i>${acc.rating} (${stars})</span>`:''}
+              ${acc.distance_from_attraction_km!=null?`<span><i class="fas fa-road"></i>${acc.distance_from_attraction_km} km</span>`:''}
+            </div>
+            <div class="acc-actions">
+              <button class="btn btn-edit btn-sm btn-icon" title="Edit" onclick="openEditAccommodationModal(${acc.id})"><i class="fas fa-pen"></i></button>
+              <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="confirmDeleteAccommodation(${acc.id},'${acc.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+        `;
+      });
+    }
+    html += '</div>';
+    return html;
+  }
+
+  // ─────────────────────────────────────────────────────────
+  //  PARTIAL RE-RENDER
+  // ─────────────────────────────────────────────────────────
+  function reRenderDistrict(districtId) {
+    const body = document.getElementById(`district-body-${districtId}`);
+    if (body) body.innerHTML = renderAttractionsHTML(districtId);
     updateStats();
   }
 
-  // ============================================================
-  //  STATS
-  // ============================================================
-  function updateStats() {
-    document.getElementById('statTotal').textContent   = allHospitals.length;
-    document.getElementById('statGovt').textContent    = allHospitals.filter(h => h.type === 'Government' || h.type === 'AIIMS / Central Govt').length;
-    document.getElementById('statPrivate').textContent = allHospitals.filter(h => h.type === 'Private').length;
-    document.getElementById('statAyush').textContent   = allHospitals.filter(h => h.type === 'Ayurvedic / AYUSH').length;
-  }
-
-  // ============================================================
-  //  SEARCH & FILTER
-  // ============================================================
-  function handleSearch(val) {
-    document.getElementById('searchClear').classList.toggle('visible', val.length > 0);
-    applyFilters();
-  }
-
-  function clearSearch() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('searchClear').classList.remove('visible');
-    applyFilters();
-  }
-
-  function applyFilters() {
-    const query     = document.getElementById('searchInput').value.trim().toLowerCase();
-    const stateId   = document.getElementById('stateFilter').value;
-    const typeVal   = document.getElementById('typeFilter').value;
-
-    filtered = allHospitals.filter(h => {
-      const matchSearch = !query ||
-        (h.name  || '').toLowerCase().includes(query) ||
-        (h.city  || '').toLowerCase().includes(query);
-      const matchState  = !stateId || String(h.state_id) === stateId;
-      const matchType   = !typeVal || h.type === typeVal;
-      return matchSearch && matchState && matchType;
-    });
-
-    // Sort
-    filtered.sort((a, b) => {
-      let av = a[sortCol] ?? '';
-      let bv = b[sortCol] ?? '';
-      if (typeof av === 'string') av = av.toLowerCase();
-      if (typeof bv === 'string') bv = bv.toLowerCase();
-      if (av < bv) return sortDir === 'asc' ? -1 : 1;
-      if (av > bv) return sortDir === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    renderTable();
-    updateResultCount();
-  }
-
-  function updateResultCount() {
-    const el = document.getElementById('resultCount');
-    const total   = allHospitals.length;
-    const showing = filtered.length;
-    if (showing === total) {
-      el.innerHTML = `Showing <strong>${total}</strong> hospital${total !== 1 ? 's' : ''}`;
-    } else {
-      el.innerHTML = `Showing <strong>${showing}</strong> of <strong>${total}</strong> hospitals`;
-    }
-  }
-
-  // ============================================================
-  //  SORT
-  // ============================================================
-  function sortBy(col) {
-    if (sortCol === col) {
-      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-    } else {
-      sortCol = col;
-      sortDir = 'asc';
-    }
-
-    // Update header classes
-    document.querySelectorAll('th.sortable').forEach(th => {
-      th.classList.remove('sort-asc', 'sort-desc');
-      if (th.dataset.col === col) {
-        th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
-      }
-    });
-
-    applyFilters();
-  }
-
-  // ============================================================
-  //  RENDER TABLE
-  // ============================================================
-  function renderTable() {
-    const tbody = document.getElementById('tableBody');
-
-    if (filtered.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8"><div class="table-empty"><i class="fas fa-hospital-alt"></i>No hospitals found matching your filters.</div></td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = filtered.map(h => `
-      <tr>
-        <td>
-          <div class="td-name">${san(h.name)}</div>
-          <div class="td-city"><i class="fas fa-map-marker-alt" style="font-size:10px; color:var(--green); margin-right:4px;"></i>${san(h.city || '—')}</div>
-        </td>
-        <td>${typeBadge(h.type)}</td>
-        <td style="color:var(--muted); font-size:13px;">${san(h.city || '—')}</td>
-        <td><div class="td-address" title="${san(h.address || '')}">${san(h.address || '—')}</div></td>
-        <td><span class="td-phone">${san(h.contact_phone || '—')}</span></td>
-        <td>${ratingHtml(h.rating)}</td>
-        <td>
-          <span class="type-badge badge-muted" style="background:rgba(148,163,184,0.08); color:var(--muted); font-size:11px;">
-            ${san(stateName(h.state_id))}
-          </span>
-        </td>
-        <td>
-          <div class="td-actions" style="justify-content:flex-end;">
-            <button class="btn btn-edit btn-sm btn-icon" onclick="openEditModal(${h.id})" title="Edit">
-              <i class="fas fa-pencil-alt"></i>
-            </button>
-            <button class="btn btn-danger btn-sm btn-icon" onclick="confirmDelete(${h.id}, '${san(h.name).replace(/'/g, "\\'")}');" title="Delete">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  // ============================================================
-  //  HOSPITAL FORM HTML
-  // ============================================================
-  function hospitalFormHtml(title, h = {}) {
-    const typeOptions = HOSPITAL_TYPES.map(t =>
-      `<option value="${t}" ${h.type === t ? 'selected' : ''}>${t}</option>`
-    ).join('');
-
-    const stateOptions = allStates.map(s =>
-      `<option value="${s.id}" ${String(h.state_id) === String(s.id) ? 'selected' : ''}>${s.name}</option>`
-    ).join('');
-
-    const ratingPct = h.rating ? Math.round((parseFloat(h.rating) / 5) * 100) : 0;
-
+  // ─────────────────────────────────────────────────────────
+  //  DISTRICT MODALS
+  // ─────────────────────────────────────────────────────────
+  function districtFormHTML(title, d = {}) {
     return `
       <div class="modal-header">
         <span class="modal-title">${title}</span>
         <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
       </div>
       <div class="modal-body">
-        <div class="form-grid">
+        <div class="form-grid one-col" style="gap:16px;">
+          <div class="form-group">
+            <label class="form-label">Name <span class="required">*</span></label>
+            <input class="form-input" id="f_d_name" placeholder="e.g. Ahmedabad" value="${d.name||''}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Slug <span class="required">*</span></label>
+            <input class="form-input" id="f_d_slug" placeholder="e.g. ahmedabad" value="${d.slug||''}">
+            <div class="form-hint">URL-safe lowercase identifier</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="f_d_desc" style="min-height:100px;" placeholder="Brief district description…">${d.description||''}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Image</label>
+            <div class="img-field-wrap">
+              <input class="form-input" id="f_d_img" placeholder="https://… or use Browse →" value="${d.image_url||''}">
+              <button type="button" class="btn-img-pick" onclick="openImgMgr('f_d_img','districts')">
+                <i class="fas fa-images"></i> Browse
+              </button>
+            </div>
+            <img id="f_d_img_prev" src="${d.image_url||''}" class="img-current-preview" style="${d.image_url?'':'display:none;'}" onerror="this.style.display='none'">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" id="districtSaveBtn" onclick="saveDistrict(${d.id||'null'})">
+          <i class="fas fa-save"></i> Save District
+        </button>
+      </div>
+    `;
+  }
+
+  function openAddDistrictModal() {
+    if (!currentStateId) { toast('Please select a state first', 'error'); return; }
+    openModal(districtFormHTML('Add District'));
+    document.getElementById('f_d_name').addEventListener('input', function() {
+      const slug = document.getElementById('f_d_slug');
+      if (!slug._touched) slug.value = this.value.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+    });
+    document.getElementById('f_d_slug').addEventListener('input', function() { this._touched = true; });
+  }
+
+  function openEditDistrictModal(id) {
+    const d = allData.districts.find(x => x.id === id);
+    if (!d) return;
+    openModal(districtFormHTML(`Edit District — <span>${d.name}</span>`, d));
+  }
+
+  async function saveDistrict(id) {
+    const btn = document.getElementById('districtSaveBtn');
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+
+    const payload = {
+      state_id:    parseInt(currentStateId),
+      name:        sanitiseText(document.getElementById('f_d_name').value),
+      slug:        sanitiseText(document.getElementById('f_d_slug').value).toLowerCase().replace(/[^a-z0-9-]/g,''),
+      description: sanitiseText(document.getElementById('f_d_desc').value),
+      image_url:   sanitiseUrl(document.getElementById('f_d_img').value) || null,
+      updated_at:  new Date().toISOString()
+    };
+
+    if (!payload.name || !payload.slug) {
+      toast('Name and Slug are required', 'error');
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save District'; return;
+    }
+
+    let error;
+    if (id) {
+      ({ error } = await sb.from('districts').update(payload).eq('id', id));
+    } else {
+      payload.created_at = new Date().toISOString();
+      ({ error } = await sb.from('districts').insert(payload));
+    }
+
+    if (error) { toast('Error: ' + error.message, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save District'; return; }
+    toast(id ? 'District updated!' : 'District added!');
+    closeModal();
+    await loadStateData(currentStateId);
+  }
+
+  function confirmDeleteDistrict(id, name) {
+    openConfirm(
+      `Delete "${name}"?`,
+      'This will delete the district and ALL its attractions and accommodations. This cannot be undone.',
+      async () => {
+        const { error } = await sb.from('districts').delete().eq('id', id);
+        if (error) { toast('Error: ' + error.message, 'error'); return; }
+        toast('District deleted');
+        await loadStateData(currentStateId);
+      }
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────
+  //  ATTRACTION MODALS
+  // ─────────────────────────────────────────────────────────
+  function attractionFormHTML(title, a = {}, districtId) {
+    const types = ['Historical','Religious','Wildlife','Nature','Beach','Adventure','Cultural','Heritage','Museum','Scenic','Recreation','Spiritual'];
+    return `
+      <div class="modal-header">
+        <span class="modal-title">${title}</span>
+        <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid" style="gap:16px 20px;">
 
           <div class="form-group form-col-span">
-            <label class="form-label">Hospital Name <span class="required">*</span></label>
-            <input class="form-input" id="f_name" placeholder="e.g. AIIMS New Delhi" value="${san(h.name || '')}">
+            <label class="form-label">Name <span class="required">*</span></label>
+            <input class="form-input" id="f_name" placeholder="Attraction name" value="${a.name||''}">
+          </div>
+
+          <div class="form-group form-col-span">
+            <label class="form-label">Slug <span class="required">*</span></label>
+            <input class="form-input" id="f_slug" placeholder="url-safe-slug" value="${a.slug||''}">
+          </div>
+
+          <div class="form-group form-col-span">
+            <label class="form-label">Short Description</label>
+            <input class="form-input" id="f_short_desc" placeholder="One-line card preview text…" value="${(a.short_description||'').replace(/"/g,'&quot;')}">
+          </div>
+
+          <div class="form-group form-col-span">
+            <label class="form-label">Full Description <span class="required">*</span></label>
+            <textarea class="form-textarea" id="f_desc" placeholder="Full description…" style="min-height:90px;">${a.description||''}</textarea>
           </div>
 
           <div class="form-group">
-            <label class="form-label">State <span class="required">*</span></label>
-            <select class="form-select" id="f_state_id">
-              <option value="">— Select State —</option>
-              ${stateOptions}
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Type <span class="required">*</span></label>
+            <label class="form-label">Type</label>
             <select class="form-select" id="f_type">
-              <option value="">— Select Type —</option>
-              ${typeOptions}
+              <option value="">— Select type —</option>
+              ${types.map(t=>`<option value="${t}" ${a.type===t?'selected':''}>${t}</option>`).join('')}
             </select>
           </div>
 
           <div class="form-group">
-            <label class="form-label">City <span class="required">*</span></label>
-            <input class="form-input" id="f_city" placeholder="e.g. New Delhi" value="${san(h.city || '')}">
+            <label class="form-label">Category</label>
+            <div class="cat-field-wrap">
+              <input class="form-input" id="f_category" readonly
+                value="${a.category||''}"
+                placeholder="— Select category —"
+                onclick="openCatPicker()">
+              <button type="button" class="btn-img-pick" onclick="openCatPicker()">
+                <i class="fas fa-tag"></i> Browse
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group form-col-span">
+            <label class="form-label">Priority Score (1–10) <span class="required">*</span></label>
+            <div class="score-input-wrap">
+              <input class="form-input" id="f_priority_score" type="number" min="1" max="10"
+                value="${a.priority_score||5}" oninput="updateScoreBar(this.value)">
+              <div class="score-bar"><div class="score-bar-fill" id="scoreBarFill" style="width:${(a.priority_score||5)/10*100}%"></div></div>
+            </div>
+            <div class="form-hint">10 = highest priority. Drives display order sitewide.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Entry Fee (₹)</label>
+            <input class="form-input" id="f_entry_fee" type="number" min="0" placeholder="0 = free" value="${a.entry_fee??''}">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Est. Visit Time (hours)</label>
+            <input class="form-input" id="f_est_time" type="number" step="0.5" min="0" placeholder="e.g. 2.5" value="${a.estimated_time_hours??''}">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <input class="form-input" id="f_city" placeholder="City name" value="${a.city||''}">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Address</label>
+            <input class="form-input" id="f_address" placeholder="Street address" value="${(a.address||'').replace(/"/g,'&quot;')}">
+          </div>
+
+          <div class="form-group form-col-span">
+            <label class="form-label">Best Time to Visit</label>
+            <input class="form-input" id="f_best_time" placeholder="e.g. October to March" value="${a.best_time_note||''}">
+          </div>
+
+          <div class="form-group form-col-span">
+            <label class="form-label">Image</label>
+            <div class="img-field-wrap">
+              <input class="form-input" id="f_img" placeholder="https://… or use Browse →" value="${a.image_url||''}">
+              <button type="button" class="btn-img-pick" onclick="openImgMgr('f_img','attractions')">
+                <i class="fas fa-images"></i> Browse
+              </button>
+            </div>
+            <img id="f_img_prev" src="${a.image_url||''}" class="img-current-preview" style="${a.image_url?'':'display:none;'}" onerror="this.style.display='none'">
           </div>
 
           <div class="form-group">
             <label class="form-label">Contact Phone</label>
-            <input class="form-input" id="f_phone" placeholder="e.g. 011-26588500" value="${san(h.contact_phone || '')}">
+            <input class="form-input" id="f_phone" placeholder="+91-…" value="${a.contact_phone||''}">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Website URL</label>
+            <input class="form-input" id="f_website" placeholder="https://…" value="${a.website_url||''}">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Guide Price Range</label>
+            <input class="form-input" id="f_guide_price" placeholder="e.g. ₹300–500" value="${a.guide_price_range||''}">
           </div>
 
           <div class="form-group form-col-span">
-            <label class="form-label">Address</label>
-            <input class="form-input" id="f_address" placeholder="Full address" value="${san(h.address || '')}">
-          </div>
-
-          <div class="form-group form-col-span">
-            <label class="form-label">Rating (1.0 – 5.0)</label>
-            <div class="rating-input-wrap">
-              <input class="form-input" id="f_rating" type="number" step="0.1" min="1" max="5"
-                placeholder="e.g. 4.3" value="${h.rating ?? ''}"
-                oninput="updateRatingBar(this.value)">
-              <div class="rating-bar">
-                <div class="rating-bar-fill" id="ratingBarFill" style="width:${ratingPct}%"></div>
-              </div>
+            <div class="toggle-group">
+              <label class="toggle"><input type="checkbox" id="f_must_visit" ${a.is_must_visit?'checked':''}><span class="toggle-slider"></span></label>
+              <div><div class="toggle-label">Must Visit</div><div class="toggle-sub">Appears in homepage Bucket List</div></div>
             </div>
-            <span class="form-hint">Leave blank to omit. Clamped to 1.0–5.0.</span>
+            <div class="toggle-group">
+              <label class="toggle"><input type="checkbox" id="f_state_featured" ${a.is_state_featured?'checked':''}><span class="toggle-slider"></span></label>
+              <div><div class="toggle-label">State Featured</div><div class="toggle-sub">Shown in state page Section 2</div></div>
+            </div>
+            <div class="toggle-group">
+              <label class="toggle"><input type="checkbox" id="f_guide_avail" ${a.guide_available?'checked':''}><span class="toggle-slider"></span></label>
+              <div><div class="toggle-label">Guide Available</div><div class="toggle-sub">Guide services offered at this attraction</div></div>
+            </div>
           </div>
 
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn-save" id="savBtn" onclick="saveHospital(${h.id || 'null'})">
-          <i class="fas fa-save"></i> Save Hospital
+        <button class="btn-save" id="attrSaveBtn" onclick="saveAttraction(${a.id||'null'},${districtId||a.district_id})">
+          <i class="fas fa-save"></i> Save Attraction
         </button>
       </div>
     `;
   }
 
-  function updateRatingBar(val) {
-    const pct = val ? Math.min(100, Math.max(0, (parseFloat(val) / 5) * 100)) : 0;
-    const fill = document.getElementById('ratingBarFill');
-    if (fill) fill.style.width = pct + '%';
+  function openAddAttractionModal(districtId) {
+    openModal(attractionFormHTML('Add Attraction', {}, districtId));
+    document.getElementById('f_name').addEventListener('input', function() {
+      const slug = document.getElementById('f_slug');
+      if (!slug._touched) slug.value = this.value.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+    });
+    document.getElementById('f_slug').addEventListener('input', function() { this._touched = true; });
   }
 
-  // ============================================================
-  //  ADD
-  // ============================================================
-  function openAddModal() {
-    openModal(hospitalFormHtml('Add <span>Hospital</span>'));
+  function openEditAttractionModal(id) {
+    const a = allData.attractions.find(x => x.id === id);
+    if (!a) return;
+    openModal(attractionFormHTML(`Edit — <span>${a.name}</span>`, a, a.district_id));
+    document.getElementById('f_slug')._touched = true;
   }
 
-  // ============================================================
-  //  EDIT
-  // ============================================================
-  function openEditModal(id) {
-    const h = allHospitals.find(x => x.id === id);
-    if (!h) return;
-    openModal(hospitalFormHtml(`Edit — <span>${san(h.name)}</span>`, h));
-  }
+  async function saveAttraction(id, districtId) {
+    const btn = document.getElementById('attrSaveBtn');
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
 
-  // ============================================================
-  //  SAVE (insert or update)
-  // ============================================================
-  async function saveHospital(id) {
-    const btn = document.getElementById('savBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+    const rv = id => document.getElementById(id)?.value ?? '';
+    const sv = id => sanitiseText(rv(id));
+    const uv = id => sanitiseUrl(rv(id));
+    const nv = id => { const v = rv(id).trim(); return v===''?null:parseFloat(v); };
+    const cb = id => document.getElementById(id)?.checked||false;
 
-    const name     = san(document.getElementById('f_name')?.value || '');
-    const stateId  = document.getElementById('f_state_id')?.value;
-    const type     = san(document.getElementById('f_type')?.value || '');
-    const city     = san(document.getElementById('f_city')?.value || '');
-    const address  = san(document.getElementById('f_address')?.value || '');
-    const phone    = san(document.getElementById('f_phone')?.value || '');
-    const rawRating = document.getElementById('f_rating')?.value?.trim();
-    const rating   = rawRating !== '' ? sanNum(rawRating, 1, 5) : null;
-
-    // Validation
-    if (!name) {
-      toast('Hospital name is required.', 'error');
-      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Hospital';
-      return;
-    }
-    if (!stateId) {
-      toast('Please select a state.', 'error');
-      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Hospital';
-      return;
-    }
-    if (!type) {
-      toast('Please select a hospital type.', 'error');
-      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Hospital';
-      return;
-    }
-    if (!city) {
-      toast('City is required.', 'error');
-      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Hospital';
-      return;
-    }
+    const score = Math.min(10, Math.max(1, parseInt(rv('f_priority_score'))||5));
 
     const payload = {
-      name,
-      state_id:      parseInt(stateId),
-      type,
-      city,
-      address:       address || null,
-      contact_phone: phone   || null,
-      rating:        rating  != null ? rating : null,
+      state_id:             parseInt(currentStateId),
+      district_id:          parseInt(districtId),
+      name:                 sv('f_name'),
+      slug:                 sv('f_slug').toLowerCase().replace(/[^a-z0-9-]/g,''),
+      short_description:    sv('f_short_desc')||null,
+      description:          sv('f_desc'),
+      type:                 sv('f_type')||null,
+      category:             sv('f_category')||null,
+      priority_score:       score,
+      entry_fee:            nv('f_entry_fee'),
+      estimated_time_hours: nv('f_est_time'),
+      city:                 sv('f_city')||null,
+      address:              sv('f_address')||null,
+      best_time_note:       sv('f_best_time')||null,
+      image_url:            uv('f_img')||null,
+      contact_phone:        sv('f_phone')||null,
+      website_url:          uv('f_website')||null,
+      guide_price_range:    sv('f_guide_price')||null,
+      is_must_visit:        cb('f_must_visit'),
+      is_state_featured:    cb('f_state_featured'),
+      guide_available:      cb('f_guide_avail'),
+      updated_at:           new Date().toISOString()
     };
+
+    if (!payload.name || !payload.slug || !payload.description) {
+      toast('Name, Slug and Description are required', 'error');
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Attraction'; return;
+    }
 
     let error;
     if (id) {
-      ({ error } = await sb.from('hospitals').update(payload).eq('id', id));
+      ({ error } = await sb.from('attractions').update(payload).eq('id', id));
     } else {
       payload.created_at = new Date().toISOString();
-      ({ error } = await sb.from('hospitals').insert(payload));
+      ({ error } = await sb.from('attractions').insert(payload));
     }
 
-    if (error) {
-      toast('Error: ' + error.message, 'error');
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-save"></i> Save Hospital';
-      return;
-    }
+    if (error) { toast('Error: ' + error.message, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Attraction'; return; }
 
-    toast(id ? 'Hospital updated!' : 'Hospital added!');
+    toast(id ? 'Attraction updated!' : 'Attraction added!');
     closeModal();
-    await loadHospitals();
+
+    const aRes = await sb.from('attractions').select('*').eq('state_id', currentStateId).order('priority_score', { ascending: false });
+    allData.attractions = aRes.data || [];
+    const wasOpen = document.getElementById(`district-${districtId}`)?.classList.contains('open');
+    reRenderDistrict(districtId);
+    if (wasOpen) document.getElementById(`district-${districtId}`)?.classList.add('open');
+    updateStats();
   }
 
-  // ============================================================
-  //  DELETE
-  // ============================================================
-  function confirmDelete(id, name) {
+  function confirmDeleteAttraction(id, name) {
     openConfirm(
       `Delete "${name}"?`,
-      'This hospital record will be permanently removed from all state medical listings.',
+      'This will delete the attraction and all its accommodations.',
       async () => {
-        const { error } = await sb.from('hospitals').delete().eq('id', id);
+        const { error } = await sb.from('attractions').delete().eq('id', id);
         if (error) { toast('Error: ' + error.message, 'error'); return; }
-        toast('Hospital deleted.');
-        allHospitals = allHospitals.filter(h => h.id !== id);
-        applyFilters();
+        toast('Attraction deleted');
+        const distId = allData.attractions.find(a => a.id === id)?.district_id;
+        allData.attractions    = allData.attractions.filter(a => a.id !== id);
+        allData.accommodations = allData.accommodations.filter(a => a.attraction_id !== id);
+        if (distId) reRenderDistrict(distId);
         updateStats();
       }
     );
   }
 
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
+  //  ACCOMMODATION MODALS
+  // ─────────────────────────────────────────────────────────
+  function accommodationFormHTML(title, acc = {}, attractionId) {
+    const types = ['budget','mid-range','premium','luxury'];
+    return `
+      <div class="modal-header">
+        <span class="modal-title">${title}</span>
+        <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid" style="gap:16px 20px;">
+          <div class="form-group form-col-span">
+            <label class="form-label">Name <span class="required">*</span></label>
+            <input class="form-input" id="f_acc_name" placeholder="Hotel / lodge name" value="${acc.name||''}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select class="form-select" id="f_acc_type">
+              <option value="">— Select —</option>
+              ${types.map(t=>`<option value="${t}" ${acc.type===t?'selected':''}>${t.charAt(0).toUpperCase()+t.slice(1)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Price per Night (₹)</label>
+            <input class="form-input" id="f_acc_price" type="number" min="0" placeholder="e.g. 2500" value="${acc.price_per_night??''}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Distance from Attraction (km)</label>
+            <input class="form-input" id="f_acc_dist" type="number" step="0.1" min="0" placeholder="e.g. 1.5" value="${acc.distance_from_attraction_km??''}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rating (1.0–5.0)</label>
+            <input class="form-input" id="f_acc_rating" type="number" step="0.1" min="1" max="5" placeholder="e.g. 4.2" value="${acc.rating??''}">
+          </div>
+          <div class="form-group form-col-span">
+            <label class="form-label">Contact Phone</label>
+            <input class="form-input" id="f_acc_phone" placeholder="+91-…" value="${acc.contact_phone||''}">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" id="accSaveBtn" onclick="saveAccommodation(${acc.id||'null'},${attractionId||acc.attraction_id})">
+          <i class="fas fa-save"></i> Save Accommodation
+        </button>
+      </div>
+    `;
+  }
+
+  function openAddAccommodationModal(attractionId) { openModal(accommodationFormHTML('Add Accommodation', {}, attractionId)); }
+
+  function openEditAccommodationModal(id) {
+    const acc = allData.accommodations.find(x => x.id === id);
+    if (!acc) return;
+    openModal(accommodationFormHTML(`Edit — <span>${acc.name}</span>`, acc, acc.attraction_id));
+  }
+
+  async function saveAccommodation(id, attractionId) {
+    const btn = document.getElementById('accSaveBtn');
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+
+    const rv = id => document.getElementById(id)?.value ?? '';
+    const sv = id => sanitiseText(rv(id));
+    const nv = id => { const v = rv(id).trim(); return v===''?null:parseFloat(v); };
+
+    const rawRating  = nv('f_acc_rating');
+    const safeRating = rawRating != null ? Math.min(5, Math.max(1, rawRating)) : null;
+
+    const payload = {
+      attraction_id:               parseInt(attractionId),
+      name:                        sv('f_acc_name'),
+      type:                        sv('f_acc_type')||null,
+      price_per_night:             nv('f_acc_price'),
+      distance_from_attraction_km: nv('f_acc_dist'),
+      rating:                      safeRating,
+      contact_phone:               sv('f_acc_phone')||null,
+    };
+
+    if (!payload.name) {
+      toast('Name is required', 'error');
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Accommodation'; return;
+    }
+
+    let error;
+    if (id) {
+      ({ error } = await sb.from('accommodations').update(payload).eq('id', id));
+    } else {
+      payload.created_at = new Date().toISOString();
+      ({ error } = await sb.from('accommodations').insert(payload));
+    }
+
+    if (error) { toast('Error: ' + error.message, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Accommodation'; return; }
+
+    toast(id ? 'Accommodation updated!' : 'Accommodation added!');
+    closeModal();
+
+    const distId  = allData.attractions.find(a => a.id === parseInt(attractionId))?.district_id;
+    const attrIds = allData.attractions.map(a => a.id);
+    if (attrIds.length) {
+      const accRes = await sb.from('accommodations').select('*').in('attraction_id', attrIds).order('name');
+      allData.accommodations = accRes.data || [];
+    }
+    const attrOpen = document.getElementById(`attr-${attractionId}`)?.classList.contains('open');
+    const distOpen = distId && document.getElementById(`district-${distId}`)?.classList.contains('open');
+    if (distId) reRenderDistrict(distId);
+    if (distOpen) document.getElementById(`district-${distId}`)?.classList.add('open');
+    if (attrOpen) document.getElementById(`attr-${attractionId}`)?.classList.add('open');
+    updateStats();
+  }
+
+  function confirmDeleteAccommodation(id, name) {
+    openConfirm(
+      `Delete "${name}"?`,
+      'This accommodation record will be permanently removed.',
+      async () => {
+        const acc    = allData.accommodations.find(a => a.id === id);
+        const attrId = acc?.attraction_id;
+        const distId = allData.attractions.find(a => a.id === attrId)?.district_id;
+
+        const { error } = await sb.from('accommodations').delete().eq('id', id);
+        if (error) { toast('Error: ' + error.message, 'error'); return; }
+
+        toast('Accommodation deleted');
+        allData.accommodations = allData.accommodations.filter(a => a.id !== id);
+
+        const distOpen = distId && document.getElementById(`district-${distId}`)?.classList.contains('open');
+        const attrOpen = attrId && document.getElementById(`attr-${attrId}`)?.classList.contains('open');
+        if (distId) reRenderDistrict(distId);
+        if (distOpen) document.getElementById(`district-${distId}`)?.classList.add('open');
+        if (attrOpen) document.getElementById(`attr-${attrId}`)?.classList.add('open');
+        updateStats();
+      }
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────
   //  INIT
-  // ============================================================
+  // ─────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', async () => {
     const session = await BYAuth.check();
     if (!session) return;
-
     await loadStates();
-    await loadHospitals();
-
-    // Set initial sort indicator
-    const th = document.querySelector(`th[data-col="${sortCol}"]`);
-    if (th) th.classList.add('sort-asc');
+    document.getElementById('stateSelect').addEventListener('change', function() {
+      if (this.value) loadStateData(this.value);
+    });
   });
-</script>
+  </script>
+
   <!-- ==================== CUSTOM CURSOR ==================== -->
   <div class="cursor-dot" id="cursorDot"></div>
 
