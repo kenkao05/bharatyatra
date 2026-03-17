@@ -1407,17 +1407,17 @@ body.no-scroll { overflow: hidden; }
     top: 0; left: 0;
     width: 10px; height: 10px;
     border-radius: 50%;
-    background: #8B0000;
+    background: #ef551c; /* Updated color */
     pointer-events: none;
     z-index: 99999;
     transform: translate(-50%, -50%);
     will-change: transform;
-    mix-blend-mode: multiply;
+    mix-blend-mode: normal; /* Fixed typo from nromal to normal */
   }
 
   .cursor-dot.hovering {
     width: 16px; height: 16px;
-    background: #660000;
+    background: #dc9a9a; /* Updated hover color */
   }
 
   .cursor-dot {

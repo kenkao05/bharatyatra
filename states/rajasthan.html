@@ -1646,17 +1646,17 @@
         top: 0; left: 0;
         width: 10px; height: 10px;
         border-radius: 50%;
-        background: #8B0000;
+        background: #ef551c; /* Updated color */
         pointer-events: none;
         z-index: 99999;
         transform: translate(-50%, -50%);
         will-change: transform;
-        mix-blend-mode: multiply;
+        mix-blend-mode: normal; /* Fixed typo from nromal to normal */
       }
 
       .cursor-dot.hovering {
         width: 16px; height: 16px;
-        background: #660000;
+        background: #dc9a9a; /* Updated hover color */
       }
 
       .cursor-dot {
@@ -1722,6 +1722,7 @@
     <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
     <p class="sidebar-tagline">Discover Incredible India</p>
     <ul class="sidebar-links">
+        <li><a href="../portals.html"><i class="fa-solid fa-archway"></i> Portals</a></li>
       <li><a href="../destinations.html"><i class="fas fa-map-marker-alt"></i> Destinations</a></li>
       <li><a href="../experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
       <li><a href="../travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
@@ -2480,7 +2481,7 @@
           const distFade = Math.max(0, 1 - dist / 180);
           t.el.style.opacity = (baseOpacity * distFade).toFixed(3);
           const colorAlpha = Math.max(0.08, 1 - i / TRAIL_COUNT);
-          t.el.style.borderColor = `rgba(139, 0, 0, ${colorAlpha.toFixed(2)})`;
+          t.el.style.borderColor = `rgba(239, 85, 28, ${colorAlpha.toFixed(2)})`;
         });
 
         requestAnimationFrame(animate);

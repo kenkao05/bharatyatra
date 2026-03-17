@@ -956,7 +956,7 @@
           const distFade = Math.max(0, 1 - dist / 180);
           t.el.style.opacity = (baseOpacity * distFade).toFixed(3);
           const colorAlpha = Math.max(0.08, 1 - i / TRAIL_COUNT);
-          t.el.style.borderColor = `rgba(139, 0, 0, ${colorAlpha.toFixed(2)})`;
+          t.el.style.borderColor = `rgba(239, 85, 28, ${colorAlpha.toFixed(2)})`;
         });
 
         requestAnimationFrame(animate);
