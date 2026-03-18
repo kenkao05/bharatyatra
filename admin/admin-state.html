@@ -8,8 +8,7 @@
                  script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com;
                  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
                  font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-                 img-src 'self' data: https:;
-                 frame-ancestors 'none';">
+                 img-src 'self' data: https:;">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
   <title>Admin — Content Manager | BharatYatra</title>
@@ -1125,12 +1124,12 @@
           <div class="form-group">
             <label class="form-label">Image</label>
             <div class="img-field-wrap">
-              <input class="form-input" id="f_d_img" placeholder="https://… or use Browse →" value="${d.image_url||''}">
+              <input class="form-input" id="f_d_img" placeholder="https://… or use Browse →" ${d.image_url ? `value="${d.image_url}"` : ''}>
               <button type="button" class="btn-img-pick" onclick="openImgMgr('f_d_img','districts')">
                 <i class="fas fa-images"></i> Browse
               </button>
             </div>
-            <img id="f_d_img_prev" src="${d.image_url||''}" class="img-current-preview" style="${d.image_url?'':'display:none;'}" onerror="this.style.display='none'">
+            <img id="f_d_img_prev" ${d.image_url ? `src="${d.image_url}"` : ''} class="img-current-preview" style="${d.image_url?'':'display:none;'}" onerror="this.style.display='none'">
           </div>
         </div>
       </div>
@@ -1169,7 +1168,6 @@
       slug:        sanitiseText(document.getElementById('f_d_slug').value).toLowerCase().replace(/[^a-z0-9-]/g,''),
       description: sanitiseText(document.getElementById('f_d_desc').value),
       image_url:   sanitiseUrl(document.getElementById('f_d_img').value) || null,
-      updated_at:  new Date().toISOString()
     };
 
     if (!payload.name || !payload.slug) {
@@ -1179,7 +1177,11 @@
 
     let error;
     if (id) {
-      ({ error } = await sb.from('districts').update(payload).eq('id', id));
+      ({ error } = await sb.from('districts').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', id));
+      // If updated_at column doesn't exist in schema, retry without it
+      if (error && (error.message?.includes('updated_at') || error.code === '42703')) {
+        ({ error } = await sb.from('districts').update(payload).eq('id', id));
+      }
     } else {
       payload.created_at = new Date().toISOString();
       ({ error } = await sb.from('districts').insert(payload));
@@ -1208,7 +1210,7 @@
   //  ATTRACTION MODALS
   // ─────────────────────────────────────────────────────────
   function attractionFormHTML(title, a = {}, districtId) {
-    const types = ['Historical','Religious','Wildlife','Nature','Beach','Adventure','Cultural','Heritage','Museum','Scenic','Recreation','Spiritual'];
+    const types = ['Adventure','Beach','Cultural','Experience','Historical','Modern','Monument','Museum','Nature','Recreation','Religious','Scenic','Urban','Wellness','Wildlife'];
     return `
       <div class="modal-header">
         <span class="modal-title">${title}</span>
@@ -1301,7 +1303,7 @@
                 <i class="fas fa-images"></i> Browse
               </button>
             </div>
-            <img id="f_img_prev" src="${a.image_url||''}" class="img-current-preview" style="${a.image_url?'':'display:none;'}" onerror="this.style.display='none'">
+            <img id="f_img_prev" ${a.image_url ? `src="${a.image_url}"` : ''} class="img-current-preview" style="${a.image_url?'':'display:none;'}" onerror="this.style.display='none'">
           </div>
 
           <div class="form-group">
@@ -1365,29 +1367,35 @@
     const btn = document.getElementById('attrSaveBtn');
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
 
+    if (!currentStateId) {
+      toast('No state selected — please select a state first.', 'error');
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Attraction';
+      return;
+    }
+
     const rv = id => document.getElementById(id)?.value ?? '';
     const sv = id => sanitiseText(rv(id));
     const uv = id => sanitiseUrl(rv(id));
-    const nv = id => { const v = rv(id).trim(); return v===''?null:parseFloat(v); };
+    const nv = id => { const v = rv(id).trim(); if (v==='') return null; const n = parseFloat(v); return isNaN(n) ? null : n; };
     const cb = id => document.getElementById(id)?.checked||false;
 
-    const score = Math.min(10, Math.max(1, parseInt(rv('f_priority_score'))||5));
+    const score = (() => { const n = parseInt(rv('f_priority_score')); return Math.min(10, Math.max(1, isNaN(n) ? 5 : n)); })();
 
     const payload = {
       state_id:             parseInt(currentStateId),
       district_id:          parseInt(districtId),
       name:                 sv('f_name'),
       slug:                 sv('f_slug').toLowerCase().replace(/[^a-z0-9-]/g,''),
-      short_description:    sv('f_short_desc')||null,
+      short_description:    sv('f_short_desc')||'',
       description:          sv('f_desc'),
       type:                 sv('f_type')||null,
       category:             sv('f_category')||null,
       priority_score:       score,
-      entry_fee:            nv('f_entry_fee'),
-      estimated_time_hours: nv('f_est_time'),
-      city:                 sv('f_city')||null,
-      address:              sv('f_address')||null,
-      best_time_note:       sv('f_best_time')||null,
+      entry_fee:            nv('f_entry_fee') ?? 0,
+      estimated_time_hours: nv('f_est_time') ?? 1,
+      city:                 sv('f_city')||'Unknown',
+      address:              sv('f_address')||'',
+      best_time_note:       sv('f_best_time')||'Year-round',
       image_url:            uv('f_img')||null,
       contact_phone:        sv('f_phone')||null,
       website_url:          uv('f_website')||null,
@@ -1395,23 +1403,34 @@
       is_must_visit:        cb('f_must_visit'),
       is_state_featured:    cb('f_state_featured'),
       guide_available:      cb('f_guide_avail'),
-      updated_at:           new Date().toISOString()
     };
 
     if (!payload.name || !payload.slug || !payload.description) {
       toast('Name, Slug and Description are required', 'error');
       btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Attraction'; return;
     }
+    if (!sv('f_type')) {
+      toast('Please select a Type', 'error');
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Attraction'; return;
+    }
 
     let error;
     if (id) {
-      ({ error } = await sb.from('attractions').update(payload).eq('id', id));
+      ({ error } = await sb.from('attractions').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', id));
+      // If updated_at column doesn't exist in schema, retry without it
+      if (error && (error.message?.includes('updated_at') || error.code === '42703')) {
+        ({ error } = await sb.from('attractions').update(payload).eq('id', id));
+      }
     } else {
       payload.created_at = new Date().toISOString();
       ({ error } = await sb.from('attractions').insert(payload));
     }
 
-    if (error) { toast('Error: ' + error.message, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Attraction'; return; }
+    if (error) {
+      const detail = [error.message, error.details, error.hint, error.code].filter(Boolean).join(' | ');
+      toast('Error: ' + detail, 'error');
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Attraction'; return;
+    }
 
     toast(id ? 'Attraction updated!' : 'Attraction added!');
     closeModal();
@@ -1505,7 +1524,7 @@
 
     const rv = id => document.getElementById(id)?.value ?? '';
     const sv = id => sanitiseText(rv(id));
-    const nv = id => { const v = rv(id).trim(); return v===''?null:parseFloat(v); };
+    const nv = id => { const v = rv(id).trim(); if (v==='') return null; const n = parseFloat(v); return isNaN(n) ? null : n; };
 
     const rawRating  = nv('f_acc_rating');
     const safeRating = rawRating != null ? Math.min(5, Math.max(1, rawRating)) : null;
