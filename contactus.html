@@ -17,12 +17,12 @@
         style-src  'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
         font-src   'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
         img-src    'self' data: https:;
-        connect-src 'self' https://*.supabase.co;
-        frame-ancestors 'none';
+        connect-src 'self' https://*.supabase.co https://cdn.jsdelivr.net;
         base-uri 'self';
         form-action 'self';
         object-src 'none';
     ">
+    <!-- frame-ancestors must be set as an HTTP header (not meta) — configure in vercel.json -->
 
     <!-- 2. Referrer Policy — prevents URL leakage to third parties -->
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -725,7 +725,7 @@
                             <div class="ct-field">
                                 <label for="f-phone">Phone Number</label>
                                 <input type="tel" id="f-phone" name="phone" placeholder="10-digit mobile number"
-                                       pattern="[0-9]{10}" maxlength="15" inputmode="numeric"
+                                       pattern="[0-9]{10}" maxlength="10" inputmode="numeric"
                                        autocomplete="tel" required>
                             </div>
 
@@ -940,8 +940,9 @@
             if (!Number.isInteger(p.age) || p.age < 1 || p.age > 120)
                 errors.push('Age must be a number between 1 and 120.');
 
-            // Phone: exactly 10 digits
-            if (!PHONE_REGEX.test(p.phone))
+            // Phone: strip any non-digit chars (sanitise may encode special chars), then check 10 digits
+            const phoneDigits = p.phone.replace(/\D/g, '');
+            if (!PHONE_REGEX.test(phoneDigits))
                 errors.push('Phone must be exactly 10 digits.');
 
             // Email: RFC format
@@ -985,6 +986,13 @@
         ───────────────────────────────────────────────────────── */
         const form      = document.getElementById('contact-form');
         const submitBtn = document.getElementById('submit-btn');
+
+        // Clear error banner whenever the user edits any field after a failed submit
+        form.querySelectorAll('input, select, textarea').forEach(el => {
+            el.addEventListener('input', () => {
+                document.getElementById('msg-error').style.display = 'none';
+            });
+        });
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
