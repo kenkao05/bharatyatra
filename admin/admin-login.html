@@ -281,6 +281,62 @@
     .btn-login.loading .spinner { display: inline-block; }
     .btn-login.loading .btn-text { display: none; }
 
+    /* Keep button looking active while Supabase responds */
+    .btn-login.loading {
+      background: #0e7490;
+      color: #e8f0f7;
+    }
+
+    /* ── SUCCESS STATE — animated progress bar ── */
+    .btn-login.success {
+      position: relative;
+      overflow: hidden;
+      cursor: not-allowed;
+      background: #0e7490;
+      color: transparent;
+    }
+    .btn-login.success .btn-text,
+    .btn-login.success .spinner { display: none !important; }
+
+    /* Solid fill that grows left→right */
+    .btn-login.success::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #06b6d4;
+      transform-origin: left center;
+      transform: scaleX(0);
+      animation: progressFill 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Shimmer sweep on top */
+    .btn-login.success::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -60%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,255,255,0.25) 50%,
+        transparent 100%
+      );
+      animation: progressSweep 0.7s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    @keyframes progressFill {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+
+    @keyframes progressSweep {
+      from { left: -60%; }
+      to   { left: 110%; }
+    }
+
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Footer note */
@@ -572,7 +628,20 @@
         clearLockoutInterval();
         BYRateLimit.reset();
         sessionStorage.removeItem('by_admin_uid');
-        window.location.replace('admin-dashboard.html');
+
+        // Switch to success/progress-bar state.
+        // Two rAF calls guarantee the browser has painted the new class
+        // before navigation fires — otherwise the CSS never renders.
+        btn.classList.remove('loading');
+        btn.classList.add('success');
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              window.location.replace('admin-dashboard.html');
+            }, 1200);
+          });
+        });
 
       } catch (err) {
         showError('A network error occurred. Please try again.');

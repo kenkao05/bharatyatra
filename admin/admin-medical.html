@@ -680,18 +680,90 @@
     @media (max-width: 768px) {
       #main { padding: calc(var(--header-h) + 24px) 16px 60px; }
       #admin-header { padding: 0 16px; }
+
+      /* Collapse header buttons to icon-only — no text labels */
+      .btn-back span,
+      .btn-logout span { display: none; }
+      .btn-back,
+      .btn-logout {
+        padding: 8px 10px;
+        gap: 0;
+      }
+
+      .header-title { display: none; }
+
       .stats-row { grid-template-columns: 1fr 1fr; }
-      .toolbar { flex-direction: column; align-items: stretch; }
+
+      /* Toolbar: search full-width on top, filters in a 2-col grid below */
+      .toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
       .search-wrap { max-width: 100%; }
-      .toolbar-right { margin-left: 0; }
+      .toolbar-right { display: none; } /* Add button already in page title row */
+
+      /* Put the two filter selects side by side */
+      #stateFilter,
+      #typeFilter {
+        flex: 1;
+        min-width: 0;
+      }
+      /* Wrap the two selects in a row — done via JS-free sibling selector */
+      #stateFilter + #typeFilter { margin-left: 0; }
+
+      /* Use a flex row for the two selects */
+      .toolbar > .filter-select {
+        flex: 1 1 calc(50% - 5px);
+        min-width: 0;
+      }
+      /* Override the column direction just for the selects */
+      .toolbar {
+        flex-wrap: wrap;
+        flex-direction: row;
+      }
+      .toolbar > .search-wrap {
+        flex: 1 1 100%;
+      }
+      .toolbar > .toolbar-right {
+        flex: 1 1 100%;
+      }
+
       .form-grid { grid-template-columns: 1fr; }
       .form-col-span { grid-column: 1; }
       .td-address { display: none; }
-      .header-title { display: none; }
+
+      /* Modal full-width on mobile */
+      .modal-box { max-width: 100%; border-radius: 12px; }
+      .modal-body { padding: 18px 18px; }
+      .modal-header { padding: 18px 18px 14px; }
+
+      /* Stack modal footer buttons */
+      .modal-footer {
+        flex-direction: column-reverse;
+        padding: 14px 18px 18px;
+      }
+      .btn-cancel,
+      .btn-save { width: 100%; justify-content: center; padding: 12px; }
+
+      /* Bigger tap targets for icon action buttons */
+      .btn-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
+      }
     }
 
     @media (max-width: 480px) {
-      .stats-row { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .page-title { font-size: 22px; }
+
+      /* Selects full-width on very small phones */
+      .toolbar > .filter-select { flex: 1 1 100%; }
+
+      /* Modal slides up from bottom on phones */
+      .modal-overlay { align-items: flex-end; padding: 0; }
+      .modal-box {
+        max-height: 92vh;
+        border-radius: 14px 14px 0 0;
+        border-bottom: none;
+      }
     }
 
     /* ==================== CUSTOM CURSOR ==================== */
@@ -746,10 +818,10 @@
     </div>
     <div class="header-right">
       <a href="admin-dashboard.html" class="btn-back">
-        <i class="fas fa-arrow-left"></i> Dashboard
+        <i class="fas fa-arrow-left"></i> <span>Dashboard</span>
       </a>
       <button class="btn-logout" onclick="handleLogout()">
-        <i class="fas fa-sign-out-alt"></i> Logout
+        <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
       </button>
     </div>
   </header>

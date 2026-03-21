@@ -482,20 +482,82 @@
     }
 
     /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      #admin-header { padding: 0 24px; }
+      #main { padding: calc(var(--header-h) + 32px) 24px 60px; }
+    }
+
     @media (max-width: 768px) {
-      #main { padding: calc(var(--header-h) + 24px) 16px 60px; }
       #admin-header { padding: 0 16px; }
-      .stats-row { grid-template-columns: 1fr 1fr; }
-      .toolbar { flex-direction: column; align-items: stretch; }
-      .search-wrap { max-width: 100%; }
-      .toolbar-right { margin-left: 0; }
-      .header-title { display: none; }
-      .td-statement { display: none; }
+      #main { padding: calc(var(--header-h) + 24px) 16px 60px; }
+
+      /* Header: collapse to icon-only */
+      .header-title  { display: none; }
+      .header-divider { display: none; }
+      .btn-back span,
+      .btn-logout span { display: none; }
+      .btn-back,
+      .btn-logout { padding: 8px 10px; gap: 0; }
+
+      /* Stats: 2-col */
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+      .stat-card { padding: 14px 14px; }
+      .stat-num  { font-size: 22px; }
+      .stat-icon { width: 36px; height: 36px; font-size: 15px; }
+
+      /* Toolbar: search full-width, selects side-by-side, reset full-width */
+      .toolbar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .search-wrap { flex: 1 1 100%; max-width: 100%; }
+      .filter-select { flex: 1 1 calc(50% - 4px); min-width: 0; }
+      .toolbar-right { flex: 1 1 100%; margin-left: 0; }
+      .toolbar-right .btn-back { width: 100%; justify-content: center; border-radius: var(--radius-sm); }
+
+      /* Page title */
+      .page-title { font-size: 22px; }
+
+      /* Action buttons: bigger tap targets */
+      .btn-view,
+      .btn-del { width: 36px; height: 36px; font-size: 13px; }
+
+      /* Detail modal: bottom sheet */
+      .modal-overlay { padding: 0; align-items: flex-end; }
+      .modal-box {
+        max-width: 100%;
+        max-height: 92vh;
+        border-radius: 14px 14px 0 0;
+        border-bottom: none;
+      }
+      .modal-header { padding: 16px 18px 14px; }
+      .modal-body   { padding: 18px 18px 20px; }
+      .modal-footer {
+        flex-direction: column-reverse;
+        padding: 12px 18px 20px;
+      }
+      .btn-cancel,
+      .btn-delete-modal { width: 100%; justify-content: center; padding: 12px; }
+
+      /* Detail grid: 1-col already set, keep it */
       .detail-grid { grid-template-columns: 1fr; }
       .detail-item.full { grid-column: 1; }
     }
+
     @media (max-width: 480px) {
-      .stats-row { grid-template-columns: 1fr; }
+      /* Keep stats 2-col — 1-col is too sparse */
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .stat-card { padding: 12px 10px; }
+      .stat-num  { font-size: 20px; }
+      .stat-lbl  { font-size: 10px; }
+      .stat-icon { width: 32px; height: 32px; font-size: 14px; }
+
+      /* Both filters stack full-width on very small phones */
+      .filter-select { flex: 1 1 100%; }
+
+      .page-title { font-size: 20px; }
     }
 
     /* ==================== CUSTOM CURSOR ==================== */
@@ -552,10 +614,10 @@
     </div>
     <div class="header-right">
       <a href="admin-dashboard.html" class="btn-back">
-        <i class="fas fa-arrow-left"></i> Dashboard
+        <i class="fas fa-arrow-left"></i> <span>Dashboard</span>
       </a>
       <button class="btn-logout" onclick="handleLogout()">
-        <i class="fas fa-sign-out-alt"></i> Logout
+        <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
       </button>
     </div>
   </header>

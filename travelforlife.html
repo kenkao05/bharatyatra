@@ -24,13 +24,14 @@
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
 
     body {
       font-family: 'Poppins', sans-serif;
       background: #f5f7fb;
       color: #333;
       overflow-x: hidden;
+      max-width: 100vw;
     }
     body.no-scroll { overflow: hidden; }
 
@@ -288,7 +289,8 @@
 
     /* ── HERO ── */
     .hero {
-      margin-top: 60px;
+      margin-top: 0;
+      padding-top: 60px;
       position: relative;
       height: 92vh;
       min-height: 560px;
@@ -767,19 +769,51 @@
 
     /* ── MOBILE ── */
     @media (max-width: 900px) {
+      .nav-container { padding: 0 24px; }
+      .logo { font-size: 1.5rem; }
       .what-is-inner { grid-template-columns: 1fr; gap: 40px; }
+      .what-is-img img { height: 320px; }
       .pillars-grid  { grid-template-columns: 1fr; }
       .pledge-grid   { grid-template-columns: 1fr; }
       .stats-inner   { grid-template-columns: repeat(2, 1fr); }
       .steps-grid    { grid-template-columns: 1fr; }
-      .footer-inner  { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .footer-inner  { grid-template-columns: 1fr 1fr; gap: 28px; padding: 0 20px 44px; }
       .footer-inner > .footer-brand { grid-column: 1 / -1; }
     }
     @media (max-width: 600px) {
-      :root { --sidebar-width: 100%; }
-      .logo { font-size: 18px; }
+      :root { --sidebar-width: 85vw; }
+      .nav-container { padding: 0 18px; }
+      .logo { font-size: 1.3rem; letter-spacing: 2px; }
+      .menu-btn { font-size: 1.4rem; }
+      .nav-back-btn { padding: 6px 10px; font-size: 0; letter-spacing: 0; }
+      .nav-back-btn i { font-size: 14px; }
       .stats-inner { grid-template-columns: 1fr 1fr; }
-      .hero { height: 80vh; }
+      .hero { height: 85vh; }
+      .cta-banner { padding: 60px 20px; }
+    }
+    @media (max-width: 480px) {
+      :root { --sidebar-width: 100%; }
+      .sidebar { padding: 50px 22px 36px; border-left: none; }
+      .nav-container { padding: 0 14px; }
+      .logo { font-size: 1.1rem; letter-spacing: 1.5px; }
+      .what-is-inner { padding: 0 16px; }
+      .pillars-inner, .pledge-inner, .how-to-inner { padding: 0 16px; }
+      .stats-inner { padding: 0 16px; grid-template-columns: 1fr 1fr; gap: 20px; }
+      .stat-number { font-size: 2.2rem; }
+      .pillar-card, .step-card { padding: 28px 20px; }
+      .pledge-item { padding: 16px 16px; }
+      .cta-banner { padding: 48px 16px; }
+      .cta-btns { flex-direction: column; align-items: center; }
+      .cta-btn-primary, .cta-btn-outline { width: 100%; justify-content: center; }
+      .footer-inner { grid-template-columns: 1fr; gap: 24px; padding: 0 16px 36px; }
+      .footer-brand { padding-bottom: 8px; border-bottom: 1px solid #1a1a1a; }
+      .footer-logo { font-size: 1.2rem; }
+      .footer-tagline { font-size: 12px; }
+      .footer-links li a { font-size: 13px; padding: 10px 0; }
+      .social-btn { width: 36px; height: 36px; font-size: 14px; }
+      .footer-contact-btn { width: 100%; justify-content: center; padding: 11px 0; font-size: 11px; }
+      .footer-bottom { padding: 16px; }
+      .footer-bottom p { font-size: 11px; }
     }
     /* ==================== CUSTOM CURSOR ==================== */
     @media (pointer: fine) {

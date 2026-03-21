@@ -536,7 +536,40 @@
       to   { opacity: 1; transform: translateX(0); }
     }
 
-    /* ── IMAGE FIELD ── */
+    /* ── CATEGORY PICKER ── */
+    .cat-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 4px 0;
+    }
+    .cat-pick-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      opacity: 0.45;
+      background: var(--bg-col);
+      color: var(--txt-col);
+      border-color: var(--txt-col);
+    }
+    .cat-pick-btn:hover { opacity: 0.75; }
+    .cat-pick-btn.selected {
+      opacity: 1;
+      background: var(--bg-col);
+      box-shadow: 0 0 0 1px var(--txt-col), 0 0 10px rgba(0,0,0,0.2);
+    }
+    /* Hidden native select keeps the form value in sync */
+    .cat-picker-select { display: none; }
     .img-field-wrap { display: flex; gap: 8px; align-items: stretch; }
     .img-field-wrap .form-input { flex: 1; }
     .btn-img-pick {
@@ -640,20 +673,114 @@
     .modal-box.modal-wide { max-width: 860px; }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 1024px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 1024px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+    }
+
     @media (max-width: 768px) {
       #main { padding: calc(var(--header-h) + 24px) 16px 60px; }
       #admin-header { padding: 0 16px; }
-      .stats-row { grid-template-columns: 1fr 1fr; }
-      .toolbar { flex-direction: column; align-items: stretch; }
-      .search-wrap { max-width: 100%; }
-      .toolbar-right { margin-left: 0; }
+
+      /* Header: collapse buttons to icon-only */
+      .header-title { display: none; }
+      .header-divider { display: none; }
+      .btn-back span,
+      .btn-logout span { display: none; }
+      .btn-back,
+      .btn-logout { padding: 8px 10px; gap: 0; }
+
+      /* Stats */
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+      .stat-card { padding: 14px 14px; }
+      .stat-num  { font-size: 22px; }
+      .stat-icon { width: 36px; height: 36px; font-size: 15px; }
+
+      /* Toolbar: search full-width on top, then filters in a 2-col wrap below */
+      .toolbar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .search-wrap {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+      .filter-select {
+        flex: 1 1 calc(50% - 4px);
+        min-width: 0;
+      }
+      .toolbar-right {
+        flex: 1 1 100%;
+        margin-left: 0;
+      }
+      .toolbar-right .btn { width: 100%; justify-content: center; }
+
+      /* Page title row */
+      .page-title { font-size: 22px; }
+
+      /* Single view button per row — just ensure good tap target */
+      .btn-view-ev { width: 38px; height: 38px; }
+
+      /* Add/Edit modal */
+      .modal-overlay { padding: 0; align-items: flex-end; }
+      .modal-box {
+        max-width: 100%;
+        max-height: 92vh;
+        border-radius: 14px 14px 0 0;
+        border-bottom: none;
+      }
+      .modal-header { padding: 16px 18px 14px; }
+      .modal-body   { padding: 16px 18px; }
+      .modal-footer {
+        flex-direction: column-reverse;
+        padding: 14px 18px 20px;
+        position: sticky;
+        bottom: 0;
+      }
+      .btn-cancel,
+      .btn-save { width: 100%; justify-content: center; padding: 12px; }
+
+      /* Detail view modal */
+      .detail-grid { grid-template-columns: 1fr; }
+      .detail-item.full { grid-column: 1; }
+      /* Detail modal footer: stack on mobile */
+      .detail-footer-row { flex-direction: column; align-items: stretch; gap: 10px; }
+      .detail-footer-row .detail-flags { width: 100%; }
+      .detail-footer-row .detail-flags .feat-btn { width: 100%; justify-content: center; }
+      .detail-footer-row > div:last-child { display: flex; gap: 8px; }
+      .detail-footer-row > div:last-child .btn-cancel,
+      .detail-footer-row > div:last-child .btn { flex: 1; justify-content: center; padding: 10px 8px; font-size: 12px; }
+
+      /* Form grid */
       .form-grid { grid-template-columns: 1fr; }
       .form-col-span { grid-column: 1; }
-      .header-title { display: none; }
-      .td-desc { display: none; }
+
+      /* Image manager: constrain wide modal on mobile */
+      .modal-box.modal-wide { max-width: 100%; }
+      .imgmgr-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        max-height: 280px;
+      }
     }
-    @media (max-width: 480px) { .stats-row { grid-template-columns: 1fr; } }
+
+    @media (max-width: 480px) {
+      /* Stats: keep 2-col — 1-col is too sparse for 4 cards */
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .stat-card { padding: 12px 10px; }
+      .stat-num  { font-size: 20px; }
+      .stat-lbl  { font-size: 10px; }
+      .stat-icon { width: 32px; height: 32px; font-size: 14px; }
+
+      /* All 3 filters go full-width on very small phones */
+      .filter-select { flex: 1 1 100%; }
+
+      .page-title { font-size: 20px; }
+      .page-title-row { margin-bottom: 20px; }
+
+      /* Image manager thumbs even tighter */
+      .imgmgr-grid { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); }
+    }
 
     /* ==================== CUSTOM CURSOR ==================== */
     @media (pointer: fine) {
@@ -707,10 +834,10 @@
     </div>
     <div class="header-right">
       <a href="admin-dashboard.html" class="btn-back">
-        <i class="fas fa-arrow-left"></i> Dashboard
+        <i class="fas fa-arrow-left"></i> <span>Dashboard</span>
       </a>
       <button class="btn-logout" onclick="BYAuth.logout('user_initiated')">
-        <i class="fas fa-sign-out-alt"></i> Logout
+        <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
       </button>
     </div>
   </header>
@@ -958,7 +1085,7 @@
   // ============================================================
   //  CONSTANTS
   // ============================================================
-  const CATEGORIES     = ['Festival','Cultural Show','Religious','Concert','Food & Craft Fair','Adventure','Sports'];
+  const CATEGORIES     = ['Festival','Concert','Cultural Show','Religious','Sports','Food & Craft Fair','Adventure'];
   const STATE_MAP      = { 1:'Gujarat', 2:'Rajasthan', 3:'Kerala', 4:'Uttarakhand', 5:'Assam' };
   const BUCKET         = 'bharatyatra-images';
   const STORAGE_PUBLIC = 'https://gtpnojbbamoaznlutxap.supabase.co/storage/v1/object/public/' + BUCKET + '/';
@@ -1206,14 +1333,8 @@
           <td style="font-size:12px; color:var(--muted);">${san(stateName)}</td>
           <td>
             <div class="td-actions">
-              <button class="btn-view-ev" onclick="openDetail(${e.id})" title="View details">
+              <button class="btn-view-ev" onclick="openDetail(${e.id})" title="View / Edit / Delete">
                 <i class="fas fa-eye"></i>
-              </button>
-              <button class="btn-edit-ev" onclick="openEditModal(${e.id})" title="Edit">
-                <i class="fas fa-pen"></i>
-              </button>
-              <button class="btn-del-ev" onclick="confirmDelete(${e.id}, '${san(e.name).replace(/'/g,"\\'")}');" title="Delete">
-                <i class="fas fa-trash"></i>
               </button>
             </div>
           </td>
@@ -1274,10 +1395,13 @@
               <i class="fas fa-star"></i> ${e.is_featured ? 'Unfeature' : 'Mark as Featured'}
             </button>
           </div>
-          <div style="display:flex; gap:8px;">
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button class="btn-cancel" onclick="closeDetail()">Close</button>
             <button class="btn btn-edit btn-sm" onclick="closeDetail(); openEditModal(${e.id})">
               <i class="fas fa-pen"></i> Edit
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="closeDetail(); confirmDelete(${e.id}, '${san(e.name).replace(/'/g, "\\'")}')">
+              <i class="fas fa-trash"></i> Delete
             </button>
           </div>
         </div>
@@ -1330,20 +1454,34 @@
                    placeholder="e.g. Rann Utsav" value="${san(ev.name || '')}">
           </div>
 
-          <!-- State + Category -->
-          <div class="form-group">
+          <!-- State -->
+          <div class="form-group form-col-span">
             <label class="form-label">State <span class="required">*</span></label>
             <select class="form-select" id="f_state_id">
               <option value="">— Select State —</option>
               ${stateOptions}
             </select>
           </div>
-          <div class="form-group">
+          <div class="form-group form-col-span">
             <label class="form-label">Category <span class="required">*</span></label>
-            <select class="form-select" id="f_category">
+            <select class="cat-picker-select form-select" id="f_category">
               <option value="">— Select Category —</option>
               ${catOptions}
             </select>
+            <div class="cat-picker" id="catPicker">
+              ${CATEGORIES.map(c => {
+                const cls = CAT_CLASS[c] || 'festival';
+                const icon = {'Festival':'fa-star','Concert':'fa-music','Cultural Show':'fa-theater-masks','Religious':'fa-place-of-worship','Sports':'fa-trophy','Food & Craft Fair':'fa-utensils','Adventure':'fa-mountain'}[c] || 'fa-tag';
+                const sel = ev.category === c ? 'selected' : '';
+                return `<button type="button" class="cat-pick-btn ${sel}"
+                  style="--bg-col:var(--cat-${cls}-bg);--txt-col:var(--cat-${cls}-txt);"
+                  data-cat="${c}"
+                  onclick="pickCategory('${c}', this)">
+                  <i class="fas ${icon}"></i>${c}
+                </button>`;
+              }).join('')}
+            </div>
+            <div class="form-hint">Tap to select — must match one of the 7 allowed categories</div>
           </div>
 
           <!-- Date From + Date To -->
@@ -1620,6 +1758,19 @@
     } else {
       box.classList.remove('visible');
     }
+  }
+
+  // ============================================================
+  //  CATEGORY PICKER
+  // ============================================================
+  function pickCategory(value, btn) {
+    // Update hidden select so saveEvent() reads the value normally
+    const sel = document.getElementById('f_category');
+    if (sel) sel.value = value;
+    // Toggle selected state on buttons
+    document.querySelectorAll('#catPicker .cat-pick-btn').forEach(b => {
+      b.classList.toggle('selected', b === btn);
+    });
   }
 
   // ============================================================

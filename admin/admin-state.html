@@ -323,13 +323,146 @@
     .cat-field-wrap .form-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
 
     /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      #admin-header { padding: 0 24px; }
+      #main { max-width: 100%; padding: calc(var(--header-h) + 32px) 24px 60px; }
+    }
+
     @media (max-width: 768px) {
-      #main { padding: calc(var(--header-h) + 24px) 16px 60px; }
-      .stats-row { grid-template-columns: 1fr 1fr; }
+      #admin-header { padding: 0 16px; }
+      #main { padding: calc(var(--header-h) + 20px) 16px 60px; }
+
+      /* ── Header: collapse to icon-only ── */
+      .header-title   { display: none; }
+      .header-divider { display: none; }
+      .btn-back span,
+      .btn-logout span { display: none; }
+      .btn-back,
+      .btn-logout { padding: 8px 10px; gap: 0; }
+
+      /* ── Page title ── */
+      .page-title { font-size: 22px; }
+      .page-title-row { margin-bottom: 20px; }
+
+      /* ── State selector: stack vertically ── */
+      .state-selector-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .selector-label { margin-bottom: 0; }
+      .state-select { min-width: 0; width: 100%; }
+      .state-selector-row > .btn { width: 100%; justify-content: center; }
+
+      /* ── Stats: 2-col, tighter ── */
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+      .stat-card { padding: 14px 12px; gap: 12px; }
+      .stat-icon { width: 36px; height: 36px; font-size: 15px; }
+      .stat-num  { font-size: 22px; }
+      .stat-lbl  { font-size: 10px; }
+
+      /* ── Section header ── */
+      .section-header { margin-bottom: 12px; }
+
+      /* ── District rows: hide count badge, bigger tap targets ── */
+      .district-row { padding: 14px 14px; gap: 10px; }
+      .district-name { font-size: 14px; }
+      .district-row > .badge { display: none; }  /* count redundant — visible inside */
+      .district-actions { gap: 6px; }
+      .district-actions .btn-icon {
+        width: 36px; height: 36px; font-size: 13px;
+      }
+      .district-body { padding: 0 14px 16px; }
+
+      /* ── Attraction rows ── */
+      .attraction-row { padding: 10px 12px; gap: 8px; }
+      .attraction-score { width: 28px; height: 28px; font-size: 12px; border-radius: 6px; }
+      .attraction-name { font-size: 12px; }
+      .attraction-meta { font-size: 10px; gap: 5px; }
+      .attraction-badges { display: none; }   /* already hidden — keep hidden */
+      .attraction-actions { gap: 5px; }
+      .attraction-actions .btn-icon {
+        width: 36px; height: 36px; font-size: 12px;
+      }
+      .attraction-body { padding: 0 12px 12px; }
+
+      /* ── Accommodation rows ── */
+      .acc-row { padding: 10px 12px; gap: 8px; flex-wrap: wrap; }
+      .acc-name { font-size: 12px; width: 100%; }
+      .acc-meta { font-size: 10px; flex: 1; }
+      .acc-actions { gap: 5px; }
+      .acc-actions .btn-icon {
+        width: 36px; height: 36px; font-size: 12px;
+      }
+      .acc-section-header { padding: 10px 0 8px; }
+
+      /* ── Add attraction / add accommodation buttons in headers ── */
+      .section-header .btn-sm,
+      .acc-section-header .btn-sm { font-size: 11px; padding: 6px 12px; }
+
+      /* ── All modals: bottom-sheet ── */
+      .modal-overlay { padding: 0; align-items: flex-end; }
+      .modal-box {
+        max-width: 100%;
+        max-height: 92vh;
+        border-radius: 14px 14px 0 0;
+        border-bottom: none;
+      }
+      /* Image manager & category picker also bottom-sheet */
+      .modal-box.modal-wide { max-width: 100%; }
+
+      /* Modal header/body/footer tighten */
+      .modal-header { padding: 16px 18px 14px; }
+      .modal-body   { padding: 16px 18px; }
+      .modal-footer {
+        flex-direction: column-reverse;
+        padding: 12px 18px 20px;
+        position: sticky;
+        bottom: 0;
+        background: #0d1829;
+      }
+      .btn-cancel,
+      .btn-save { width: 100%; justify-content: center; padding: 12px; }
+
+      /* Confirm box: keep centred (it's small) but bottom-sheet on phones */
+      .confirm-box { max-width: 100%; }
+
+      /* Form grid already 1-col at 768px ✓ */
       .form-grid { grid-template-columns: 1fr; }
       .form-col-span { grid-column: 1; }
-      .attraction-badges { display: none; }
-      .imgmgr-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+
+      /* Image manager grid: smaller thumbs */
+      .imgmgr-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); max-height: 260px; }
+
+      /* Category picker grid: allow it to scroll naturally */
+      .catpkr-grid { max-height: 220px; }
+      /* Category picker confirm bar: stack on mobile */
+      .catpkr-confirm-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+      .catpkr-preview-wrap { min-width: 0; }
+      .catpkr-confirm-actions { justify-content: flex-end; }
+      .catpkr-confirm-actions .btn-cancel,
+      .catpkr-confirm-actions .btn-save { flex: 1; justify-content: center; padding: 10px; }
+    }
+
+    @media (max-width: 480px) {
+      /* Stats: keep 2-col */
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .stat-card { padding: 12px 10px; }
+      .stat-num  { font-size: 20px; }
+
+      /* District rows even tighter */
+      .district-row { padding: 12px 12px; }
+      .district-name { font-size: 13px; }
+
+      /* Attraction meta: hide secondary info to save space */
+      .attraction-meta > span:nth-child(n+4) { display: none; }
+
+      /* Image manager: even smaller thumbs */
+      .imgmgr-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
+
+      /* Category picker: tighter pills */
+      .catpkr-pill { font-size: 11px; padding: 5px 10px; }
     }
   
     /* ==================== CUSTOM CURSOR ==================== */
@@ -383,8 +516,8 @@
       <span class="header-title">Content Manager</span>
     </div>
     <div class="header-right">
-      <a href="admin-dashboard.html" class="btn-back"><i class="fas fa-arrow-left"></i> Dashboard</a>
-      <button class="btn-logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      <a href="admin-dashboard.html" class="btn-back"><i class="fas fa-arrow-left"></i> <span>Dashboard</span></a>
+      <button class="btn-logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
     </div>
   </header>
 

@@ -426,18 +426,64 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
-      .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
       .nav-grid { grid-template-columns: repeat(2, 1fr); }
       .info-grid { grid-template-columns: 1fr; }
       .info-item { border-right: none; border-bottom: 1px solid var(--border2); }
+      .info-item:last-child { border-bottom: none; }
     }
 
-    @media (max-width: 640px) {
-      #main { padding: calc(var(--header-h) + 24px) 16px 60px; }
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-      .nav-grid { grid-template-columns: 1fr; }
-      .welcome-title { font-size: 24px; }
+    @media (max-width: 768px) {
+      #admin-header { padding: 0 16px; }
+      #main { padding: calc(var(--header-h) + 28px) 16px 60px; }
+
+      /* Header: hide title, email; shrink logout to icon only */
+      .header-title { display: none; }
+      .header-divider { display: none; }
       .admin-email { display: none; }
+      .btn-logout { padding: 8px 10px; gap: 0; }
+      .btn-logout .btn-logout-text { display: none; }
+
+      /* Welcome section */
+      .welcome-row { margin-bottom: 28px; }
+      .welcome-title { font-size: 24px; }
+      .welcome-sub { font-size: 13px; }
+
+      /* Stats: 2-col */
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 32px;
+      }
+      .stat-card { padding: 14px 14px; }
+      .stat-num { font-size: 22px; }
+      .stat-icon-wrap { width: 30px; height: 30px; font-size: 13px; margin-bottom: 10px; }
+
+      /* Nav cards: single column, tighter padding, fix arrow overlap */
+      .nav-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 32px; }
+      .nav-card { padding: 20px 48px 20px 20px; gap: 14px; }
+      .nav-card-icon { width: 42px; height: 42px; font-size: 17px; border-radius: 10px; }
+      .nav-card-title { font-size: 15px; }
+      .nav-card-desc { font-size: 12px; }
+      /* Arrow stays visible but won't overlap since padding-right is 48px */
+      .nav-card-arrow { right: 16px; font-size: 12px; }
+
+      /* Section labels */
+      .section-label { margin-bottom: 14px; }
+
+      /* Activity card */
+      .activity-header { padding: 14px 18px; }
+      .info-item { padding: 16px 18px; }
+    }
+
+    @media (max-width: 480px) {
+      /* Stats stay 2-col — single column looks too sparse */
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .stat-card { padding: 12px 12px; }
+      .stat-num { font-size: 20px; }
+      .stat-label { font-size: 9px; }
+
+      .welcome-title { font-size: 21px; }
+      .welcome-eyebrow { font-size: 10px; letter-spacing: 2px; }
     }
 
     /* ==================== CUSTOM CURSOR ==================== */
@@ -494,7 +540,7 @@
       <div class="admin-avatar" id="adminAvatar">A</div>
       <span class="admin-email" id="adminEmail">Loading…</span>
       <button class="btn-logout" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i> Logout
+        <i class="fas fa-sign-out-alt"></i> <span class="btn-logout-text">Logout</span>
       </button>
     </div>
   </header>

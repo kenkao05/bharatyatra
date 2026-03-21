@@ -50,13 +50,14 @@
     box-sizing: border-box;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
     font-family: 'Poppins', sans-serif;
     background: var(--white);
     color: var(--black);
     overflow-x: hidden;
+    max-width: 100vw;
 }
 
 body.no-scroll { overflow: hidden; }
@@ -421,10 +422,37 @@ body.no-scroll { overflow: hidden; }
 .footer-bottom p { font-family: 'Poppins', sans-serif; font-size: 12px; color: #333; letter-spacing: 0.5px; }
 
 /* ── MOBILE ── */
+@media (max-width: 1024px) {
+    .nav-container { padding: 0 24px; }
+    .logo { font-size: 1.5rem; }
+    .footer-inner { grid-template-columns: 1.4fr 1fr 1fr; gap: 36px; padding: 0 24px 50px; }
+    .footer-inner > .footer-brand { grid-column: 1 / -1; }
+}
 @media (max-width: 768px) {
+    :root { --sidebar-width: 85vw; }
+    .nav-container { padding: 0 18px; }
+    .logo { font-size: 1.3rem; letter-spacing: 2px; }
+    .menu-btn { font-size: 1.4rem; }
+    .nav-back-btn { padding: 6px 10px; font-size: 0; letter-spacing: 0; }
+    .nav-back-btn i { font-size: 14px; }
+    .footer-inner { grid-template-columns: 1fr 1fr; gap: 28px; padding: 0 20px 44px; }
+    .footer-inner > .footer-brand { grid-column: 1 / -1; }
+    .footer-bottom { padding: 18px 20px; }
+}
+@media (max-width: 480px) {
     :root { --sidebar-width: 100%; }
-    .logo { font-size: 18px; }
-    .menu-btn { font-size: 20px; }
+    .sidebar { padding: 50px 22px 36px; border-left: none; }
+    .nav-container { padding: 0 14px; }
+    .logo { font-size: 1.1rem; letter-spacing: 1.5px; }
+    .footer-inner { grid-template-columns: 1fr; gap: 24px; padding: 0 16px 36px; }
+    .footer-brand { padding-bottom: 8px; border-bottom: 1px solid #1a1a1a; }
+    .footer-logo { font-size: 1.2rem; }
+    .footer-tagline { font-size: 12px; }
+    .footer-links li a { font-size: 13px; padding: 10px 0; }
+    .social-btn { width: 36px; height: 36px; font-size: 14px; }
+    .footer-contact-btn { width: 100%; justify-content: center; padding: 11px 0; font-size: 11px; }
+    .footer-bottom { padding: 16px; }
+    .footer-bottom p { font-size: 11px; }
 }
     /* ==================== CUSTOM CURSOR ==================== */
     @media (pointer: fine) {
@@ -760,17 +788,55 @@ body.no-scroll { overflow: hidden; }
         .portal-visit-btn i { font-size: 10px; }
 
         /* ── RESPONSIVE ── */
-        @media (max-width: 1024px) { #portal-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 1024px) {
+            #portal-grid { grid-template-columns: repeat(2, 1fr); }
+            #portal-main { padding: 48px 20px 80px; }
+            .portal-filter-panel { padding: 28px 28px; }
+        }
+
         @media (max-width: 768px) {
-            .portal-hero-content { padding: 0 24px 44px; }
-            .portal-filter-panel { padding: 24px 20px; gap: 16px; }
+            #portal-hero { min-height: 280px; }
+            .portal-hero-deco { display: none; }
+            .portal-hero-content { padding: 0 20px 40px; }
+            .portal-eyebrow { font-size: 9px; letter-spacing: 4px; }
+
+            #portal-main { padding: 36px 16px 80px; }
+
+            .portal-filter-panel { padding: 20px 18px; gap: 14px; }
             .portal-search-group { min-width: 100%; }
             .portal-filter-btn { width: 100%; text-align: center; }
-            #portal-grid { grid-template-columns: 1fr; }
-            .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
-            .footer-inner > div:first-child { grid-column: 1 / -1; }
+
+            .portal-notice { padding: 14px 18px; }
+
+            #portal-grid { grid-template-columns: 1fr; gap: 16px; }
+
+            /* Disable hover lift on touch */
+            .portal-card:hover {
+                transform: none;
+                box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+                border-top-color: transparent;
+            }
         }
-        @media (max-width: 480px) { .footer-inner { grid-template-columns: 1fr; } }
+
+        @media (max-width: 480px) {
+            #portal-hero { min-height: 260px; }
+            .portal-hero-content { padding: 0 16px 30px; }
+
+            #portal-main { padding: 28px 12px 64px; }
+
+            .portal-filter-panel { padding: 16px 14px; }
+            .portal-search-wrap input { font-size: 13px; }
+
+            .portal-notice { padding: 12px 14px; gap: 10px; }
+            .portal-notice p { font-size: 12px; }
+
+            #portal-grid { gap: 14px; }
+            .portal-card-body { padding: 18px 18px 14px; }
+            .portal-state-name { font-size: 15px; }
+            /* Prevent URL from overflowing on very narrow phones */
+            .portal-url-text { font-size: 10px; }
+            .portal-card-footer { padding: 10px 18px 14px; }
+        }
     </style>
 </head>
 <body>
@@ -1245,85 +1311,6 @@ body.no-scroll { overflow: hidden; }
       animate();
     })();
     </script>
-    <!-- ==================== CUSTOM CURSOR ==================== -->
-    <div class="cursor-dot" id="cursorDot"></div>
 
-    <script>
-    (function () {
-      if (!window.matchMedia('(pointer: fine)').matches) return;
-
-      const TRAIL_COUNT = 8;
-      const dot = document.getElementById('cursorDot');
-
-      const trails = Array.from({ length: TRAIL_COUNT }, (_, i) => {
-        const el = document.createElement('div');
-        el.className = 'cursor-trail';
-        const size = 18 + i * 11;
-        el.style.cssText = `width:${size}px;height:${size}px;opacity:0;`;
-        document.body.appendChild(el);
-        return { el, x: 0, y: 0, size };
-      });
-
-      let mouseX = -200, mouseY = -200;
-
-      document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-      });
-
-      document.addEventListener('mouseover', (e) => {
-        if (e.target.closest('a, button, [data-action], .attraction-card, .district-card, .tl-node, .cat-pill, .da-list-item, .district-card-btn')) {
-          dot.classList.add('hovering');
-        }
-      });
-
-      document.addEventListener('mouseout', (e) => {
-        if (e.target.closest('a, button, [data-action], .attraction-card, .district-card, .tl-node, .cat-pill, .da-list-item, .district-card-btn')) {
-          dot.classList.remove('hovering');
-        }
-      });
-
-      document.addEventListener('mouseleave', () => {
-        dot.style.opacity = '0';
-        trails.forEach(t => t.el.style.opacity = '0');
-      });
-      document.addEventListener('mouseenter', () => {
-        dot.style.opacity = '1';
-      });
-
-      const positions = Array(TRAIL_COUNT).fill(null).map(() => ({ x: -200, y: -200 }));
-      const SPEEDS = trails.map((_, i) => 0.28 - i * 0.022);
-
-      function animate() {
-        dot.style.left = mouseX + 'px';
-        dot.style.top  = mouseY + 'px';
-
-        positions[0].x += (mouseX - positions[0].x) * SPEEDS[0];
-        positions[0].y += (mouseY - positions[0].y) * SPEEDS[0];
-
-        for (let i = 1; i < TRAIL_COUNT; i++) {
-          positions[i].x += (positions[i - 1].x - positions[i].x) * SPEEDS[i];
-          positions[i].y += (positions[i - 1].y - positions[i].y) * SPEEDS[i];
-        }
-
-        trails.forEach((t, i) => {
-          t.el.style.left = positions[i].x + 'px';
-          t.el.style.top  = positions[i].y + 'px';
-          const dx = positions[i].x - mouseX;
-          const dy = positions[i].y - mouseY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const baseOpacity = (1 - i / TRAIL_COUNT) * 0.55;
-          const distFade = Math.max(0, 1 - dist / 180);
-          t.el.style.opacity = (baseOpacity * distFade).toFixed(3);
-          const colorAlpha = Math.max(0.08, 1 - i / TRAIL_COUNT);
-          t.el.style.borderColor = `rgba(239, 85, 28, ${colorAlpha.toFixed(2)})`;
-        });
-
-        requestAnimationFrame(animate);
-      }
-
-      animate();
-    })();
-    </script>
 </body>
 </html>
