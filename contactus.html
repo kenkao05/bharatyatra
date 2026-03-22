@@ -899,6 +899,7 @@
     </footer>
 
     <!-- ── SUPABASE JS v2 (SRI — supply-chain attack prevention) ── -->
+    <script src="supabase-init.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
             crossorigin="anonymous"></script>
 
@@ -906,9 +907,7 @@
         /* ─────────────────────────────────────────────────────────
            SUPABASE CONFIG
         ───────────────────────────────────────────────────────── */
-        const SUPABASE_URL = 'https://gtpnojbbamoaznlutxap.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE';
-        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const sb = supabase.createClient(window.BY_SUPABASE_URL, window.BY_SUPABASE_KEY);
 
         /* ─────────────────────────────────────────────────────────
            SUBMISSION GATE — reads site_settings from Supabase

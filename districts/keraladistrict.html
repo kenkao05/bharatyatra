@@ -28,6 +28,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script src="../supabase-init.js"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2"
           crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -1699,11 +1700,7 @@
 
   <script>
     // ==================== SUPABASE SETUP ====================
-    const SUPABASE_CONFIG = Object.freeze({
-      url: "https://gtpnojbbamoaznlutxap.supabase.co",
-      anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE"
-    });
-    const supabaseClient = supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+    const supabaseClient = supabase.createClient(window.BY_SUPABASE_URL, window.BY_SUPABASE_KEY);
 
     // ==================== SECURITY: HTML ENTITY ENCODER ====================
     // Encodes & < > " ' ` to prevent XSS when DB values must go into innerHTML context

@@ -6,6 +6,7 @@
   <title>Assam Districts | Bharat Yatra</title>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../supabase-init.js"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
@@ -1675,14 +1676,19 @@
   <script>
     // ==================== SUPABASE SETUP ====================
     const supabaseClient = supabase.createClient(
-      "https://gtpnojbbamoaznlutxap.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE"
+      window.BY_SUPABASE_URL,
+      window.BY_SUPABASE_KEY
     );
 
     // Global variables
     let allDistricts = [];
     let filteredDistricts = [];
     let currentDistrict = null;
+
+    // ==================== XSS HELPER ====================
+    function escHTML(s) {
+      return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
 
     // ==================== SIDEBAR FUNCTIONALITY ====================
     const sidebar = document.getElementById('sidebar');
@@ -1818,11 +1824,11 @@
         card.onclick = () => openDistrictModal(district.id);
         
         card.innerHTML = `
-          <img src="${district.image_url || 'https://via.placeholder.com/400x220?text=' + district.name}" 
-               alt="${district.name}" 
+          <img src="${escHTML(district.image_url || 'https://via.placeholder.com/400x220?text=' + encodeURIComponent(district.name))}" 
+               alt="${escHTML(district.name)}" 
                class="district-card-image">
           <div class="district-card-content">
-            <h3>${district.name}</h3>
+            <h3>${escHTML(district.name)}</h3>
             <div class="attraction-count">
               <i class="fas fa-map-marked-alt"></i>
               <span>${district.attractionCount} attraction${district.attractionCount !== 1 ? 's' : ''}</span>
@@ -1859,7 +1865,7 @@
         const li = document.createElement('li');
         li.className = 'da-district-item';
         li.innerHTML = `
-          <span class="da-district-item-name">${district.name}</span>
+          <span class="da-district-item-name">${escHTML(district.name)}</span>
           <span class="da-district-item-count">${district.accCount} stay${district.accCount !== 1 ? 's' : ''}</span>
         `;
         li.addEventListener('click', () => {
@@ -1922,17 +1928,17 @@
         li.className = 'da-acc-card';
         li.innerHTML = `
           <div class="da-acc-top">
-            <div class="da-acc-name">${acc.name}</div>
-            <div class="da-acc-type">${acc.type || 'Stay'}</div>
+            <div class="da-acc-name">${escHTML(acc.name)}</div>
+            <div class="da-acc-type">${escHTML(acc.type || 'Stay')}</div>
           </div>
           <div class="da-acc-near">
-            <i class="fas fa-map-pin"></i> Near ${acc.attractionName}
+            <i class="fas fa-map-pin"></i> Near ${escHTML(acc.attractionName)}
           </div>
           <div class="da-acc-meta">
             ${acc.price_per_night != null ? `<div class="da-acc-meta-item"><i class="fas fa-rupee-sign"></i> ₹${acc.price_per_night.toLocaleString()}/night</div>` : ''}
             ${acc.rating ? `<div class="da-acc-meta-item">${starsHtml(acc.rating)}&nbsp;${acc.rating}/5</div>` : ''}
             ${acc.distance_from_attraction_km != null ? `<div class="da-acc-meta-item"><i class="fas fa-road"></i> ${acc.distance_from_attraction_km} km away</div>` : ''}
-            ${acc.contact_phone ? `<div class="da-acc-meta-item"><i class="fas fa-phone"></i> ${acc.contact_phone}</div>` : ''}
+            ${acc.contact_phone ? `<div class="da-acc-meta-item"><i class="fas fa-phone"></i> ${escHTML(acc.contact_phone)}</div>` : ''}
           </div>
         `;
         list.appendChild(li);
@@ -1954,7 +1960,7 @@
         right.innerHTML = `
           <div class="da-right-header">
             <div>
-              <div class="da-right-title">${district.name}</div>
+              <div class="da-right-title">${escHTML(district.name)}</div>
               <div class="da-right-meta" id="daRightMeta">No accommodations listed yet</div>
             </div>
             <button class="da-clear-btn" onclick="clearDaRight()"><i class="fas fa-times"></i> Clear</button>
@@ -1976,7 +1982,7 @@
       right.innerHTML = `
         <div class="da-right-header">
           <div>
-            <div class="da-right-title"><span>${district.name}</span> — Accommodations</div>
+            <div class="da-right-title"><span>${escHTML(district.name)}</span> — Accommodations</div>
             <div class="da-right-meta" id="daRightMeta">${allAccs.length} places to stay</div>
           </div>
           <button class="da-clear-btn" onclick="clearDaRight()"><i class="fas fa-times"></i> Clear</button>
@@ -2070,15 +2076,15 @@
         ? district.attractions.map(attraction => {
             const thumb = attraction.image_url && attraction.image_url.startsWith('https://')
               ? `<div class="atm-thumb-wrap">
-                   <img src="${attraction.image_url}" alt="${attraction.name}" class="atm-thumb">
+                   <img src="${escHTML(attraction.image_url)}" alt="${escHTML(attraction.name)}" class="atm-thumb">
                    <div class="atm-hover-cta">Explore →</div>
                  </div>`
               : `<div class="atm-no-img"><i class="fas fa-mountain"></i></div>`;
-            return `<div class="attraction-card-modal" onclick="openAttractionModal(${attraction.id})">
+            return `<div class="attraction-card-modal" onclick="openAttractionModal(${parseInt(attraction.id, 10)})">
               ${thumb}
               <div class="atm-text">
-                <h4>${attraction.name}</h4>
-                <p>${attraction.short_description || 'Click to view details'}</p>
+                <h4>${escHTML(attraction.name)}</h4>
+                <p>${escHTML(attraction.short_description || 'Click to view details')}</p>
               </div>
             </div>`;
           }).join('')
@@ -2086,15 +2092,15 @@
 
       const modalContent = `
         <div class="modal-hero">
-          <img src="${district.image_url || ''}" alt="${district.name}" class="modal-image">
+          <img src="${escHTML(district.image_url || '')}" alt="${escHTML(district.name)}" class="modal-image">
           <div class="modal-hero-title">
             <div class="modal-hero-eyebrow">Assam District</div>
-            <h2>${district.name}</h2>
+            <h2>${escHTML(district.name)}</h2>
           </div>
         </div>
         <div class="modal-body">
-          <p>${district.description || 'Explore the rich heritage and attractions of ' + district.name + '.'}</p>
-          <div class="modal-section-label">${attrsLabel}</div>
+          <p>${escHTML(district.description || 'Explore the rich heritage and attractions of ' + district.name + '.')}</p>
+          <div class="modal-section-label">${escHTML(attrsLabel)}</div>
           <div class="attractions-grid-modal">${attractionCards}</div>
         </div>
       `;
@@ -2134,35 +2140,35 @@
       const infoGridHTML = infoItems.length > 0
         ? `<div class="modal-info-grid">${infoItems.map(item => `
             <div class="modal-info-item">
-              <i class="${item.icon}"></i>
-              <div><strong>${item.label}</strong><span>${item.value}</span></div>
+              <i class="${escHTML(item.icon)}"></i>
+              <div><strong>${escHTML(item.label)}</strong><span>${escHTML(item.value)}</span></div>
             </div>`).join('')}</div>`
         : '';
 
       const accHTML = attraction.accommodations && attraction.accommodations.length > 0
         ? `<ul class="accommodation-list">${attraction.accommodations.map(acc => `
             <li class="accommodation-item">
-              <h4>${acc.name}</h4>
+              <h4>${escHTML(acc.name)}</h4>
               <div class="acc-details">
-                <span><i class="fas fa-tag"></i> ${acc.type ? acc.type.charAt(0).toUpperCase() + acc.type.slice(1) : 'Stay'}</span>
+                <span><i class="fas fa-tag"></i> ${escHTML(acc.type ? acc.type.charAt(0).toUpperCase() + acc.type.slice(1) : 'Stay')}</span>
                 <span><i class="fas fa-rupee-sign"></i> ₹${(acc.price_per_night || 0).toLocaleString()}/night</span>
                 ${acc.distance_from_attraction_km != null ? `<span><i class="fas fa-map-marker-alt"></i> ${acc.distance_from_attraction_km} km away</span>` : ''}
                 ${acc.rating ? `<span><i class="fas fa-star"></i> ${acc.rating}/5</span>` : ''}
-                ${acc.contact_phone ? `<span><i class="fas fa-phone"></i> ${acc.contact_phone}</span>` : ''}
+                ${acc.contact_phone ? `<span><i class="fas fa-phone"></i> ${escHTML(acc.contact_phone)}</span>` : ''}
               </div>
             </li>`).join('')}</ul>`
         : '<div class="no-data">No accommodation information available for this attraction.</div>';
 
       const modalContent = `
         <div class="modal-hero">
-          <img src="${attraction.image_url || ''}" alt="${attraction.name}" class="modal-image">
+          <img src="${escHTML(attraction.image_url || '')}" alt="${escHTML(attraction.name)}" class="modal-image">
           <div class="modal-hero-title">
-            <div class="modal-hero-eyebrow">${currentDistrict.name} · Assam</div>
-            <h2>${attraction.name}</h2>
+            <div class="modal-hero-eyebrow">${escHTML(currentDistrict.name)} · Assam</div>
+            <h2>${escHTML(attraction.name)}</h2>
           </div>
         </div>
         <div class="modal-body">
-          <p>${attraction.description || attraction.short_description || 'No description available.'}</p>
+          <p>${escHTML(attraction.description || attraction.short_description || 'No description available.')}</p>
           ${infoGridHTML}
           <div class="modal-section-label">Nearby Accommodations</div>
           ${accHTML}

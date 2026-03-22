@@ -36,6 +36,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer">
 
   <!-- Supabase -->
+  <script src="../supabase-init.js"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
@@ -1718,14 +1719,7 @@
     }
 
     // ==================== SUPABASE SETUP ====================
-    // Config frozen — prevents prototype pollution / mutable config attacks
-    const CONFIG = Object.freeze({
-      SUPABASE_URL: "https://gtpnojbbamoaznlutxap.supabase.co",
-      SUPABASE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE",
-      STATE_ID: 4   // Uttarakhand
-    });
-
-    const supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+    const supabaseClient = supabase.createClient(window.BY_SUPABASE_URL, window.BY_SUPABASE_KEY);
 
     // Global state
     let allDistricts = [];

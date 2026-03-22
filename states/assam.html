@@ -33,6 +33,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
   <!-- Supabase -->
+  <script src="../supabase-init.js"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <!-- GSAP -->
@@ -2080,9 +2081,14 @@
   <script>
     // ==================== SUPABASE SETUP ====================
     const supabaseClient = supabase.createClient(
-      "https://gtpnojbbamoaznlutxap.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE"
+      window.BY_SUPABASE_URL,
+      window.BY_SUPABASE_KEY
     );
+
+    // ==================== XSS HELPER ====================
+    function escHTML(s) {
+      return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
 
     // ==================== NAVBAR SCROLL ====================
     const navbar = document.getElementById('navbar');
@@ -2341,7 +2347,7 @@
             <i class="fas fa-calendar-alt"></i>
             <div>
               <strong>Best Time</strong>
-              <span>${attraction.best_time_note}</span>
+              <span>${escHTML(attraction.best_time_note)}</span>
             </div>
           </div>
         `;
@@ -2353,7 +2359,7 @@
             <i class="fas fa-map-marker-alt"></i>
             <div>
               <strong>Location</strong>
-              <span>${attraction.address || attraction.city || ''}</span>
+              <span>${escHTML(attraction.address || attraction.city || '')}</span>
             </div>
           </div>
         `;
@@ -2365,7 +2371,7 @@
             <i class="fas fa-phone"></i>
             <div>
               <strong>Contact</strong>
-              <span>${attraction.contact_phone}</span>
+              <span>${escHTML(attraction.contact_phone)}</span>
             </div>
           </div>
         `;
@@ -2377,7 +2383,7 @@
             <i class="fas fa-user-tie"></i>
             <div>
               <strong>Guide Available</strong>
-              <span>${attraction.guide_price_range || 'Yes'}</span>
+              <span>${escHTML(attraction.guide_price_range || 'Yes')}</span>
             </div>
           </div>
         `;
@@ -2437,9 +2443,14 @@
     function buildCategoryPills(events) {
       const bar = document.getElementById('eventsCategoryBar');
       const cats = ['All', ...new Set(events.map(e => e.category))];
-      bar.innerHTML = cats.map((c, i) =>
-        `<button class="cat-pill ${i === 0 ? 'active' : ''}" data-cat="${c}">${c}</button>`
-      ).join('');
+      bar.innerHTML = '';
+      cats.forEach((c, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-pill' + (i === 0 ? ' active' : '');
+        btn.dataset.cat = String(c ?? '');
+        btn.textContent = String(c ?? '');
+        bar.appendChild(btn);
+      });
 
       bar.querySelectorAll('.cat-pill').forEach(pill => {
         pill.addEventListener('click', () => {
@@ -2479,21 +2490,53 @@
           ? '<span class="tl-featured">&#9733; Featured</span>'
           : '';
 
-        node.innerHTML = `
-          <div class="tl-card">
-            <div class="tl-date">${formatDateRange(ev.date_from, ev.date_to)}</div>
-            <div class="tl-name">${ev.name}</div>
-            <div class="tl-venue"><i class="fas fa-map-pin"></i>${ev.city_venue}</div>
-            <div class="tl-badges">
-              <span class="tl-cat">${ev.category}</span>
-              ${feeLabel}
-              ${featuredBadge}
-            </div>
-          </div>
-          <div class="tl-connector"></div>
-          <div class="tl-dot"></div>
-          <div class="tl-connector"></div>
-        `;
+        const card = document.createElement('div');
+        card.className = 'tl-card';
+
+        const dateEl = document.createElement('div');
+        dateEl.className = 'tl-date';
+        dateEl.textContent = formatDateRange(ev.date_from, ev.date_to) || '';
+        card.appendChild(dateEl);
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'tl-name';
+        nameEl.textContent = ev.name || '';
+        card.appendChild(nameEl);
+
+        const venueEl = document.createElement('div');
+        venueEl.className = 'tl-venue';
+        venueEl.innerHTML = '<i class="fas fa-map-pin"></i>';
+        venueEl.appendChild(document.createTextNode(ev.city_venue || ''));
+        card.appendChild(venueEl);
+
+        const badgesEl = document.createElement('div');
+        badgesEl.className = 'tl-badges';
+
+        const catSpan = document.createElement('span');
+        catSpan.className = 'tl-cat';
+        catSpan.textContent = ev.category || '';
+        badgesEl.appendChild(catSpan);
+
+        const feeSpan = document.createElement('span');
+        feeSpan.className = 'tl-fee';
+        feeSpan.textContent = ev.entry_fee == null ? 'Free' : `₹${ev.entry_fee.toLocaleString()}`;
+        badgesEl.appendChild(feeSpan);
+
+        if (ev.is_featured) {
+          const featSpan = document.createElement('span');
+          featSpan.className = 'tl-featured';
+          featSpan.textContent = '★ Featured';
+          badgesEl.appendChild(featSpan);
+        }
+
+        card.appendChild(badgesEl);
+        node.appendChild(card);
+
+        ['tl-connector', 'tl-dot', 'tl-connector'].forEach(cls => {
+          const el = document.createElement('div');
+          el.className = cls;
+          node.appendChild(el);
+        });
 
         node.addEventListener('click', () => openEventModal(ev));
         track.appendChild(node);
