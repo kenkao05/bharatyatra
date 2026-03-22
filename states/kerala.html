@@ -584,15 +584,42 @@
       margin-bottom: 40px;
     }
 
+    /* ── ATTRACTION CARD + ACETERNITY GLOW BORDER ── */
     .attraction-card {
       cursor: pointer;
       text-align: center;
-      border: 3px solid transparent;
+      border: none;
       transition: var(--transition);
+      position: relative;
+      isolation: isolate;
     }
 
-    .attraction-card:hover {
-      border-color: var(--state-accent);
+    .attraction-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 0;
+      background: conic-gradient(
+        from var(--glow-angle, 0deg) at var(--glow-x, 50%) var(--glow-y, 50%),
+        transparent 0deg,
+        rgba(139, 0, 0, 0.9) 60deg,
+        rgba(192, 57, 43, 0.6) 90deg,
+        transparent 160deg
+      );
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 2px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .attraction-card:hover::before {
+      opacity: 1;
     }
 
     .attraction-card:nth-child(1) {
@@ -668,60 +695,156 @@
       color: #ffffff;
     }
 
+    /* ── BENTO LAYOUT GRID ── */
     .districts-grid {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 30px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 260px 260px;
+      gap: 12px;
       margin-bottom: 50px;
+      max-width: 960px;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .district-card {
-      background: #ffffff;
-      border-radius: 0;
+      position: relative;
       overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
       cursor: pointer;
-      width: 280px;
-      border: 3px solid var(--state-accent);
+      background: #111;
     }
 
-    .district-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 30px rgba(139, 0, 0, 0.5);
-    }
+    .district-card:nth-child(1) { grid-column: 1 / 3; grid-row: 1 / 2; }
+    .district-card:nth-child(2) { grid-column: 3 / 4; grid-row: 1 / 3; }
+    .district-card:nth-child(3) { grid-column: 1 / 2; grid-row: 2 / 3; }
+    .district-card:nth-child(4) { grid-column: 2 / 3; grid-row: 2 / 3; }
 
     .district-card img {
       width: 100%;
-      height: 250px;
+      height: 100%;
       object-fit: cover;
-      filter: grayscale(0.3);
-      transition: var(--transition);
+      display: block;
+      transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s ease;
+      filter: brightness(0.72) grayscale(0.15);
     }
 
     .district-card:hover img {
-      filter: grayscale(0);
+      transform: scale(1.07);
+      filter: brightness(0.52) grayscale(0);
     }
 
-    .district-info {
-      padding: 20px;
-      background: #ffffff;
+    .district-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.22) 42%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .district-info h3 {
-      font-size: 24px;
-      margin-bottom: 8px;
-      color: #000000;
+    .district-tile-info {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 2;
+      padding: 20px 22px;
+      transform: translateY(10px);
+      transition: transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
-    .district-info span {
-      color: #666;
-      font-size: 15px;
+    .district-card:hover .district-tile-info { transform: translateY(0); }
+
+    .district-tile-count {
+      font-size: 10px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--state-accent);
+      display: block; margin-bottom: 4px;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 0.28s ease 0.04s, transform 0.28s ease 0.04s;
     }
 
-    .district-info span i {
-      color: var(--state-accent);
+    .district-card:hover .district-tile-count { opacity: 1; transform: translateY(0); }
+
+    .district-tile-name {
+      font-size: 20px; font-weight: 700; color: #ffffff;
+      font-family: 'Playfair Display', serif;
+      margin: 0 0 4px; line-height: 1.2;
     }
+
+    .district-card:nth-child(2) .district-tile-name { font-size: 22px; }
+
+    .district-tile-hint {
+      font-size: 11px; color: rgba(255,255,255,0.52); letter-spacing: 0.4px;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 0.28s ease 0.08s, transform 0.28s ease 0.08s;
+    }
+
+    .district-card:hover .district-tile-hint { opacity: 1; transform: translateY(0); }
+
+    /* ── DISTRICT MODAL ── */
+    .district-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.88); z-index: 4000;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+
+    .district-modal.active { display: flex; }
+
+    .district-modal-content {
+      background: #0a0a0a; border: 3px solid var(--state-accent);
+      max-width: 680px; width: 100%; max-height: 90vh;
+      overflow-y: auto; position: relative;
+      animation: modalSlideIn 0.32s ease;
+    }
+
+    .district-modal-img { width: 100%; height: 300px; object-fit: cover; display: block; filter: brightness(0.88); }
+
+    .district-modal-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px); color: white;
+      border: 1px solid rgba(255,255,255,0.3); font-size: 18px;
+      cursor: pointer; z-index: 10; display: flex;
+      align-items: center; justify-content: center;
+      transition: background 0.25s, transform 0.25s;
+    }
+
+    .district-modal-close:hover { background: rgba(139,0,0,0.75); transform: rotate(90deg) scale(1.08); }
+
+    .district-modal-body { padding: 32px 36px 36px; color: #fff; }
+
+    .district-modal-eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--state-accent);
+      margin-bottom: 10px; display: block;
+    }
+
+    .district-modal-body h2 {
+      font-family: 'Playfair Display', serif; font-size: 30px;
+      font-weight: 700; color: #ffffff; margin-bottom: 16px; letter-spacing: -0.5px;
+    }
+
+    .district-modal-body p { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.85; margin-bottom: 24px; }
+
+    .district-modal-meta {
+      display: flex; gap: 32px; padding: 18px 0;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 28px;
+    }
+
+    .district-modal-meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .district-modal-meta-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.38); }
+    .district-modal-meta-value { font-size: 16px; font-weight: 600; color: #fff; }
+
+    .district-modal-visit-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--state-accent); color: #fff; padding: 13px 28px;
+      text-decoration: none; font-weight: 600; font-size: 13px;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      transition: background 0.25s, transform 0.2s; border: none; cursor: pointer;
+    }
+
+    .district-modal-visit-btn:hover { background: #6b0000; transform: translateY(-2px); }
 
     .visit-all-btn {
       display: inline-block;
@@ -1414,14 +1537,15 @@
       }
 
       .districts-grid {
-        flex-direction: column;
-        align-items: center;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 220px 220px 220px;
+        gap: 10px;
       }
 
-      .district-card {
-        width: 100%;
-        max-width: 400px;
-      }
+      .district-card:nth-child(1) { grid-column: 1 / 3; grid-row: 1 / 2; }
+      .district-card:nth-child(2) { grid-column: 1 / 2; grid-row: 2 / 3; }
+      .district-card:nth-child(3) { grid-column: 2 / 3; grid-row: 2 / 3; }
+      .district-card:nth-child(4) { grid-column: 1 / 3; grid-row: 3 / 4; }
 
       .scroll-progress {
         display: none;
@@ -1556,22 +1680,21 @@
         height: 180px;
       }
 
-      .district-card img {
-        height: 160px;
+      .districts-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: 200px 200px 200px 200px;
+        gap: 8px;
       }
 
-      .district-info {
-        padding: 12px 16px;
-      }
+      .district-card:nth-child(1),
+      .district-card:nth-child(2),
+      .district-card:nth-child(3),
+      .district-card:nth-child(4) { grid-column: 1 / 2; grid-row: auto; }
 
-      .district-info h3 {
-        font-size: 18px;
-        margin-bottom: 4px;
-      }
-
-      .district-info span {
-        font-size: 13px;
-      }
+      .district-modal-body { padding: 22px 20px 28px; }
+      .district-modal-img  { height: 200px; }
+      .district-modal-body h2 { font-size: 22px; }
+      .district-modal-meta { gap: 20px; }
 
       .attraction-content h3 {
         font-size: 15px;
@@ -1871,6 +1994,32 @@
     </div>
   </div>
 
+  <!-- ==================== DISTRICT MODAL ==================== -->
+  <div class="district-modal" id="districtModal">
+    <div class="district-modal-content">
+      <button class="district-modal-close" id="districtModalCloseBtn">&#215;</button>
+      <img id="districtModalImg" class="district-modal-img" src="" alt="">
+      <div class="district-modal-body">
+        <span class="district-modal-eyebrow">Kerala</span>
+        <h2 id="districtModalName"></h2>
+        <p id="districtModalDesc"></p>
+        <div class="district-modal-meta">
+          <div class="district-modal-meta-item">
+            <span class="district-modal-meta-label">Attractions</span>
+            <span class="district-modal-meta-value" id="districtModalCount">—</span>
+          </div>
+          <div class="district-modal-meta-item">
+            <span class="district-modal-meta-label">State</span>
+            <span class="district-modal-meta-value">Kerala</span>
+          </div>
+        </div>
+        <a href="../districts/keraladistrict.html" class="district-modal-visit-btn">
+          Visit All Districts <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== EVENT MODAL ==================== -->
   <div class="modal" id="eventModal">
     <div class="modal-content event-modal-content">
@@ -1937,6 +2086,14 @@
       m.addEventListener('click', (e) => {
         if (e.target === m) closeModal(m.id);
       });
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeModal('attractionModal');
+        closeModal('eventModal');
+        closeDistrictModal();
+      }
     });
 
     // ==================== MUTE/UNMUTE VIDEO ====================
@@ -2049,6 +2206,20 @@
             </div>
           `;
           card.addEventListener('click', () => openAttractionModal(safeId));
+          card.addEventListener('mousemove', (e) => {
+            const r = card.getBoundingClientRect();
+            const x = ((e.clientX - r.left) / r.width) * 100;
+            const y = ((e.clientY - r.top) / r.height) * 100;
+            const angle = Math.atan2(e.clientY - (r.top + r.height/2), e.clientX - (r.left + r.width/2)) * (180/Math.PI) + 180;
+            card.style.setProperty('--glow-x', x + '%');
+            card.style.setProperty('--glow-y', y + '%');
+            card.style.setProperty('--glow-angle', angle + 'deg');
+          });
+          card.addEventListener('mouseleave', () => {
+            card.style.removeProperty('--glow-x');
+            card.style.removeProperty('--glow-y');
+            card.style.removeProperty('--glow-angle');
+          });
           container.appendChild(card);
         });
 
@@ -2068,6 +2239,8 @@
           .select(`
             id,
             name,
+            slug,
+            description,
             image_url,
             attractions ( id )
           `)
@@ -2079,6 +2252,8 @@
           .map(d => ({
             id: d.id,
             name: d.name,
+            slug: d.slug,
+            description: d.description,
             image_url: d.image_url,
             count: d.attractions.length
           }))
@@ -2087,29 +2262,80 @@
 
         const container = document.getElementById("districtsGrid");
         container.innerHTML = "";
+        window.districtsData = districtsWithCount;
 
         districtsWithCount.forEach(district => {
-          // Build via createElement to avoid innerHTML+= pattern (causes re-parse of entire container)
-          const safeDistId = parseInt(district.id, 10);
           const card = document.createElement('div');
           card.className = 'district-card';
-          card.dataset.districtId = String(safeDistId);
-          card.innerHTML = `
-            <img src="${escHTML(fixDistrictImg(district.name, district.image_url))}" alt="${escHTML(district.name)}">
-            <div class="district-info">
-              <h3>${escHTML(district.name)}</h3>
-              <span><i class="fas fa-map-marked-alt"></i> ${escHTML(String(district.count))} attractions</span>
-            </div>
-          `;
-          card.addEventListener('click', () => openDistrictModal(safeDistId));
+          card.dataset.id = String(parseInt(district.id, 10));
+          card.dataset.action = 'open-district';
+
+          const img = document.createElement('img');
+          const rawSrc = String(fixDistrictImg(district.name, district.image_url) || '');
+          if (/^https?:\/\//i.test(rawSrc)) img.src = rawSrc;
+          img.alt = district.name || '';
+
+          const tileInfo = document.createElement('div');
+          tileInfo.className = 'district-tile-info';
+
+          const tileCount = document.createElement('span');
+          tileCount.className = 'district-tile-count';
+          tileCount.textContent = district.count + ' attractions';
+
+          const tileName = document.createElement('p');
+          tileName.className = 'district-tile-name';
+          tileName.textContent = district.name;
+
+          const tileHint = document.createElement('span');
+          tileHint.className = 'district-tile-hint';
+          tileHint.textContent = 'Click to explore';
+
+          tileInfo.appendChild(tileCount);
+          tileInfo.appendChild(tileName);
+          tileInfo.appendChild(tileHint);
+          card.appendChild(img);
+          card.appendChild(tileInfo);
           container.appendChild(card);
         });
+
+        document.getElementById('districtsGrid').addEventListener('click', (e) => {
+          const card = e.target.closest('[data-action="open-district"]');
+          if (!card) return;
+          const id = parseInt(card.dataset.id, 10);
+          if (!Number.isInteger(id)) return;
+          openDistrictModal(id);
+        });
+
         loaderFetchDone();
       } catch (err) {
         console.error("Error loading districts:", err);
         loaderFetchDone();
       }
     }
+
+    // ==================== DISTRICT MODAL ====================
+    function openDistrictModal(districtId) {
+      const district = window.districtsData && window.districtsData.find(d => d.id === districtId);
+      if (!district) return;
+      const safeImg = (district.image_url && /^https?:\/\//i.test(district.image_url)) ? district.image_url : '';
+      document.getElementById('districtModalImg').src = safeImg;
+      document.getElementById('districtModalImg').alt = district.name || '';
+      document.getElementById('districtModalName').textContent = district.name || '';
+      document.getElementById('districtModalDesc').textContent = district.description || '';
+      document.getElementById('districtModalCount').textContent = district.count + ' attractions';
+      document.getElementById('districtModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDistrictModal() {
+      document.getElementById('districtModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    document.getElementById('districtModalCloseBtn').addEventListener('click', closeDistrictModal);
+    document.getElementById('districtModal').addEventListener('click', e => {
+      if (e.target === document.getElementById('districtModal')) closeDistrictModal();
+    });
 
     // ==================== MODAL FUNCTIONS ====================
     function openAttractionModal(attractionId) {
@@ -2197,10 +2423,6 @@
       document.getElementById('modalInfo').innerHTML = infoHtml;
       document.getElementById('attractionModal').classList.add('active');
       document.body.style.overflow = 'hidden';
-    }
-
-    function openDistrictModal(districtId) {
-      window.location.href = '../districts/keraladistrict.html';
     }
 
     function closeModal(modalId) {

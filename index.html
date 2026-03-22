@@ -301,24 +301,20 @@
         <h2 class="bucketlist-title">Bucket List Destinations</h2>
         <p class="bucketlist-sub">India's most iconic places, waiting for you</p>
 
-        <div class="carousel-wrapper">
-            <!-- Left arrow -->
-            <button class="carousel-btn prev-btn" id="prevBtn" aria-label="Previous">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-
-            <!-- Cards track -->
-            <div class="carousel-viewport">
-                <div class="carousel-track" id="carouselTrack">
-                    <!-- Cards injected by JS -->
-                    <div class="carousel-loading">Loading destinations...</div>
-                </div>
+        <!-- 3D Carousel -->
+        <div class="c3d-root">
+            <div class="c3d-scene" id="c3dScene">
+                <div class="c3d-loading">Loading destinations…</div>
             </div>
-
-            <!-- Right arrow -->
-            <button class="carousel-btn next-btn" id="nextBtn" aria-label="Next">
-                <i class="fas fa-chevron-right"></i>
-            </button>
+            <div class="c3d-nav">
+                <button class="c3d-btn" id="c3dPrev" aria-label="Previous">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="c3d-dots" id="c3dDots"></div>
+                <button class="c3d-btn" id="c3dNext" aria-label="Next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
 
         <!-- Know More button centred between the arrows -->
@@ -540,7 +536,8 @@
         // ── NAVBAR SCROLL STYLE ──────────────────────────────────────
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
-            navbar.classList.toggle('scrolled', window.scrollY > 50);
+            const heroH = document.getElementById('hero').offsetHeight;
+            navbar.classList.toggle('scrolled', window.scrollY > heroH);
         });
 
         // ── MAP: STATE CLICK NAVIGATION ──────────────────────────────
@@ -589,195 +586,133 @@
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE'
         );
 
-        // ── CAROUSEL STATE ───────────────────────────────────────────
-        let currentIndex = 0;
-        let totalCards   = 0;  // count of REAL cards only
-        let visibleCards = 3;  // recalculated dynamically from real viewport width
+        // ── 3D CAROUSEL STATE ────────────────────────────────────────
+        let activeIndex  = 0;
+        let cardsData    = [];
         let autoTimer    = null;
+        const VISIBLE_RANGE = 2; // how many cards each side of centre are shown
 
-        // Dynamically read the actual rendered card width (respects CSS media queries)
-        function getCardMetrics() {
-            const track = document.getElementById('carouselTrack');
-            if (!track) return { cardW: 260, gap: 20 };
-            const firstCard = track.querySelector('.bl-card:not([data-clone])');
-            if (!firstCard) return { cardW: 260, gap: 20 };
-            const cardW = firstCard.getBoundingClientRect().width;
-            const gap   = parseFloat(getComputedStyle(track).gap) || 20;
-            return { cardW, gap };
+        // ── BUILD A SINGLE CARD ELEMENT (XSS-safe DOM API) ───────────
+        function buildC3dCard(attraction, dataIndex) {
+            const card = document.createElement('div');
+            card.className = 'c3d-card';
+            card.dataset.index = dataIndex;
+
+            const img = document.createElement('img');
+            const rawSrc = String(attraction.image_url || '');
+            if (/^https?:\/\//i.test(rawSrc)) img.src = rawSrc;
+            img.alt = attraction.name || '';
+            img.className = 'c3d-img';
+            img.addEventListener('error', () => {
+                img.style.background = '#1a1a1a';
+                img.removeAttribute('src');
+            });
+
+            const overlay = document.createElement('div');
+            overlay.className = 'c3d-overlay';
+
+            const loc = document.createElement('span');
+            loc.className = 'c3d-location';
+            loc.textContent = attraction.city || '';
+
+            const title = document.createElement('h3');
+            title.className = 'c3d-name';
+            title.textContent = attraction.name || '';
+
+            overlay.appendChild(loc);
+            overlay.appendChild(title);
+            card.appendChild(img);
+            card.appendChild(overlay);
+
+            card.addEventListener('click', () => {
+                if (parseInt(card.dataset.index) === activeIndex) {
+                    openAttractionModal(attraction.id);
+                } else {
+                    resetAutoScroll();
+                    goTo(parseInt(card.dataset.index));
+                }
+            });
+
+            return card;
         }
 
-        // How many full cards fit in the visible area right now?
-        function calcVisible() {
-            const viewport = document.querySelector('.carousel-viewport');
-            if (!viewport) return 3;
-            const { cardW, gap } = getCardMetrics();
-            return Math.max(1, Math.floor(viewport.offsetWidth / (cardW + gap)));
+        // ── RENDER SCENE & DOTS ──────────────────────────────────────
+        function renderScene() {
+            const scene = document.getElementById('c3dScene');
+            scene.innerHTML = '';
+            cardsData.forEach((attraction, i) => {
+                scene.appendChild(buildC3dCard(attraction, i));
+            });
+
+            const dotsEl = document.getElementById('c3dDots');
+            dotsEl.innerHTML = '';
+            cardsData.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'c3d-dot';
+                dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+                dot.addEventListener('click', () => { resetAutoScroll(); goTo(i); });
+                dotsEl.appendChild(dot);
+            });
+
+            updatePositions();
         }
 
-        // ── TOUCH / SWIPE SUPPORT ────────────────────────────────────
-        let touchStartX = 0;
-        let touchEndX   = 0;
+        // ── 3D TRANSFORMS ────────────────────────────────────────────
+        // Positional config indexed by |offset| (0 = centre, 1 = adjacent, 2 = outer)
+        const C3D_CFG = [
+            { tx: 0,    tz: 0,    ry: 0,   sc: 1,    op: 1,    z: 10 },
+            { tx: 310,  tz: -140, ry: -42, sc: 0.80, op: 0.72, z: 6  },
+            { tx: 540,  tz: -310, ry: -60, sc: 0.58, op: 0.40, z: 3  },
+        ];
 
-        document.querySelector('.carousel-viewport').addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
+        function updatePositions() {
+            const cards = document.querySelectorAll('.c3d-card');
+            const dots  = document.querySelectorAll('.c3d-dot');
+            const n     = cardsData.length;
 
-        document.querySelector('.carousel-viewport').addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            const diff = touchStartX - touchEndX;
-            if (Math.abs(diff) > 40) {
-                resetAutoScroll();
-                if (diff > 0 && currentIndex < totalCards - 1) {
-                    currentIndex++;
-                    updateCarousel();
-                } else if (diff < 0 && currentIndex > 0) {
-                    currentIndex--;
-                    updateCarousel();
-                }
-            }
-        }, { passive: true });
+            cards.forEach((card, i) => {
+                // Shortest circular offset
+                let offset = i - activeIndex;
+                if (offset > n / 2)  offset -= n;
+                if (offset < -n / 2) offset += n;
 
-        // ── LOAD BUCKETLIST ATTRACTIONS ──────────────────────────────
-        async function loadBucketlist() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('attractions')
-                    .select('*')
-                    .order('priority_score', { ascending: false })
-                    .limit(10);
+                const abs = Math.abs(offset);
+                const sign = Math.sign(offset) || 1;
 
-                if (error) throw error;
-
-                window.bucketlistData = data;
-                totalCards = data.length;
-
-                const track = document.getElementById('carouselTrack');
-                track.innerHTML = '';
-
-                // ── Helper: build one card element from an attraction ──
-                function buildCard(attraction) {
-                    const card = document.createElement('div');
-                    card.className = 'bl-card';
-
-                    // ── XSS DEFENSE: build card via DOM API, never innerHTML with DB data ──
-                    const img = document.createElement('img');
-                    const rawSrc = String(attraction.image_url || '');
-                    // Validate URL scheme to block javascript: or data: injection
-                    if (/^https?:\/\//i.test(rawSrc)) img.src = rawSrc;
-                    img.alt = attraction.name || '';
-                    img.className = 'bl-card-img';
-                    img.addEventListener('error', () => {
-                        img.style.background = '#1a1a1a';
-                        img.removeAttribute('src');
-                    });
-
-                    const content = document.createElement('div');
-                    content.className = 'bl-card-content';
-
-                    const loc = document.createElement('span');
-                    loc.className = 'bl-card-location';
-                    loc.textContent = attraction.city || '';
-
-                    const title = document.createElement('h3');
-                    title.className = 'bl-card-name';
-                    title.textContent = attraction.name || '';
-
-                    content.appendChild(loc);
-                    content.appendChild(title);
-                    card.appendChild(img);
-                    card.appendChild(content);
-
-                    card.addEventListener('click', () => openAttractionModal(attraction.id));
-                    return card;
-                }
-
-                // Append all real cards
-                data.forEach((attraction) => {
-                    track.appendChild(buildCard(attraction));
-                });
-
-                // ── INFINITE LOOP: append clones of the first N cards ──
-                // We clone enough cards to always fill the viewport at the wrap
-                // point regardless of screen width. visibleCards is recalculated
-                // here (DOM is ready) so the clone count is always accurate.
-                visibleCards = calcVisible();
-                for (let i = 0; i < visibleCards; i++) {
-                    const clone = buildCard(data[i % data.length]);
-                    clone.setAttribute('data-clone', 'true');
-                    track.appendChild(clone);
+                if (abs > VISIBLE_RANGE) {
+                    // Hide completely — park off-screen on the correct side
+                    card.style.opacity      = '0';
+                    card.style.pointerEvents = 'none';
+                    card.style.zIndex       = '0';
+                    card.style.transform    = `translateX(${sign * 720}px) translateZ(-450px) rotateY(${-sign * 72}deg) scale(0.38)`;
+                    card.classList.remove('c3d-active');
+                    return;
                 }
 
-                updateCarousel();
-                startAutoScroll();
-                // Data is ready — signal loader gate, exit only if min timer also done
-                loaderDataReady = true;
-                maybeExitLoader();
-            } catch (err) {
-                console.error('Bucketlist load error:', err);
-                document.getElementById('carouselTrack').innerHTML =
-                    '<p style="color:#999;padding:40px">Could not load attractions.</p>';
-                // Exit loader even on error so page isn't stuck
-                loaderDataReady = true;
-                maybeExitLoader();
-            }
+                const cfg = C3D_CFG[abs];
+                const tx  = sign * cfg.tx;
+                const ry  = sign * cfg.ry;
+
+                card.style.transform     = `translateX(${tx}px) translateZ(${cfg.tz}px) rotateY(${ry}deg) scale(${cfg.sc})`;
+                card.style.opacity       = cfg.op.toString();
+                card.style.zIndex        = cfg.z.toString();
+                card.style.pointerEvents = 'auto';
+                card.classList.toggle('c3d-active', abs === 0);
+            });
+
+            dots.forEach((dot, i) => dot.classList.toggle('c3d-dot-active', i === activeIndex));
         }
 
-        // ── CAROUSEL LOGIC ───────────────────────────────────────────
-        function updateCarousel(animate) {
-            const track = document.getElementById('carouselTrack');
-            if (animate === false) {
-                // Disable transition for the instant snap-back
-                track.style.transition = 'none';
-            }
-            const { cardW, gap } = getCardMetrics();
-            const offset = currentIndex * (cardW + gap);
-            track.style.transform = `translateX(-${offset}px)`;
-
-            if (animate === false) {
-                // Re-enable transition on next frame so future slides animate normally
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        track.style.transition = '';
-                    });
-                });
-            }
-
-            // Arrows are bounded to real cards only — last valid index is the
-            // one where the final real card sits flush at the right edge.
-            document.getElementById('prevBtn').disabled = currentIndex === 0;
-            document.getElementById('nextBtn').disabled = currentIndex >= totalCards - visibleCards;
+        function goTo(index) {
+            const n = cardsData.length;
+            activeIndex = ((index % n) + n) % n;
+            updatePositions();
         }
 
-        document.getElementById('prevBtn').addEventListener('click', () => {
-            resetAutoScroll();
-            if (currentIndex > 0) { currentIndex--; updateCarousel(); }
-        });
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            resetAutoScroll();
-            if (currentIndex < totalCards - visibleCards) { currentIndex++; updateCarousel(); }
-        });
-
-        // Pause auto-scroll while hovering carousel
-        document.querySelector('.carousel-viewport').addEventListener('mouseenter', () => clearInterval(autoTimer));
-        document.querySelector('.carousel-viewport').addEventListener('mouseleave', () => startAutoScroll());
-
+        // ── AUTO SCROLL ──────────────────────────────────────────────
         function startAutoScroll() {
             clearInterval(autoTimer);
-            autoTimer = setInterval(() => {
-                if (totalCards === 0) return;
-
-                currentIndex++;
-                updateCarousel(); // animated slide forward
-
-                // If we've slid onto a clone position, wait for the CSS transition
-                // to finish then silently snap back to the matching real card.
-                if (currentIndex >= totalCards) {
-                    setTimeout(() => {
-                        currentIndex = currentIndex - totalCards; // e.g. 10→0, 11→1
-                        updateCarousel(false); // instant, no animation
-                    }, 520); // slightly longer than the 0.5s CSS transition
-                }
-            }, 3000);
+            autoTimer = setInterval(() => { goTo(activeIndex + 1); }, 3500);
         }
 
         function resetAutoScroll() {
@@ -785,15 +720,78 @@
             startAutoScroll();
         }
 
-        // Recalculate visible count on resize so arrow bounds stay accurate
-        window.addEventListener('resize', () => {
-            visibleCards = calcVisible();
-            // Clamp index in case it's now out of range at new screen size
-            if (currentIndex > totalCards - visibleCards) {
-                currentIndex = Math.max(0, totalCards - visibleCards);
-            }
-            updateCarousel();
+        // ── NAV BUTTONS ──────────────────────────────────────────────
+        document.getElementById('c3dPrev').addEventListener('click', () => {
+            resetAutoScroll(); goTo(activeIndex - 1);
         });
+        document.getElementById('c3dNext').addEventListener('click', () => {
+            resetAutoScroll(); goTo(activeIndex + 1);
+        });
+
+        // Pause on hover
+        const c3dScene = document.getElementById('c3dScene');
+        c3dScene.addEventListener('mouseenter', () => clearInterval(autoTimer));
+        c3dScene.addEventListener('mouseleave', () => startAutoScroll());
+
+        // Touch swipe
+        let touchStartX = 0;
+        c3dScene.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        c3dScene.addEventListener('touchend', e => {
+            const diff = touchStartX - e.changedTouches[0].screenX;
+            if (Math.abs(diff) > 40) {
+                resetAutoScroll();
+                goTo(activeIndex + (diff > 0 ? 1 : -1));
+            }
+        }, { passive: true });
+
+        // ── LOAD DATA — 5 Uttarakhand + top 1 from each other state ──
+        async function loadBucketlist() {
+            try {
+                const [uttRes, gjRes, rjRes, klRes, asRes] = await Promise.all([
+                    supabaseClient.from('attractions').select('*')
+                        .eq('state_id', 4).order('priority_score', { ascending: false }).limit(5),
+                    supabaseClient.from('attractions').select('*')
+                        .eq('state_id', 1).order('priority_score', { ascending: false }).limit(1),
+                    supabaseClient.from('attractions').select('*')
+                        .eq('state_id', 2).order('priority_score', { ascending: false }).limit(1),
+                    supabaseClient.from('attractions').select('*')
+                        .eq('state_id', 3).order('priority_score', { ascending: false }).limit(1),
+                    supabaseClient.from('attractions').select('*')
+                        .eq('state_id', 5).order('priority_score', { ascending: false }).limit(1),
+                ]);
+
+                if (uttRes.error) throw uttRes.error;
+                if (gjRes.error)  throw gjRes.error;
+                if (rjRes.error)  throw rjRes.error;
+                if (klRes.error)  throw klRes.error;
+                if (asRes.error)  throw asRes.error;
+
+                // 5 Uttarakhand + 1 Gujarat + 1 Rajasthan + 1 Kerala + 1 Assam = 9 cards
+                cardsData = [
+                    ...(uttRes.data || []),
+                    ...(gjRes.data  || []),
+                    ...(rjRes.data  || []),
+                    ...(klRes.data  || []),
+                    ...(asRes.data  || []),
+                ].filter(Boolean);
+
+                window.bucketlistData = cardsData;
+
+                renderScene();
+                startAutoScroll();
+
+                loaderDataReady = true;
+                maybeExitLoader();
+            } catch (err) {
+                console.error('Bucketlist load error:', err);
+                document.getElementById('c3dScene').innerHTML =
+                    '<p style="color:#999;padding:40px;text-align:center">Could not load attractions.</p>';
+                loaderDataReady = true;
+                maybeExitLoader();
+            }
+        }
 
         // ── ATTRACTION MODAL ─────────────────────────────────────────
         // ── XSS DEFENSE: sanitize all text before inserting into DOM ────
