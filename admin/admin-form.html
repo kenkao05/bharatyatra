@@ -560,6 +560,40 @@
       .page-title { font-size: 20px; }
     }
 
+    /* ── SUBMISSIONS TOGGLE ── */
+    .submissions-toggle {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 16px;
+      transition: var(--transition);
+    }
+    .toggle-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted);
+    }
+    .toggle-switch { position: relative; width: 44px; height: 24px; cursor: pointer; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-slider {
+      position: absolute; inset: 0;
+      background: var(--red-dim); border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 24px; transition: var(--transition);
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--red); left: 3px; top: 2px;
+      transition: var(--transition);
+    }
+    .toggle-switch input:checked + .toggle-slider {
+      background: var(--green-dim); border-color: rgba(34,197,94,0.3);
+    }
+    .toggle-switch input:checked + .toggle-slider::before {
+      background: var(--green); transform: translateX(20px);
+    }
+    .toggle-status { font-size: 12px; font-weight: 700; min-width: 26px; }
+    .toggle-status.on  { color: var(--green); }
+    .toggle-status.off { color: var(--red); }
+
     /* ==================== CUSTOM CURSOR ==================== */
     @media (pointer: fine) {
       *, *::before, *::after { cursor: none !important; }
@@ -630,6 +664,14 @@
     <!-- Title -->
     <div class="page-title-row">
       <h1 class="page-title">Contact <span>Submissions</span></h1>
+      <div class="submissions-toggle" id="submissionsToggleWrap" style="opacity:0.4;pointer-events:none;">
+        <span class="toggle-label">Public Form</span>
+        <label class="toggle-switch" title="Toggle public contact form submissions">
+          <input type="checkbox" id="submissionsToggle" onchange="updateSetting(this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-status off" id="toggleStatus">OFF</span>
+      </div>
     </div>
 
     <!-- Stats -->
@@ -826,12 +868,12 @@
 
       count.innerHTML = `Showing <strong>${data.length}</strong> of <strong>${allSubmissions.length}</strong> submission${allSubmissions.length !== 1 ? 's' : ''}`;
 
-      tbody.innerHTML = data.map(s => `
+      tbody.innerHTML = data.map((s, i) => `
         <tr>
           <td>${catBadge(s.category)}</td>
           <td>
             <div class="td-name">${san(s.name)}</div>
-            <div class="td-sub">#${s.display_id}</div>
+            <div class="td-sub">#${i + 1}</div>
           </td>
           <td>
             <div style="font-size:13px;">${san(s.email)}</div>
@@ -984,7 +1026,7 @@
 
       document.getElementById('modalBox').innerHTML = `
         <div class="modal-header">
-          <span class="modal-title">Submission <span>#${s.display_id}</span></span>
+          <span class="modal-title">Submission <span>#${allSubmissions.findIndex(x => x.id === id) + 1}</span></span>
           <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
@@ -1109,6 +1151,59 @@
       setTimeout(() => el.remove(), 4000);
     }
 
+    /* ── SITE SETTINGS / SUBMISSIONS TOGGLE ── */
+    async function loadSetting() {
+      try {
+        const { data, error } = await sb
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'submissions_enabled')
+          .single();
+        if (error) throw error;
+
+        const enabled = data.value === 'true';
+        const toggle  = document.getElementById('submissionsToggle');
+        const status  = document.getElementById('toggleStatus');
+        const wrap    = document.getElementById('submissionsToggleWrap');
+
+        toggle.checked           = enabled;
+        status.textContent       = enabled ? 'ON' : 'OFF';
+        status.className         = 'toggle-status ' + (enabled ? 'on' : 'off');
+        wrap.style.opacity       = '1';
+        wrap.style.pointerEvents = 'auto';
+      } catch (err) {
+        console.error('Could not load site settings:', err);
+      }
+    }
+
+    async function updateSetting(enabled) {
+      const wrap   = document.getElementById('submissionsToggleWrap');
+      const status = document.getElementById('toggleStatus');
+      wrap.style.opacity       = '0.4';
+      wrap.style.pointerEvents = 'none';
+
+      try {
+        const { error } = await sb
+          .from('site_settings')
+          .update({ value: enabled ? 'true' : 'false' })
+          .eq('key', 'submissions_enabled');
+        if (error) throw error;
+
+        status.textContent = enabled ? 'ON' : 'OFF';
+        status.className   = 'toggle-status ' + (enabled ? 'on' : 'off');
+        toast(`Submissions ${enabled ? 'enabled ✓' : 'disabled'}`, enabled ? 'success' : 'error');
+      } catch (err) {
+        toast('Failed to update setting.', 'error');
+        // Revert toggle visually
+        document.getElementById('submissionsToggle').checked = !enabled;
+        status.textContent = !enabled ? 'ON' : 'OFF';
+        status.className   = 'toggle-status ' + (!enabled ? 'on' : 'off');
+      } finally {
+        wrap.style.opacity       = '1';
+        wrap.style.pointerEvents = 'auto';
+      }
+    }
+
     /* ── LOGOUT ── */
     function handleLogout() {
       BYAuth.logout('user_initiated');
@@ -1136,6 +1231,7 @@
       if (th) th.classList.add('sort-desc');
 
       await loadSubmissions();
+      await loadSetting();
     });
   </script>
   <!-- ==================== CUSTOM CURSOR ==================== -->
