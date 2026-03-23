@@ -1115,7 +1115,9 @@
                     body: JSON.stringify(payload)
                 });
 
-                const data = await res.json();
+                const text = await res.text();
+                let data = {};
+                try { data = JSON.parse(text); } catch { data = { error: 'Server error' }; }
 
                 if (!res.ok) {
                     if (data.error === 'Submissions are temporarily closed.') {
