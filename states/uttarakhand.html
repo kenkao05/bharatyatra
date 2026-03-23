@@ -2587,23 +2587,28 @@
     let allEvents = [];
 
     async function loadEvents() {
-      const { data, error } = await supabaseClient
-        .from('events')
-        .select('*')
-        .eq('state_id', CONFIG.STATE_ID)
-        .order('date_from', { ascending: true });
+      try {
+        const { data, error } = await supabaseClient
+          .from('events')
+          .select('*')
+          .eq('state_id', CONFIG.STATE_ID)
+          .order('date_from', { ascending: true });
 
-      if (error || !data || data.length === 0) {
-        document.getElementById('eventsTimeline').innerHTML =
-          '<div class="events-loading">No events found for Uttarakhand.</div>';
+        if (error || !data || data.length === 0) {
+          document.getElementById('eventsTimeline').innerHTML =
+            '<div class="events-loading">No events found for Uttarakhand.</div>';
+          loaderFetchDone();
+          return;
+        }
+
+        allEvents = data;
+        buildCategoryPills(data);
+        renderTimeline(data);
         loaderFetchDone();
-        return;
+      } catch (err) {
+        console.error("Error loading events");
+        loaderFetchDone();
       }
-
-      allEvents = data;
-      buildCategoryPills(data);
-      renderTimeline(data);
-      loaderFetchDone();
     }
 
     function buildCategoryPills(events) {
