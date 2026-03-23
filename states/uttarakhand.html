@@ -2209,6 +2209,10 @@
     let loaderFetchesComplete = 0;
     let loaderTimerDone = false;
     let loaderExitFired = false;
+    // ==================== CONFIG ====================
+    const CONFIG = Object.freeze({
+      STATE_ID: 4  // Uttarakhand
+    });
     // ==================== SECURITY: HTML ENTITY ENCODER ====================
     // Prevents XSS when DB data must go into innerHTML context.
     // Never use strip-based sanitisers — entity encoding is the correct approach.
