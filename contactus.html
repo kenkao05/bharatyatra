@@ -910,38 +910,6 @@
         const sb = supabase.createClient(window.BY_SUPABASE_URL, window.BY_SUPABASE_KEY);
 
         /* ─────────────────────────────────────────────────────────
-           SUBMISSION GATE — reads site_settings from Supabase
-        ───────────────────────────────────────────────────────── */
-        async function checkSubmissionsEnabled() {
-            try {
-                const { data, error } = await sb
-                    .from('site_settings')
-                    .select('value')
-                    .eq('key', 'submissions_enabled')
-                    .single();
-                if (error) throw error;
-                return data.value === 'true';
-            } catch {
-                return true; // fail open — don't block users on DB hiccup
-            }
-        }
-
-        // Run on page load — disable button + show notice if submissions are OFF
-        (async () => {
-            const enabled = await checkSubmissionsEnabled();
-            if (!enabled) {
-                const btn = document.getElementById('submit-btn');
-                btn.disabled = true;
-                btn.style.opacity = '0.45';
-                const notice = document.createElement('p');
-                notice.id = 'submissions-closed-notice';
-                notice.style.cssText = 'font-family:Poppins,sans-serif;font-size:13px;color:#e05a28;margin-bottom:12px;';
-                notice.textContent = 'Submissions are temporarily closed. Please check back later.';
-                btn.parentElement.insertBefore(notice, btn);
-            }
-        })();
-
-        /* ─────────────────────────────────────────────────────────
            SECURITY CONFIG
            Object.freeze() prevents Prototype Pollution attacks from
            overwriting these security constants at runtime.
@@ -1092,13 +1060,6 @@
             document.getElementById('msg-error').style.display = 'none';
             document.getElementById('msg-success').style.display = 'none';
 
-            // ── 0b. SUBMISSIONS GATE ────────────────────────────
-            const submissionsOpen = await checkSubmissionsEnabled();
-            if (!submissionsOpen) {
-                showError('Submissions are temporarily closed. Please check back later.');
-                return;
-            }
-
             // ── 1. BOT TIMER CHECK ──────────────────────────────
             if (Date.now() - pageLoadTime < SECURITY.MIN_FILL_TIME_MS) {
                 // Silent fail for bots — don't reveal why
@@ -1148,11 +1109,23 @@
             submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending\u2026';
 
             try {
-                const { error } = await sb
-                    .from('contact_submissions')
-                    .insert([payload]);
+                const res = await fetch('/api/submit-contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-                if (error) throw error;
+                const data = await res.json();
+
+                if (!res.ok) {
+                    if (data.error === 'Submissions are temporarily closed.') {
+                        showError('Submissions are temporarily closed. Please check back later.');
+                    } else {
+                        showMsg('error');
+                    }
+                    console.error('Submission error:', data.error);
+                    return;
+                }
 
                 // Log timestamp for rate limiting
                 submissionLog.push(Date.now());
