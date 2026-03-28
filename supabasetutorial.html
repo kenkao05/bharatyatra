@@ -1,0 +1,2614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supabase — How It Works</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Georgia&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+    /* ── ROOT VARIABLES — warm parchment light theme ── */
+    :root {
+      --bg:          #F8F4EC;
+      --bg2:         #F5EFEB;
+      --card:        rgba(232,223,208,0.7);
+      --card-solid:  rgba(248,244,236,0.95);
+      --border:      rgba(212,199,178,0.5);
+      --border2:     rgba(212,199,178,0.35);
+      --green:       #2d8c5e;   /* Supabase green, darkened for light bg */
+      --green-dim:   rgba(45,140,94,0.10);
+      --green-bg:    rgba(45,140,94,0.07);
+      --cyan:        #1a7a8a;
+      --cyan-dim:    rgba(26,122,138,0.10);
+      --amber:       #a06820;
+      --amber-dim:   rgba(160,104,32,0.10);
+      --red:         #b84040;
+      --red-dim:     rgba(184,64,64,0.10);
+      --purple:      #6b4fa0;
+      --purple-dim:  rgba(107,79,160,0.10);
+      --text:        #3a2e22;
+      --text-strong: #261e14;
+      --muted:       #6b5c48;
+      --muted2:      #8a7460;
+      --radius:      12px;
+      --code-bg:     #ede8df;
+      --shadow:      rgba(90,79,65,0.13);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 7px; }
+    ::-webkit-scrollbar-track { background: rgba(212,199,178,0.3); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: rgba(184,169,146,0.7); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(184,169,146,0.9); }
+
+    /* ── LAYOUT ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 50px 24px 100px;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 56px;
+      background: rgba(232,223,208,0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 40px 32px;
+      box-shadow: 0 8px 32px var(--shadow);
+    }
+
+    .supa-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 20px;
+    }
+
+    .supa-logo-icon {
+      width: 36px; height: 36px;
+      background: var(--green-dim);
+      border: 1px solid rgba(45,140,94,0.3);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .page-title {
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--text-strong);
+      margin-bottom: 12px;
+    }
+    .page-title span { color: var(--green); }
+
+    .page-sub {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 580px;
+      margin: 0 auto 24px;
+    }
+
+    .project-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(184,169,146,0.3);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 7px 16px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .project-badge strong { color: var(--green); }
+
+    /* ── SECTION ── */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .section-num {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: var(--green-dim);
+      border: 1px solid rgba(45,140,94,0.25);
+      color: var(--green);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-strong);
+    }
+
+    .section-desc {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 18px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: rgba(248,244,236,0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border2);
+      background: rgba(232,223,208,0.5);
+    }
+
+    .card-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-strong);
+    }
+
+    .card-header-left i { color: var(--green); font-size: 14px; }
+
+    .tag {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+    .tag-green  { background: var(--green-dim);  color: var(--green); }
+    .tag-cyan   { background: var(--cyan-dim);   color: var(--cyan); }
+    .tag-amber  { background: var(--amber-dim);  color: var(--amber); }
+    .tag-red    { background: var(--red-dim);    color: var(--red); }
+    .tag-purple { background: var(--purple-dim); color: var(--purple); }
+
+    /* ── CODE BLOCK ── */
+    .code-block {
+      background: var(--code-bg);
+      padding: 22px 24px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.85;
+      overflow-x: auto;
+      tab-size: 2;
+      white-space: pre;
+      color: #3a2e22;
+    }
+
+    /* Syntax colours — darkened for warm parchment background */
+    .c-comment  { color: #7a6a55; font-style: italic; }
+    .c-keyword  { color: #6b2fa0; }
+    .c-fn       { color: #1044a0; }
+    .c-str      { color: #1e6e35; }
+    .c-key      { color: #a02020; }
+    .c-val      { color: #8a5a00; }
+    .c-op       { color: #0e6070; }
+    .c-supa     { color: #1a7a50; font-weight: 600; }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      padding: 24px;
+      background: rgba(248,244,236,0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px var(--shadow);
+      row-gap: 12px;
+    }
+
+    .flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .flow-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .flow-label {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-strong);
+    }
+
+    .flow-sub {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .flow-arrow {
+      color: var(--muted2);
+      font-size: 16px;
+      padding: 0 4px;
+      flex-shrink: 0;
+      align-self: flex-start;
+      margin-top: 14px;
+    }
+
+    /* ── TWO COLUMN ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    /* ── PILL ROW ── */
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(232,223,208,0.6);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 7px 14px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .pill i { font-size: 12px; }
+    .pill strong { color: var(--text-strong); }
+
+    /* ── TABLE ── */
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .info-table th {
+      text-align: left;
+      padding: 10px 16px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: rgba(232,223,208,0.4);
+    }
+    .info-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border2);
+      vertical-align: top;
+      line-height: 1.6;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .info-table tr:last-child td { border-bottom: none; }
+    .info-table td:first-child { font-family: 'Fira Code', monospace; color: var(--cyan); font-size: 12px; }
+    .info-table td:last-child  { color: var(--muted); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 44px 0;
+    }
+
+    /* ── CALLOUT ── */
+    .callout {
+      display: flex;
+      gap: 14px;
+      padding: 16px 18px;
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .callout-green  { background: var(--green-bg);   border: 1px solid rgba(45,140,94,0.2); }
+    .callout-amber  { background: var(--amber-dim);  border: 1px solid rgba(160,104,32,0.2); }
+    .callout-purple { background: var(--purple-dim); border: 1px solid rgba(107,79,160,0.2); }
+    .callout i { margin-top: 2px; flex-shrink: 0; font-size: 15px; }
+    .callout-green  i { color: var(--green); }
+    .callout-amber  i { color: var(--amber); }
+    .callout-purple i { color: var(--purple); }
+    .callout div { color: var(--muted); }
+    .callout strong { color: var(--text-strong); }
+
+    /* ── INLINE CODE (in section-desc / callouts) ── */
+    code {
+      font-family: 'Fira Code', monospace !important;
+      font-size: 12px !important;
+      color: var(--cyan) !important;
+      background: rgba(26,122,138,0.08);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    /* ── FOOTER ── */
+    .page > div:last-child { color: var(--muted2) !important; }
+
+    /* ── LANGUAGE SWITCHER ── */
+    .lang-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(248,244,236,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .lang-btn {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 18px;
+      border-radius: 30px;
+      border: 1.5px solid var(--border);
+      background: rgba(232,223,208,0.5);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .lang-btn:hover {
+      background: rgba(212,199,178,0.7);
+      color: var(--text-strong);
+    }
+    .lang-btn.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    /* ── RESPONSIVE ── */
+    /* ── TABLET (≤ 768px) ── */
+    @media (max-width: 768px) {
+      .page { max-width: 100%; padding: 20px 14px 80px; }
+      .page-title { font-size: 30px; }
+      .two-col { grid-template-columns: 1fr; gap: 12px; }
+      .flow { flex-wrap: wrap; gap: 0; row-gap: 8px; }
+    }
+
+    /* ── MOBILE (≤ 600px) ── */
+    @media (max-width: 600px) {
+
+      /* ── Lang bar ── */
+      .lang-bar { gap: 6px; padding: 8px 12px; }
+      .lang-btn  { font-size: 12px; padding: 6px 13px; }
+
+      /* ── Page layout ── */
+      .page { padding: 16px 12px 72px; }
+
+      /* ── Header ── */
+      .page-header { padding: 24px 16px; border-radius: 12px; }
+      .page-title  { font-size: 24px; letter-spacing: -0.3px; line-height: 1.25; }
+      .page-sub    { font-size: 13px; line-height: 1.7; }
+      .supa-logo   { font-size: 11px; margin-bottom: 14px; }
+      .project-badge { font-size: 11px; padding: 6px 12px; flex-wrap: wrap; justify-content: center; gap: 4px; }
+
+      /* ── Section headings ── */
+      .section-title { font-size: 17px; line-height: 1.35; }
+      .section-desc  { font-size: 13px; }
+      .section-num   { width: 24px; height: 24px; font-size: 11px; flex-shrink: 0; }
+      .section       { margin-bottom: 36px; }
+
+      /* ── Cards ── */
+      .card        { border-radius: 11px; margin-bottom: 12px; }
+      .card-header { padding: 11px 14px; gap: 8px; flex-wrap: wrap; }
+      .card-header-left { font-size: 12px; gap: 7px; }
+      .card-header-left i { font-size: 13px; }
+      .tag { font-size: 9px; padding: 2px 7px; }
+
+      /* ── Code blocks ── */
+      .code-block {
+        padding: 14px 12px;
+        font-size: 11.5px;
+        line-height: 1.75;
+        /* allow horizontal scroll but keep it tidy */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 0 0 11px 11px;
+      }
+      /* Thin scrollbar on code blocks */
+      .code-block::-webkit-scrollbar { height: 3px; }
+      .code-block::-webkit-scrollbar-thumb { background: rgba(184,169,146,0.6); border-radius: 2px; }
+
+      /* ── Two-col collapses to one ── */
+      .two-col { grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
+
+      /* ── Flow diagrams ── */
+      .flow {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px 14px;
+        gap: 0;
+        row-gap: 0;
+      }
+      .flow-step {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+        min-width: unset;
+        text-align: left;
+        padding: 8px 0;
+      }
+      .flow-icon  { width: 38px; height: 38px; font-size: 16px; flex-shrink: 0; border-radius: 10px; }
+      .flow-label { font-size: 12px; }
+      .flow-sub   { font-size: 10px; }
+      .flow-arrow {
+        align-self: center;
+        margin: 0 0 0 25px;   /* indent to align with text */
+        transform: rotate(90deg);
+        font-size: 13px;
+        padding: 2px 0;
+        color: var(--muted2);
+      }
+
+      /* ── Pill rows ── */
+      .pill-row { gap: 7px; }
+      .pill { font-size: 11px; padding: 5px 11px; }
+
+      /* ── Info tables ── */
+      .info-table { font-size: 12px; }
+      .info-table th { font-size: 9px; padding: 8px 10px; }
+      .info-table td { padding: 10px 10px; font-size: 11.5px; word-break: break-word; }
+      /* Stack table columns on very small screens */
+      .info-table thead { display: none; }
+      .info-table tr {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid var(--border);
+        padding: 10px 0;
+      }
+      .info-table tr:last-child { border-bottom: none; }
+      .info-table td {
+        border-bottom: none;
+        padding: 2px 10px;
+      }
+      .info-table td:first-child {
+        font-size: 12px;
+        font-weight: 600;
+        padding-bottom: 4px;
+      }
+
+      /* ── Callouts ── */
+      .callout { padding: 13px 14px; gap: 11px; font-size: 12.5px; border-radius: 10px; }
+      .callout i { font-size: 14px; }
+
+      /* ── Dividers ── */
+      .divider { margin: 28px 0; }
+
+      /* ── Quick reference table in last section —
+            keep 2 cols but make them narrower ── */
+      .section:last-of-type .info-table thead { display: table-header-group; }
+      .section:last-of-type .info-table tr    { display: table-row; }
+      .section:last-of-type .info-table td    { padding: 9px 8px; font-size: 11px; }
+      .section:last-of-type .info-table th    { font-size: 9px; padding: 8px 8px; }
+      /* Mono code in reference table wraps */
+      .section:last-of-type .info-table td[style*="Fira"] {
+        word-break: break-all;
+        font-size: 10.5px !important;
+      }
+
+      /* ── Inline code ── */
+      code { font-size: 11px !important; padding: 1px 4px; }
+    }
+
+    /* ── EXTRA SMALL (≤ 380px) ── */
+    @media (max-width: 380px) {
+      .page { padding: 12px 10px 60px; }
+      .page-title { font-size: 21px; }
+      .code-block { font-size: 10.5px; padding: 12px 10px; }
+      .lang-btn { font-size: 11px; padding: 5px 10px; }
+      .section-title { font-size: 15px; }
+      .card-header { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+<!-- ── LANGUAGE SWITCHER BAR ── -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('en')">🇬🇧 English</button>
+  <button class="lang-btn" onclick="setLang('gu')">🇮🇳 ગુજરાતી</button>
+  <button class="lang-btn" onclick="setLang('hi')">🇮🇳 हिंदी</button>
+</div>
+
+<div class="page">
+
+  <!-- ══════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════ -->
+  <div class="page-header">
+    <div class="supa-logo">
+      <div class="supa-logo-icon"><i class="fas fa-bolt"></i></div>
+      Supabase
+    </div>
+    <h1 class="page-title"><span data-i18n="title_how">How</span> <span>Supabase</span> <span data-i18n="title_works">Works</span></h1>
+    <p class="page-sub" data-i18n="header_sub">
+      A complete step-by-step pipeline — from creating your Supabase account to a live website
+      with a working enquiry form, admin login, and responses page.
+    </p>
+    <div class="project-badge">
+      <i class="fas fa-bolt" style="color:var(--green)"></i>
+      <span data-i18n="project_label">Stack:</span> <strong>HTML + Vanilla JS + Supabase</strong> &nbsp;·&nbsp; <span data-i18n="project_hosting">Hosting: GitHub Pages / Vercel</span>
+    </div>
+  </div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">1</div>
+      <div class="section-title" data-i18n="s1_title">What is Supabase?</div>
+    </div>
+    <p class="section-desc" data-i18n="s1_desc">
+      Supabase is an open-source backend-as-a-service. Think of it as a ready-made
+      backend that gives you a database, authentication, file storage, and a REST API
+      — without writing any server code. We use it instead of building our own backend.
+    </p>
+
+    <!-- What you get -->
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left"><i class="fas fa-database"></i> PostgreSQL Database</div>
+          <span class="tag tag-green">Core</span>
+        </div>
+        <div class="code-block">
+          <span class="c-comment" data-i18n="cc_1">/* A real SQL database hosted for you.
+   Tables: states, districts, attractions,
+   accommodations, hospitals, etc.
+   You query it like any SQL database. */</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left"><i class="fas fa-key"></i> Auth System</div>
+          <span class="tag tag-cyan">Security</span>
+        </div>
+        <div class="code-block">
+          <span class="c-comment" data-i18n="cc_2">/* Handles login / logout / sessions.
+   Admin logs in with email + password.
+   Supabase issues a JWT token that
+   proves who the user is. */</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left"><i class="fas fa-photo-video"></i> Storage</div>
+          <span class="tag tag-amber">Media</span>
+        </div>
+        <div class="code-block">
+          <span class="c-comment" data-i18n="cc_3">/* File storage for images and videos.
+   Buckets: state-images, state-videos,
+   attraction-images, district-images.
+   Returns a public URL you put in img src. */</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left"><i class="fas fa-plug"></i> Auto REST API</div>
+          <span class="tag tag-purple">API</span>
+        </div>
+        <div class="code-block">
+          <span class="c-comment" data-i18n="cc_4">/* Supabase auto-generates a REST API
+   for every table. The JS client wraps
+   this so you never write raw HTTP
+   requests — just method calls. */</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">2</div>
+      <div class="section-title" data-i18n="s_setup_title">Account, Organisation &amp; Project Setup</div>
+    </div>
+    <p class="section-desc" data-i18n="s_setup_desc">
+      Before touching any code, create your Supabase account and project. This takes about 3 minutes.
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-user-plus"></i> Step 1 — Create a Supabase Account</div>
+        <span class="tag tag-green">Start here</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_setup1">/* ─────────────────────────────────────────────
+   1. Open browser → go to https://supabase.com
+   2. Click "Start your project" (top right)
+   3. Click "Continue with GitHub"
+      (create a free GitHub account first if needed)
+   4. You are now inside Supabase — done!
+───────────────────────────────────────────── */</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-building"></i> Step 2 — Create an Organisation</div>
+        <span class="tag tag-cyan">Organisation</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_setup2">/* An Organisation is like a folder that holds
+   your projects. Think of it as your "company" or
+   "workspace" inside Supabase.
+
+   1. After login, click "New Organisation"
+   2. Give it a name  e.g. "MyWebsite"
+   3. Plan: choose Free
+   4. Click "Create Organisation"  ✓ */</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-folder-plus"></i> Step 3 — Create a Project</div>
+        <span class="tag tag-amber">Project</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_setup3">/* A Project = your website's own database space.
+
+   1. Inside the Organisation → click "New Project"
+   2. Project Name:  enquiry-website
+   3. Database Password:  choose a strong password
+                          WRITE IT DOWN — shown once only!
+   4. Region:  South Asia (Mumbai)  ← fastest for India
+   5. Click "Create new project"
+   6. Wait ~1-2 minutes for setup to complete  ✓ */</span>
+      </div>
+    </div>
+
+    <div class="callout callout-amber">
+      <i class="fas fa-exclamation-triangle"></i>
+      <div data-i18n="callout_setup_pw">
+        <strong>Save your Database Password now.</strong> Supabase shows it only once during project creation. Write it in a safe place — you'll need it if you ever connect a local tool to your database.
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num" style="background:var(--cyan-dim);border-color:rgba(26,122,138,0.25);color:var(--cyan);">◎</div>
+      <div class="section-title" data-i18n="s_dash_title">Dashboard Tour — What Is Where</div>
+    </div>
+    <p class="section-desc" data-i18n="s_dash_desc">
+      After project creation you land on the Supabase Dashboard. The left sidebar has everything you need.
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-th-large"></i> Left Sidebar — Key Sections</div>
+        <span class="tag tag-cyan">Navigation</span>
+      </div>
+      <table class="info-table">
+        <thead>
+          <tr><th data-i18n="dash_th_icon">Section</th><th data-i18n="dash_th_use">What you use it for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Table Editor</td><td style="color:var(--muted)" data-i18n="dash_te">View your tables visually (like Excel). Good for quick checks.</td></tr>
+          <tr><td>SQL Editor</td><td style="color:var(--muted)" data-i18n="dash_sql">Run SQL commands. This is where you CREATE TABLE and set RLS. ★ used a lot</td></tr>
+          <tr><td>Authentication</td><td style="color:var(--muted)" data-i18n="dash_auth">Manage users — create your admin login account here.</td></tr>
+          <tr><td>Storage</td><td style="color:var(--muted)" data-i18n="dash_storage">Upload images and files. Create buckets (folders) here.</td></tr>
+          <tr><td>Settings → API</td><td style="color:var(--muted)" data-i18n="dash_api">Get your Project URL and anon key. ★ used a lot</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num" style="background:var(--amber-dim);border-color:rgba(160,104,32,0.25);color:var(--amber);">🔑</div>
+      <div class="section-title" data-i18n="s_keys_title">Getting Your API Keys</div>
+    </div>
+    <p class="section-desc" data-i18n="s_keys_desc">
+      Your HTML pages need two things to talk to Supabase: the Project URL (the address) and the anon key (the password). Get them from Settings.
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-key"></i> Settings → API — Copy These Two Values</div>
+        <span class="tag tag-amber">Keys</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_keys1">/* HOW TO FIND YOUR KEYS:
+   1. Left sidebar → click "Settings" (gear icon ⚙)
+   2. Click "API" in the settings menu
+   3. You will see two things — copy both into Notepad:
+
+   Project URL:
+     https://xyzabcdef.supabase.co
+     (this is your database's unique address)
+
+   anon public key:
+     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+     (this is safe to use in frontend HTML code)
+───────────────────────────────────────────── */</span>
+
+<span class="c-comment" data-i18n="cc_keys2">// You will paste these two values into every HTML
+// file that connects to Supabase. Keep them handy.</span>
+      </div>
+    </div>
+
+    <div class="callout callout-amber">
+      <i class="fas fa-exclamation-triangle"></i>
+      <div data-i18n="callout_keys_warn">
+        <strong>anon key vs service_role key.</strong> Only ever use the <strong>anon public</strong> key in your HTML files — it is safe. Never paste the <strong>service_role</strong> key into any HTML file; it bypasses all security and gives full database access to anyone who finds it.
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">3</div>
+      <div class="section-title" data-i18n="s3sql_title">Setting Up Database Tables — Before You Write Any Code</div>
+    </div>
+    <p class="section-desc" data-i18n="s3sql_desc">
+      Before you touch the Supabase client or write a single line of JavaScript,
+      you need to create your database tables. The best starting point is your
+      <strong>PRD (Product Requirements Document)</strong> — it already lists every table,
+      every column, and every data type you need. Give that to Claude AI and it will
+      generate the exact SQL to paste into Supabase's SQL Editor.
+    </p>
+
+    <!-- PRD → Claude → SQL -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-file-alt"></i> Step 1 — Use Your PRD as the Prompt to Claude AI</div>
+        <span class="tag tag-amber">PRD → Claude</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_db1">/* ─────────────────────────────────────────────────────
+   Your PRD already has the table schema.
+   Copy the relevant section and paste it to Claude AI
+   with this instruction at the top:
+
+   "I'm building BharatYatra on Supabase (PostgreSQL).
+    Based on the schema below, generate a complete SQL
+    CREATE TABLE statement with SERIAL PRIMARY KEY,
+    TIMESTAMPTZ timestamps, and RLS policies
+    (public read, authenticated write)."
+
+   Then paste the table columns from your PRD.
+───────────────────────────────────────────────────── */</span>
+
+<span class="c-comment" data-i18n="cc_db2">// ── Example: PRD Section 4.5 says contact_submissions table:
+//    "id, category, name, age, gender, phone,
+//     email, statement, created_at"
+//
+// You give Claude that list from the PRD → Claude writes
+// the full CREATE TABLE + RLS policies shown below.</span>
+      </div>
+    </div>
+
+    <!-- What Claude generates -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-magic"></i> What Claude AI Returns — Ready-to-Run SQL</div>
+        <span class="tag tag-green">Output</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_db3">/* Claude generates the complete SQL from your PRD columns.
+   Example: contact_submissions table for contactus.html */</span>
+
+<span class="c-keyword">CREATE TABLE</span> <span class="c-fn">contact_submissions</span> <span class="c-op">(</span>
+  <span class="c-key">id</span>         <span class="c-keyword">BIGSERIAL PRIMARY KEY</span><span class="c-op">,</span>
+  <span class="c-key">category</span>   <span class="c-keyword">TEXT NOT NULL</span><span class="c-op">,</span>               <span class="c-comment">-- 'Bug Report' / 'Suggestion' / 'Query'</span>
+  <span class="c-key">name</span>       <span class="c-keyword">TEXT NOT NULL</span><span class="c-op">,</span>
+  <span class="c-key">age</span>        <span class="c-keyword">INTEGER NOT NULL</span><span class="c-op">,</span>
+  <span class="c-key">gender</span>     <span class="c-keyword">TEXT NOT NULL</span><span class="c-op">,</span>
+  <span class="c-key">phone</span>      <span class="c-keyword">TEXT NOT NULL</span><span class="c-op">,</span>
+  <span class="c-key">email</span>      <span class="c-keyword">TEXT NOT NULL</span><span class="c-op">,</span>
+  <span class="c-key">statement</span>  <span class="c-keyword">TEXT NOT NULL</span><span class="c-op">,</span>               <span class="c-comment">-- user message</span>
+  <span class="c-key">created_at</span> <span class="c-keyword">TIMESTAMPTZ DEFAULT</span> <span class="c-fn">now</span><span class="c-op">()</span>
+<span class="c-op">);</span>
+
+<span class="c-keyword">ALTER TABLE</span> <span class="c-fn">contact_submissions</span> <span class="c-keyword">ENABLE ROW LEVEL SECURITY</span><span class="c-op">;</span>
+
+<span class="c-comment">/* Anyone (even not logged in) can INSERT — public contact form */</span>
+<span class="c-keyword">CREATE POLICY</span> <span class="c-str">"public_insert"</span> <span class="c-keyword">ON</span> <span class="c-fn">contact_submissions</span>
+  <span class="c-keyword">FOR INSERT WITH CHECK</span> <span class="c-op">(</span><span class="c-keyword">true</span><span class="c-op">);</span>
+
+<span class="c-comment">/* Only admins can read or delete submissions */</span>
+<span class="c-keyword">CREATE POLICY</span> <span class="c-str">"admin_manage"</span> <span class="c-keyword">ON</span> <span class="c-fn">contact_submissions</span>
+  <span class="c-keyword">FOR ALL USING</span> <span class="c-op">(</span><span class="c-fn">auth.role</span><span class="c-op">() =</span> <span class="c-str">'authenticated'</span><span class="c-op">);</span>
+      </div>
+    </div>
+
+    <!-- Step 2: SQL Editor -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-terminal"></i> Step 2 — Paste into Supabase SQL Editor</div>
+        <span class="tag tag-cyan">Dashboard</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_db5">/* ─────────────────────────────────────────────────────
+   HOW TO REACH THE SQL EDITOR:
+   1. Go to https://supabase.com → open your project
+   2. Left sidebar → click "SQL Editor"  (or press /)
+   3. Click "New query" (top-left)
+   4. Paste the SQL Claude gave you
+   5. Click  ▶ Run  (or press Ctrl+Enter / Cmd+Enter)
+   6. You'll see "Success. No rows returned." — done!
+───────────────────────────────────────────────────── */</span>
+
+<span class="c-comment" data-i18n="cc_db6">/* After running, verify in:
+   Left sidebar → Table Editor → contact_submissions
+   You should see your empty table with all columns. */</span>
+      </div>
+    </div>
+
+    <!-- PRD → HTML too -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-code"></i> Step 3 — Use the Same PRD to Generate the HTML Page</div>
+        <span class="tag tag-purple">PRD → HTML</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_db_html1">/* ─────────────────────────────────────────────────────
+   The PRD describes what every page looks like.
+   Give Claude both the PRD section AND the table schema
+   and ask it to generate the full HTML file.
+
+   Example prompt:
+   "Build contactus.html for BharatYatra (HTML + CSS +
+    Vanilla JS + Supabase). Requirements from PRD:
+    - Fields: category (dropdown), name, age, gender,
+      phone, email, statement (textarea) — all required
+    - On submit: insert a row into contact_submissions
+    - Style: black/red/white palette, Playfair Display
+      headings, shared navbar and footer
+    - Show success/error message after submit"
+───────────────────────────────────────────────────── */</span>
+
+<span class="c-comment" data-i18n="cc_db_html2">// Claude will write the full HTML, the form, the CSS,
+// and the Supabase insert() call — all in one shot.
+// You paste it, add your Supabase URL + key, done.
+//
+// Same approach works for admin-form.html:
+// "Build admin-form.html — reads contact_submissions,
+//  shows glassmorphism cards with category badge,
+//  name/email/phone/statement, delete button"</span>
+      </div>
+    </div>
+
+    <div class="callout callout-amber">
+      <i class="fas fa-lightbulb"></i>
+      <div data-i18n="callout_db_tip">
+        <strong>Pro tip — paste the PRD column list directly into your Claude prompt.</strong>
+        Don't retype columns by hand. Copy the exact table definition from your PRD
+        (e.g. Section 4.5 for <code>contact_submissions</code>) and paste it to Claude.
+        Say <em>"Supabase (PostgreSQL), generate CREATE TABLE + RLS"</em> and Claude
+        will output production-ready SQL with correct types, constraints, and policies.
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">5</div>
+      <div class="section-title" data-i18n="s2_title">Setting Up the Client</div>
+    </div>
+    <p class="section-desc" data-i18n="s2_desc">
+      Before you can do anything — read data, log in, upload files — you need to
+      create a Supabase client. This is done once and shared across all pages.
+      In BharatYatra this lives in <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">admin-auth.js</code> and is available as <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">window.sb</code>.
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-code"></i> admin-auth.js — Client Initialisation</div>
+        <span class="tag tag-green">Run once on every page</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_5">/* ─────────────────────────────────────────────────────
+   STEP 1: Load the Supabase JS library (from CDN).
+   This gives you the global `supabase` object.
+   Every admin page has this in the &lt;head&gt;:
+───────────────────────────────────────────────────── */</span>
+<span class="c-comment" data-i18n="cc_6">// &lt;script src="https://unpkg.com/@supabase/supabase-js@2"&gt;&lt;/script&gt;</span>
+
+
+<span class="c-comment" data-i18n="cc_7">/* ─────────────────────────────────────────────────────
+   STEP 2: Your project credentials.
+   URL  — unique address of YOUR Supabase project.
+   KEY  — the "anon" (public) key. Safe to expose.
+          It only allows what RLS policies permit.
+───────────────────────────────────────────────────── */</span>
+<span class="c-keyword">const</span> <span class="c-key">SUPA_URL</span> <span class="c-op">=</span> <span class="c-str">'https://gtpnojbbamoaznlutxap.supabase.co'</span><span class="c-op">;</span>
+<span class="c-keyword">const</span> <span class="c-key">SUPA_KEY</span> <span class="c-op">=</span> <span class="c-str">'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'</span><span class="c-op">;</span>
+
+
+<span class="c-comment" data-i18n="cc_8">/* ─────────────────────────────────────────────────────
+   STEP 3: Create the client.
+   `createClient` connects to your Supabase project.
+   We store it on `window.sb` so every page can use it
+   without creating a new connection each time.
+───────────────────────────────────────────────────── */</span>
+<span class="c-keyword">window</span><span class="c-op">.</span><span class="c-key">sb</span> <span class="c-op">=</span> <span class="c-supa">supabase</span><span class="c-op">.</span><span class="c-fn">createClient</span><span class="c-op">(</span><span class="c-key">SUPA_URL</span><span class="c-op">,</span> <span class="c-key">SUPA_KEY</span><span class="c-op">);</span>
+
+
+<span class="c-comment" data-i18n="cc_9">/* ─────────────────────────────────────────────────────
+   After this line, `sb` is available everywhere.
+   Usage: sb.from('table'), sb.auth.signIn(), etc.
+───────────────────────────────────────────────────── */</span>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <i class="fas fa-lightbulb"></i>
+      <div data-i18n="callout_createclient">
+        <strong>What does createClient() actually do?</strong> Think of it like making a phone call. Before your browser can talk to Supabase, it needs to "dial in" — it needs to know <em>which</em> Supabase project to connect to (that's the URL) and prove it has permission to access it (that's the key). <code>createClient()</code> establishes that connection and returns a client object (<code>sb</code>) you can use to fetch data, log in, upload files, and more. Storing it as <code>window.sb</code> means it's available globally — every page and every function shares the same connection without having to "dial in" again.
+      </div>
+    </div>
+
+    <div class="callout callout-amber">
+      <i class="fas fa-exclamation-triangle"></i>
+      <div data-i18n="callout_anonkey">
+        <strong>Anon key vs Service key.</strong> The anon key (used above) is safe to put in frontend code — it only has the permissions you define via Row Level Security. Never put the <strong>service_role</strong> key in frontend code; it bypasses all security.
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num" style="background:var(--purple-dim);border-color:rgba(107,79,160,0.25);color:var(--purple);">AI</div>
+      <div class="section-title" data-i18n="s_claude_title">Using Claude AI to Build Your HTML Pages</div>
+    </div>
+    <p class="section-desc" data-i18n="s_claude_desc">
+      You do not need to write HTML from scratch. Give Claude AI a clear prompt with your Supabase keys and requirements — it will write the full file for you in one shot.
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-paper-plane"></i> Prompt for the Enquiry Form Page (index.html)</div>
+        <span class="tag tag-purple">Prompt</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_claude1">/* Copy this prompt, fill in your keys, paste to Claude: */</span>
+
+<span class="c-str">Build me a plain HTML + CSS + JavaScript enquiry form
+page that connects to Supabase.
+
+Requirements:
+- Form fields: Full Name, Email, Phone (optional), Message
+- On submit: INSERT a row into the "enquiries" table
+  with columns: naam, email, phone, sandesh
+- Show a success message after submit
+- Supabase Project URL: [paste your URL here]
+- Supabase anon key:   [paste your anon key here]
+- Load Supabase from CDN: @supabase/supabase-js@2
+- Basic clean styling — no external CSS frameworks</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-table"></i> Prompt for the Responses View Page (responses.html)</div>
+        <span class="tag tag-purple">Prompt</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_claude2">/* Copy this prompt, fill in your keys, paste to Claude: */</span>
+
+<span class="c-str">Build me a plain HTML + CSS + JavaScript admin page
+that reads all rows from a Supabase table and shows
+them in a table.
+
+Requirements:
+- Fetch all rows from the "enquiries" table
+- Show columns: id, naam, email, phone, sandesh, created_at
+- Sort: newest entry first (order by created_at DESC)
+- Supabase Project URL: [paste your URL here]
+- Supabase anon key:   [paste your anon key here]
+- Load Supabase from CDN: @supabase/supabase-js@2</span>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <i class="fas fa-lightbulb"></i>
+      <div data-i18n="callout_claude_tip">
+        <strong>Tip — the more detail you give, the better the output.</strong> If you want a specific colour scheme, font, or layout, describe it in the prompt. If something in the output is wrong, just tell Claude: <em>"change this part"</em> and it will fix it. You can keep refining until it looks exactly how you want.
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">7</div>
+      <div class="section-title" data-i18n="s8_title">Building the Frontend Page — Displaying Data Publicly</div>
+    </div>
+    <p class="section-desc" data-i18n="s8_desc">
+      The public-facing HTML pages (states list, attraction detail, hospital finder, etc.)
+      all follow the same pattern: load the Supabase client, fetch rows from a table,
+      and render them into the DOM. No login required — the anon key + public RLS policy
+      handles access automatically.
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-globe"></i> states.html — Page Head Setup</div>
+        <span class="tag tag-green">Public Page</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_fe1">/* ── &lt;head&gt; — load Supabase + your auth helper ──────── */</span>
+<span class="c-op">&lt;</span><span class="c-fn">script</span> <span class="c-key">src</span><span class="c-op">=</span><span class="c-str">"https://unpkg.com/@supabase/supabase-js@2"</span><span class="c-op">&gt;&lt;/</span><span class="c-fn">script</span><span class="c-op">&gt;</span>
+<span class="c-op">&lt;</span><span class="c-fn">script</span> <span class="c-key">src</span><span class="c-op">=</span><span class="c-str">"admin-auth.js"</span><span class="c-op">&gt;&lt;/</span><span class="c-fn">script</span><span class="c-op">&gt;</span>   <span class="c-comment">// sets up window.sb</span>
+
+<span class="c-comment" data-i18n="cc_fe2">/* ── &lt;body&gt; — a container where cards will be injected ── */</span>
+<span class="c-op">&lt;</span><span class="c-fn">div</span> <span class="c-key">id</span><span class="c-op">=</span><span class="c-str">"states-grid"</span> <span class="c-key">class</span><span class="c-op">=</span><span class="c-str">"grid"</span><span class="c-op">&gt;</span>
+  <span class="c-comment">/* JS injects state cards here */</span>
+<span class="c-op">&lt;/</span><span class="c-fn">div</span><span class="c-op">&gt;</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-code"></i> states.html — Fetch &amp; Render All States</div>
+        <span class="tag tag-green">Read</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_fe3">/* Run on DOMContentLoaded — no auth guard needed (public page) */</span>
+<span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">addEventListener</span><span class="c-op">(</span><span class="c-str">'DOMContentLoaded'</span><span class="c-op">,</span> <span class="c-keyword">async</span> <span class="c-op">() =&gt; {</span>
+
+  <span class="c-comment" data-i18n="cc_fe4">// 1. Fetch all states, sorted alphabetically</span>
+  <span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">data</span><span class="c-op">:</span> <span class="c-key">states</span><span class="c-op">,</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span>
+    <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'states'</span><span class="c-op">)</span>
+    <span class="c-op">.</span><span class="c-fn">select</span><span class="c-op">(</span><span class="c-str">'id, name, slug, description, image_url'</span><span class="c-op">)</span>
+    <span class="c-op">.</span><span class="c-fn">order</span><span class="c-op">(</span><span class="c-str">'name'</span><span class="c-op">);</span>
+
+  <span class="c-keyword">if</span> <span class="c-op">(</span><span class="c-key">error</span><span class="c-op">)</span> <span class="c-op">{</span> <span class="c-fn">console</span><span class="c-op">.</span><span class="c-fn">error</span><span class="c-op">(</span><span class="c-key">error</span><span class="c-op">);</span> <span class="c-keyword">return</span><span class="c-op">; }</span>
+
+  <span class="c-comment" data-i18n="cc_fe5">// 2. Build HTML cards and inject into the grid</span>
+  <span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">getElementById</span><span class="c-op">(</span><span class="c-str">'states-grid'</span><span class="c-op">).</span><span class="c-key">innerHTML</span>
+    <span class="c-op">=</span> <span class="c-key">states</span><span class="c-op">.</span><span class="c-fn">map</span><span class="c-op">(</span><span class="c-key">s</span> <span class="c-op">=&gt;</span> <span class="c-str">`
+      &lt;div class="state-card"&gt;
+        &lt;img src="${</span><span class="c-key">s</span><span class="c-op">.</span><span class="c-key">image_url</span><span class="c-op">}" alt="${</span><span class="c-key">s</span><span class="c-op">.</span><span class="c-key">name</span><span class="c-op">}"&gt;
+        &lt;h2&gt;${</span><span class="c-key">s</span><span class="c-op">.</span><span class="c-key">name</span><span class="c-op">}&lt;/h2&gt;
+        &lt;p&gt;${</span><span class="c-key">s</span><span class="c-op">.</span><span class="c-key">description</span> <span class="c-op">||</span> <span class="c-str">''</span><span class="c-op">}&lt;/p&gt;
+        &lt;a href="state.html?slug=${</span><span class="c-key">s</span><span class="c-op">.</span><span class="c-key">slug</span><span class="c-op">}"&gt;Explore →&lt;/a&gt;
+      &lt;/div&gt;`</span><span class="c-op">).</span><span class="c-fn">join</span><span class="c-op">(</span><span class="c-str">''</span><span class="c-op">);</span>
+<span class="c-op">});</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-map-pin"></i> state.html — Load One State by URL Slug</div>
+        <span class="tag tag-cyan">Detail Page</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_fe6">/* Read ?slug=gujarat from the URL, then fetch that one row */</span>
+<span class="c-keyword">const</span> <span class="c-key">slug</span> <span class="c-op">=</span> <span class="c-keyword">new</span> <span class="c-fn">URLSearchParams</span><span class="c-op">(</span><span class="c-key">location</span><span class="c-op">.</span><span class="c-key">search</span><span class="c-op">).</span><span class="c-fn">get</span><span class="c-op">(</span><span class="c-str">'slug'</span><span class="c-op">);</span>
+
+<span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">data</span><span class="c-op">:</span> <span class="c-key">state</span><span class="c-op">,</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span>
+  <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'states'</span><span class="c-op">)</span>
+  <span class="c-op">.</span><span class="c-fn">select</span><span class="c-op">(</span><span class="c-str">'*'</span><span class="c-op">)</span>
+  <span class="c-op">.</span><span class="c-fn">eq</span><span class="c-op">(</span><span class="c-str">'slug'</span><span class="c-op">,</span> <span class="c-key">slug</span><span class="c-op">)</span>            <span class="c-comment" data-i18n="cc_fe7">// WHERE slug = 'gujarat'</span>
+  <span class="c-op">.</span><span class="c-fn">single</span><span class="c-op">();</span>                   <span class="c-comment" data-i18n="cc_fe8">// expect exactly 1 row</span>
+
+<span class="c-comment" data-i18n="cc_fe9">// state.name, state.description, state.image_url now available</span>
+<span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">getElementById</span><span class="c-op">(</span><span class="c-str">'state-name'</span><span class="c-op">).</span><span class="c-key">textContent</span> <span class="c-op">=</span> <span class="c-key">state</span><span class="c-op">.</span><span class="c-key">name</span><span class="c-op">;</span>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <i class="fas fa-info-circle"></i>
+      <div data-i18n="callout_fe_pattern">
+        <strong>The golden pattern for every public page:</strong>
+        (1) Include <code>admin-auth.js</code> to set up <code>window.sb</code>.
+        (2) On <code>DOMContentLoaded</code>, call <code>sb.from()</code> to fetch data.
+        (3) Check <code>error</code> first, then map <code>data</code> into HTML strings.
+        (4) Set <code>innerHTML</code> on your container element.
+        No login, no guards — the anon key handles public reads automatically.
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">8</div>
+      <div class="section-title" data-i18n="s4_title">Reading Data from the Database</div>
+    </div>
+    <p class="section-desc" data-i18n="s4_desc">
+      Every public page (and admin page) fetches data using <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">sb.from()</code>.
+      This translates to a secure HTTP request to Supabase's auto-generated REST API.
+      You write it like a query builder — no raw SQL needed.
+    </p>
+
+    <!-- Basic fetch -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-search"></i> Basic SELECT — fetch all states</div>
+        <span class="tag tag-green">Read</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_23">/* sb.from('table')  →  target the 'states' table
+   .select('*')      →  get all columns (like SELECT * in SQL)
+   .order('name')    →  sort results alphabetically
+
+   Returns: { data: [...rows], error: null or Error } */</span>
+
+<span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">data</span><span class="c-op">,</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span>
+  <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'states'</span><span class="c-op">)</span>       <span class="c-comment" data-i18n="cc_24">// which table?</span>
+  <span class="c-op">.</span><span class="c-fn">select</span><span class="c-op">(</span><span class="c-str">'*'</span><span class="c-op">)</span>           <span class="c-comment" data-i18n="cc_25">// which columns? * = all</span>
+  <span class="c-op">.</span><span class="c-fn">order</span><span class="c-op">(</span><span class="c-str">'name'</span><span class="c-op">);</span>        <span class="c-comment" data-i18n="cc_26">// sort by name A→Z</span>
+
+<span class="c-comment" data-i18n="cc_27">// data = [{ id:1, name:'Gujarat', slug:'gujarat', ... }, ...]</span>
+      </div>
+    </div>
+
+    <!-- Filtered fetch -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-filter"></i> Filtered SELECT — attractions for one state</div>
+        <span class="tag tag-green">Read</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_28">/* .eq('column', value) is like WHERE column = value in SQL.
+   .order() with ascending:false = ORDER BY priority_score DESC.
+   Only select specific columns instead of * to keep it lean. */</span>
+
+<span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">data</span><span class="c-op">,</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span>
+  <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'attractions'</span><span class="c-op">)</span>
+  <span class="c-op">.</span><span class="c-fn">select</span><span class="c-op">(</span><span class="c-str">'id, name, short_description, priority_score, image_url'</span><span class="c-op">)</span>
+  <span class="c-op">.</span><span class="c-fn">eq</span><span class="c-op">(</span><span class="c-str">'state_id'</span><span class="c-op">,</span> <span class="c-val">1</span><span class="c-op">)</span>        <span class="c-comment" data-i18n="cc_29">// WHERE state_id = 1  (Gujarat)</span>
+  <span class="c-op">.</span><span class="c-fn">eq</span><span class="c-op">(</span><span class="c-str">'is_must_visit'</span><span class="c-op">,</span> <span class="c-keyword">true</span><span class="c-op">)</span>  <span class="c-comment" data-i18n="cc_30">// AND is_must_visit = true</span>
+  <span class="c-op">.</span><span class="c-fn">order</span><span class="c-op">(</span><span class="c-str">'priority_score'</span><span class="c-op">,</span> <span class="c-op">{</span> <span class="c-key">ascending</span><span class="c-op">:</span> <span class="c-keyword">false</span> <span class="c-op">})</span>  <span class="c-comment" data-i18n="cc_31">// highest score first</span>
+  <span class="c-op">.</span><span class="c-fn">limit</span><span class="c-op">(</span><span class="c-val">10</span><span class="c-op">);</span>                 <span class="c-comment" data-i18n="cc_32">// max 10 results</span>
+      </div>
+    </div>
+
+    <!-- Count only -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-hashtag"></i> Count only — dashboard stat cards</div>
+        <span class="tag tag-cyan">Optimised</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_33">/* When you only need the COUNT (not the actual rows),
+   pass { count: 'exact', head: true } to select().
+   head:true = don't return row data, just the count.
+   This is much faster — used in admin-dashboard.html stats. */</span>
+
+<span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">count</span><span class="c-op">,</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span>
+  <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'attractions'</span><span class="c-op">)</span>
+  <span class="c-op">.</span><span class="c-fn">select</span><span class="c-op">(</span><span class="c-str">'id'</span><span class="c-op">,</span> <span class="c-op">{</span> <span class="c-key">count</span><span class="c-op">:</span> <span class="c-str">'exact'</span><span class="c-op">,</span> <span class="c-key">head</span><span class="c-op">:</span> <span class="c-keyword">true</span> <span class="c-op">});</span>
+
+<span class="c-comment" data-i18n="cc_34">// count = 164  (no row data transferred)</span>
+      </div>
+    </div>
+
+    <!-- Common filter methods table -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-table"></i> Common Filter Methods</div>
+      </div>
+      <table class="info-table">
+        <thead>
+          <tr><th data-i18n="th_method">Method</th><th data-i18n="th_sql">SQL Equivalent</th><th data-i18n="th_example">Example</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>.eq('col', val)</td>
+            <td style="color:var(--muted)">WHERE col = val</td>
+            <td style="color:var(--muted)">.eq('state_id', 1)</td>
+          </tr>
+          <tr>
+            <td>.neq('col', val)</td>
+            <td style="color:var(--muted)">WHERE col != val</td>
+            <td style="color:var(--muted)">.neq('type', 'budget')</td>
+          </tr>
+          <tr>
+            <td>.in('col', [...])</td>
+            <td style="color:var(--muted)">WHERE col IN (...)</td>
+            <td style="color:var(--muted)">.in('attraction_id', [1,2,3])</td>
+          </tr>
+          <tr>
+            <td>.gte('col', val)</td>
+            <td style="color:var(--muted)">WHERE col >= val</td>
+            <td style="color:var(--muted)">.gte('priority_score', 7)</td>
+          </tr>
+          <tr>
+            <td>.ilike('col', '%x%')</td>
+            <td style="color:var(--muted)">WHERE col ILIKE '%x%'</td>
+            <td style="color:var(--muted)">.ilike('name', '%aiims%')</td>
+          </tr>
+          <tr>
+            <td>.order('col', {ascending})</td>
+            <td style="color:var(--muted)">ORDER BY col ASC/DESC</td>
+            <td style="color:var(--muted)">.order('rating', {ascending:false})</td>
+          </tr>
+          <tr>
+            <td>.limit(n)</td>
+            <td style="color:var(--muted)">LIMIT n</td>
+            <td style="color:var(--muted)">.limit(20)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">9</div>
+      <div class="section-title" data-i18n="s3_title">Authentication — Login &amp; Sessions</div>
+    </div>
+    <p class="section-desc" data-i18n="s3_desc">
+      Supabase Auth handles the entire login flow. When an admin signs in, Supabase
+      checks the credentials, creates a session, and stores a JWT token in the browser.
+      Every subsequent request automatically includes that token to prove identity.
+    </p>
+
+    <!-- Auth flow diagram -->
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-icon" style="background:var(--cyan-dim); color:var(--cyan);">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="flow-label" data-i18n="flow_admintype">Admin types</div>
+        <div class="flow-sub" data-i18n="flow_admintype_sub">email + password<br>in login form</div>
+      </div>
+      <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:var(--green-dim); color:var(--green);">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <div class="flow-label">signInWithPassword</div>
+        <div class="flow-sub" data-i18n="flow_signin_sub">JS sends credentials<br>to Supabase Auth</div>
+      </div>
+      <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:var(--amber-dim); color:var(--amber);">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="flow-label" data-i18n="flow_validate">Supabase validates</div>
+        <div class="flow-sub" data-i18n="flow_validate_sub">checks hashed password<br>in auth.users table</div>
+      </div>
+      <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:var(--purple-dim); color:var(--purple);">
+          <i class="fas fa-key"></i>
+        </div>
+        <div class="flow-label" data-i18n="flow_jwt">JWT issued</div>
+        <div class="flow-sub" data-i18n="flow_jwt_sub">token stored in<br>browser localStorage</div>
+      </div>
+      <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:var(--green-dim); color:var(--green);">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="flow-label" data-i18n="flow_redirect">Redirect to dashboard</div>
+        <div class="flow-sub" data-i18n="flow_redirect_sub">session active for<br>~60 minutes</div>
+      </div>
+    </div>
+
+    <div class="callout callout-purple">
+      <i class="fas fa-id-card"></i>
+      <div data-i18n="callout_jwt">
+        <strong>What is a JWT?</strong> JWT stands for <em>JSON Web Token</em> — think of it as a digital ID card that Supabase hands you after a successful login. It's a small encoded string that says <em>"this person is authenticated, their user ID is X, and this ID card expires in 60 minutes."</em> From that point on, every request your browser makes to Supabase automatically includes that JWT. Supabase reads it and decides: <em>"this request comes from a logged-in admin — I'll allow the write operation."</em> Without a valid JWT, Supabase only allows public reads. You never handle the JWT manually — the client stores it in <code>localStorage</code> and attaches it to every request automatically.
+      </div>
+    </div>
+
+    <!-- Login code -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-sign-in-alt"></i> admin-login.html — Sign In</div>
+        <span class="tag tag-cyan">Auth</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_10">/* signInWithPassword is the main login function.
+   It takes { email, password } and returns:
+   - data.session  → the active session object
+   - error         → null if login succeeded, or an error object */</span>
+
+<span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">data</span><span class="c-op">,</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span><span class="c-op">.</span><span class="c-supa">auth</span><span class="c-op">.</span><span class="c-fn">signInWithPassword</span><span class="c-op">({</span>
+  <span class="c-key">email</span><span class="c-op">:</span>    <span class="c-str">'<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f8999c959196b89a90998a998c81998c8a99d69196">[email&#160;protected]</a>'</span><span class="c-op">,</span>
+  <span class="c-key">password</span><span class="c-op">:</span> <span class="c-str">'••••••••'</span>
+<span class="c-op">});</span>
+
+<span class="c-keyword">if</span> <span class="c-op">(</span><span class="c-key">error</span><span class="c-op">)</span> <span class="c-op">{</span>
+  <span class="c-comment" data-i18n="cc_11">// Login failed — show error message to user</span>
+  <span class="c-fn">showError</span><span class="c-op">(</span><span class="c-str">'Invalid credentials.'</span><span class="c-op">);</span>
+<span class="c-op">}</span> <span class="c-keyword">else</span> <span class="c-op">{</span>
+  <span class="c-comment" data-i18n="cc_12">// Login succeeded — redirect to dashboard
+  // The JWT token is now automatically stored in localStorage</span>
+  <span class="c-key">window</span><span class="c-op">.</span><span class="c-key">location</span><span class="c-op">.</span><span class="c-fn">replace</span><span class="c-op">(</span><span class="c-str">'admin-dashboard.html'</span><span class="c-op">);</span>
+<span class="c-op">}</span>
+      </div>
+    </div>
+
+    <!-- Session check code -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-lock"></i> admin-auth.js — Protect Every Admin Page</div>
+        <span class="tag tag-red">Guard</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_13">/* BYAuth.check() runs at the top of every admin page.
+   It reads the stored JWT and verifies it's still valid.
+   If no valid session exists → user is sent back to login. */</span>
+
+<span class="c-key">window</span><span class="c-op">.</span><span class="c-key">BYAuth</span><span class="c-op">.</span><span class="c-fn">check</span> <span class="c-op">=</span> <span class="c-keyword">async function</span> <span class="c-op">()</span> <span class="c-op">{</span>
+
+  <span class="c-comment" data-i18n="cc_14">// getSession reads the JWT from localStorage
+  // and returns the current session (or null)</span>
+  <span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">data</span><span class="c-op">:</span> <span class="c-op">{</span> <span class="c-key">session</span> <span class="c-op">}</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span><span class="c-op">.</span><span class="c-supa">auth</span><span class="c-op">.</span><span class="c-fn">getSession</span><span class="c-op">();</span>
+
+  <span class="c-keyword">if</span> <span class="c-op">(!</span><span class="c-key">session</span><span class="c-op">)</span> <span class="c-op">{</span>
+    <span class="c-comment" data-i18n="cc_15">// No session — kick back to login page</span>
+    <span class="c-key">window</span><span class="c-op">.</span><span class="c-key">location</span><span class="c-op">.</span><span class="c-fn">replace</span><span class="c-op">(</span><span class="c-str">'admin-login.html'</span><span class="c-op">);</span>
+    <span class="c-keyword">return null</span><span class="c-op">;</span>
+  <span class="c-op">}</span>
+
+  <span class="c-comment" data-i18n="cc_16">// Session is valid — return it so the page can
+  // read the admin's email / user ID</span>
+  <span class="c-keyword">return</span> <span class="c-key">session</span><span class="c-op">;</span>
+<span class="c-op">};</span>
+
+
+<span class="c-comment" data-i18n="cc_17">/* Every admin page calls this on DOMContentLoaded: */</span>
+<span class="c-key">document</span><span class="c-op">.</span><span class="c-fn">addEventListener</span><span class="c-op">(</span><span class="c-str">'DOMContentLoaded'</span><span class="c-op">,</span> <span class="c-keyword">async</span> <span class="c-op">() =&gt; {</span>
+  <span class="c-keyword">const</span> <span class="c-key">session</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">BYAuth</span><span class="c-op">.</span><span class="c-fn">check</span><span class="c-op">();</span>  <span class="c-comment" data-i18n="cc_18">// guard fires first</span>
+  <span class="c-keyword">if</span> <span class="c-op">(!</span><span class="c-key">session</span><span class="c-op">)</span> <span class="c-keyword">return</span><span class="c-op">;</span>            <span class="c-comment" data-i18n="cc_19">// stop if not logged in</span>
+
+  <span class="c-comment" data-i18n="cc_20">// Safe to load page content now</span>
+  <span class="c-fn">loadData</span><span class="c-op">();</span>
+<span class="c-op">});</span>
+
+
+<span class="c-comment" data-i18n="cc_21">/* Logout — signs out and redirects to login */</span>
+<span class="c-keyword">async function</span> <span class="c-fn">handleLogout</span><span class="c-op">() {</span>
+  <span class="c-keyword">await</span> <span class="c-key">sb</span><span class="c-op">.</span><span class="c-supa">auth</span><span class="c-op">.</span><span class="c-fn">signOut</span><span class="c-op">();</span>           <span class="c-comment" data-i18n="cc_22">// clears the JWT from localStorage</span>
+  <span class="c-key">window</span><span class="c-op">.</span><span class="c-key">location</span><span class="c-op">.</span><span class="c-fn">replace</span><span class="c-op">(</span><span class="c-str">'admin-login.html'</span><span class="c-op">);</span>
+<span class="c-op">}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">10</div>
+      <div class="section-title" data-i18n="s6_title">Row Level Security (RLS)</div>
+    </div>
+    <p class="section-desc" data-i18n="s6_desc">
+      RLS is how Supabase controls who can do what to each table —
+      enforced on the database side, not just in your JS code.
+      Even if someone finds the anon key, they cannot write data without a valid admin session.
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-shield-alt"></i> RLS Policy Logic for BharatYatra</div>
+        <span class="tag tag-purple">Security</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_41">/* These policies are set in the Supabase dashboard
+   under: Database → Tables → [table] → Policies
+
+   ┌──────────────────┬────────────────────────────────────┐
+   │  Operation       │  Who can do it?                    │
+   ├──────────────────┼────────────────────────────────────┤
+   │  SELECT (read)   │  Anyone — anon key allowed         │
+   │                  │  (public pages need to read data)  │
+   ├──────────────────┼────────────────────────────────────┤
+   │  INSERT          │  Only authenticated admins         │
+   │  UPDATE          │  Only authenticated admins         │
+   │  DELETE          │  Only authenticated admins         │
+   └──────────────────┴────────────────────────────────────┘
+
+   In SQL the read policy looks like:
+   CREATE POLICY "public_read" ON attractions
+     FOR SELECT USING (true);       ← anyone can read
+
+   The write policy:
+   CREATE POLICY "admin_write" ON attractions
+     FOR ALL USING (auth.role() = 'authenticated');
+                    ↑ only if logged in via Supabase Auth */</span>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <i class="fas fa-check-circle"></i>
+      <div data-i18n="callout_rls">
+        <strong>Why this matters:</strong> Public visitors on bharatyatra.in use the anon key and can only read data. Admins logged in via Supabase Auth get an authenticated JWT, which unlocks write operations. The database enforces this — your JS code is just the messenger.
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num" style="background:var(--amber-dim);border-color:rgba(160,104,32,0.25);color:var(--amber);">📁</div>
+      <div class="section-title" data-i18n="s_storage_title">Storage — File Uploads</div>
+    </div>
+    <p class="section-desc" data-i18n="s_storage_desc">
+      If your enquiry form should also accept a file upload (e.g. a document or photo), Supabase Storage handles it. You create a "bucket" (a folder) and upload files there.
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-folder-open"></i> Create a Storage Bucket</div>
+        <span class="tag tag-amber">Dashboard</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_stor1">/* ─────────────────────────────────────────────
+   1. Left sidebar → Storage
+   2. Click "New bucket"
+   3. Bucket name:  enquiry-files
+   4. Toggle "Public bucket" ON
+      (so uploaded file URLs are accessible)
+   5. Click "Create bucket"  ✓
+───────────────────────────────────────────── */</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-upload"></i> Upload a File from Your Form (JS)</div>
+        <span class="tag tag-amber">Code</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_stor2">/* Add a file_url column to your table first: */</span>
+<span class="c-keyword">ALTER TABLE</span> <span class="c-fn">enquiries</span> <span class="c-keyword">ADD COLUMN</span> <span class="c-key">file_url</span> <span class="c-keyword">TEXT</span><span class="c-op">;</span>
+
+<span class="c-comment" data-i18n="cc_stor3">/* Then in your JS — upload file, get URL, save with row */</span>
+<span class="c-keyword">const</span> <span class="c-key">file</span>     <span class="c-op">=</span> <span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">getElementById</span><span class="c-op">(</span><span class="c-str">'file-input'</span><span class="c-op">).</span><span class="c-key">files</span><span class="c-op">[</span><span class="c-val">0</span><span class="c-op">];</span>
+<span class="c-keyword">const</span> <span class="c-key">fileName</span> <span class="c-op">=</span> <span class="c-str">`</span><span class="c-op">${</span><span class="c-fn">Date</span><span class="c-op">.</span><span class="c-fn">now</span><span class="c-op">()}</span><span class="c-str">-</span><span class="c-op">${</span><span class="c-key">file</span><span class="c-op">.</span><span class="c-key">name</span><span class="c-op">}</span><span class="c-str">`</span><span class="c-op">;</span>
+
+<span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">error</span><span class="c-op">:</span> <span class="c-key">uploadErr</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span><span class="c-op">.</span><span class="c-supa">storage</span>
+  <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'enquiry-files'</span><span class="c-op">)</span>
+  <span class="c-op">.</span><span class="c-fn">upload</span><span class="c-op">(</span><span class="c-key">fileName</span><span class="c-op">,</span> <span class="c-key">file</span><span class="c-op">);</span>
+
+<span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">data</span><span class="c-op">:</span> <span class="c-key">urlData</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-key">sb</span><span class="c-op">.</span><span class="c-supa">storage</span>
+  <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'enquiry-files'</span><span class="c-op">)</span>
+  <span class="c-op">.</span><span class="c-fn">getPublicUrl</span><span class="c-op">(</span><span class="c-key">fileName</span><span class="c-op">);</span>
+
+<span class="c-keyword">const</span> <span class="c-key">fileUrl</span> <span class="c-op">=</span> <span class="c-key">urlData</span><span class="c-op">.</span><span class="c-key">publicUrl</span><span class="c-op">;</span>  <span class="c-comment" data-i18n="cc_stor4">// save this with the enquiry row</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">11</div>
+      <div class="section-title" data-i18n="s5_title">Writing Data — Insert, Update, Delete</div>
+    </div>
+    <p class="section-desc" data-i18n="s5_desc">
+      Write operations (INSERT / UPDATE / DELETE) only work when the user is
+      authenticated. Row Level Security on the Supabase side rejects any write
+      attempt that doesn't carry a valid admin JWT.
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-plus-circle"></i> INSERT — add a new hospital</div>
+        <span class="tag tag-green">Write</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_35">/* .insert(payload) adds a new row.
+   payload is a plain JS object — keys match column names.
+   Returns { error } — check error for success/failure. */</span>
+
+<span class="c-keyword">const</span> <span class="c-key">payload</span> <span class="c-op">= {</span>
+  <span class="c-key">name</span><span class="c-op">:</span>          <span class="c-str">'AIIMS New Delhi'</span><span class="c-op">,</span>
+  <span class="c-key">state_id</span><span class="c-op">:</span>      <span class="c-val">1</span><span class="c-op">,</span>           <span class="c-comment" data-i18n="cc_36">// FK → states.id</span>
+  <span class="c-key">type</span><span class="c-op">:</span>          <span class="c-str">'AIIMS / Central Govt'</span><span class="c-op">,</span>
+  <span class="c-key">city</span><span class="c-op">:</span>          <span class="c-str">'New Delhi'</span><span class="c-op">,</span>
+  <span class="c-key">contact_phone</span><span class="c-op">:</span> <span class="c-str">'011-26588500'</span><span class="c-op">,</span>
+  <span class="c-key">rating</span><span class="c-op">:</span>        <span class="c-val">4.8</span><span class="c-op">,</span>
+  <span class="c-key">created_at</span><span class="c-op">:</span>    <span class="c-keyword">new</span> <span class="c-fn">Date</span><span class="c-op">().</span><span class="c-fn">toISOString</span><span class="c-op">(),</span>
+<span class="c-op">};</span>
+
+<span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span>
+  <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'hospitals'</span><span class="c-op">)</span>
+  <span class="c-op">.</span><span class="c-fn">insert</span><span class="c-op">(</span><span class="c-key">payload</span><span class="c-op">);</span>
+
+<span class="c-keyword">if</span> <span class="c-op">(!</span><span class="c-key">error</span><span class="c-op">)</span> <span class="c-fn">toast</span><span class="c-op">(</span><span class="c-str">'Hospital added!'</span><span class="c-op">);</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-pencil-alt"></i> UPDATE — edit an existing row</div>
+        <span class="tag tag-amber">Write</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_37">/* .update(payload) changes only the fields you provide.
+   .eq('id', id) targets exactly one row by primary key.
+   Always chain a filter — without it you'd update ALL rows! */</span>
+
+<span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span>
+  <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'hospitals'</span><span class="c-op">)</span>
+  <span class="c-op">.</span><span class="c-fn">update</span><span class="c-op">({</span> <span class="c-key">rating</span><span class="c-op">:</span> <span class="c-val">4.9</span><span class="c-op">,</span> <span class="c-key">contact_phone</span><span class="c-op">:</span> <span class="c-str">'011-99999999'</span> <span class="c-op">})</span>
+  <span class="c-op">.</span><span class="c-fn">eq</span><span class="c-op">(</span><span class="c-str">'id'</span><span class="c-op">,</span> <span class="c-val">12</span><span class="c-op">);</span>            <span class="c-comment" data-i18n="cc_38">// ← only update row where id = 12</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-trash"></i> DELETE — remove a row</div>
+        <span class="tag tag-red">Write</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_39">/* .delete() removes the matching row permanently.
+   Always use .eq() to target a specific row.
+   CASCADE DELETE in the schema means deleting an attraction
+   also deletes all its accommodations automatically. */</span>
+
+<span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span>
+  <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'hospitals'</span><span class="c-op">)</span>
+  <span class="c-op">.</span><span class="c-fn">delete</span><span class="c-op">()</span>
+  <span class="c-op">.</span><span class="c-fn">eq</span><span class="c-op">(</span><span class="c-str">'id'</span><span class="c-op">,</span> <span class="c-val">12</span><span class="c-op">);</span>            <span class="c-comment" data-i18n="cc_40">// ← only delete row where id = 12</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">12</div>
+      <div class="section-title" data-i18n="s9_title">Building the Admin Page — Edit Database Tables</div>
+    </div>
+    <p class="section-desc" data-i18n="s9_desc">
+      Admin pages let authorised users add, edit, and delete rows. They look similar
+      to public pages but have two extra requirements: an auth guard at the top
+      (redirect anyone not logged in) and authenticated write calls (insert/update/delete).
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-user-shield"></i> Admin Setup — Creating the Admin Account in Supabase</div>
+        <span class="tag tag-red">Auth</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_adm1">/* ─────────────────────────────────────────────────────
+   You do NOT register admins through a signup page.
+   Create admin accounts directly in Supabase Dashboard:
+
+   1. Go to your Supabase project
+   2. Left sidebar → Authentication → Users
+   3. Click "Add user" (top-right)
+   4. Enter email + password → click "Create user"
+   5. That email/password is now the admin credential.
+
+   Only people you create this way can log in.
+   The login page calls signInWithPassword() with
+   these credentials — Supabase validates and issues JWT.
+───────────────────────────────────────────────────── */</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-lock"></i> admin-states.html — Auth Guard + Page Init</div>
+        <span class="tag tag-red">Guard</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_adm2">/* Every admin page starts with this pattern.
+   BYAuth.check() reads the stored JWT.
+   If no valid session → redirect to login instantly. */</span>
+
+<span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">addEventListener</span><span class="c-op">(</span><span class="c-str">'DOMContentLoaded'</span><span class="c-op">,</span> <span class="c-keyword">async</span> <span class="c-op">() =&gt; {</span>
+
+  <span class="c-comment" data-i18n="cc_adm3">// 1. Auth guard — stop non-admins immediately</span>
+  <span class="c-keyword">const</span> <span class="c-key">session</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-fn">BYAuth</span><span class="c-op">.</span><span class="c-fn">check</span><span class="c-op">();</span>
+  <span class="c-keyword">if</span> <span class="c-op">(!</span><span class="c-key">session</span><span class="c-op">)</span> <span class="c-keyword">return</span><span class="c-op">;</span>    <span class="c-comment">// BYAuth already redirected to login</span>
+
+  <span class="c-comment" data-i18n="cc_adm4">// 2. Show logged-in admin's email in the header</span>
+  <span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">getElementById</span><span class="c-op">(</span><span class="c-str">'admin-email'</span><span class="c-op">).</span><span class="c-key">textContent</span> <span class="c-op">=</span> <span class="c-key">session</span><span class="c-op">.</span><span class="c-key">user</span><span class="c-op">.</span><span class="c-key">email</span><span class="c-op">;</span>
+
+  <span class="c-comment" data-i18n="cc_adm5">// 3. Load existing rows into the editable table</span>
+  <span class="c-keyword">await</span> <span class="c-fn">loadStates</span><span class="c-op">();</span>
+<span class="c-op">});</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-table"></i> admin-states.html — Load Rows into Editable Table</div>
+        <span class="tag tag-green">Read</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_adm6">/* Fetch all rows and render an HTML table with Edit/Delete buttons */</span>
+<span class="c-keyword">async function</span> <span class="c-fn">loadStates</span><span class="c-op">() {</span>
+  <span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">data</span><span class="c-op">,</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span>
+    <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'states'</span><span class="c-op">)</span>
+    <span class="c-op">.</span><span class="c-fn">select</span><span class="c-op">(</span><span class="c-str">'id, name, slug, is_featured'</span><span class="c-op">)</span>
+    <span class="c-op">.</span><span class="c-fn">order</span><span class="c-op">(</span><span class="c-str">'name'</span><span class="c-op">);</span>
+
+  <span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">getElementById</span><span class="c-op">(</span><span class="c-str">'states-table'</span><span class="c-op">).</span><span class="c-key">innerHTML</span>
+    <span class="c-op">=</span> <span class="c-key">data</span><span class="c-op">.</span><span class="c-fn">map</span><span class="c-op">(</span><span class="c-key">s</span> <span class="c-op">=&gt;</span> <span class="c-str">`
+      &lt;tr&gt;
+        &lt;td&gt;${</span><span class="c-key">s</span><span class="c-op">.</span><span class="c-key">id</span><span class="c-op">}&lt;/td&gt;&lt;td&gt;${</span><span class="c-key">s</span><span class="c-op">.</span><span class="c-key">name</span><span class="c-op">}&lt;/td&gt;&lt;td&gt;${</span><span class="c-key">s</span><span class="c-op">.</span><span class="c-key">slug</span><span class="c-op">}&lt;/td&gt;
+        &lt;td&gt;${</span><span class="c-key">s</span><span class="c-op">.</span><span class="c-key">is_featured</span> <span class="c-op">?</span> <span class="c-str">'✓'</span> <span class="c-op">:</span> <span class="c-str">'—'</span><span class="c-op">}&lt;/td&gt;
+        &lt;td&gt;
+          &lt;button onclick="editState(${</span><span class="c-key">s</span><span class="c-op">.</span><span class="c-key">id</span><span class="c-op">})"&gt;Edit&lt;/button&gt;
+          &lt;button onclick="deleteState(${</span><span class="c-key">s</span><span class="c-op">.</span><span class="c-key">id</span><span class="c-op">})"&gt;Delete&lt;/button&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;`</span><span class="c-op">).</span><span class="c-fn">join</span><span class="c-op">(</span><span class="c-str">''</span><span class="c-op">);</span>
+<span class="c-op">}</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-save"></i> admin-states.html — Save Form (Insert or Update)</div>
+        <span class="tag tag-amber">Write</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_adm7">/* saveState() handles both new rows (no id) and edits (has id).
+   The form has a hidden #state-id input: empty = new, filled = edit. */</span>
+<span class="c-keyword">async function</span> <span class="c-fn">saveState</span><span class="c-op">() {</span>
+  <span class="c-keyword">const</span> <span class="c-key">id</span>      <span class="c-op">=</span> <span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">getElementById</span><span class="c-op">(</span><span class="c-str">'state-id'</span><span class="c-op">).</span><span class="c-key">value</span><span class="c-op">;</span>   <span class="c-comment">// '' if new</span>
+  <span class="c-keyword">const</span> <span class="c-key">payload</span> <span class="c-op">= {</span>
+    <span class="c-key">name</span><span class="c-op">:</span>        <span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">getElementById</span><span class="c-op">(</span><span class="c-str">'state-name'</span><span class="c-op">).</span><span class="c-key">value</span><span class="c-op">,</span>
+    <span class="c-key">slug</span><span class="c-op">:</span>        <span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">getElementById</span><span class="c-op">(</span><span class="c-str">'state-slug'</span><span class="c-op">).</span><span class="c-key">value</span><span class="c-op">,</span>
+    <span class="c-key">description</span><span class="c-op">:</span> <span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">getElementById</span><span class="c-op">(</span><span class="c-str">'state-desc'</span><span class="c-op">).</span><span class="c-key">value</span><span class="c-op">,</span>
+    <span class="c-key">is_featured</span><span class="c-op">:</span> <span class="c-fn">document</span><span class="c-op">.</span><span class="c-fn">getElementById</span><span class="c-op">(</span><span class="c-str">'state-featured'</span><span class="c-op">).</span><span class="c-key">checked</span><span class="c-op">,</span>
+  <span class="c-op">};</span>
+  <span class="c-keyword">let</span> <span class="c-key">error</span><span class="c-op">;</span>
+  <span class="c-keyword">if</span> <span class="c-op">(</span><span class="c-key">id</span><span class="c-op">) {</span>
+    <span class="c-comment" data-i18n="cc_adm8">// UPDATE — existing row</span>
+    <span class="c-op">({</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span><span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'states'</span><span class="c-op">).</span><span class="c-fn">update</span><span class="c-op">(</span><span class="c-key">payload</span><span class="c-op">).</span><span class="c-fn">eq</span><span class="c-op">(</span><span class="c-str">'id'</span><span class="c-op">,</span> <span class="c-key">id</span><span class="c-op">));</span>
+  <span class="c-op">}</span> <span class="c-keyword">else</span> <span class="c-op">{</span>
+    <span class="c-comment" data-i18n="cc_adm9">// INSERT — new row</span>
+    <span class="c-op">({</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span><span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'states'</span><span class="c-op">).</span><span class="c-fn">insert</span><span class="c-op">(</span><span class="c-key">payload</span><span class="c-op">));</span>
+  <span class="c-op">}</span>
+  <span class="c-keyword">if</span> <span class="c-op">(!</span><span class="c-key">error</span><span class="c-op">) {</span> <span class="c-fn">toast</span><span class="c-op">(</span><span class="c-str">'Saved!'</span><span class="c-op">);</span> <span class="c-fn">loadStates</span><span class="c-op">();</span> <span class="c-op">}</span>   <span class="c-comment" data-i18n="cc_adm10">// refresh table</span>
+<span class="c-op">}</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-trash-alt"></i> admin-states.html — Delete with Confirmation</div>
+        <span class="tag tag-red">Delete</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_adm11">/* Always confirm before delete — it's permanent.
+   CASCADE DELETE means child rows (attractions for
+   this state) are also deleted automatically in the DB. */</span>
+<span class="c-keyword">async function</span> <span class="c-fn">deleteState</span><span class="c-op">(</span><span class="c-key">id</span><span class="c-op">) {</span>
+  <span class="c-keyword">if</span> <span class="c-op">(!</span><span class="c-fn">confirm</span><span class="c-op">(</span><span class="c-str">'Delete this state and all its data?'</span><span class="c-op">))</span> <span class="c-keyword">return</span><span class="c-op">;</span>
+
+  <span class="c-keyword">const</span> <span class="c-op">{</span> <span class="c-key">error</span> <span class="c-op">}</span> <span class="c-op">=</span> <span class="c-keyword">await</span> <span class="c-key">sb</span>
+    <span class="c-op">.</span><span class="c-fn">from</span><span class="c-op">(</span><span class="c-str">'states'</span><span class="c-op">)</span>
+    <span class="c-op">.</span><span class="c-fn">delete</span><span class="c-op">()</span>
+    <span class="c-op">.</span><span class="c-fn">eq</span><span class="c-op">(</span><span class="c-str">'id'</span><span class="c-op">,</span> <span class="c-key">id</span><span class="c-op">);</span>              <span class="c-comment">// target only this row</span>
+
+  <span class="c-keyword">if</span> <span class="c-op">(!</span><span class="c-key">error</span><span class="c-op">)</span> <span class="c-fn">loadStates</span><span class="c-op">();</span>       <span class="c-comment" data-i18n="cc_adm12">// re-render table</span>
+<span class="c-op">}</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-list-ul"></i> Admin Page — All Functions &amp; What They Do</div>
+      </div>
+      <table class="info-table">
+        <thead>
+          <tr><th data-i18n="adm_th_fn">Function</th><th data-i18n="adm_th_when">When it runs</th><th data-i18n="adm_th_does">What it does</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>BYAuth.check()</td><td style="color:var(--muted)" data-i18n="adm_row1_when">Page load (first line)</td><td style="color:var(--muted)" data-i18n="adm_row1_does">Reads JWT, redirects to login if invalid</td></tr>
+          <tr><td>loadStates()</td><td style="color:var(--muted)" data-i18n="adm_row2_when">After auth guard passes</td><td style="color:var(--muted)" data-i18n="adm_row2_does">Fetches all rows, renders editable table</td></tr>
+          <tr><td>editState(id)</td><td style="color:var(--muted)" data-i18n="adm_row3_when">Edit button click</td><td style="color:var(--muted)" data-i18n="adm_row3_does">Fetches that row, fills form fields for editing</td></tr>
+          <tr><td>saveState()</td><td style="color:var(--muted)" data-i18n="adm_row4_when">Save button / form submit</td><td style="color:var(--muted)" data-i18n="adm_row4_does">insert() if new, update() if editing existing</td></tr>
+          <tr><td>deleteState(id)</td><td style="color:var(--muted)" data-i18n="adm_row5_when">Delete button click</td><td style="color:var(--muted)" data-i18n="adm_row5_does">Confirms, then delete() the row by id</td></tr>
+          <tr><td>sb.auth.signOut()</td><td style="color:var(--muted)" data-i18n="adm_row6_when">Logout button click</td><td style="color:var(--muted)" data-i18n="adm_row6_does">Clears JWT from localStorage, redirects to login</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-amber">
+      <i class="fas fa-exclamation-triangle"></i>
+      <div data-i18n="callout_adm_rls">
+        <strong>RLS protects you even if someone bypasses the JS guard.</strong>
+        Even if a non-admin somehow lands on an admin page, any <code>insert()</code>,
+        <code>update()</code>, or <code>delete()</code> will be rejected by Supabase RLS
+        at the database level — because they have no valid authenticated JWT.
+        The JS guard is UX; RLS is the real security.
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num" style="background:var(--green-dim);border-color:rgba(45,140,94,0.25);color:var(--green);">🚀</div>
+      <div class="section-title" data-i18n="s_deploy_title">Deploy Your Website — GitHub Pages or Vercel</div>
+    </div>
+    <p class="section-desc" data-i18n="s_deploy_desc">
+      Once your HTML files are ready, put them online for free. Two easy options — both take under 5 minutes.
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fab fa-github"></i> Option A — GitHub Pages (simplest)</div>
+        <span class="tag tag-green">Free</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_dep1">/* ─────────────────────────────────────────────
+   1. Go to https://github.com — create a free account
+   2. Click  +  → "New repository"
+   3. Repository name: my-enquiry-website
+   4. Visibility: Public
+   5. Click "Create repository"
+   6. Click "uploading an existing file"
+   7. Drag in: index.html, responses.html, login.html
+   8. Click "Commit changes"
+
+   Then enable Pages:
+   9. Repository → Settings → Pages
+  10. Source: "Deploy from a branch" → main / (root)
+  11. Click Save
+  12. Your URL: https://[username].github.io/my-enquiry-website/
+───────────────────────────────────────────── */</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><i class="fas fa-rocket"></i> Option B — Vercel (faster, still free)</div>
+        <span class="tag tag-cyan">Free</span>
+      </div>
+      <div class="code-block">
+<span class="c-comment" data-i18n="cc_dep2">/* ─────────────────────────────────────────────
+   Prerequisites: files already on GitHub (steps 1–8 above)
+
+   1. Go to https://vercel.com
+   2. Click "Sign up with GitHub"
+   3. Click "New Project"
+   4. Click "Import" next to your repository
+   5. Leave all settings as default
+   6. Click "Deploy"
+   7. Done — your URL: https://my-enquiry-website.vercel.app
+
+   Every time you push a change to GitHub,
+   Vercel automatically re-deploys. ✓
+───────────────────────────────────────────── */</span>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <i class="fas fa-check-circle"></i>
+      <div data-i18n="callout_deploy_test">
+        <strong>Final test checklist:</strong> Open your live URL → fill in the form → submit → go to Supabase Dashboard → Table Editor → enquiries table. Your test entry should appear there. If it does, everything is working end-to-end. ✅
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">★</div>
+      <div class="section-title" data-i18n="sr_title">Quick Reference — Most Used Calls in This Project</div>
+    </div>
+
+    <div class="card">
+      <table class="info-table">
+        <thead>
+          <tr><th data-i18n="sr_col1">What you want to do</th><th data-i18n="sr_col2">The call</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-i18n="sr_login">Log in</td>
+            <td style="font-family:'Fira Code',monospace; font-size:12px; color:var(--green);">sb.auth.signInWithPassword({ email, password })</td>
+          </tr>
+          <tr>
+            <td data-i18n="sr_checksession">Check session</td>
+            <td style="font-family:'Fira Code',monospace; font-size:12px; color:var(--green);">sb.auth.getSession()</td>
+          </tr>
+          <tr>
+            <td data-i18n="sr_logout">Log out</td>
+            <td style="font-family:'Fira Code',monospace; font-size:12px; color:var(--green);">sb.auth.signOut()</td>
+          </tr>
+          <tr>
+            <td data-i18n="sr_readall">Read all rows</td>
+            <td style="font-family:'Fira Code',monospace; font-size:12px; color:var(--green);">sb.from('table').select('*')</td>
+          </tr>
+          <tr>
+            <td data-i18n="sr_filter">Filter rows</td>
+            <td style="font-family:'Fira Code',monospace; font-size:12px; color:var(--green);">sb.from('table').select('*').eq('col', val)</td>
+          </tr>
+          <tr>
+            <td data-i18n="sr_count">Count rows</td>
+            <td style="font-family:'Fira Code',monospace; font-size:12px; color:var(--green);">sb.from('table').select('id', { count:'exact', head:true })</td>
+          </tr>
+          <tr>
+            <td data-i18n="sr_insert">Insert a row</td>
+            <td style="font-family:'Fira Code',monospace; font-size:12px; color:var(--green);">sb.from('table').insert({ col: val, ... })</td>
+          </tr>
+          <tr>
+            <td data-i18n="sr_update">Update a row</td>
+            <td style="font-family:'Fira Code',monospace; font-size:12px; color:var(--green);">sb.from('table').update({ col: val }).eq('id', id)</td>
+          </tr>
+          <tr>
+            <td data-i18n="sr_delete">Delete a row</td>
+            <td style="font-family:'Fira Code',monospace; font-size:12px; color:var(--green);">sb.from('table').delete().eq('id', id)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+    <!-- Footer -->
+  <div style="text-align:center; padding-top:24px;">
+    <div style="font-size:12px; color:var(--muted2);" data-i18n="footer_text">
+      BharatYatra · Internal Docs · Supabase Integration Guide
+    </div>
+  </div>
+</div><!-- end .page -->
+
+<script>
+// ── TRANSLATIONS ──────────────────────────────────────────────────────────────
+const translations = {
+  en: {
+    title_how: "How",
+    title_works: "Works",
+    header_sub: "A plain-English walkthrough of how BharatYatra connects to its database, handles authentication, and fetches data — with real code examples from the project.",
+    project_label: "Project:",
+
+    s1_title: "What is Supabase?",
+    s1_desc: "Supabase is an open-source backend-as-a-service. Think of it as a ready-made backend that gives you a database, authentication, file storage, and a REST API — without writing any server code. We use it instead of building our own backend.",
+
+    s2_title: "Setting Up the Client",
+    s2_desc: `Before you can do anything — read data, log in, upload files — you need to create a Supabase client. This is done once and shared across all pages. In BharatYatra this lives in <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">admin-auth.js</code> and is available as <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">window.sb</code>.`,
+    callout_createclient: `<strong>What does createClient() actually do?</strong> Think of it like making a phone call. Before your browser can talk to Supabase, it needs to "dial in" — it needs to know <em>which</em> Supabase project to connect to (that's the URL) and prove it has permission to access it (that's the key). <code>createClient()</code> establishes that connection and returns a client object (<code>sb</code>) you can use to fetch data, log in, upload files, and more. Storing it as <code>window.sb</code> means it's available globally — every page and every function shares the same connection without having to "dial in" again.`,
+    callout_anonkey: `<strong>Anon key vs Service key.</strong> The anon key (used above) is safe to put in frontend code — it only has the permissions you define via Row Level Security. Never put the <strong>service_role</strong> key in frontend code; it bypasses all security.`,
+
+    s3_title: "Authentication — Login &amp; Sessions",
+    s3_desc: "Supabase Auth handles the entire login flow. When an admin signs in, Supabase checks the credentials, creates a session, and stores a JWT token in the browser. Every subsequent request automatically includes that token to prove identity.",
+    flow_admintype: "Admin types",
+    flow_admintype_sub: "email + password<br>in login form",
+    flow_signin_sub: "JS sends credentials<br>to Supabase Auth",
+    flow_validate: "Supabase validates",
+    flow_validate_sub: "checks hashed password<br>in auth.users table",
+    flow_jwt: "JWT issued",
+    flow_jwt_sub: "token stored in<br>browser localStorage",
+    flow_redirect: "Redirect to dashboard",
+    flow_redirect_sub: "session active for<br>~60 minutes",
+    callout_jwt: `<strong>What is a JWT?</strong> JWT stands for <em>JSON Web Token</em> — think of it as a digital ID card that Supabase hands you after a successful login. It's a small encoded string that says <em>"this person is authenticated, their user ID is X, and this ID card expires in 60 minutes."</em> From that point on, every request your browser makes to Supabase automatically includes that JWT. Supabase reads it and decides: <em>"this request comes from a logged-in admin — I'll allow the write operation."</em> Without a valid JWT, Supabase only allows public reads. You never handle the JWT manually — the client stores it in <code>localStorage</code> and attaches it to every request automatically.`,
+
+    s4_title: "Reading Data from the Database",
+    s4_desc: `Every public page (and admin page) fetches data using <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">sb.from()</code>. This translates to a secure HTTP request to Supabase's auto-generated REST API. You write it like a query builder — no raw SQL needed.`,
+    th_method: "Method", th_sql: "SQL Equivalent", th_example: "Example",
+
+    s5_title: "Writing Data — Insert, Update, Delete",
+    s5_desc: "Write operations (INSERT / UPDATE / DELETE) only work when the user is authenticated. Row Level Security on the Supabase side rejects any write attempt that doesn't carry a valid admin JWT.",
+
+    s6_title: "Row Level Security (RLS)",
+    s6_desc: "RLS is how Supabase controls who can do what to each table — enforced on the database side, not just in your JS code. Even if someone finds the anon key, they cannot write data without a valid admin session.",
+    callout_rls: `<strong>Why this matters:</strong> Public visitors on bharatyatra.in use the anon key and can only read data. Admins logged in via Supabase Auth get an authenticated JWT, which unlocks write operations. The database enforces this — your JS code is just the messenger.`,
+
+    s7_title: "What Actually Happens Under the Hood",
+    s7_desc: `When you call <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">sb.from('states').select('*')</code>, the JS client translates it into a standard HTTPS request to Supabase's PostgREST API. You never see this — the client library handles it for you.`,
+    flow7_yourcode: "Your JS code", flow7_yourcode2: "Your JS code",
+    flow7_client: "Supabase Client",
+    flow7_client_sub: "builds HTTPS request<br>+ attaches JWT",
+    flow7_api_sub: "checks RLS<br>runs SQL query",
+    flow7_db_sub: "returns rows<br>as JSON",
+    flow7_result_sub: "{ data, error }<br>ready to use",
+    callout_await: `<strong>Always await + destructure.</strong> Every Supabase call is async. Always <code style="font-family:'Fira Code',monospace; font-size:12px;">await</code> it and always destructure <code style="font-family:'Fira Code',monospace; font-size:12px;">{ data, error }</code>. Check <code style="font-family:'Fira Code',monospace; font-size:12px;">error</code> before using <code style="font-family:'Fira Code',monospace; font-size:12px;">data</code> — if the query fails, <code style="font-family:'Fira Code',monospace; font-size:12px;">data</code> will be null.`,
+
+    sr_title: "Quick Reference — Most Used Calls in This Project",
+    sr_col1: "What you want to do", sr_col2: "The call",
+    sr_login: "Log in", sr_checksession: "Check session", sr_logout: "Log out",
+    sr_readall: "Read all rows", sr_filter: "Filter rows", sr_count: "Count rows",
+    sr_insert: "Insert a row", sr_update: "Update a row", sr_delete: "Delete a row",
+    footer_text: "BharatYatra · Internal Docs · Supabase Integration Guide",
+
+    // ── Section 0 keys ──
+    s0_title: "Setting Up Database Tables — Before You Write Any Code",
+    s0_desc: `Before you touch the Supabase client or write a single line of JavaScript, you need to create your database tables. The best starting point is your <strong>PRD (Product Requirements Document)</strong> — it already lists every table, every column, and every data type. Give that to Claude AI and it generates the exact SQL to paste into Supabase's SQL Editor.`,
+    callout_db_tip: `<strong>Pro tip — paste the PRD column list directly into your Claude prompt.</strong> Don't retype columns by hand. Copy the exact table definition from your PRD (e.g. Section 4.5 for <code>contact_submissions</code>) and paste it to Claude. Say <em>"Supabase (PostgreSQL), generate CREATE TABLE + RLS"</em> and Claude outputs production-ready SQL with correct types, constraints, and policies.`,
+    callout_db_order: `<strong>PRD also drives your HTML files — not just the database.</strong> Each page in your PRD (Sections 5 and 6) describes fields, layout, data sources, and behaviour. Give Claude the PRD section for a page (e.g. "Section 5.11 contactus.html" or "Section 6.5 admin-form.html") and ask it to build the full HTML + CSS + JS + Supabase calls. One PRD → entire stack.`,
+    s8_title: "Building the Frontend Page — Displaying Data Publicly",
+    s8_desc: "Public-facing HTML pages all follow the same pattern: load Supabase client, fetch rows, render to DOM. No login needed — the anon key + public RLS handles access automatically.",
+    callout_fe_pattern: `<strong>Golden pattern for every public page:</strong> (1) Include <code>admin-auth.js</code> → sets up <code>window.sb</code>. (2) On <code>DOMContentLoaded</code>, call <code>sb.from()</code>. (3) Check <code>error</code>, map <code>data</code> to HTML strings. (4) Set <code>innerHTML</code> on your container. No login needed for public reads.`,
+    s9_title: "Building the Admin Page — Edit Database Tables",
+    s9_desc: "Admin pages let authorised users add, edit, and delete rows. Same as public pages but with two extra layers: auth guard at the top and authenticated write calls.",
+    callout_adm_rls: `<strong>RLS protects you even if someone bypasses the JS guard.</strong> Any <code>insert()</code>, <code>update()</code>, or <code>delete()</code> without a valid JWT is rejected by Supabase at the database level. JS guard = UX; RLS = real security.`,
+    adm_th_fn: "Function", adm_th_when: "When it runs", adm_th_does: "What it does",
+    adm_row1_when: "Page load (first line)", adm_row1_does: "Reads JWT — redirects to login if invalid",
+    adm_row2_when: "After auth guard passes", adm_row2_does: "Fetches all rows, renders editable table",
+    adm_row3_when: "Edit button click", adm_row3_does: "Fetches that row, fills form fields",
+    adm_row4_when: "Save button / form submit", adm_row4_does: "insert() if new, update() if editing",
+    adm_row5_when: "Delete button click", adm_row5_does: "Confirms, then delete() by id",
+    adm_row6_when: "Logout button click", adm_row6_does: "Clears JWT, redirects to login",
+    cc_db1: `/* ─────────────────────────────────────────────────────\n   Your PRD already has the table schema.\n   Copy the column list from the PRD and paste to\n   Claude AI with:\n   "Supabase (PostgreSQL), generate CREATE TABLE\n    + RLS (public read, authenticated write)."\n───────────────────────────────────────────────────── */`,
+    cc_db2: `// Example: PRD Section 4.5 says contact_submissions:\n//   "id, category, name, age, gender, phone,\n//    email, statement, created_at"\n// Paste that list → Claude writes the full SQL.`,
+    cc_db3: `/* Claude generates the complete SQL from your PRD.\n   Example: contact_submissions for contactus.html */`,
+    cc_db4: `/* Enable Row Level Security */`,
+    cc_db5: `/* HOW TO REACH THE SQL EDITOR:\n   1. supabase.com → open your project\n   2. Left sidebar → SQL Editor\n   3. New query → paste SQL → ▶ Run\n   4. "Success. No rows returned." = done! */`,
+    cc_db6: `/* Verify: Table Editor → contact_submissions\n   You should see your empty table with all columns. */`,
+    cc_db7: `/* attractions — PRD Section 4.3, FK to states */`,
+    cc_db8: `/* contact_submissions — PRD Section 4.5 + 5.11 */`,
+    cc_db_html1: `/* ─────────────────────────────────────────────────────\n   PRD describes every page too — not just tables.\n   Give Claude the PRD section for the page you need.\n\n   Example prompt for contactus.html:\n   "Build contactus.html for BharatYatra (HTML + CSS +\n    Vanilla JS + Supabase). From PRD Section 5.11:\n    - Fields: category (dropdown), name, age, gender,\n      phone, email, statement — all required\n    - On submit: insert into contact_submissions\n    - Black/red/white palette, Playfair Display heading\n    - Show success/error message after submit"\n───────────────────────────────────────────────────── */`,
+    cc_db_html2: `// Claude writes the full HTML, form, CSS, and\n// Supabase insert() call in one shot.\n// Paste it, add your Supabase URL + key, done.\n//\n// Same for admin-form.html — give Claude PRD\n// Section 6.5 and it builds the full viewer page.`,
+    cc_fe1: `/* &lt;head&gt; — load Supabase + auth helper */`,
+    cc_fe2: `/* &lt;body&gt; — JS will inject state cards here */`,
+    cc_fe3: `/* DOMContentLoaded — no auth guard needed (public) */`,
+    cc_fe4: `// 1. Fetch all states, sorted alphabetically`,
+    cc_fe5: `// 2. Build HTML cards and inject into grid`,
+    cc_fe6: `/* Read ?slug=gujarat from the URL, fetch that row */`,
+    cc_fe7: `// WHERE slug = 'gujarat'`,
+    cc_fe8: `// .single() = expect exactly 1 row`,
+    cc_fe9: `// state.name, state.image_url etc. now available`,
+    cc_adm1: `/* Create admins in Dashboard, NOT via signup page:\n   Authentication → Users → Add user\n   → enter email + password → Create user\n   Only these accounts can log in. */`,
+    cc_adm2: `/* Every admin page starts with this pattern.\n   BYAuth.check() reads stored JWT.\n   No valid session → redirect to login. */`,
+    cc_adm3: `// 1. Auth guard — stop non-admins`,
+    cc_adm4: `// 2. Show admin email in header`,
+    cc_adm5: `// 3. Load editable data table`,
+    cc_adm6: `/* Fetch rows → render table with Edit/Delete buttons */`,
+    cc_adm7: `/* saveState(): empty id = INSERT, filled id = UPDATE */`,
+    cc_adm8: `// UPDATE existing row`,
+    cc_adm9: `// INSERT new row`,
+    cc_adm10: `// refresh table after save`,
+    cc_adm11: `/* Always confirm before delete — it's permanent.\n   CASCADE: child rows auto-deleted too. */`,
+    cc_adm12: `// re-render table after delete`,
+    // ── code block comments ──
+    cc_1: `/* A real SQL database hosted for you.\n   Tables: states, districts, attractions,\n   accommodations, hospitals, etc.\n   You query it like any SQL database. */`,
+    cc_2: `/* Handles login / logout / sessions.\n   Admin logs in with email + password.\n   Supabase issues a JWT token that\n   proves who the user is. */`,
+    cc_3: `/* File storage for images and videos.\n   Buckets: state-images, state-videos,\n   attraction-images, district-images.\n   Returns a public URL you put in img src. */`,
+    cc_4: `/* Supabase auto-generates a REST API\n   for every table. The JS client wraps\n   this so you never write raw HTTP\n   requests — just method calls. */`,
+    cc_5: `/* ─────────────────────────────────────────────────────\n   STEP 1: Load the Supabase JS library (from CDN).\n   This gives you the global \`supabase\` object.\n   Every admin page has this in the &lt;head&gt;:\n───────────────────────────────────────────────────── */`,
+    cc_6: `// &lt;script src="https://unpkg.com/@supabase/supabase-js@2"&gt;&lt;/script&gt;`,
+    cc_7: `/* ─────────────────────────────────────────────────────\n   STEP 2: Your project credentials.\n   URL  — unique address of YOUR Supabase project.\n   KEY  — the "anon" (public) key. Safe to expose.\n          It only allows what RLS policies permit.\n───────────────────────────────────────────────────── */`,
+    cc_8: `/* ─────────────────────────────────────────────────────\n   STEP 3: Create the client.\n   \`createClient\` connects to your Supabase project.\n   We store it on \`window.sb\` so every page can use it\n   without creating a new connection each time.\n───────────────────────────────────────────────────── */`,
+    cc_9: `/* ─────────────────────────────────────────────────────\n   After this line, \`sb\` is available everywhere.\n   Usage: sb.from('table'), sb.auth.signIn(), etc.\n───────────────────────────────────────────────────── */`,
+    cc_10: `/* signInWithPassword is the main login function.\n   It takes { email, password } and returns:\n   - data.session  → the active session object\n   - error         → null if login succeeded, or an error object */`,
+    cc_11: `// Login failed — show error message to user`,
+    cc_12: `// Login succeeded — redirect to dashboard\n  // The JWT token is now automatically stored in localStorage`,
+    cc_13: `/* BYAuth.check() runs at the top of every admin page.\n   It reads the stored JWT and verifies it's still valid.\n   If no valid session exists → user is sent back to login. */`,
+    cc_14: `// getSession reads the JWT from localStorage\n  // and returns the current session (or null)`,
+    cc_15: `// No session — kick back to login page`,
+    cc_16: `// Session is valid — return it so the page can\n  // read the admin's email / user ID`,
+    cc_17: `/* Every admin page calls this on DOMContentLoaded: */`,
+    cc_18: `// guard fires first`,
+    cc_19: `// stop if not logged in`,
+    cc_20: `// Safe to load page content now`,
+    cc_21: `/* Logout — signs out and redirects to login */`,
+    cc_22: `// clears the JWT from localStorage`,
+    cc_23: `/* sb.from('table')  →  target the 'states' table\n   .select('*')      →  get all columns (like SELECT * in SQL)\n   .order('name')    →  sort results alphabetically\n\n   Returns: { data: [...rows], error: null or Error } */`,
+    cc_24: `// which table?`,
+    cc_25: `// which columns? * = all`,
+    cc_26: `// sort by name A→Z`,
+    cc_27: `// data = [{ id:1, name:'Gujarat', slug:'gujarat', ... }, ...]`,
+    cc_28: `/* .eq('column', value) is like WHERE column = value in SQL.\n   .order() with ascending:false = ORDER BY priority_score DESC.\n   Only select specific columns instead of * to keep it lean. */`,
+    cc_29: `// WHERE state_id = 1  (Gujarat)`,
+    cc_30: `// AND is_must_visit = true`,
+    cc_31: `// highest score first`,
+    cc_32: `// max 10 results`,
+    cc_33: `/* When you only need the COUNT (not the actual rows),\n   pass { count: 'exact', head: true } to select().\n   head:true = don't return row data, just the count.\n   This is much faster — used in admin-dashboard.html stats. */`,
+    cc_34: `// count = 164  (no row data transferred)`,
+    cc_35: `/* .insert(payload) adds a new row.\n   payload is a plain JS object — keys match column names.\n   Returns { error } — check error for success/failure. */`,
+    cc_36: `// FK → states.id`,
+    cc_37: `/* .update(payload) changes only the fields you provide.\n   .eq('id', id) targets exactly one row by primary key.\n   Always chain a filter — without it you'd update ALL rows! */`,
+    cc_38: `// ← only update row where id = 12`,
+    cc_39: `/* .delete() removes the matching row permanently.\n   Always use .eq() to target a specific row.\n   CASCADE DELETE in the schema means deleting an attraction\n   also deletes all its accommodations automatically. */`,
+    cc_40: `// ← only delete row where id = 12`,
+    cc_41: `/* These policies are set in the Supabase dashboard\n   under: Database → Tables → [table] → Policies\n\n   ┌──────────────────┬────────────────────────────────────┐\n   │  Operation       │  Who can do it?                    │\n   ├──────────────────┼────────────────────────────────────┤\n   │  SELECT (read)   │  Anyone — anon key allowed         │\n   │                  │  (public pages need to read data)  │\n   ├──────────────────┼────────────────────────────────────┤\n   │  INSERT          │  Only authenticated admins         │\n   │  UPDATE          │  Only authenticated admins         │\n   │  DELETE          │  Only authenticated admins         │\n   └──────────────────┴────────────────────────────────────┘\n\n   In SQL the read policy looks like:\n   CREATE POLICY "public_read" ON attractions\n     FOR SELECT USING (true);       ← anyone can read\n\n   The write policy:\n   CREATE POLICY "admin_write" ON attractions\n     FOR ALL USING (auth.role() = 'authenticated');\n                    ↑ only if logged in via Supabase Auth */`,
+    cc_42: `/* Your JS code: */`,
+    cc_43: `/* ↓  translates to this HTTPS request: */`,
+    cc_44: `// Method: GET\n// URL:    https://gtpnojbbamoaznlutxap.supabase.co/rest/v1/attractions?state_id=eq.1\n//\n// Headers sent automatically by the client:\n//   apikey:        &lt;your anon key&gt;          ← identifies the project\n//   Authorization: Bearer &lt;JWT token&gt;       ← proves who the user is\n//   Content-Type:  application/json\n//\n// Supabase checks RLS → returns matching rows as JSON\n// The client parses the JSON → gives you { data: [...], error: null }`,
+
+    // ── Sections missing from original EN ──
+    project_hosting: "Hosting: GitHub Pages / Vercel",
+    s_setup_title: "Account, Organisation &amp; Project Setup",
+    s_setup_desc: "Before touching any code, create your Supabase account and project. This takes about 3 minutes.",
+    callout_setup_pw: `<strong>Save your Database Password now.</strong> Supabase shows it only once during project creation. Write it in a safe place — you'll need it if you ever connect a local tool to your database.`,
+    cc_setup1: `/* ─────────────────────────────────────────────\n   1. Open browser → go to https://supabase.com\n   2. Click "Start your project" (top right)\n   3. Click "Continue with GitHub"\n      (create a free GitHub account first if needed)\n   4. You are now inside Supabase — done!\n───────────────────────────────────────────── */`,
+    cc_setup2: `/* An Organisation is like a folder that holds\n   your projects. Think of it as your "company"\n   or "workspace" inside Supabase.\n\n   1. After login, click "New Organisation"\n   2. Give it a name  e.g. "MyWebsite"\n   3. Plan: choose Free\n   4. Click "Create Organisation"  ✓ */`,
+    cc_setup3: `/* A Project = your website's own database space.\n\n   1. Inside the Organisation → click "New Project"\n   2. Project Name:  enquiry-website\n   3. Database Password:  choose a strong password\n                          WRITE IT DOWN — shown once only!\n   4. Region:  South Asia (Mumbai)  ← fastest for India\n   5. Click "Create new project"\n   6. Wait ~1-2 minutes for setup to complete  ✓ */`,
+    s_dash_title: "Dashboard Tour — What Is Where",
+    s_dash_desc: "After project creation you land on the Supabase Dashboard. The left sidebar has everything you need.",
+    dash_th_icon: "Section", dash_th_use: "What you use it for",
+    dash_te: "View your tables visually (like Excel). Good for quick checks.",
+    dash_sql: "Run SQL commands. This is where you CREATE TABLE and set RLS. ★ used a lot",
+    dash_auth: "Manage users — create your admin login account here.",
+    dash_storage: "Upload images and files. Create buckets (folders) here.",
+    dash_api: "Get your Project URL and anon key. ★ used a lot",
+    s_keys_title: "Getting Your API Keys",
+    s_keys_desc: "Your HTML pages need two things to talk to Supabase: the Project URL (the address) and the anon key (the password). Get them from Settings.",
+    callout_keys_warn: `<strong>anon key vs service_role key.</strong> Only ever use the <strong>anon public</strong> key in your HTML files — it is safe. Never paste the <strong>service_role</strong> key into any HTML file; it bypasses all security and gives full database access to anyone who finds it.`,
+    cc_keys1: `/* HOW TO FIND YOUR KEYS:\n   1. Left sidebar → click "Settings" (gear icon ⚙)\n   2. Click "API" in the settings menu\n   3. You will see two things — copy both into Notepad:\n\n   Project URL:\n     https://xyzabcdef.supabase.co\n\n   anon public key:\n     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\n     (this is safe to use in frontend HTML code)\n───────────────────────────────────────────── */`,
+    cc_keys2: `// You will paste these two values into every HTML\n// file that connects to Supabase. Keep them handy.`,
+    s3sql_title: "Setting Up Database Tables — Before You Write Any Code",
+    s3sql_desc: `Before you touch the Supabase client or write a single line of JavaScript, you need to create your database tables. The best starting point is your <strong>PRD (Product Requirements Document)</strong> — it already lists every table, every column, and every data type. Give that to Claude AI and it generates the exact SQL to paste into Supabase's SQL Editor.`,
+    s_claude_title: "Using Claude AI to Build Your HTML Pages",
+    s_claude_desc: "You do not need to write HTML from scratch. Give Claude AI a clear prompt with your Supabase keys and requirements — it will write the full file for you in one shot.",
+    callout_claude_tip: `<strong>Tip — the more detail you give, the better the output.</strong> If you want a specific colour scheme, font, or layout, describe it in the prompt. If something in the output is wrong, just tell Claude: <em>"change this part"</em> and it will fix it. You can keep refining until it looks exactly how you want.`,
+    cc_claude1: `/* Copy this prompt, fill in your keys, paste to Claude: */`,
+    cc_claude2: `/* Copy this prompt, fill in your keys, paste to Claude: */`,
+    s_storage_title: "Storage — File Uploads",
+    s_storage_desc: `If your enquiry form should also accept a file upload (e.g. a document or photo), Supabase Storage handles it. You create a "bucket" (a folder) and upload files there.`,
+    cc_stor1: `/* ─────────────────────────────────────────────\n   1. Left sidebar → Storage\n   2. Click "New bucket"\n   3. Bucket name:  enquiry-files\n   4. Toggle "Public bucket" ON\n   5. Click "Create bucket"  ✓\n───────────────────────────────────────────── */`,
+    cc_stor2: `/* Add a file_url column to your table first: */`,
+    cc_stor3: `/* Then in your JS — upload file, get URL, save with row */`,
+    cc_stor4: `// save this URL with the enquiry row`,
+    s_deploy_title: "Deploy Your Website — GitHub Pages or Vercel",
+    s_deploy_desc: "Once your HTML files are ready, put them online for free. Two easy options — both take under 5 minutes.",
+    callout_deploy_test: `<strong>Final test checklist:</strong> Open your live URL → fill in the form → submit → go to Supabase Dashboard → Table Editor → enquiries table. Your test entry should appear there. If it does, everything is working end-to-end. ✅`,
+    cc_dep1: `/* ─────────────────────────────────────────────\n   1. Go to https://github.com — create a free account\n   2. Click  +  → "New repository"\n   3. Repository name: my-enquiry-website\n   4. Visibility: Public\n   5. Click "Create repository"\n   6. Click "uploading an existing file"\n   7. Drag in: index.html, responses.html, login.html\n   8. Click "Commit changes"\n\n   Then enable Pages:\n   9. Repository → Settings → Pages\n  10. Source: "Deploy from a branch" → main / (root)\n  11. Click Save\n  12. Your URL: https://[username].github.io/my-enquiry-website/\n───────────────────────────────────────────── */`,
+    cc_dep2: `/* ─────────────────────────────────────────────\n   Prerequisite: files already on GitHub (steps 1–8 above)\n\n   1. Go to https://vercel.com\n   2. Click "Sign up with GitHub"\n   3. Click "New Project"\n   4. Click "Import" next to your repository\n   5. Leave all settings as default\n   6. Click "Deploy"\n   7. Done — URL: https://my-enquiry-website.vercel.app\n\n   Every time you push a change to GitHub,\n   Vercel automatically re-deploys. ✓\n───────────────────────────────────────────── */`,
+    adm_th_when: "When it runs", adm_th_does: "What it does",
+    adm_row1_does: "Reads JWT — redirects to login if invalid",
+    adm_row2_does: "Fetches all rows, renders editable table",
+    adm_row3_does: "Fetches that row, fills form fields for editing",
+    adm_row4_does: "insert() if new, update() if editing existing",
+    adm_row5_does: "Confirms, then delete() the row by id",
+    adm_row6_does: "Clears JWT from localStorage, redirects to login",
+
+  },
+
+  gu: {
+    title_how: "Supabase",
+    title_works: "કેવી રીતે કામ કરે છે",
+    header_sub: "BharatYatra ડેટાબેઝ સાથે કેવી રીતે જોડાય છે, ઓળખ તપાસ કેવી રીતે થાય છે, અને ડેટા કેવી રીતે મેળવાય છે — પ્રોજેક્ટના સાચા કોડ ઉદાહરણો સાથે સરળ ભાષામાં સમજૂતી.",
+    project_label: "પ્રોજેક્ટ:",
+
+    s1_title: "Supabase શું છે?",
+    s1_desc: "Supabase એ એક open-source backend-as-a-service છે. એને એક તૈયાર backend તરીકે વિચારો જે તમને ડેટાબેઝ, authentication, ફાઇલ સ્ટોરેજ, અને REST API આપે છે — કોઈ server કોડ લખ્યા વગર. અમે અમારો પોતાનો backend બનાવવાને બદલે આ વાપરીએ છીએ.",
+
+    s2_title: "Client સેટ અપ કરવો",
+    s2_desc: `કંઈ પણ કરતા પહેલા — ડેટા વાંચવો, login કરવું, ફાઇલ upload કરવી — તમારે Supabase client બનાવવો પડે. આ એક વખત થાય છે અને બધા pages પર share થાય છે. BharatYatra માં આ <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">admin-auth.js</code> માં છે અને <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">window.sb</code> તરીકે ઉપલબ્ધ છે.`,
+    callout_createclient: `<strong>createClient() ખરેખર શું કરે છે?</strong> ફોન કોલ કરવા જેવું વિચારો. Browser Supabase સાથે વાત કરી શકે તે પહેલા, તેણે "dial in" કરવું પડે — <em>કયા</em> Supabase project સાથે connect કરવું (URL) અને permission છે તે સાબિત કરવું (key). <code>createClient()</code> આ connection બનાવે છે અને <code>sb</code> object પાછો આપે છે. <code>window.sb</code> પર store કરવાથી તે globally ઉપલબ્ધ રહે છે — દરેક page અને function ફરીથી connect કર્યા વગર વાપરી શકે.`,
+    callout_anonkey: `<strong>Anon key vs Service key.</strong> Anon key (ઉપર વાપરેલ) frontend code માં મૂકવા માટે safe છે — Row Level Security મારફત define કરેલ permissions જ આપે છે. <strong>service_role</strong> key ક્યારેય frontend code માં ન મૂકો; તે બધી security bypass કરે છે.`,
+
+    s3_title: "Authentication — Login અને Sessions",
+    s3_desc: "Supabase Auth સમગ્ર login flow handle કરે છે. Admin login કરે ત્યારે Supabase credentials ચકાસે છે, session બનાવે છે, અને browser માં JWT token store કરે છે. ત્યારબાદ દરેક request automatically identity સાબિત કરવા token સાથે જાય છે.",
+    flow_admintype: "Admin ટાઇપ કરે",
+    flow_admintype_sub: "email + password<br>login form માં",
+    flow_signin_sub: "JS credentials<br>Supabase Auth ને મોકલે",
+    flow_validate: "Supabase ચકાસે",
+    flow_validate_sub: "hashed password<br>auth.users table માં",
+    flow_jwt: "JWT issue થાય",
+    flow_jwt_sub: "token browser<br>localStorage માં store",
+    flow_redirect: "Dashboard redirect",
+    flow_redirect_sub: "session ~60 મિનિટ<br>active રહે",
+    callout_jwt: `<strong>JWT શું છે?</strong> JWT એટલે <em>JSON Web Token</em> — સફળ login પછી Supabase આપે છે તે digital ID card. એ એક encoded string છે જે કહે છે <em>"આ વ્યક્તિ authenticated છે, user ID X છે, ID card 60 મિનિટ પછી expire."</em> ત્યારથી browser Supabase ને કરેલ દરેક request સ્વયં JWT સાથે જાય છે. Supabase ઓળખે અને decide કરે: <em>"admin request — write allow."</em> Valid JWT વગર Supabase ફક્ત public read permit કરે. JWT manually handle કરવો પડતો નથી — client localStorage માં store કરીને દરેક request સાથે attach કરે.`,
+
+    s4_title: "ડેટાબેઝ માંથી ડેટા વાંચવો",
+    s4_desc: `દરેક public page (અને admin page) <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">sb.from()</code> વાપરીને ડેટા fetch કરે. આ Supabase ના auto-generated REST API ને secure HTTP request માં translate થાય. Query builder જેવો syntax — raw SQL ની જરૂર નથી.`,
+    th_method: "Method", th_sql: "SQL સમકક્ષ", th_example: "ઉદાહરણ",
+
+    s5_title: "ડેટા લખવો — Insert, Update, Delete",
+    s5_desc: "Write operations (INSERT / UPDATE / DELETE) ફક્ત ત્યારે જ કામ કરે જ્યારે user authenticated હોય. Supabase ની Row Level Security valid admin JWT વગર write attempt reject કરે છે.",
+
+    s6_title: "Row Level Security (RLS)",
+    s6_desc: "RLS એ Supabase નો રસ્તો છે — database side પર enforce — control કરવા કે કોણ કઈ table પર શું કરી શકે. Anon key મળ્યો હોય તો પણ valid admin session વગર data write ન થઈ શકે.",
+    callout_rls: `<strong>આ શા માટે મહત્વનું છે:</strong> bharatyatra.in ના public visitors anon key વાપરે અને ફક્ત data read કરી શકે. Supabase Auth થી login કરેલ admins authenticated JWT મેળવે, જે write operations unlock કરે. Database આ enforce કરે — JS code ફક્ત messenger છે.`,
+
+    s7_title: "અંદર ખરેખર શું થાય છે",
+    s7_desc: `જ્યારે તમે <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">sb.from('states').select('*')</code> call કરો, JS client Supabase ના PostgREST API ને standard HTTPS request માં translate કરે. આ ક્યારેય દેખાતું નથી — client library handle કરે.`,
+    flow7_yourcode: "તમારો JS code", flow7_yourcode2: "તમારો JS code",
+    flow7_client: "Supabase Client",
+    flow7_client_sub: "HTTPS request build<br>+ JWT attach",
+    flow7_api_sub: "RLS ચકાસે<br>SQL query run",
+    flow7_db_sub: "rows JSON<br>તરીકે return",
+    flow7_result_sub: "{ data, error }<br>ઉપયોગ માટે તૈયાર",
+    callout_await: `<strong>હંમેશા await + destructure.</strong> દરેક Supabase call async છે. હંમેશા <code style="font-family:'Fira Code',monospace; font-size:12px;">await</code> કરો અને <code style="font-family:'Fira Code',monospace; font-size:12px;">{ data, error }</code> destructure કરો. <code style="font-family:'Fira Code',monospace; font-size:12px;">data</code> વાપરતા પહેલા <code style="font-family:'Fira Code',monospace; font-size:12px;">error</code> ચકાસો — query fail થઈ હોય તો data null હશે.`,
+
+    sr_title: "Quick Reference — આ Project ના સૌથી વધુ વપરાતા Calls",
+    sr_col1: "તમે શું કરવા ઈચ્છો", sr_col2: "Call",
+    sr_login: "Login કરવો", sr_checksession: "Session ચકાસવો", sr_logout: "Logout કરવો",
+    sr_readall: "બધી rows વાંચવી", sr_filter: "Rows filter કરવી", sr_count: "Rows count કરવી",
+    sr_insert: "Row ઉમેરવી", sr_update: "Row update કરવી", sr_delete: "Row delete કરવી",
+    footer_text: "BharatYatra · Internal Docs · Supabase Integration Guide",
+
+    // ── Section 0 keys ──
+    s0_title: "Database Tables Setup — Code લખો તે પહેલા",
+    s0_desc: `Supabase client ટચ કરો કે JS લખો તે પહેલા database tables બનાવવી જ જોઈએ. શ્રેષ્ઠ starting point: <strong>PRD (Product Requirements Document)</strong> — એમાં પહેલેથી જ દરેક table, column, અને data type લખ્યું છે. Claude AI ને PRD આપો, Claude SQL generate કરશે, Supabase SQL Editor માં paste.`,
+    callout_db_tip: `<strong>Pro tip — PRD ની column list directly Claude ને paste કરો.</strong> Columns ફરીથી ટાઈપ ન કરો. PRD માંથી exact table definition copy કરો (e.g. Section 4.5 — <code>contact_submissions</code>) અને Claude ને paste કરો. "Supabase (PostgreSQL), CREATE TABLE + RLS generate" કહો — Claude correct types, constraints, policies સાથે SQL આપે.`,
+    callout_db_order: `<strong>PRD ફક્ત database જ નહીં — HTML files પણ drive કરે.</strong> PRD ના Sections 5 અને 6 દરેક page ના fields, layout, data source describe કરે. Claude ને PRD section આપો (e.g. "Section 5.11 contactus.html" અથવા "Section 6.5 admin-form.html") અને full HTML + CSS + JS + Supabase calls generate કહો. એક PRD → આખો stack.`,
+    s8_title: "Frontend Page — Public Data Display",
+    s8_desc: "Public HTML pages same pattern: Supabase client load, rows fetch, DOM render. Login ની જરૂર નહીં — anon key + public RLS automatically handle.",
+    callout_fe_pattern: `<strong>Public page golden pattern:</strong> (1) <code>admin-auth.js</code> include → <code>window.sb</code> set. (2) <code>DOMContentLoaded</code> પર <code>sb.from()</code>. (3) <code>error</code> check, <code>data</code> to HTML map. (4) Container <code>innerHTML</code> set. Public reads login-free.`,
+    s9_title: "Admin Page — Database Tables Edit",
+    s9_desc: "Admin pages authorized users ને rows add, edit, delete. Public page + auth guard + authenticated writes.",
+    callout_adm_rls: `<strong>RLS JS guard bypass થઈ જાય તો પણ protect.</strong> Valid JWT વિના <code>insert()</code>, <code>update()</code>, <code>delete()</code> database level પર reject. JS guard UX; RLS real security.`,
+    adm_th_fn: "Function", adm_th_when: "ક્યારે run", adm_th_does: "શું કરે",
+    adm_row1_when: "Page load (first line)", adm_row1_does: "JWT read, invalid → login redirect",
+    adm_row2_when: "Auth guard pass પછી", adm_row2_does: "Rows fetch, editable table render",
+    adm_row3_when: "Edit button click", adm_row3_does: "Row fetch, form fill",
+    adm_row4_when: "Save / form submit", adm_row4_does: "New = insert(), Edit = update()",
+    adm_row5_when: "Delete button click", adm_row5_does: "Confirm, id થી delete()",
+    adm_row6_when: "Logout button click", adm_row6_does: "JWT clear, login redirect",
+    cc_db1: `/* PRD માં table schema પહેલેથી છે.\n   PRD ની column list copy, Claude AI ને paste,\n   "Supabase (PostgreSQL), CREATE TABLE + RLS\n    generate" instruction સાથે. */`,
+    cc_db2: `// Example: PRD Section 4.5 — contact_submissions:\n//   "id, category, name, age, gender, phone,\n//    email, statement, created_at"\n// Claude ને આ list આપો → full SQL return.`,
+    cc_db3: `/* Claude PRD columns પરથી complete SQL generate.\n   Example: contactus.html માટે contact_submissions */`,
+    cc_db4: `/* Row Level Security Enable */`,
+    cc_db5: `/* SQL EDITOR:\n   1. supabase.com → project open\n   2. Left sidebar → SQL Editor\n   3. New query → SQL paste → ▶ Run → Done! */`,
+    cc_db6: `/* Table Editor → contact_submissions → columns verify. */`,
+    cc_db7: `/* attractions — PRD Section 4.3, states ને FK */`,
+    cc_db8: `/* contact_submissions — PRD Section 4.5 + 5.11 */`,
+    cc_db_html1: `/* PRD page descriptions પણ Claude ને આપો.\n   contactus.html prompt example:\n   "Build contactus.html for BharatYatra.\n    PRD Section 5.11 fields: category, name, age,\n    gender, phone, email, statement.\n    Submit: contact_submissions માં insert.\n    Black/red/white, Playfair Display heading." */`,
+    cc_db_html2: `// Claude full HTML, form, CSS, Supabase insert()\n// એક shot માં. URL + key add કરો, done.\n//\n// admin-form.html: PRD Section 6.5 paste → Claude\n// full admin viewer page build કરે.`,
+    cc_fe1: `/* &lt;head&gt; — Supabase + auth helper load */`,
+    cc_fe2: `/* &lt;body&gt; — JS cards inject કરશે */`,
+    cc_fe3: `/* DOMContentLoaded — auth guard ની જરૂર નહીં */`,
+    cc_fe4: `// 1. States alphabetically fetch`,
+    cc_fe5: `// 2. HTML cards build, grid inject`,
+    cc_fe6: `/* URL માંથી ?slug=gujarat read */`,
+    cc_fe7: `// WHERE slug = 'gujarat'`,
+    cc_fe8: `// .single() = exactly 1 row`,
+    cc_fe9: `// state.name, state.image_url available`,
+    cc_adm1: `/* Admin Dashboard થી create, signup page નહીં:\n   Authentication → Users → Add user → email+password */`,
+    cc_adm2: `/* Admin page pattern: BYAuth.check() JWT read.\n   Valid session ન હોય → login redirect. */`,
+    cc_adm3: `// 1. Auth guard`,
+    cc_adm4: `// 2. Admin email show`,
+    cc_adm5: `// 3. Data table load`,
+    cc_adm6: `/* Rows fetch → Edit/Delete table render */`,
+    cc_adm7: `/* id ખાલી = INSERT, id ભરેલ = UPDATE */`,
+    cc_adm8: `// UPDATE row`,
+    cc_adm9: `// INSERT row`,
+    cc_adm10: `// table refresh`,
+    cc_adm11: `/* Delete confirm — permanent! CASCADE auto-delete. */`,
+    cc_adm12: `// table re-render`,
+    // ── code block comments ──
+    cc_1: `/* તમારા માટે host કરેલ real SQL database.\n   Tables: states, districts, attractions,\n   accommodations, hospitals, વગેરે.\n   કોઈ પણ SQL database જેવું query કરો. */`,
+    cc_2: `/* login / logout / sessions handle કરે.\n   Admin email + password થી login કરે.\n   Supabase JWT token issue કરે જે\n   user ની ઓળખ સાબિત કરે. */`,
+    cc_3: `/* images અને videos માટે file storage.\n   Buckets: state-images, state-videos,\n   attraction-images, district-images.\n   Public URL return કરે જે img src માં મૂકો. */`,
+    cc_4: `/* Supabase દરેક table માટે REST API\n   auto-generate કરે. JS client wrap કરે\n   જેથી raw HTTP requests ક્યારેય\n   ન લખવા પડે — ફક્ત method calls. */`,
+    cc_5: `/* ─────────────────────────────────────────────────────\n   STEP 1: Supabase JS library load કરો (CDN થી).\n   આ global \`supabase\` object આપે.\n   દરેક admin page ના &lt;head&gt; માં આ હોય:\n───────────────────────────────────────────────────── */`,
+    cc_6: `// &lt;script src="https://unpkg.com/@supabase/supabase-js@2"&gt;&lt;/script&gt;`,
+    cc_7: `/* ─────────────────────────────────────────────────────\n   STEP 2: Project credentials.\n   URL  — તમારા Supabase project નું unique address.\n   KEY  — "anon" (public) key. Expose કરવો safe.\n          ફક્ત RLS policies allow કરે તે જ permit.\n───────────────────────────────────────────────────── */`,
+    cc_8: `/* ─────────────────────────────────────────────────────\n   STEP 3: Client બનાવો.\n   \`createClient\` Supabase project સાથે connect કરે.\n   \`window.sb\` પર store કરીએ જેથી દરેક page\n   નવો connection બનાવ્યા વગર વાપરી શકે.\n───────────────────────────────────────────────────── */`,
+    cc_9: `/* ─────────────────────────────────────────────────────\n   આ line પછી \`sb\` બધે ઉપલબ્ધ.\n   વાપરો: sb.from('table'), sb.auth.signIn(), etc.\n───────────────────────────────────────────────────── */`,
+    cc_10: `/* signInWithPassword મુખ્ય login function છે.\n   { email, password } લે અને return કરે:\n   - data.session  → active session object\n   - error         → login સફળ હોય તો null, નહીં તો error */`,
+    cc_11: `// Login નિષ્ફળ — user ને error message બતાવો`,
+    cc_12: `// Login સફળ — dashboard redirect\n  // JWT token હવે localStorage માં automatically store`,
+    cc_13: `/* BYAuth.check() દરેક admin page ની શરૂઆતમાં run.\n   Store JWT વાંચે અને valid છે કે નહીં ચકાસે.\n   Valid session ન હોય → user ને login page મોકલે. */`,
+    cc_14: `// getSession localStorage માંથી JWT વાંચે\n  // અને current session (અથવા null) return કરે`,
+    cc_15: `// Session નથી — login page પર પાછા`,
+    cc_16: `// Session valid — return કરો જેથી page\n  // admin ની email / user ID વાંચી શકે`,
+    cc_17: `/* દરેક admin page DOMContentLoaded પર આ call કરે: */`,
+    cc_18: `// guard પહેલા fire`,
+    cc_19: `// logged in ન હોય તો stop`,
+    cc_20: `// Page content load કરવો safe`,
+    cc_21: `/* Logout — sign out અને login redirect */`,
+    cc_22: `// localStorage માંથી JWT clear`,
+    cc_23: `/* sb.from('table')  →  'states' table target\n   .select('*')      →  બધા columns (SQL SELECT * જેવું)\n   .order('name')    →  alphabetically sort\n\n   Returns: { data: [...rows], error: null or Error } */`,
+    cc_24: `// કઈ table?`,
+    cc_25: `// કઈ columns? * = બધી`,
+    cc_26: `// name A→Z sort`,
+    cc_27: `// data = [{ id:1, name:'Gujarat', slug:'gujarat', ... }, ...]`,
+    cc_28: `/* .eq('column', value) SQL WHERE column = value જેવું.\n   ascending:false = ORDER BY priority_score DESC.\n   * ને બદલે specific columns select — lean રાખો. */`,
+    cc_29: `// WHERE state_id = 1  (ગુજરાત)`,
+    cc_30: `// AND is_must_visit = true`,
+    cc_31: `// સૌથી વધુ score પ્રથમ`,
+    cc_32: `// મહત્તમ 10 results`,
+    cc_33: `/* ફક્ત COUNT જોઈએ (actual rows નહીં) ત્યારે\n   select() ને { count: 'exact', head: true } pass કરો.\n   head:true = row data return ન કરો, ફક્ત count.\n   ઘણું ઝડપી — admin-dashboard.html stats માટે. */`,
+    cc_34: `// count = 164  (કોઈ row data transfer નહીં)`,
+    cc_35: `/* .insert(payload) નવી row ઉમેરે.\n   payload plain JS object — keys column names match.\n   { error } return — success/failure error ચકાસો. */`,
+    cc_36: `// FK → states.id`,
+    cc_37: `/* .update(payload) ફક્ત provide કરેલ fields બદલે.\n   .eq('id', id) primary key થી exact row target.\n   filter chain ફરજિયાત — ન હોય તો બધી rows update! */`,
+    cc_38: `// ← ફક્ત id = 12 row update`,
+    cc_39: `/* .delete() matching row permanent delete.\n   .eq() વડે specific row target ફરજિયાત.\n   Schema CASCADE DELETE — attraction delete\n   થાય તો accommodations automatically delete. */`,
+    cc_40: `// ← ફક્ત id = 12 delete`,
+    cc_41: `/* Supabase dashboard માં set:\n   Database → Tables → [table] → Policies\n\n   ┌──────────────────┬────────────────────────────────────┐\n   │  Operation       │  કોણ કરી શકે?                      │\n   ├──────────────────┼────────────────────────────────────┤\n   │  SELECT (read)   │  કોઈ પણ — anon key allowed          │\n   │                  │  (public pages ને data જોઈએ)        │\n   ├──────────────────┼────────────────────────────────────┤\n   │  INSERT          │  ફક્ત authenticated admins          │\n   │  UPDATE          │  ફક્ત authenticated admins          │\n   │  DELETE          │  ફક્ત authenticated admins          │\n   └──────────────────┴────────────────────────────────────┘\n\n   SQL read policy:\n   CREATE POLICY "public_read" ON attractions\n     FOR SELECT USING (true);       ← કોઈ પણ read\n\n   Write policy:\n   CREATE POLICY "admin_write" ON attractions\n     FOR ALL USING (auth.role() = 'authenticated');\n                    ↑ ફક્ત Supabase Auth login */`,
+    cc_42: `/* તમારો JS code: */`,
+    cc_43: `/* ↓  આ HTTPS request માં translate: */`,
+    cc_44: `// Method: GET\n// URL:    https://gtpnojbbamoaznlutxap.supabase.co/rest/v1/attractions?state_id=eq.1\n//\n// Client auto-send headers:\n//   apikey:        &lt;anon key&gt;            ← project identify\n//   Authorization: Bearer &lt;JWT token&gt;   ← user identity prove\n//   Content-Type:  application/json\n//\n// Supabase RLS ચકાસે → JSON rows return\n// Client JSON parse → { data: [...], error: null } મળે`,
+
+    // ── Sections missing from original GU ──
+    project_hosting: "Hosting: GitHub Pages / Vercel",
+    s_setup_title: "Account, Organisation અને Project Setup",
+    s_setup_desc: "Code touch કરતા પહેલા Supabase account અને project બનાવો. ફક્ત 3 મિનિટ.",
+    callout_setup_pw: `<strong>Database Password હમણાં save કરો.</strong> Supabase project creation સમયે ફક્ત એક વખત બતાવે. Safe જગ્યાએ લખો — local tool connect કરવો હોય ત્યારે જોઈશે.`,
+    cc_setup1: `/* ─────────────────────────────────────────────\n   1. Browser ખોલો → https://supabase.com\n   2. "Start your project" click (ઉપર જમણે)\n   3. "Continue with GitHub" click\n      (GitHub account ન હોય તો free માં બનાવો)\n   4. Login — Supabase ની અંદર — done!\n───────────────────────────────────────────── */`,
+    cc_setup2: `/* Organisation = folder, projects ત્યાં.\n   "workspace" સમજો.\n\n   1. Login → "New Organisation" click\n   2. નામ: "MyWebsite"\n   3. Plan: Free\n   4. "Create Organisation" click  ✓ */`,
+    cc_setup3: `/* Project = website નો database space.\n\n   1. Organisation → "New Project" click\n   2. Project Name: enquiry-website\n   3. Database Password: strong password\n                         WRITE IT DOWN — once only!\n   4. Region: South Asia (Mumbai) ← India fastest\n   5. "Create new project" click\n   6. 1-2 min wait ✓ */`,
+    s_dash_title: "Dashboard Tour — ક્યાં શું છે",
+    s_dash_desc: "Project બન્યા પછી Supabase Dashboard ખૂલે. Left sidebar માં બધું છે.",
+    dash_th_icon: "Section", dash_th_use: "શા માટે વાપરો",
+    dash_te: "Tables visually જુઓ (Excel જેવું). Quick check માટે.",
+    dash_sql: "SQL commands run કરો. CREATE TABLE અને RLS અહીં. ★ વારંવાર",
+    dash_auth: "Users manage — admin login account અહીં બનાવો.",
+    dash_storage: "Images/files upload. Buckets (folders) અહીં.",
+    dash_api: "Project URL અને anon key. ★ વારંવાર",
+    s_keys_title: "API Keys મેળવો",
+    s_keys_desc: "HTML pages ને Supabase સાથે વાત કરવા બે વસ્તુ: Project URL (address) અને anon key (password). Settings માંથી.",
+    callout_keys_warn: `<strong>anon key vs service_role key.</strong> HTML files માં ફક્ત <strong>anon public</strong> key — safe. <strong>service_role</strong> key ક્યારેય HTML માં નહીં; તે બધી security bypass કરે.`,
+    cc_keys1: `/* KEYS ક્યાં:\n   1. Left sidebar → "Settings" (gear icon ⚙)\n   2. "API" click\n   3. બે values copy — Notepad:\n\n   Project URL: https://xyzabcdef.supabase.co\n   anon public key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\n───────────────────────────────────────────── */`,
+    cc_keys2: `// આ બે values દરેક HTML file માં paste. Handy રાખો.`,
+    s3sql_title: "Database Tables Setup — Code પહેલા",
+    s3sql_desc: `Supabase client touch કરતા અથવા JS line લખતા પહેલા database tables બનાવો. <strong>PRD (Product Requirements Document)</strong> — દરેક table, column, data type listed. Claude AI ને આપો → SQL Editor paste ready.`,
+    s_claude_title: "Claude AI વડે HTML Pages બનાવો",
+    s_claude_desc: "HTML scratch થી લખવાની જરૂર નથી. Claude AI ને clear prompt + Supabase keys + requirements — full file one shot.",
+    callout_claude_tip: `<strong>Tip — વધુ detail, better output.</strong> Color scheme, font, layout describe કરો. Output ખોટું: <em>"this part change"</em> — Claude fix. Perfect ન થાય ત્યાં refine.`,
+    cc_claude1: `/* આ prompt copy, keys fill, Claude ને paste: */`,
+    cc_claude2: `/* આ prompt copy, keys fill, Claude ને paste: */`,
+    s_storage_title: "Storage — File Uploads",
+    s_storage_desc: `Enquiry form file upload (document/photo) accept કરે તો Supabase Storage. "Bucket" (folder) બનાવો, files upload.`,
+    cc_stor1: `/* ─────────────────────────────────────────────\n   1. Left sidebar → Storage\n   2. "New bucket" click\n   3. Bucket name: enquiry-files\n   4. "Public bucket" ON toggle\n   5. "Create bucket" click  ✓\n───────────────────────────────────────────── */`,
+    cc_stor2: `/* પહેલા table માં file_url column ઉમેરો: */`,
+    cc_stor3: `/* JS માં — file upload, URL મેળવો, row સાથે save */`,
+    cc_stor4: `// આ URL enquiry row સાથે save`,
+    s_deploy_title: "Website Deploy — GitHub Pages અથવા Vercel",
+    s_deploy_desc: "HTML files ready — free online. બે options — 5 મિનિટ.",
+    callout_deploy_test: `<strong>Final test checklist:</strong> Live URL → form fill → submit → Supabase Dashboard → Table Editor → enquiries. Test entry દેખાય = end-to-end working. ✅`,
+    cc_dep1: `/* ─────────────────────────────────────────────\n   1. https://github.com — free account\n   2. + → "New repository"\n   3. Name: my-enquiry-website, Visibility: Public\n   4. "Create repository"\n   5. "uploading an existing file" click\n   6. index.html, responses.html, login.html drag\n   7. "Commit changes"\n\n   Pages enable:\n   8. Settings → Pages → Source: main / (root) → Save\n   9. URL: https://[username].github.io/my-enquiry-website/\n───────────────────────────────────────────── */`,
+    cc_dep2: `/* ─────────────────────────────────────────────\n   Prerequisite: files GitHub પર (steps ઉપર)\n\n   1. https://vercel.com → "Sign up with GitHub"\n   2. "New Project" → Repository "Import"\n   3. Default settings → "Deploy"\n   4. URL: https://my-enquiry-website.vercel.app\n\n   GitHub push = Vercel auto re-deploy. ✓\n───────────────────────────────────────────── */`,
+    adm_th_when: "ક્યારે run", adm_th_does: "શું કરે",
+    adm_row1_does: "JWT read, invalid → login redirect",
+    adm_row2_does: "Rows fetch, editable table render",
+    adm_row3_does: "Row fetch, form fields fill",
+    adm_row4_does: "insert() નવો, update() edit",
+    adm_row5_does: "Confirm, id થી delete()",
+    adm_row6_does: "JWT clear, login redirect",
+
+  },
+
+  hi: {
+    title_how: "Supabase",
+    title_works: "कैसे काम करता है",
+    header_sub: "शुरुआत से लेकर live website तक — Supabase account बनाने से लेकर enquiry form, admin login, और responses page तक का पूरा pipeline, सरल हिन्दी में।",
+    project_label: "Stack:",
+    project_hosting: "Hosting: GitHub Pages / Vercel",
+
+    // ── Section 1 — What is Supabase
+    s1_title: "Supabase क्या है?",
+    s1_desc: "Supabase एक free online service है जो तुम्हारी website को एक database देती है — बिना कोई server खरीदे या server code लिखे। जैसे दुकान का रजिस्टर जहाँ customers का data लिखा जाता है, वैसे ही Supabase तुम्हारी website का online रजिस्टर है।",
+
+    // ── Section 2 — Account / Org / Project Setup
+    s_setup_title: "Account, Organisation और Project बनाओ",
+    s_setup_desc: "Code छूने से पहले Supabase पर account और project बनाओ। इसमें सिर्फ 3 मिनट लगते हैं।",
+    cc_setup1: `/* ─────────────────────────────────────────────\n   1. Browser खोलो → https://supabase.com जाओ\n   2. "Start your project" पर click करो (ऊपर दाएँ)\n   3. "Continue with GitHub" पर click करो\n      (अगर GitHub account नहीं है तो पहले बनाओ — free है)\n   4. Login होते ही Supabase के अंदर हो — हो गया!\n───────────────────────────────────────────── */`,
+    cc_setup2: `/* Organisation एक folder की तरह है जिसमें\n   तुम्हारे projects रहते हैं। इसे अपनी\n   "workspace" समझो।\n\n   1. Login के बाद "New Organisation" पर click करो\n   2. नाम दो — जैसे "MyWebsite"\n   3. Plan: Free choose करो\n   4. "Create Organisation" click करो  ✓ */`,
+    cc_setup3: `/* Project = तुम्हारी website का अपना database space।\n\n   1. Organisation के अंदर "New Project" click करो\n   2. Project Name:  enquiry-website\n   3. Database Password:  strong password सोचो\n                          लिख के रखो — एक बार ही दिखता है!\n   4. Region:  South Asia (Mumbai)  ← India के लिए fast\n   5. "Create new project" click करो\n   6. 1-2 मिनट wait करो — setup हो रहा है  ✓ */`,
+    callout_setup_pw: `<strong>Database Password अभी save करो।</strong> Supabase यह project बनाते वक्त सिर्फ एक बार दिखाता है। किसी safe जगह लिख के रखो — अगर कभी local tool से database connect करना हो तो काम आएगा।`,
+
+    // ── Dashboard Tour
+    s_dash_title: "Dashboard Tour — कहाँ क्या है",
+    s_dash_desc: "Project बनने के बाद Supabase Dashboard खुलेगा। Left sidebar में सब कुछ है।",
+    dash_th_icon: "Section", dash_th_use: "किस काम आता है",
+    dash_te: "Tables को visually देखो (Excel जैसा)। Quick check के लिए अच्छा है।",
+    dash_sql: "SQL commands run करो। यहाँ CREATE TABLE और RLS set होता है। ★ बहुत use होगा",
+    dash_auth: "Users manage करो — यहाँ अपना admin login account बनाओ।",
+    dash_storage: "Images और files upload करो। Buckets (folders) यहाँ बनाओ।",
+    dash_api: "Project URL और anon key मिलती है। ★ बहुत use होगा",
+
+    // ── API Keys
+    s_keys_title: "API Keys लेना",
+    s_keys_desc: "तुम्हारी HTML files को Supabase से बात करने के लिए दो चीजें चाहिए: Project URL (address) और anon key (password)। ये Settings में मिलती हैं।",
+    cc_keys1: `/* KEYS कैसे लें:\n   1. Left sidebar → "Settings" (⚙ gear icon) click करो\n   2. "API" पर click करो\n   3. तुम्हें दो चीजें दिखेंगी — दोनों Notepad में copy करो:\n\n   Project URL:\n     https://xyzabcdef.supabase.co\n     (यह तुम्हारे database का unique address है)\n\n   anon public key:\n     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\n     (यह frontend HTML code में use करना safe है)\n───────────────────────────────────────────── */`,
+    cc_keys2: `// इन दोनों values को हर उस HTML file में\n// paste करना होगा जो Supabase से connect करे।\n// इन्हें सँभाल के रखो।`,
+    callout_keys_warn: `<strong>anon key बनाम service_role key.</strong> HTML files में हमेशा सिर्फ <strong>anon public</strong> key use करो — यह safe है। <strong>service_role</strong> key कभी किसी HTML file में मत डालो; यह सारी security bypass कर देती है और database का पूरा access दे देती है।`,
+
+    // ── Section 3 (SQL) — renamed keys
+    s3sql_title: "SQL Editor से Enquiries Table बनाओ",
+    s3sql_desc: `कोई भी code लिखने से पहले database table बनानी होगी जहाँ enquiry form का data save होगा। Supabase के SQL Editor में जाओ और नीचे दिया SQL run करो।`,
+    cc_db1: `/* ─────────────────────────────────────────────\n   यह table तुम्हारे form का हर submission\n   save करेगी।\n\n   Claude को यह columns बताओ और कहो:\n   "Supabase (PostgreSQL) के लिए\n    CREATE TABLE + RLS SQL generate करो"\n   — Claude पूरा SQL लिख देगा। */`,
+    cc_db2: `// Columns जो हम बनाएँगे:\n//   id         — हर row का unique number (automatic)\n//   naam       — form भरने वाले का नाम\n//   email      — उनका email\n//   phone      — mobile number (optional)\n//   sandesh    — उनका message\n//   created_at — कब submit हुआ (automatic)`,
+    cc_db3: `/* Claude तुम्हारे columns से पूरा SQL generate करेगा।\n   नीचे वाला example enquiries table के लिए है। */`,
+    cc_db4: `/* Row Level Security Enable करो */`,
+    cc_db5: `/* SQL EDITOR कैसे खोलें:\n   1. supabase.com → अपना project खोलो\n   2. Left sidebar → "SQL Editor" click करो\n   3. "New query" click करो\n   4. नीचे का SQL paste करो → ▶ Run दबाओ\n   5. "Success. No rows returned." दिखे → हो गया! */`,
+    cc_db6: `/* Verify करो:\n   Left sidebar → Table Editor → enquiries table\n   खाली table सारे columns के साथ दिखनी चाहिए। */`,
+    cc_db7: `/* यह example attractions table के लिए है */`,
+    cc_db8: `/* यह example contact_submissions table के लिए है */`,
+    cc_db_html1: `/* Claude को form page बनाने का prompt:\n   "मुझे एक plain HTML enquiry form page बनाओ\n    जो Supabase से connect हो।\n    Fields: naam, email, phone (optional), sandesh\n    Submit करने पर enquiries table में insert करे।\n    Supabase URL: [अपनी URL]\n    Supabase anon key: [अपनी key]" */`,
+    cc_db_html2: `// Claude पूरा HTML, form, CSS, और\n// Supabase insert() call एक shot में लिखेगा।\n// URL + key paste करो, काम हो गया।`,
+    callout_db_tip: `<strong>Tip — Claude को exact columns बताओ।</strong> Table बनाते वक्त Claude को columns की list दो और कहो "Supabase (PostgreSQL), CREATE TABLE + RLS generate करो" — Claude सही types, constraints, और policies के साथ SQL लिख देता है।`,
+
+    // ── Section 5 — Client Setup
+    s2_title: "Supabase Client सेट अप करना",
+    s2_desc: `कुछ भी करने से पहले — data पढ़ना, login करना, files upload करना — HTML file में Supabase client बनाना होता है। यह एक बार होता है और सभी pages पर share होता है। <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">window.sb</code> के रूप में हर जगह उपलब्ध रहता है।`,
+    callout_createclient: `<strong>createClient() असल में क्या करता है?</strong> इसे phone call की तरह सोचो। Browser को Supabase से बात करने के लिए "dial in" करना होता है — <em>किस</em> project से connect करना है (URL) और permission है या नहीं (key)। <code>createClient()</code> वह connection बनाता है और <code>sb</code> object return करता है। <code>window.sb</code> पर store करने से यह globally उपलब्ध रहता है — हर page और function बिना दोबारा connect किए use कर सकता है।`,
+    callout_anonkey: `<strong>Anon key बनाम Service key.</strong> Anon key frontend HTML code में रखना safe है — यह सिर्फ Row Level Security द्वारा define की गई permissions देती है। <strong>service_role</strong> key कभी frontend code में मत डालो; यह सारी security bypass कर देती है।`,
+
+    // ── Claude Prompts
+    s_claude_title: "Claude AI से HTML Pages बनवाओ",
+    s_claude_desc: "HTML खुद लिखने की ज़रूरत नहीं! Claude AI को सही prompt दो — वो पूरी file एक shot में लिख देगा।",
+    cc_claude1: `/* यह prompt copy करो, अपनी keys fill करो, Claude को दो: */`,
+    cc_claude2: `/* यह prompt copy करो, अपनी keys fill करो, Claude को दो: */`,
+    callout_claude_tip: `<strong>Tip — जितना detail दोगे, उतना better output मिलेगा।</strong> अगर specific color scheme, font, या layout चाहिए तो prompt में describe करो। अगर कोई हिस्सा गलत हो तो Claude को बताओ: <em>"यह हिस्सा change करो"</em> — वो fix कर देगा। जब तक perfect न लगे refine करते रहो।`,
+
+    // ── Section 7 (Form page — insert)
+    s8_title: "Enquiry Form Page — Data भेजना (INSERT)",
+    s8_desc: "यह वह page है जो users देखेंगे। Form भरेंगे और submit करेंगे — data सीधे Supabase की enquiries table में save हो जाएगा। Login की ज़रूरत नहीं — anon key + public RLS automatically handle करती है।",
+    cc_fe1: `/* &lt;head&gt; में Supabase library load करो */`,
+    cc_fe2: `/* &lt;body&gt; में form है — JS submit handle करेगा */`,
+    cc_fe3: `/* DOMContentLoaded — auth guard की ज़रूरत नहीं (public page) */`,
+    cc_fe4: `// 1. Form का data पढ़ो`,
+    cc_fe5: `// 2. Supabase में insert करो`,
+    cc_fe6: `/* Submit होने पर यह function चलेगा */`,
+    cc_fe7: `// enquiries table में नई row डालो`,
+    cc_fe8: `// success या error message दिखाओ`,
+    cc_fe9: `// naam, email, sandesh — form से लिया हुआ data`,
+    callout_fe_pattern: `<strong>Form page का pattern:</strong> (1) Supabase CDN load करो। (2) <code>createClient()</code> से <code>sb</code> बनाओ। (3) Submit पर <code>sb.from('enquiries').insert({...})</code> call करो। (4) Error check करो — success या failure message दिखाओ। Login की ज़रूरत नहीं।`,
+
+    // ── Section 8 (Read data / View page)
+    s4_title: "Responses देखने का Page — Data पढ़ना (SELECT)",
+    s4_desc: `यह admin का page है। यहाँ सारी enquiries table में दिखती हैं। <code style="font-family:'Fira Code',monospace; color:var(--cyan); font-size:12px;">sb.from()</code> से data fetch होता है — raw SQL लिखने की ज़रूरत नहीं।`,
+    th_method: "Method", th_sql: "SQL equivalent", th_example: "उदाहरण",
+
+    // ── Section 9 — Auth
+    s3_title: "Authentication — Login और Sessions",
+    s3_desc: "Responses page को सुरक्षित करने के लिए Supabase Auth setup करो। सिर्फ login किया हुआ admin ही enquiries देख सके — यह यहाँ set होता है।",
+    flow_admintype: "Admin type करे",
+    flow_admintype_sub: "email + password<br>login form में",
+    flow_signin_sub: "JS credentials<br>Supabase Auth को भेजे",
+    flow_validate: "Supabase जाँचे",
+    flow_validate_sub: "password check करे<br>auth.users table में",
+    flow_jwt: "JWT जारी हो",
+    flow_jwt_sub: "token browser<br>localStorage में save",
+    flow_redirect: "Dashboard redirect",
+    flow_redirect_sub: "session ~60 मिनट<br>active रहे",
+    callout_jwt: `<strong>JWT क्या है?</strong> JWT मतलब <em>JSON Web Token</em> — login के बाद Supabase जो digital ID card देता है। यह एक encoded string है जो कहती है <em>"यह व्यक्ति authenticated है, 60 मिनट में expire।"</em> उसके बाद browser की हर Supabase request automatically JWT के साथ जाती है। Supabase पढ़कर decide करता है: <em>"admin है — write allow।"</em> Valid JWT के बिना Supabase सिर्फ public read देता है। JWT manually handle नहीं करना — client खुद localStorage में store करके attach कर देता है।`,
+
+    // ── Section 10 — RLS
+    s6_title: "Row Level Security (RLS) — Data सुरक्षित करो",
+    s6_desc: "RLS मतलब database पर rule — JS code में नहीं। Anon key किसी को मिल भी जाए, valid admin session के बिना data write नहीं होगा।",
+    callout_rls: `<strong>यह क्यों ज़रूरी है:</strong> Form भरने वाले visitors anon key use करते हैं — सिर्फ data insert कर सकते हैं। Login किया हुआ admin authenticated JWT के साथ आता है — सारी enquiries read कर सकता है। Database यह enforce करता है — JS code सिर्फ messenger है।`,
+
+    // ── Storage
+    s_storage_title: "Storage — File Upload करना",
+    s_storage_desc: "अगर enquiry form में file upload (document या photo) भी चाहिए तो Supabase Storage use करो। एक 'bucket' (folder) बनाओ और files वहाँ upload होंगी।",
+    cc_stor1: `/* ─────────────────────────────────────────────\n   1. Left sidebar → Storage\n   2. "New bucket" click करो\n   3. Bucket name:  enquiry-files\n   4. "Public bucket" toggle ON करो\n      (ताकि uploaded file URLs accessible हों)\n   5. "Create bucket" click करो  ✓\n───────────────────────────────────────────── */`,
+    cc_stor2: `/* पहले table में file_url column add करो: */`,
+    cc_stor3: `/* फिर JS में — file upload करो, URL लो, row के साथ save करो */`,
+    cc_stor4: `// इस URL को enquiry row के साथ save करो`,
+
+    // ── Section 11 — Write Data
+    s5_title: "Data लिखना — Insert, Update, Delete",
+    s5_desc: "Write operations (INSERT / UPDATE / DELETE) तभी काम करती हैं जब user authenticated हो। Supabase की Row Level Security valid admin JWT के बिना किसी भी write attempt को reject कर देती है।",
+
+    // ── Section 12 — Admin Page
+    s9_title: "Admin Page — Enquiries देखो और Manage करो",
+    s9_desc: "Admin page login के बाद खुलता है। यहाँ सारी enquiries दिखती हैं — delete भी कर सकते हो। Auth guard page के top पर होता है — बिना login के कोई यहाँ नहीं आ सकता।",
+    callout_adm_rls: `<strong>RLS JS guard bypass होने पर भी protect करता है।</strong> Valid JWT के बिना <code>insert()</code>, <code>update()</code>, <code>delete()</code> database level पर reject होते हैं। JS guard UX के लिए है; RLS असली security है।`,
+    adm_th_fn: "Function", adm_th_when: "कब run होता है", adm_th_does: "क्या करता है",
+    adm_row1_when: "Page load (पहली line)", adm_row1_does: "JWT पढ़े, invalid → login redirect",
+    adm_row2_when: "Auth guard pass के बाद", adm_row2_does: "Rows fetch करे, editable table render करे",
+    adm_row3_when: "Edit button click", adm_row3_does: "Row fetch करे, form fill करे",
+    adm_row4_when: "Save / form submit", adm_row4_does: "New = insert(), Edit = update()",
+    adm_row5_when: "Delete button click", adm_row5_does: "Confirm करे, id से delete() करे",
+    adm_row6_when: "Logout button click", adm_row6_does: "JWT clear, login page redirect",
+    cc_adm1: `/* Admin account signup page से नहीं बनता।\n   Supabase Dashboard से directly बनाओ:\n   1. Authentication → Users → "Add user"\n   2. Email + Password डालो → "Create user"\n   3. यही email/password admin login credential है।\n   सिर्फ तुम्हारे बनाए users ही login कर सकते हैं। */`,
+    cc_adm2: `/* हर admin page इस pattern से शुरू होता है।\n   check() stored JWT पढ़ता है।\n   Valid session नहीं → तुरंत login redirect। */`,
+    cc_adm3: `// 1. Auth guard — non-admins को रोको`,
+    cc_adm4: `// 2. Header में logged-in admin का email दिखाओ`,
+    cc_adm5: `// 3. Enquiries table load करो`,
+    cc_adm6: `/* सारी enquiries fetch करो → Edit/Delete table render करो */`,
+    cc_adm7: `/* id खाली = INSERT (नई row), id भरा = UPDATE (edit) */`,
+    cc_adm8: `// UPDATE — existing row`,
+    cc_adm9: `// INSERT — नई row`,
+    cc_adm10: `// table refresh`,
+    cc_adm11: `/* Delete confirm — permanent है! बच्चे rows भी delete होंगी। */`,
+    cc_adm12: `// table re-render`,
+
+    // ── Deploy section
+    s_deploy_title: "Website Deploy करो — GitHub Pages या Vercel",
+    s_deploy_desc: "HTML files तैयार हो गईं — अब इन्हें online करो। दोनों options free हैं और 5 मिनट से कम लगते हैं।",
+    cc_dep1: `/* ─────────────────────────────────────────────\n   1. https://github.com जाओ — free account बनाओ\n   2. + → "New repository" click करो\n   3. Repository name: my-enquiry-website\n   4. Visibility: Public\n   5. "Create repository" click करो\n   6. "uploading an existing file" link click करो\n   7. इन files drag करो: index.html, responses.html, login.html\n   8. "Commit changes" click करो\n\n   Pages enable करो:\n   9. Repository → Settings → Pages\n  10. Source: "Deploy from a branch" → main / (root)\n  11. Save click करो\n  12. तुम्हारा URL: https://[username].github.io/my-enquiry-website/\n───────────────────────────────────────────── */`,
+    cc_dep2: `/* ─────────────────────────────────────────────\n   Prerequisite: files पहले GitHub पर हों (ऊपर steps 1-8)\n\n   1. https://vercel.com जाओ\n   2. "Sign up with GitHub" click करो\n   3. "New Project" click करो\n   4. अपनी repository के सामने "Import" click करो\n   5. सब settings default रहने दो\n   6. "Deploy" click करो\n   7. हो गया — URL: https://my-enquiry-website.vercel.app\n\n   GitHub पर हर बार change push करो तो\n   Vercel automatically re-deploy करेगा। ✓\n───────────────────────────────────────────── */`,
+    callout_deploy_test: `<strong>Final test checklist:</strong> Live URL खोलो → form fill करो → submit करो → Supabase Dashboard खोलो → Table Editor → enquiries table। तुम्हारी test entry वहाँ दिखनी चाहिए। दिखे तो सब end-to-end काम कर रहा है। ✅`,
+
+    // ── Quick Reference
+    sr_title: "Quick Reference — सबसे ज़्यादा इस्तेमाल होने वाले Calls",
+    sr_col1: "तुम क्या करना चाहते हो", sr_col2: "Call",
+    sr_login: "Login करना", sr_checksession: "Session जाँचना", sr_logout: "Logout करना",
+    sr_readall: "सभी rows पढ़ना", sr_filter: "Rows filter करना", sr_count: "Rows count करना",
+    sr_insert: "Row जोड़ना", sr_update: "Row update करना", sr_delete: "Row delete करना",
+    footer_text: "Supabase Guide · HTML + Vanilla JS · GitHub Pages / Vercel",
+
+    // ── code block comments
+    callout_await: `<strong>हमेशा await + destructure करो।</strong> हर Supabase call async है। हमेशा <code style="font-family:'Fira Code',monospace; font-size:12px;">await</code> करो और <code style="font-family:'Fira Code',monospace; font-size:12px;">{ data, error }</code> destructure करो। <code style="font-family:'Fira Code',monospace; font-size:12px;">data</code> use करने से पहले <code style="font-family:'Fira Code',monospace; font-size:12px;">error</code> जाँचो — query fail हो तो data null होगा।`,
+    cc_1: `/* तुम्हारे लिए host किया हुआ real SQL database.\n   Tables: enquiries, users, आदि।\n   किसी भी SQL database की तरह query करो। */`,
+    cc_2: `/* login / logout / sessions handle करता है.\n   Admin email + password से login करे.\n   Supabase JWT token जारी करता है जो\n   user की पहचान साबित करता है। */`,
+    cc_3: `/* images और files के लिए file storage.\n   Buckets (folders) बनाओ, files upload करो।\n   Public URL मिलती है जो img src में लगाओ। */`,
+    cc_4: `/* Supabase हर table के लिए REST API\n   auto-generate करता है। JS client wrap करता है\n   ताकि कभी raw HTTP requests न लिखनी पड़े\n   — बस method calls। */`,
+    cc_5: `/* ─────────────────────────────────────────────────────\n   STEP 1: Supabase JS library load करो (CDN से)।\n   यह global supabase object देता है।\n   हर HTML page के &lt;head&gt; में यह होना चाहिए:\n───────────────────────────────────────────────────── */`,
+    cc_6: `// &lt;script src="https://unpkg.com/@supabase/supabase-js@2"&gt;&lt;/script&gt;`,
+    cc_7: `/* ─────────────────────────────────────────────────────\n   STEP 2: Project credentials।\n   URL  — तुम्हारे Supabase project का unique address।\n   KEY  — "anon" (public) key। Frontend में रखना safe।\n          सिर्फ RLS policies जो allow करें वही permit।\n───────────────────────────────────────────────────── */`,
+    cc_8: `/* ─────────────────────────────────────────────────────\n   STEP 3: Client बनाओ।\n   createClient Supabase project से connect करता है।\n   window.sb पर store करो ताकि हर page\n   नया connection बनाए बिना use कर सके।\n───────────────────────────────────────────────────── */`,
+    cc_9: `/* ─────────────────────────────────────────────────────\n   इस line के बाद sb हर जगह उपलब्ध।\n   Use: sb.from('table'), sb.auth.signIn(), etc.\n───────────────────────────────────────────────────── */`,
+    cc_10: `/* signInWithPassword main login function है।\n   { email, password } लेता है और return करता है:\n   - data.session  → active session object\n   - error         → login सफल हो तो null, वरना error */`,
+    cc_11: `// Login असफल — user को error message दिखाओ`,
+    cc_12: `// Login सफल — responses page पर redirect करो\n  // JWT token अब localStorage में automatically store`,
+    cc_13: `/* check() हर admin page की शुरुआत में run।\n   Store JWT पढ़ता है और valid है या नहीं जाँचता है।\n   Valid session न हो → user को login page भेजो। */`,
+    cc_14: `// getSession localStorage से JWT पढ़ता है\n  // और current session (या null) return करता है`,
+    cc_15: `// Session नहीं — login page वापस`,
+    cc_16: `// Session valid — return करो ताकि page\n  // admin की email / user ID पढ़ सके`,
+    cc_17: `/* हर admin page DOMContentLoaded पर यह call करता है: */`,
+    cc_18: `// guard पहले fire`,
+    cc_19: `// logged in न हो तो stop`,
+    cc_20: `// अब page content load करना safe है`,
+    cc_21: `/* Logout — sign out और login redirect */`,
+    cc_22: `// localStorage से JWT clear`,
+    cc_23: `/* sb.from('enquiries')  →  'enquiries' table target\n   .select('*')           →  सभी columns\n   .order('created_at', { ascending: false })  →  नया पहले\n\n   Returns: { data: [...rows], error: null or Error } */`,
+    cc_24: `// कौनसी table?`,
+    cc_25: `// कौनसे columns? * = सभी`,
+    cc_26: `// created_at से sort — नया पहले`,
+    cc_27: `// data = [{ id:1, naam:'Rahul', email:'...', sandesh:'...' }, ...]`,
+    cc_28: `/* .eq('column', value) SQL WHERE column = value जैसा।\n   ascending:false = ORDER BY DESC।\n   * की बजाय specific columns select करो — fast रहता है। */`,
+    cc_29: `// WHERE state_id = 1`,
+    cc_30: `// AND is_must_visit = true`,
+    cc_31: `// सबसे ज़्यादा score पहले`,
+    cc_32: `// अधिकतम 10 results`,
+    cc_33: `/* सिर्फ COUNT चाहिए (actual rows नहीं) तो\n   select() को { count: 'exact', head: true } pass करो।\n   head:true = row data return मत करो, बस count।\n   बहुत fast होता है। */`,
+    cc_34: `// count = 5  (कोई row data transfer नहीं)`,
+    cc_35: `/* .insert(payload) नई row जोड़ता है।\n   payload plain JS object — keys column names match।\n   { error } return — success/failure error जाँचो। */`,
+    cc_36: `// नाम, email, sandesh form से लिया हुआ`,
+    cc_37: `/* .update(payload) सिर्फ provide किए fields बदलता है।\n   .eq('id', id) primary key से exact row target।\n   filter chain ज़रूरी — न हो तो सभी rows update! */`,
+    cc_38: `// ← सिर्फ id = 12 वाली row update`,
+    cc_39: `/* .delete() matching row permanently delete।\n   .eq() से specific row target ज़रूरी। */`,
+    cc_40: `// ← सिर्फ id = 12 वाली row delete`,
+    cc_41: `/* SQL Editor में इन policies को run करो:\n\n   ┌──────────────────┬────────────────────────────────────┐\n   │  Operation       │  कौन कर सकता है?                   │\n   ├──────────────────┼────────────────────────────────────┤\n   │  SELECT (read)   │  सिर्फ authenticated admin          │\n   │                  │  (responses page login के बाद)      │\n   ├──────────────────┼────────────────────────────────────┤\n   │  INSERT          │  कोई भी — anon key allowed          │\n   │                  │  (public form submit के लिए)        │\n   └──────────────────┴────────────────────────────────────┘\n\n   Public insert policy:\n   CREATE POLICY "public_insert" ON enquiries\n     FOR INSERT WITH CHECK (true);    ← कोई भी insert\n\n   Admin read policy:\n   CREATE POLICY "admin_read" ON enquiries\n     FOR SELECT USING (auth.role() = 'authenticated');\n                       ↑ सिर्फ Supabase Auth login */`,
+    cc_42: `/* तुम्हारा JS code: */`,
+    cc_43: `/* ↓  यह HTTPS request में translate होता है: */`,
+    cc_44: `// Method: GET\n// URL:    https://xyzabc.supabase.co/rest/v1/enquiries\n//\n// Client auto-send headers:\n//   apikey:        &lt;anon key&gt;            ← project identify\n//   Authorization: Bearer &lt;JWT token&gt;   ← user identity prove\n//   Content-Type:  application/json\n//\n// Supabase RLS जाँचे → JSON rows return\n// Client JSON parse → { data: [...], error: null } मिले`,
+
+    // ── Keys missing from original HI ──
+    adm_th_when: "कब run होता है", adm_th_does: "क्या करता है",
+    adm_row1_does: "JWT पढ़े, invalid → login redirect",
+    adm_row2_does: "Rows fetch करे, editable table render करे",
+    adm_row3_does: "Row fetch करे, form fill करे",
+    adm_row4_does: "New = insert(), Edit = update()",
+    adm_row5_does: "Confirm करे, id से delete() करे",
+    adm_row6_does: "JWT clear, login page redirect",
+    dash_th_use: "किस काम आता है",
+    th_sql: "SQL Equivalent", th_example: "Example",
+    sr_col2: "Call",
+    sr_checksession: "Session जाँचना", sr_logout: "Logout करना",
+    sr_filter: "Rows filter करना", sr_count: "Rows count करना",
+    sr_update: "Row update करना", sr_delete: "Row delete करना",
+
+  }
+};
+
+// ── SWITCHER ──────────────────────────────────────────────────────────────────
+function setLang(lang) {
+  const t = translations[lang];
+  if (!t) return;
+
+  // Update all data-i18n elements — fall back to EN for any key missing in target lang
+  const fallback = translations['en'];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) {
+      el.innerHTML = t[key];
+    } else if (fallback && fallback[key] !== undefined) {
+      el.innerHTML = fallback[key];
+    }
+  });
+
+  // Update active button
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const map = { en: 0, gu: 1, hi: 2 };
+  document.querySelectorAll('.lang-btn')[map[lang]].classList.add('active');
+
+  // Update page title
+  if (lang === 'en') document.title = 'Supabase — How It Works';
+  else if (lang === 'gu') document.title = 'Supabase — કેવી રીતે કામ કરે';
+  else if (lang === 'hi') document.title = 'Supabase — कैसे काम करता है';
+}
+document.addEventListener('DOMContentLoaded', () => setLang('en'));
+</script>
+</body>
+</html>
