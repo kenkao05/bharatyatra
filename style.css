@@ -447,13 +447,30 @@ body.no-scroll { overflow: hidden; }
 }
 
 #india-map path {
-    fill: #7e5b5b;
+    fill: #a44b2a;
     transition: fill 0.2s ease, opacity 0.2s ease;
 }
 
+/* Active states — these pages are live */
+#india-map path#INAS,
+#india-map path#INGJ,
+#india-map path#INKL,
+#india-map path#INRJ,
+#india-map path#INUT {
+    fill: #ff6b35;
+}
+
 #india-map path:hover {
-    fill: #C0392B;
+    fill: #9e9e9e;
     opacity: 1 !important;
+}
+
+#india-map path#INAS:hover,
+#india-map path#INGJ:hover,
+#india-map path#INKL:hover,
+#india-map path#INRJ:hover,
+#india-map path#INUT:hover {
+    fill: #9e9e9e;
 }
 
 .map-hint {
