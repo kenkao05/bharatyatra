@@ -447,7 +447,7 @@ body.no-scroll { overflow: hidden; }
 }
 
 #india-map path {
-    fill: #a44b2a;
+    fill: #7e5b5b;
     transition: fill 0.2s ease, opacity 0.2s ease;
 }
 
@@ -457,11 +457,11 @@ body.no-scroll { overflow: hidden; }
 #india-map path#INKL,
 #india-map path#INRJ,
 #india-map path#INUT {
-    fill: #ff6b35;
+    fill: #af6e57;
 }
 
 #india-map path:hover {
-    fill: #9e9e9e;
+    fill: #ff6b35;
     opacity: 1 !important;
 }
 
@@ -470,7 +470,7 @@ body.no-scroll { overflow: hidden; }
 #india-map path#INKL:hover,
 #india-map path#INRJ:hover,
 #india-map path#INUT:hover {
-    fill: #9e9e9e;
+    fill: #ff6b35;
 }
 
 .map-hint {
