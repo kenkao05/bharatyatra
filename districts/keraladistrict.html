@@ -1770,12 +1770,15 @@
     };
 
     function fixImg(url, id) {
+      // Prefer Supabase image_url; fall back to hardcoded Unsplash only when missing
+      if (url && /^https?:\/\//i.test(url)) return url;
       if (id !== undefined && ATTRACTION_IMAGES[id]) return ATTRACTION_IMAGES[id];
-      return url;
+      return url || '';
     }
 
     function fixDistrictImg(name, url) {
-      return DISTRICT_IMAGES[name] || url;
+      // Prefer Supabase image_url if set; fall back to hardcoded Unsplash only when missing
+      return (url && /^https?:\/\//i.test(url)) ? url : (DISTRICT_IMAGES[name] || '');
     }
 
     // ==================== SIDEBAR FUNCTIONALITY ====================
@@ -1900,7 +1903,7 @@
         const card = document.createElement('div');
         card.className = 'district-card';
         card.innerHTML = `
-          <img src="${escHTML(fixDistrictImg(district.name, district.image_url) || 'https://via.placeholder.com/400x220')}"
+          <img src="${escHTML(fixDistrictImg(district.name, district.image_url))}"
                alt="${escHTML(district.name)}"
                class="district-card-image">
           <div class="district-card-content">
@@ -2158,9 +2161,9 @@
 
       const attractionCards = district.attractions && district.attractions.length > 0
         ? district.attractions.map(attraction => {
-            const thumb = attraction.image_url && attraction.image_url.startsWith('https://')
+            const thumb = fixImg(attraction.image_url, attraction.id)
               ? `<div class="atm-thumb-wrap">
-                   <img src="${attraction.image_url}" alt="${attraction.name}" class="atm-thumb">
+                   <img src="${escHTML(fixImg(attraction.image_url, attraction.id))}" alt="${escHTML(attraction.name)}" class="atm-thumb">
                    <div class="atm-hover-cta">Explore →</div>
                  </div>`
               : `<div class="atm-no-img"><i class="fas fa-mountain"></i></div>`;
@@ -2176,7 +2179,7 @@
 
       const modalContent = `
         <div class="modal-hero">
-          <img src="${district.image_url || ''}" alt="${district.name}" class="modal-image">
+          <img src="${escHTML(fixDistrictImg(district.name, district.image_url))}" alt="${escHTML(district.name)}" class="modal-image">
           <div class="modal-hero-title">
             <div class="modal-hero-eyebrow">Kerala District</div>
             <h2>${district.name}</h2>
@@ -2245,7 +2248,7 @@
 
       const modalContent = `
         <div class="modal-hero">
-          <img src="${attraction.image_url || ''}" alt="${attraction.name}" class="modal-image">
+          <img src="${escHTML(fixImg(attraction.image_url, attraction.id))}" alt="${escHTML(attraction.name)}" class="modal-image">
           <div class="modal-hero-title">
             <div class="modal-hero-eyebrow">${currentDistrict.name} · Kerala</div>
             <h2>${attraction.name}</h2>
