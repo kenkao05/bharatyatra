@@ -149,6 +149,129 @@
       color: #ff6b35;
     }
 
+    /* ==================== NAV DROPDOWN ==================== */
+    .nav-links li {
+      position: relative;
+    }
+
+    .nav-links li.has-dropdown > a {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .nav-links li.has-dropdown > a::after {
+      display: none; /* hide the underline pseudo-element for dropdown parents */
+    }
+
+    .nav-dropdown-arrow {
+      font-size: 0.6rem;
+      transition: transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .nav-links li.has-dropdown:hover .nav-dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    .nav-dropdown {
+      position: absolute;
+      top: calc(100% + 14px);
+      left: 50%;
+      transform: translateX(-50%);
+      /* ↓ DROPDOWN BACKGROUND — change line 183 (kerala.html) to adjust colour/opacity */
+      background: rgba(30, 30, 30, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      min-width: 180px;
+      padding: 8px 0;
+      list-style: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-50%) translateY(-6px);
+      transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+      z-index: 1100;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+    .nav-links li.has-dropdown:hover .nav-dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .nav-dropdown a {
+      display: block;
+      padding: 9px 20px;
+      color: #cccccc !important;
+      font-size: 0.9rem !important;
+      font-weight: 400;
+      white-space: nowrap;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .nav-dropdown a::after {
+      display: none !important;
+    }
+
+    .nav-dropdown a:hover {
+      color: #ff6b35 !important;
+      background: rgba(255, 107, 53, 0.07);
+    }
+
+    .nav-dropdown a.active-state {
+      color: #ff6b35 !important;
+      font-weight: 600;
+    }
+
+    /* ==================== SIDEBAR DROPDOWN (mobile) ==================== */
+    .sidebar-dropdown-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .sidebar-dropdown-toggle .sidebar-arrow {
+      font-size: 0.6rem;
+      transition: transform 0.3s ease;
+      color: #555;
+    }
+
+    .sidebar-dropdown-toggle.open .sidebar-arrow {
+      transform: rotate(180deg);
+    }
+
+    .sidebar-sub {
+      list-style: none;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      padding-left: 34px;
+    }
+
+    .sidebar-sub.open {
+      max-height: 300px;
+    }
+
+    .sidebar-sub li a {
+      font-size: 13px !important;
+      color: #888 !important;
+      padding: 7px 0 !important;
+      border-bottom: none !important;
+    }
+
+    .sidebar-sub li a:hover {
+      color: #ff6b35 !important;
+    }
+
+    .sidebar-sub li a.active-state {
+      color: #ff6b35 !important;
+      font-weight: 600;
+    }
 
     /* ==================== LOADER — CREAM SUNRISE ==================== */
     #loader {
@@ -1832,7 +1955,26 @@
       <a href="../index.html" class="logo">BharatYatra</a>
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
-        <li><a href="../districts/keraladistrict.html">Districts</a></li>
+        <li class="has-dropdown">
+          <a href="#">States <i class="fas fa-chevron-down nav-dropdown-arrow"></i></a>
+          <ul class="nav-dropdown">
+            <li><a href="../states/assam.html">Assam</a></li>
+            <li><a href="../states/gujarat.html">Gujarat</a></li>
+            <li><a href="../states/kerala.html" class="active-state">Kerala</a></li>
+            <li><a href="../states/rajasthan.html">Rajasthan</a></li>
+            <li><a href="../states/uttarakhand.html">Uttarakhand</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="#">Districts <i class="fas fa-chevron-down nav-dropdown-arrow"></i></a>
+          <ul class="nav-dropdown">
+            <li><a href="../districts/assamdistrict.html">Assam</a></li>
+            <li><a href="../districts/gujaratdistrict.html">Gujarat</a></li>
+            <li><a href="../districts/keraladistrict.html">Kerala</a></li>
+            <li><a href="../districts/rajasthandistrict.html">Rajasthan</a></li>
+            <li><a href="../districts/uttarakhanddistrict.html">Uttarakhand</a></li>
+          </ul>
+        </li>
         <li><a href="../experiences.html">Experiences</a></li>
       </ul>
       <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
@@ -1846,7 +1988,33 @@
     <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
     <p class="sidebar-tagline">Discover Incredible India</p>
     <ul class="sidebar-links">
-        <li><a href="../portals.html"><i class="fa-solid fa-archway"></i> Portals</a></li>
+      <li>
+        <a class="sidebar-dropdown-toggle" id="sidebar-states-toggle">
+          <span><i class="fas fa-map" style="color:#ff6b35;width:20px;"></i> States</span>
+          <i class="fas fa-chevron-down sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-sub" id="sidebar-states-sub">
+          <li><a href="../states/assam.html">Assam</a></li>
+          <li><a href="../states/gujarat.html">Gujarat</a></li>
+          <li><a href="../states/kerala.html" class="active-state">Kerala</a></li>
+          <li><a href="../states/rajasthan.html">Rajasthan</a></li>
+          <li><a href="../states/uttarakhand.html">Uttarakhand</a></li>
+        </ul>
+      </li>
+      <li>
+        <a class="sidebar-dropdown-toggle" id="sidebar-districts-toggle">
+          <span><i class="fas fa-map-marked-alt" style="color:#ff6b35;width:20px;"></i> Districts</span>
+          <i class="fas fa-chevron-down sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-sub" id="sidebar-districts-sub">
+          <li><a href="../districts/assamdistrict.html">Assam</a></li>
+          <li><a href="../districts/gujaratdistrict.html">Gujarat</a></li>
+          <li><a href="../districts/keraladistrict.html">Kerala</a></li>
+          <li><a href="../districts/rajasthandistrict.html">Rajasthan</a></li>
+          <li><a href="../districts/uttarakhanddistrict.html">Uttarakhand</a></li>
+        </ul>
+      </li>
+      <li><a href="../portals.html"><i class="fa-solid fa-archway"></i> Portals</a></li>
       <li><a href="../experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
       <li><a href="../travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
       <li><a href="../colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
@@ -1881,7 +2049,7 @@
 
         <!-- PANEL 1: VIDEO -->
         <div class="panel video-panel">
-          <video id="heroVideo" autoplay muted loop playsinline>
+          <video id="heroVideo" autoplay loop playsinline>
             <source src="../styling/stateimages/kerala-intro.mp4" type="video/mp4">
           </video>
           <div class="video-overlay">
@@ -1889,7 +2057,7 @@
             <div class="video-tagline">God's Own Country</div>
           </div>
           <button class="mute-btn" id="muteBtn">
-            <i class="fas fa-volume-mute"></i>
+            <i class="fas fa-volume-up"></i>
           </button>
         </div>
 
@@ -2079,6 +2247,19 @@
     closeBtn.addEventListener('click', closeSidebar);
     overlay.addEventListener('click', closeSidebar);
 
+    // Sidebar dropdown toggles
+    ['states', 'districts'].forEach(key => {
+      const toggle = document.getElementById(`sidebar-${key}-toggle`);
+      const sub = document.getElementById(`sidebar-${key}-sub`);
+      if (toggle && sub) {
+        toggle.addEventListener('click', () => {
+          const isOpen = sub.classList.contains('open');
+          toggle.classList.toggle('open', !isOpen);
+          sub.classList.toggle('open', !isOpen);
+        });
+      }
+    });
+
     document.querySelectorAll('.modal').forEach(m => {
       m.addEventListener('click', (e) => {
         if (e.target === m) closeModal(m.id);
@@ -2096,7 +2277,7 @@
     // ==================== MUTE/UNMUTE VIDEO ====================
     const video = document.getElementById('heroVideo');
     const muteBtn = document.getElementById('muteBtn');
-    let isMuted = true;
+    let isMuted = false;
 
     muteBtn.addEventListener('click', () => {
       isMuted = !isMuted;
@@ -2168,15 +2349,12 @@
     };
 
     function fixImg(url, id) {
-      // Prefer Supabase image_url; fall back to hardcoded Unsplash only when missing
-      if (url && /^https?:\/\//i.test(url)) return url;
       if (id !== undefined && ATTRACTION_IMAGES[id]) return ATTRACTION_IMAGES[id];
-      return url || '';
+      return url;
     }
 
     function fixDistrictImg(name, url) {
-      // Prefer Supabase image_url if set; fall back to hardcoded Unsplash only when missing
-      return (url && /^https?:\/\//i.test(url)) ? url : (DISTRICT_IMAGES[name] || '');
+      return DISTRICT_IMAGES[name] || url;
     }
 
     // ==================== LOAD ATTRACTIONS ====================
@@ -2317,7 +2495,7 @@
     function openDistrictModal(districtId) {
       const district = window.districtsData && window.districtsData.find(d => d.id === districtId);
       if (!district) return;
-      const safeImg = fixDistrictImg(district.name, district.image_url);
+      const safeImg = (district.image_url && /^https?:\/\//i.test(district.image_url)) ? district.image_url : '';
       document.getElementById('districtModalImg').src = safeImg;
       document.getElementById('districtModalImg').alt = district.name || '';
       document.getElementById('districtModalName').textContent = district.name || '';
