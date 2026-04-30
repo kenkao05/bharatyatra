@@ -2349,12 +2349,13 @@
     };
 
     function fixImg(url, id) {
+      if (url && /^https?:\/\//i.test(url)) return url;
       if (id !== undefined && ATTRACTION_IMAGES[id]) return ATTRACTION_IMAGES[id];
-      return url;
+      return url || '';
     }
 
     function fixDistrictImg(name, url) {
-      return DISTRICT_IMAGES[name] || url;
+      return (url && /^https?:\/\//i.test(url)) ? url : (DISTRICT_IMAGES[name] || '');
     }
 
     // ==================== LOAD ATTRACTIONS ====================
@@ -2495,7 +2496,7 @@
     function openDistrictModal(districtId) {
       const district = window.districtsData && window.districtsData.find(d => d.id === districtId);
       if (!district) return;
-      const safeImg = (district.image_url && /^https?:\/\//i.test(district.image_url)) ? district.image_url : '';
+      const safeImg = fixDistrictImg(district.name, district.image_url);
       document.getElementById('districtModalImg').src = safeImg;
       document.getElementById('districtModalImg').alt = district.name || '';
       document.getElementById('districtModalName').textContent = district.name || '';
