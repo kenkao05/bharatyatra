@@ -2854,6 +2854,16 @@
         loader.classList.add('exiting');
         setTimeout(() => { loader.style.display = 'none'; }, 900);
       }
+      // Attempt to play video; browsers may block unmuted autoplay so fall back to muted
+      const vid = document.getElementById('heroVideo');
+      if (vid) {
+        vid.play().catch(() => {
+          vid.muted = true;
+          isMuted = true;
+          muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+          vid.play().catch(() => {});
+        });
+      }
     }
 
     setTimeout(() => {
