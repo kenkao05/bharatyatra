@@ -299,6 +299,48 @@ body.no-scroll { overflow: hidden; }
     padding-left: 6px;
 }
 
+/* ── SIDEBAR DROPDOWN (States / Districts) ── */
+.sidebar-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  cursor: pointer;
+}
+
+.sidebar-dropdown-toggle .sidebar-arrow {
+  font-size: 0.6rem;
+  transition: transform 0.3s ease;
+  color: #555;
+}
+
+.sidebar-dropdown-toggle.open .sidebar-arrow {
+  transform: rotate(180deg);
+}
+
+.sidebar-sub {
+  list-style: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding-left: 34px;
+}
+
+.sidebar-sub.open {
+  max-height: 300px;
+}
+
+.sidebar-sub li a {
+  font-size: 13px !important;
+  color: #888 !important;
+  padding: 7px 0 !important;
+  border-bottom: none !important;
+}
+
+.sidebar-sub li a:hover {
+  color: #ff6b35 !important;
+}
+
 .sidebar-section-label {
     font-family: 'Poppins', sans-serif;
     font-size: 10px;

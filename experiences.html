@@ -177,6 +177,49 @@
     .sidebar-links li a { display: flex; align-items: center; gap: 14px; padding: 12px 0; color: #cccccc; text-decoration: none; font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 400; letter-spacing: 0.5px; border-bottom: 1px solid #111; transition: color 0.25s, padding-left 0.25s; }
     .sidebar-links li a i { font-size: 16px; width: 20px; color: var(--red); flex-shrink: 0; }
     .sidebar-links li a:hover { color: var(--white); padding-left: 6px; }
+
+/* ── SIDEBAR DROPDOWN (States / Districts) ── */
+.sidebar-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  cursor: pointer;
+}
+
+.sidebar-dropdown-toggle .sidebar-arrow {
+  font-size: 0.6rem;
+  transition: transform 0.3s ease;
+  color: #555;
+}
+
+.sidebar-dropdown-toggle.open .sidebar-arrow {
+  transform: rotate(180deg);
+}
+
+.sidebar-sub {
+  list-style: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding-left: 34px;
+}
+
+.sidebar-sub.open {
+  max-height: 300px;
+}
+
+.sidebar-sub li a {
+  font-size: 13px !important;
+  color: #888 !important;
+  padding: 7px 0 !important;
+  border-bottom: none !important;
+}
+
+.sidebar-sub li a:hover {
+  color: #ff6b35 !important;
+}
+
     .sidebar-section-label { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #444; margin-top: 28px; margin-bottom: 8px; padding-top: 24px; border-top: 1px solid #1a1a1a; }
     .sidebar-login-btn { display: flex; align-items: center; gap: 10px; margin-top: 32px; padding: 11px 18px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-decoration: none; color: #ff6b35; border: 1px solid #ff6b35; transition: background 0.25s, color 0.25s; }
     .sidebar-login-btn i { font-size: 13px; }
@@ -813,6 +856,32 @@
     <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
     <p class="sidebar-tagline">Discover Incredible India</p>
     <ul class="sidebar-links">
+        <li>
+          <a class="sidebar-dropdown-toggle" id="sidebar-states-toggle">
+            <span><i class="fas fa-map" style="color:#ff6b35;width:20px;"></i> States</span>
+            <i class="fas fa-chevron-down sidebar-arrow"></i>
+          </a>
+          <ul class="sidebar-sub" id="sidebar-states-sub">
+            <li><a href="states/assam.html">Assam</a></li>
+            <li><a href="states/gujarat.html">Gujarat</a></li>
+            <li><a href="states/kerala.html">Kerala</a></li>
+            <li><a href="states/rajasthan.html">Rajasthan</a></li>
+            <li><a href="states/uttarakhand.html">Uttarakhand</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="sidebar-dropdown-toggle" id="sidebar-districts-toggle">
+            <span><i class="fas fa-map-marked-alt" style="color:#ff6b35;width:20px;"></i> Districts</span>
+            <i class="fas fa-chevron-down sidebar-arrow"></i>
+          </a>
+          <ul class="sidebar-sub" id="sidebar-districts-sub">
+            <li><a href="districts/assamdistrict.html">Assam</a></li>
+            <li><a href="districts/gujaratdistrict.html">Gujarat</a></li>
+            <li><a href="districts/keraladistrict.html">Kerala</a></li>
+            <li><a href="districts/rajasthandistrict.html">Rajasthan</a></li>
+            <li><a href="districts/uttarakhanddistrict.html">Uttarakhand</a></li>
+          </ul>
+        </li>
         <li><a href="portals.html"><i class="fa-solid fa-archway"></i> Portals</a></li>
         <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
         <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
@@ -1103,6 +1172,19 @@ document.addEventListener('keydown', e => {
     if (modalOpen) closeModal();
     else closeSidebar();
 });
+
+// ── SIDEBAR DROPDOWN TOGGLES (States / Districts) ──
+['states', 'districts'].forEach(key => {
+  const toggle = document.getElementById(`sidebar-${key}-toggle`);
+  const sub    = document.getElementById(`sidebar-${key}-sub`);
+  if (toggle && sub) {
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      sub.classList.toggle('open');
+    });
+  }
+});
+
 
 /* ═══════════════════════════════════════════
    TYPE BUTTONS
