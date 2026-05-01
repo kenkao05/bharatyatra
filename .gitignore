@@ -1,0 +1,22 @@
+# Node
+node_modules/
+package-lock.json
+
+# Supabase CLI binary and archive
+supabase_linux_amd64.tar.gz
+
+# Supabase temp files (local state, not needed in repo)
+supabase/.temp/
+
+# VS Code
+.vscode/
+
+# Scripts with secrets (sync script used your service key)
+scripts/
+
+# Tutorial/scratch files
+supabasetutorial.html
+
+# OS
+.DS_Store
+Thumbs.db

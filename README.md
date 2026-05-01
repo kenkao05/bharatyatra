@@ -1,158 +1,177 @@
-# 🇮🇳 BharatYatra
+# Supabase CLI
 
-> A full-stack travel-discovery platform for India — built by students of Gujarat Technological University, Ahmedabad.
+[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=develop)](https://coveralls.io/github/supabase/cli?branch=develop) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
+](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-bharatyatra--lake.vercel.app-brightgreen?style=flat-square&logo=vercel)](https://bharatyatra-lake.vercel.app/)
-![Made with Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=flat-square&logo=supabase)
-![Deployed on Vercel](https://img.shields.io/badge/Hosted-Vercel-black?style=flat-square&logo=vercel)
-![Course](https://img.shields.io/badge/Course-Design%20Engineering%20II--B-blue?style=flat-square)
+[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
 
----
+This repository contains all the functionality for Supabase CLI.
 
-## 📖 Overview
+- [x] Running Supabase locally
+- [x] Managing database migrations
+- [x] Creating and deploying Supabase Functions
+- [x] Generating types directly from your database schema
+- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
 
-BharatYatra lets travellers explore five Indian states — **Gujarat, Rajasthan, Kerala, Uttarakhand, and Assam** — through a data-driven public website. Users can browse curated attractions and accommodations, plan day-by-day itineraries with budget tiers, find nearby hospitals for medical tourism, discover cultural events, and submit feedback.
+## Getting started
 
-A secure **admin panel** allows the team to manage all content directly from the browser.
+### Install the CLI
 
----
-
-## ✨ Features
-
-| Feature                      | Description                                                             |
-| ---------------------------- | ----------------------------------------------------------------------- |
-| 🗺️ Interactive India Map     | SVG map on homepage with clickable state navigation                     |
-| 🏛️ State & District Explorer | Attractions, accommodations, and district breakdowns for 5 states       |
-| 📅 Itinerary Planner         | Day-by-day plans based on state, duration, and budget — with PDF export |
-| 🎨 Events Browser            | Cultural events filterable by state and category                        |
-| 🏥 Hospital Finder           | Medical tourism — filter hospitals by state and type                    |
-| 🔗 Tourism Portals Hub       | Curated links to 37 official state tourism portals                      |
-| 📬 Contact Form              | Public feedback form with admin-controlled on/off toggle                |
-| 🔒 Admin Panel               | Auth-gated CRUD for all content, image manager, and submissions viewer  |
-
----
-
-## 🛠️ Tech Stack
-
-| Layer             | Technology                                               |
-| ----------------- | -------------------------------------------------------- |
-| **Frontend**      | HTML5, CSS3, Vanilla JS (ES2022)                         |
-| **Animation**     | GSAP 3.12.2 + ScrollTrigger                              |
-| **PDF Export**    | jsPDF 2.5                                                |
-| **Icons / Fonts** | Font Awesome 6, Google Fonts (Playfair Display, Poppins) |
-| **Database**      | Supabase (PostgreSQL)                                    |
-| **Auth**          | Supabase Auth (email/password + custom JWT claim)        |
-| **Storage**       | Supabase Storage (`bharatyatra-images` bucket)           |
-| **Hosting**       | Vercel (static + serverless functions)                   |
-
----
-
-## 🗄️ Database Schema (Overview)
-
-The Supabase project contains **7 tables**:
-
-| Table                 | Purpose                                                                   |
-| --------------------- | ------------------------------------------------------------------------- |
-| `states`              | The 5 featured states with descriptions, taglines, and best-time-to-visit |
-| `districts`           | Districts per state, linked via `state_id` FK                             |
-| `attractions`         | Tourist spots with type, priority score, images, and featured flags       |
-| `accommodations`      | Hotels/stays linked to attractions, with budget tier classification       |
-| `hospitals`           | Medical tourism listings with state, type, and rating                     |
-| `events`              | Cultural events with date range, category, featured/recurring flags       |
-| `contact_submissions` | Public form submissions; admin-only readable                              |
-| `site_settings`       | Key-value config (e.g., `submissions_enabled` toggle)                     |
-
-Row-Level Security (RLS) is enabled on all tables. Public users have `SELECT` only; write access requires an authenticated session with `is_admin: true` in the JWT.
-
----
-
-## 🔐 Admin Panel
-
-The admin panel lives at `/admin/` and is protected by a 15-layer security module (`admin-auth.js`), including:
-
-- Session validation on every page load and visibility change
-- Inactivity auto-logout
-- JWT `is_admin` claim verification
-- Login rate limiting and account lockout
-
-### Admin Pages
-
-| Page                   | Function                                                             |
-| ---------------------- | -------------------------------------------------------------------- |
-| `admin-login.html`     | Login with rate limiting                                             |
-| `admin-dashboard.html` | Live content counts across all tables                                |
-| `admin-state.html`     | Full CRUD for districts, attractions, accommodations + image manager |
-| `admin-medical.html`   | Hospital CRUD                                                        |
-| `admin-events.html`    | Events CRUD with featured/recurring flags                            |
-| `admin-form.html`      | View/delete contact submissions + toggle public form on/off          |
-
-> ⚠️ Admin credentials are managed via Supabase Auth. Do not commit credentials to the repository.
-
----
-
-## 🚀 Local Setup
-
-This project is **static HTML** — no build step required.
-
-**1. Clone the repo**
+Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
 
 ```bash
-git clone https://github.com/your-username/bharatyatra-final.git
-cd bharatyatra-final
+npm i supabase --save-dev
 ```
 
-**2. Configure Supabase**
-
-Open `supabase-init.js` and set your own Supabase project URL and anon key:
-
-```js
-window.BY_SUPABASE_URL = "https://your-project.supabase.co";
-window.BY_SUPABASE_KEY = "your-anon-key";
-```
-
-**3. Set up Vercel environment variables** (for the contact form serverless function)
-
-In your Vercel dashboard, add:
+When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
 
 ```
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_KEY=your-service-role-key
+NODE_OPTIONS=--no-experimental-fetch yarn add supabase
 ```
 
-**4. Serve locally**
+> **Note**
+For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
 
-Use any static server, e.g.:
+<details>
+  <summary><b>macOS</b></summary>
+
+  Available via [Homebrew](https://brew.sh). To install:
+
+  ```sh
+  brew install supabase/tap/supabase
+  ```
+
+  To install the beta release channel:
+  
+  ```sh
+  brew install supabase/tap/supabase-beta
+  brew link --overwrite supabase-beta
+  ```
+  
+  To upgrade:
+
+  ```sh
+  brew upgrade supabase
+  ```
+</details>
+
+<details>
+  <summary><b>Windows</b></summary>
+
+  Available via [Scoop](https://scoop.sh). To install:
+
+  ```powershell
+  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+  scoop install supabase
+  ```
+
+  To upgrade:
+
+  ```powershell
+  scoop update supabase
+  ```
+</details>
+
+<details>
+  <summary><b>Linux</b></summary>
+
+  Available via [Homebrew](https://brew.sh) and Linux packages.
+
+  #### via Homebrew
+
+  To install:
+
+  ```sh
+  brew install supabase/tap/supabase
+  ```
+
+  To upgrade:
+
+  ```sh
+  brew upgrade supabase
+  ```
+
+  #### via Linux packages
+
+  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
+
+  ```sh
+  sudo apk add --allow-untrusted <...>.apk
+  ```
+
+  ```sh
+  sudo dpkg -i <...>.deb
+  ```
+
+  ```sh
+  sudo rpm -i <...>.rpm
+  ```
+
+  ```sh
+  sudo pacman -U <...>.pkg.tar.zst
+  ```
+</details>
+
+<details>
+  <summary><b>Other Platforms</b></summary>
+
+  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
+
+  ```sh
+  go install github.com/supabase/cli@latest
+  ```
+
+  Add a symlink to the binary in `$PATH` for easier access:
+
+  ```sh
+  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
+  ```
+
+  This works on other non-standard Linux distros.
+</details>
+
+<details>
+  <summary><b>Community Maintained Packages</b></summary>
+
+  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
+  To install in your working directory:
+
+  ```bash
+  pkgx install supabase
+  ```
+
+  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
+</details>
+
+### Run the CLI
 
 ```bash
-npx serve .
+supabase bootstrap
 ```
 
-Then open `http://localhost:3000`.
+Or using npx:
 
----
+```bash
+npx supabase bootstrap
+```
 
-## ☁️ Deployment
+The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
 
-The project deploys automatically to **Vercel** on push to `main`. No build configuration is needed — Vercel serves the HTML files directly and auto-detects the `api/` folder as serverless functions.
+## Docs
 
-Security headers (HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) are configured via `vercel.json`.
+Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
 
----
+## Breaking changes
 
-## 👥 Team
+We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
 
-Developed as part of **Design Engineering II-B** at **Gujarat Technological University (GTU)**, Ahmedabad — March 2026.
+However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
 
-| Name                              | Enrolment No. |
-| --------------------------------- | ------------- |
-| Bhanushali Vaibhav Chandreshkumar | 231130107004  |
-| Gajjar Harshal Dhimantkumar       | 231130107011  |
-| Zala Harshvardhansinh Nirmalsinh  | 231130107015  |
-| Jangid Nitin Sitaram              | 231130107019  |
-| Patel Shrey Darshan               | 231130107062  |
+## Developing
 
----
+To run from source:
 
-## 📄 License
-
-This project was built for academic purposes. Please contact the team before reusing any part of the codebase.
+```sh
+# Go >= 1.22
+go run . help
+```

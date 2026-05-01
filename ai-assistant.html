@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yatra Assistant | BharatYatra</title>
+
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
+        style-src  'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+        font-src   'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src    'self' data: https:;
+        connect-src 'self' https://gtpnojbbamoaznlutxap.supabase.co;
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'self';
+        object-src 'none';
+    ">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <script>
+        if (window.self !== window.top) { window.top.location = window.self.location; }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <style>
+    /* ── SHARED STYLES ── */
+    :root {
+        --black:  #000000;
+        --red:    #C0392B;
+        --white:  #FFFFFF;
+        --grey:   #1a1a1a;
+        --muted:  #999999;
+        --orange: #ff6b35;
+        --sidebar-width: 320px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: var(--white);
+        color: var(--black);
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+    body.no-scroll { overflow: hidden; }
+
+    /* ── NAVBAR ── */
+    #navbar {
+        position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+        padding: 10px 0;
+        background: rgba(8, 8, 8, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+    }
+    .nav-container {
+        max-width: 1200px; margin: 0 auto; padding: 0 40px;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+        font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 700;
+        color: #ff6b35; text-decoration: none; letter-spacing: 3px; flex-shrink: 0;
+    }
+    .menu-btn {
+        background: none; border: none; color: #969696; font-size: 1.5rem;
+        cursor: pointer; padding: 4px 6px; line-height: 1; transition: color 0.2s; flex-shrink: 0;
+    }
+    .menu-btn:hover { color: #ff6b35; }
+    .nav-back-btn {
+        margin-left: 24px; display: inline-flex; align-items: center; gap: 6px;
+        padding: 6px 14px; font-family: 'Poppins', sans-serif; font-size: 13px;
+        font-weight: 600; letter-spacing: 0.5px; text-decoration: none;
+        color: #969696; border: 1px solid #333; transition: color 0.2s, border-color 0.2s; flex-shrink: 0;
+    }
+    .nav-back-btn i { font-size: 12px; }
+    .nav-back-btn:hover { color: #ff6b35; border-color: #ff6b35; }
+
+    /* ── LOADER ── */
+    #loader {
+        position: fixed; inset: 0; z-index: 9999; background: #fffcf8;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden; flex-direction: column;
+    }
+    #loader.exiting .l-blob { animation: lBlobOut 0.8s ease forwards; }
+    #loader.exiting .l-inner { animation: lInnerOut 0.6s ease 0.2s forwards; }
+    #loader.exiting { animation: lLoaderOut 0.5s ease 0.7s forwards; }
+    @keyframes lBlobOut   { to { opacity: 0; transform: scale(1.8); } }
+    @keyframes lInnerOut  { to { opacity: 0; } }
+    @keyframes lLoaderOut { to { opacity: 0; } }
+    .l-blob { position: absolute; z-index: 0; pointer-events: none; animation: lBlobIn ease forwards; opacity: 0; }
+    .l-blob.b1 { width:75vmax;height:75vmax;top:-30%;right:-20%; background:radial-gradient(circle at 40% 40%,rgba(255,107,53,0.28),rgba(255,107,53,0.03) 70%); animation-duration:2s;animation-delay:0.1s; border-radius:50% 60% 40% 70% / 60% 50% 70% 40%; }
+    .l-blob.b2 { width:60vmax;height:60vmax;bottom:-20%;left:-15%; background:radial-gradient(circle at 60% 60%,rgba(192,57,43,0.22),rgba(192,57,43,0.03) 70%); animation-duration:2.2s;animation-delay:0.3s; border-radius:40% 60% 50% 50% / 50% 40% 70% 50%; }
+    .l-blob.b3 { width:35vmax;height:35vmax;top:10%;left:8%; background:radial-gradient(circle,rgba(224,160,100,0.18),transparent 70%); animation-duration:1.8s;animation-delay:0.6s; border-radius:50%; }
+    @keyframes lBlobIn { from{opacity:0;transform:scale(0.2)} to{opacity:1;transform:scale(1)} }
+    .l-drip { position:absolute;top:0;width:1px;z-index:1; background:linear-gradient(180deg,rgba(192,57,43,0.35) 0%,transparent 100%); transform-origin:top; animation:lDripDown ease forwards;opacity:0; }
+    @keyframes lDripDown { 0%{opacity:0;transform:scaleY(0);} 15%{opacity:1;} 100%{opacity:0.35;transform:scaleY(1);} }
+    .l-inner { position:relative;z-index:2; display:flex;flex-direction:column; align-items:center;gap:14px;text-align:center; }
+    .l-pre { font-family:'Playfair Display',serif;font-style:italic; font-size:clamp(1rem,2.5vw,1.3rem); color:#C0392B;letter-spacing:2px; opacity:0;animation:lFadeUp 0.7s ease 0.9s forwards; }
+    .l-logo { font-family:'Playfair Display',serif; font-size:clamp(4rem,10vw,9rem); font-weight:700;line-height:0.9;color:#1a0a06; opacity:0;animation:lFadeUp 1s cubic-bezier(0.22,1,0.36,1) 1.1s forwards; }
+    .l-logo .l1 { display:block;letter-spacing:6px; }
+    .l-logo .l2 { display:block;font-size:0.55em;color:#C0392B;letter-spacing:18px;padding-top:10px; }
+    .l-wave { width:220px;opacity:0; animation:lFadeIn 0.6s ease 1.8s forwards; }
+    .l-wave svg { width:100%;display:block; }
+    @keyframes lFadeIn { to { opacity:1; } }
+    .l-sub { font-family:'Poppins',sans-serif; font-size:9px;font-weight:700; letter-spacing:6px;text-transform:uppercase; color:#7e5b5b;opacity:0; animation:lFadeUp 0.5s ease 2s forwards; }
+    @keyframes lFadeUp { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:translateY(0);} }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+        position: fixed; top: 0; right: calc(-1 * var(--sidebar-width));
+        width: var(--sidebar-width); height: 100%; background: var(--black);
+        z-index: 2000; overflow-y: auto; padding: 50px 36px 40px;
+        transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1); border-left: 1px solid #222;
+    }
+    .sidebar.active { right: 0; }
+    .close-btn { position: absolute; top: 18px; right: 22px; background: none; border: none; font-size: 32px; color: var(--white); cursor: pointer; line-height: 1; padding: 4px 8px; transition: color 0.2s; }
+    .close-btn:hover { color: var(--red); }
+    .sidebar-tagline { font-family: 'Playfair Display', serif; font-style: italic; font-size: 13px; color: var(--muted); letter-spacing: 2px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #222; }
+    .sidebar-links { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .sidebar-links li a { display: flex; align-items: center; gap: 14px; padding: 12px 0; color: #cccccc; text-decoration: none; font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 400; letter-spacing: 0.5px; border-bottom: 1px solid #111; transition: color 0.25s, padding-left 0.25s; }
+    .sidebar-links li a i { font-size: 16px; width: 20px; color: var(--red); flex-shrink: 0; }
+    .sidebar-links li a:hover { color: var(--white); padding-left: 6px; }
+    .sidebar-dropdown-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; cursor: pointer; }
+    .sidebar-dropdown-toggle .sidebar-arrow { font-size: 0.6rem; transition: transform 0.3s ease; color: #555; }
+    .sidebar-dropdown-toggle.open .sidebar-arrow { transform: rotate(180deg); }
+    .sidebar-sub { list-style: none; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding-left: 34px; }
+    .sidebar-sub.open { max-height: 300px; }
+    .sidebar-sub li a { font-size: 13px !important; color: #888 !important; padding: 7px 0 !important; border-bottom: none !important; }
+    .sidebar-sub li a:hover { color: #ff6b35 !important; }
+    .sidebar-section-label { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #444; margin-top: 28px; margin-bottom: 8px; padding-top: 24px; border-top: 1px solid #1a1a1a; }
+    .sidebar-login-btn { display: flex; align-items: center; gap: 10px; margin-top: 32px; padding: 11px 18px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-decoration: none; color: #ff6b35; border: 1px solid #ff6b35; transition: background 0.25s, color 0.25s; }
+    .sidebar-login-btn:hover { background: #ff6b35; color: #ffffff; }
+
+    /* ── OVERLAY ── */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1500; opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s ease; }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+    /* ── FOOTER ── */
+    #footer { background: #080808; border-top: 1px solid #1e1e1e; padding: 70px 0 0; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px 60px; display: grid; grid-template-columns: 1.8fr 1fr 1fr 0.8fr 1.2fr; gap: 48px; }
+    .footer-logo { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 3px; color: #ff6b35; text-decoration: none; display: block; margin-bottom: 16px; }
+    .footer-tagline { font-family: 'Poppins', sans-serif; font-size: 13px; color: #555; line-height: 1.8; }
+    .footer-heading { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #ff6b35; margin-bottom: 20px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .footer-links li a { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-family: 'Poppins', sans-serif; font-size: 14px; color: #666; text-decoration: none; border-bottom: 1px solid #111; transition: color 0.2s, padding-left 0.2s; }
+    .footer-links li a i { font-size: 13px; color: #ff6b35; width: 16px; flex-shrink: 0; }
+    .footer-links li a:hover { color: var(--white); padding-left: 4px; }
+    .footer-socials { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .social-btn { width: 38px; height: 38px; border: 1px solid #2a2a2a; color: #666; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 15px; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+    .social-btn:hover { border-color: #ff6b35; color: #ff6b35; background: rgba(255,107,53,0.06); }
+    .footer-contact-btn { display: inline-flex; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: #ff6b35; border: 2px solid #ff6b35; padding: 10px 22px; transition: background 0.25s, color 0.25s; }
+    .footer-contact-btn:hover { background: #ff6b35; color: var(--white); }
+    .footer-bottom { border-top: 1px solid #161616; padding: 20px 40px; text-align: center; }
+    .footer-bottom p { font-family: 'Poppins', sans-serif; font-size: 12px; color: #333; letter-spacing: 0.5px; }
+
+    /* ── CUSTOM CURSOR ── */
+    @media (pointer: fine) {
+        *, *::before, *::after { cursor: none !important; }
+        .cursor-dot { position: fixed; top: 0; left: 0; width: 10px; height: 10px; border-radius: 50%; background: #ef551c; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); will-change: transform; }
+        .cursor-dot.hovering { width: 16px; height: 16px; background: #dc9a9a; }
+        .cursor-trail { position: fixed; top: 0; left: 0; border-radius: 50%; border: 1.5px solid #8B0000; background: transparent; pointer-events: none; z-index: 99998; transform: translate(-50%, -50%); will-change: transform, opacity; }
+    }
+
+    /* ── HERO ── */
+    #ai-hero {
+        position: relative; padding-top: 80px;
+        min-height: 52vh; display: flex; align-items: flex-end; justify-content: flex-start;
+        overflow: hidden; background: #0b0b0b;
+    }
+    .ai-hero-bg {
+        position: absolute; inset: 0;
+        background:
+            radial-gradient(ellipse at 75% 35%, rgba(255,107,53,0.15) 0%, transparent 55%),
+            radial-gradient(ellipse at 20% 80%, rgba(192,57,43,0.08) 0%, transparent 50%),
+            linear-gradient(160deg, #0b0b0b 0%, #1a0a06 100%);
+        z-index: 0;
+    }
+    .ai-hero-deco {
+        position: absolute; right: 7%; top: 50%; transform: translateY(-50%);
+        z-index: 1; opacity: 0.07;
+    }
+    .ai-hero-deco svg { width: 280px; height: 280px; }
+    .ai-hero-content {
+        position: relative; z-index: 2;
+        padding: 0 60px 60px; max-width: 900px;
+    }
+    .ai-eyebrow {
+        font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600;
+        letter-spacing: 5px; text-transform: uppercase; color: #ff6b35;
+        display: block; margin-bottom: 14px;
+    }
+    #ai-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.6rem, 6vw, 5rem);
+        font-weight: 700; color: #ffffff; letter-spacing: 2px; line-height: 1.05;
+    }
+    #ai-hero h1 span { color: #ff6b35; }
+    .ai-hero-sub {
+        font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 300;
+        color: rgba(255,255,255,0.45); margin-top: 14px; letter-spacing: 0.5px;
+    }
+    .ai-hero-border { height: 4px; background: #ff6b35; }
+
+    /* ── CHAT SECTION ── */
+    #chat-section {
+        background: #f2f0ed;
+        padding: 50px 24px 80px;
+    }
+    .chat-inner { max-width: 860px; margin: 0 auto; }
+
+    /* ── CHAT WINDOW ── */
+    .chat-window {
+        background: #ffffff;
+        border-top: 3px solid #ff6b35;
+        box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+        display: flex; flex-direction: column;
+        height: 560px;
+    }
+
+    /* Messages area */
+    .chat-messages {
+        flex: 1; overflow-y: auto; padding: 28px 28px 16px;
+        display: flex; flex-direction: column; gap: 20px;
+        scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 2px; }
+
+    /* ── WELCOME STATE ── */
+    .welcome-state {
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center; text-align: center;
+        flex: 1; padding: 20px;
+        gap: 16px;
+    }
+    .welcome-icon {
+        width: 64px; height: 64px; border-radius: 50%;
+        background: rgba(255,107,53,0.1); border: 2px solid rgba(255,107,53,0.2);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 28px;
+    }
+    .welcome-title {
+        font-family: 'Playfair Display', serif; font-size: 1.4rem;
+        color: #111; font-weight: 700;
+    }
+    .welcome-sub {
+        font-family: 'Poppins', sans-serif; font-size: 13px;
+        color: #888; line-height: 1.7; max-width: 440px;
+    }
+    .chip-grid {
+        display: flex; flex-wrap: wrap; gap: 8px;
+        justify-content: center; margin-top: 4px; max-width: 560px;
+    }
+    .chip {
+        font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 400;
+        color: #555; background: #f7f5f2; border: 1px solid #e0ddd9;
+        padding: 7px 14px; cursor: pointer;
+        transition: background 0.2s, border-color 0.2s, color 0.2s;
+        white-space: nowrap;
+    }
+    .chip:hover { background: rgba(255,107,53,0.07); border-color: rgba(255,107,53,0.4); color: #ff6b35; }
+
+    /* ── MESSAGES ── */
+    .msg-row { display: flex; gap: 10px; align-items: flex-start; }
+    .msg-row.user { flex-direction: row-reverse; }
+
+    .msg-avatar {
+        width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; margin-top: 2px;
+    }
+    .msg-avatar.bot { background: rgba(255,107,53,0.1); color: #ff6b35; border: 1px solid rgba(255,107,53,0.2); }
+    .msg-avatar.user { background: #ff6b35; color: #fff; }
+
+    .msg-bubble {
+        max-width: 75%; padding: 13px 16px;
+        font-family: 'Poppins', sans-serif; font-size: 13.5px;
+        line-height: 1.75; border-radius: 2px;
+    }
+    .msg-bubble.user { background: #ff6b35; color: #fff; }
+    .msg-bubble.bot { background: #f9f8f6; border: 1px solid #ebe9e5; color: #222; }
+
+    .msg-bubble.bot ul, .msg-bubble.bot ol { padding-left: 18px; margin: 6px 0; }
+    .msg-bubble.bot li { margin-bottom: 4px; }
+    .msg-bubble.bot p { margin-bottom: 6px; }
+    .msg-bubble.bot p:last-child { margin-bottom: 0; }
+    .msg-bubble.bot strong { color: #111; }
+
+    /* Source badge */
+    .source-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        font-size: 10px; font-weight: 700; letter-spacing: 1px;
+        text-transform: uppercase; padding: 3px 8px; margin-bottom: 8px;
+    }
+    .source-badge.db {
+        color: #ff6b35; background: rgba(255,107,53,0.08);
+        border: 1px solid rgba(255,107,53,0.25);
+    }
+    .source-badge.general {
+        color: #666; background: rgba(0,0,0,0.04); border: 1px solid #e0e0e0;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+        display: flex; gap: 5px; align-items: center;
+        padding: 14px 18px; background: #f9f8f6;
+        border: 1px solid #ebe9e5; width: fit-content;
+    }
+    .typing-dot {
+        width: 7px; height: 7px; border-radius: 50%; background: #ccc;
+        animation: typingBounce 1.2s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+        0%, 60%, 100% { transform: translateY(0); background: #ccc; }
+        30% { transform: translateY(-6px); background: #ff6b35; }
+    }
+
+    /* Error bubble */
+    .msg-bubble.error { background: #fff5f5; border-color: #fdd; color: #c0392b; font-style: italic; }
+
+    /* ── INPUT ROW ── */
+    .chat-input-row {
+        display: flex; gap: 0;
+        border-top: 1px solid #ebe9e5;
+        padding: 16px 20px;
+        background: #fff;
+        align-items: flex-end;
+    }
+    #chat-input {
+        flex: 1; font-family: 'Poppins', sans-serif; font-size: 13.5px;
+        color: #111; border: 1px solid #e0ddd9; padding: 11px 16px;
+        resize: none; height: 46px; max-height: 120px; overflow-y: auto;
+        background: #fafaf9; transition: border-color 0.2s; outline: none;
+        border-radius: 0; line-height: 1.5;
+    }
+    #chat-input:focus { border-color: #ff6b35; }
+    #chat-input::placeholder { color: #bbb; }
+    #send-btn {
+        background: #ff6b35; color: #fff; border: none;
+        padding: 0 22px; height: 46px; font-family: 'Poppins', sans-serif;
+        font-size: 13px; font-weight: 600; letter-spacing: 1px;
+        cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+        display: flex; align-items: center; gap: 8px;
+    }
+    #send-btn:hover { background: #e85d28; }
+    #send-btn:disabled { background: #ddd; cursor: not-allowed; }
+
+    /* ── DISCLAIMER ── */
+    .chat-disclaimer {
+        text-align: center; margin-top: 20px;
+        font-family: 'Poppins', sans-serif; font-size: 11px;
+        color: #aaa; letter-spacing: 0.3px; line-height: 1.6;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 1024px) {
+        .nav-container { padding: 0 24px; }
+        .logo { font-size: 1.5rem; }
+        .footer-inner { grid-template-columns: 1.4fr 1fr 1fr; gap: 36px; padding: 0 24px 50px; }
+        .footer-inner > .footer-brand { grid-column: 1 / -1; }
+    }
+    @media (max-width: 768px) {
+        :root { --sidebar-width: 85vw; }
+        .nav-container { padding: 0 18px; }
+        .logo { font-size: 1.3rem; letter-spacing: 2px; }
+        .nav-back-btn { padding: 6px 10px; font-size: 0; letter-spacing: 0; }
+        .nav-back-btn i { font-size: 14px; }
+        .ai-hero-content { padding: 0 24px 40px; }
+        .ai-hero-deco { display: none; }
+        .chat-window { height: 500px; }
+        .msg-bubble { max-width: 88%; font-size: 13px; }
+        .footer-inner { grid-template-columns: 1fr 1fr; gap: 28px; padding: 0 20px 44px; }
+        .footer-inner > .footer-brand { grid-column: 1 / -1; }
+        .footer-bottom { padding: 18px 20px; }
+    }
+    @media (max-width: 480px) {
+        :root { --sidebar-width: 100%; }
+        .sidebar { padding: 50px 22px 36px; border-left: none; }
+        .nav-container { padding: 0 14px; }
+        .logo { font-size: 1.1rem; letter-spacing: 1.5px; }
+        #ai-hero { min-height: 44vh; }
+        .ai-hero-content { padding: 0 16px 30px; }
+        #chat-section { padding: 28px 12px 60px; }
+        .chat-window { height: 460px; }
+        .chat-messages { padding: 18px 14px 10px; }
+        .chat-input-row { padding: 10px 12px; }
+        .chip { font-size: 11px; padding: 6px 10px; }
+        .footer-inner { grid-template-columns: 1fr; gap: 24px; padding: 0 16px 36px; }
+        .footer-bottom { padding: 16px; }
+        .footer-bottom p { font-size: 11px; }
+    }
+    </style>
+</head>
+<body>
+
+<!-- ==================== LOADER ==================== -->
+<div id="loader">
+    <div class="l-blob b1"></div>
+    <div class="l-blob b2"></div>
+    <div class="l-blob b3"></div>
+    <div class="l-drip" style="left:22%;height:55vh;animation-duration:1.6s;animation-delay:0.5s;"></div>
+    <div class="l-drip" style="left:50%;height:75vh;animation-duration:2s;animation-delay:0.8s;"></div>
+    <div class="l-drip" style="left:76%;height:40vh;animation-duration:1.4s;animation-delay:1s;"></div>
+    <div class="l-inner">
+        <div class="l-pre">Discover Incredible India</div>
+        <div class="l-logo">
+            <span class="l1">BHARAT</span>
+            <span class="l2">YATRA</span>
+        </div>
+        <div class="l-wave">
+            <svg viewBox="0 0 220 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,10 C35,0 55,20 90,10 C120,0 145,20 175,10 C195,3 208,15 220,10"
+                      fill="none" stroke="#C0392B" stroke-width="1.5" opacity="0.45"
+                      stroke-dasharray="400" stroke-dashoffset="400">
+                    <animate attributeName="stroke-dashoffset" from="400" to="0" dur="1.2s" begin="1.9s" fill="freeze"/>
+                </path>
+            </svg>
+        </div>
+        <div class="l-sub">Loading your adventure</div>
+    </div>
+</div>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav id="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="logo">BharatYatra</a>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <button class="menu-btn" id="open-sidebar" aria-label="Open menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="#" onclick="history.back(); return false;" class="nav-back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ==================== SIDEBAR ==================== -->
+<div class="sidebar" id="sidebar">
+    <button class="close-btn" id="close-sidebar" aria-label="Close menu">&times;</button>
+    <p class="sidebar-tagline">Discover Incredible India</p>
+    <ul class="sidebar-links">
+        <li>
+            <a class="sidebar-dropdown-toggle" id="sidebar-states-toggle">
+                <span><i class="fas fa-map" style="color:#ff6b35;width:20px;"></i> States</span>
+                <i class="fas fa-chevron-down sidebar-arrow"></i>
+            </a>
+            <ul class="sidebar-sub" id="sidebar-states-sub">
+                <li><a href="states/assam.html">Assam</a></li>
+                <li><a href="states/gujarat.html">Gujarat</a></li>
+                <li><a href="states/kerala.html">Kerala</a></li>
+                <li><a href="states/rajasthan.html">Rajasthan</a></li>
+                <li><a href="states/uttarakhand.html">Uttarakhand</a></li>
+            </ul>
+        </li>
+        <li>
+            <a class="sidebar-dropdown-toggle" id="sidebar-districts-toggle">
+                <span><i class="fas fa-map-marked-alt" style="color:#ff6b35;width:20px;"></i> Districts</span>
+                <i class="fas fa-chevron-down sidebar-arrow"></i>
+            </a>
+            <ul class="sidebar-sub" id="sidebar-districts-sub">
+                <li><a href="districts/assamdistrict.html">Assam</a></li>
+                <li><a href="districts/gujaratdistrict.html">Gujarat</a></li>
+                <li><a href="districts/keraladistrict.html">Kerala</a></li>
+                <li><a href="districts/rajasthandistrict.html">Rajasthan</a></li>
+                <li><a href="districts/uttarakhanddistrict.html">Uttarakhand</a></li>
+            </ul>
+        </li>
+        <li><a href="portals.html"><i class="fa-solid fa-archway"></i> Portals</a></li>
+        <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+        <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+        <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+        <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+        <li><a href="ai-assistant.html"><i class="fas fa-robot"></i> Yatra Assistant</a></li>
+        <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+        <li><a href="contactus.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+    </ul>
+    <p class="sidebar-section-label">Legal &amp; Support</p>
+    <ul class="sidebar-links">
+        <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+        <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+    </ul>
+    <a href="admin/admin-login.html" class="sidebar-login-btn">
+        <i class="fas fa-lock"></i> Admin Login
+    </a>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<!-- ==================== HERO ==================== -->
+<section id="ai-hero">
+    <div class="ai-hero-bg"></div>
+    <!-- Decorative robot/AI SVG -->
+    <div class="ai-hero-deco">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="#ff6b35">
+            <rect x="25" y="30" width="50" height="40" rx="6"/>
+            <rect x="40" y="20" width="20" height="12" rx="3"/>
+            <line x1="50" y1="20" x2="50" y2="30" stroke="#ff6b35" stroke-width="2"/>
+            <circle cx="38" cy="47" r="5" fill="#0b0b0b"/>
+            <circle cx="62" cy="47" r="5" fill="#0b0b0b"/>
+            <rect x="36" y="58" width="28" height="5" rx="2.5" fill="#0b0b0b"/>
+            <rect x="15" y="42" width="10" height="18" rx="3"/>
+            <rect x="75" y="42" width="10" height="18" rx="3"/>
+            <rect x="35" y="70" width="10" height="12" rx="2"/>
+            <rect x="55" y="70" width="10" height="12" rx="2"/>
+        </svg>
+    </div>
+    <div class="ai-hero-content">
+        <span class="ai-eyebrow">AI Travel Guide</span>
+        <h1>Yatra <span>Assistant</span></h1>
+        <p class="ai-hero-sub">Ask me anything about travelling in India — destinations, hotels, events, and more.</p>
+    </div>
+</section>
+<div class="ai-hero-border"></div>
+
+<!-- ==================== CHAT SECTION ==================== -->
+<section id="chat-section">
+    <div class="chat-inner">
+        <div class="chat-window">
+
+            <!-- Messages -->
+            <div class="chat-messages" id="chat-messages">
+
+                <!-- Welcome state -->
+                <div class="welcome-state" id="welcome-state">
+                    <div class="welcome-icon">🙏</div>
+                    <div class="welcome-title">Namaste! I'm Yatra Assistant</div>
+                    <p class="welcome-sub">Your personal India travel guide. Ask me about destinations, hotels, events, medical tourism, or anything about travelling in India.</p>
+                    <div class="chip-grid">
+                        <button class="chip" onclick="sendChip(this)">Best time to visit Gujarat?</button>
+                        <button class="chip" onclick="sendChip(this)">Hotels near Sabarmati Ashram?</button>
+                        <button class="chip" onclick="sendChip(this)">Events happening in Rajasthan?</button>
+                        <button class="chip" onclick="sendChip(this)">Medical tourism hospitals in Kerala?</button>
+                        <button class="chip" onclick="sendChip(this)">Is Rann Utsav worth visiting?</button>
+                        <button class="chip" onclick="sendChip(this)">Top must-visit attractions in Assam?</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Input row -->
+            <div class="chat-input-row">
+                <textarea
+                    id="chat-input"
+                    placeholder="Ask about India travel..."
+                    rows="1"
+                    maxlength="500"
+                    aria-label="Chat input"
+                ></textarea>
+                <button id="send-btn" aria-label="Send message">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </div>
+
+        </div>
+
+        <p class="chat-disclaimer">
+            Yatra Assistant may occasionally make mistakes. Always verify critical travel details directly with service providers.
+        </p>
+    </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer id="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <a href="index.html" class="footer-logo">BHARAT YATRA</a>
+            <p class="footer-tagline">Discover the incredible beauty<br>and diversity of India.</p>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Explore</h4>
+            <ul class="footer-links">
+                <li><a href="experiences.html"><i class="fas fa-star"></i> Experiences</a></li>
+                <li><a href="travelforlife.html"><i class="fas fa-heart"></i> Travel for Life</a></li>
+                <li><a href="colors.html"><i class="fas fa-palette"></i> Colors of India</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Plan</h4>
+            <ul class="footer-links">
+                <li><a href="itinerary.html"><i class="fas fa-route"></i> Itinerary</a></li>
+                <li><a href="medical.html"><i class="fas fa-hospital-alt"></i> Medical Tour</a></li>
+                <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Legal</h4>
+            <ul class="footer-links">
+                <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                <li><a href="terms-and-conditions.html"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">Follow Us</h4>
+            <div class="footer-socials">
+                <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-btn" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+            </div>
+            <a href="contactus.html" class="footer-contact-btn">
+                <i class="fas fa-envelope"></i> Contact Us
+            </a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 BharatYatra. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- ==================== CUSTOM CURSOR ==================== -->
+<div class="cursor-dot" id="cursorDot"></div>
+
+<script>
+// ── CONFIG ──
+const EDGE_FUNCTION_URL = 'https://gtpnojbbamoaznlutxap.supabase.co/functions/v1/yatra-chat';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0cG5vamJiYW1vYXpubHV0eGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Mjk3NjMsImV4cCI6MjA4NDQwNTc2M30.t6fwQJR9ljGGfOajPlXzWGSQbKCtpaTb4dWfb33BHxE';
+
+// ── STATE ──
+let history = [];
+let isStreaming = false;
+let welcomeHidden = false;
+
+// ── DOM ──
+const messagesEl = document.getElementById('chat-messages');
+const inputEl    = document.getElementById('chat-input');
+const sendBtn    = document.getElementById('send-btn');
+const welcomeEl  = document.getElementById('welcome-state');
+
+// ── SEND VIA CHIP ──
+function sendChip(btn) {
+    const text = btn.textContent.trim();
+    inputEl.value = text;
+    sendMessage();
+}
+
+// ── SEND MESSAGE ──
+async function sendMessage() {
+    const text = inputEl.value.replace(/<[^>]*>/g, '').trim().substring(0, 500);
+    if (!text || isStreaming) return;
+
+    isStreaming = true;
+    sendBtn.disabled = true;
+    inputEl.value = '';
+    inputEl.style.height = '46px';
+
+    // Hide welcome state
+    if (!welcomeHidden) {
+        welcomeEl.style.display = 'none';
+        welcomeHidden = true;
+    }
+
+    // Append user message
+    appendUserMsg(text);
+    history.push({ role: 'user', content: text });
+    scrollToBottom();
+
+    // Show typing indicator
+    const typingEl = appendTyping();
+    scrollToBottom();
+
+    try {
+        const res = await fetch(EDGE_FUNCTION_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({ message: text, history: history.slice(-10) }),
+        });
+
+        if (!res.ok) throw new Error('Network error');
+
+        // Remove typing, create bot bubble
+        typingEl.remove();
+        const { bubbleEl, textEl, badgeEl } = createBotBubble();
+        scrollToBottom();
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let botText = '';
+        let badgeSet = false;
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                try {
+                    const data = JSON.parse(line.slice(6));
+
+                    if (data.type === 'source' && !badgeSet) {
+                        badgeSet = true;
+                        if (data.source === 'database') {
+                            badgeEl.className = 'source-badge db';
+                            badgeEl.innerHTML = '<i class="fas fa-database"></i> From our database';
+                        } else {
+                            badgeEl.className = 'source-badge general';
+                            badgeEl.innerHTML = '<i class="fas fa-brain"></i> General knowledge';
+                        }
+                        badgeEl.style.display = 'inline-flex';
+                    }
+
+                    if (data.type === 'text') {
+                        botText += data.text;
+                        textEl.innerHTML = formatMarkdown(botText);
+                        scrollToBottom();
+                    }
+
+                    if (data.type === 'done') {
+                        history.push({ role: 'assistant', content: botText });
+                    }
+                } catch { /* skip */ }
+            }
+        }
+
+    } catch (err) {
+        typingEl.remove();
+        appendErrorMsg('Sorry, something went wrong. Please try again in a moment.');
+        console.error(err);
+    } finally {
+        isStreaming = false;
+        sendBtn.disabled = false;
+        inputEl.focus();
+    }
+}
+
+// ── RENDER HELPERS ──
+function appendUserMsg(text) {
+    const row = document.createElement('div');
+    row.className = 'msg-row user';
+    row.innerHTML = `
+        <div class="msg-avatar user"><i class="fas fa-user"></i></div>
+        <div class="msg-bubble user">${escHtml(text)}</div>
+    `;
+    messagesEl.appendChild(row);
+}
+
+function appendTyping() {
+    const row = document.createElement('div');
+    row.className = 'msg-row';
+    row.innerHTML = `
+        <div class="msg-avatar bot"><i class="fas fa-robot"></i></div>
+        <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+    `;
+    messagesEl.appendChild(row);
+    return row;
+}
+
+function createBotBubble() {
+    const row = document.createElement('div');
+    row.className = 'msg-row';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar bot';
+    avatar.innerHTML = '<i class="fas fa-robot"></i>';
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;gap:0;max-width:75%;';
+
+    const badgeEl = document.createElement('div');
+    badgeEl.className = 'source-badge';
+    badgeEl.style.display = 'none';
+
+    const bubbleEl = document.createElement('div');
+    bubbleEl.className = 'msg-bubble bot';
+
+    const textEl = document.createElement('div');
+    bubbleEl.appendChild(textEl);
+
+    wrap.appendChild(badgeEl);
+    wrap.appendChild(bubbleEl);
+    row.appendChild(avatar);
+    row.appendChild(wrap);
+    messagesEl.appendChild(row);
+
+    return { bubbleEl, textEl, badgeEl };
+}
+
+function appendErrorMsg(text) {
+    const row = document.createElement('div');
+    row.className = 'msg-row';
+    row.innerHTML = `
+        <div class="msg-avatar bot"><i class="fas fa-robot"></i></div>
+        <div class="msg-bubble bot error">${escHtml(text)}</div>
+    `;
+    messagesEl.appendChild(row);
+}
+
+// ── MARKDOWN FORMATTER ──
+// Converts basic markdown (* bullets, **bold**, newlines) to HTML
+function formatMarkdown(text) {
+    // Escape HTML first
+    let html = escHtml(text);
+    // Bold
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // Bullet lists — lines starting with *
+    const lines = html.split('\n');
+    let inList = false;
+    const result = [];
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.match(/^\* /)) {
+            if (!inList) { result.push('<ul>'); inList = true; }
+            result.push(`<li>${line.slice(2)}</li>`);
+        } else {
+            if (inList) { result.push('</ul>'); inList = false; }
+            if (line.trim()) result.push(`<p>${line}</p>`);
+        }
+    }
+    if (inList) result.push('</ul>');
+    return result.join('');
+}
+
+function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function scrollToBottom() {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+// ── INPUT EVENTS ──
+inputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+inputEl.addEventListener('input', () => {
+    // Auto-resize textarea
+    inputEl.style.height = '46px';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+});
+
+sendBtn.addEventListener('click', sendMessage);
+
+// ── SIDEBAR ──
+const sidebar  = document.getElementById('sidebar');
+const overlay  = document.getElementById('overlay');
+const openBtn  = document.getElementById('open-sidebar');
+const closeBtn = document.getElementById('close-sidebar');
+
+function openSidebar()  { sidebar.classList.add('active'); overlay.classList.add('active'); document.body.classList.add('no-scroll'); }
+function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.classList.remove('no-scroll'); }
+
+openBtn.addEventListener('click', openSidebar);
+closeBtn.addEventListener('click', closeSidebar);
+overlay.addEventListener('click', closeSidebar);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+['states', 'districts'].forEach(key => {
+    const toggle = document.getElementById(`sidebar-${key}-toggle`);
+    const sub    = document.getElementById(`sidebar-${key}-sub`);
+    if (toggle && sub) {
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('open');
+            sub.classList.toggle('open');
+        });
+    }
+});
+
+// ── LOADER ──
+const LOADER_MIN_MS = 3400;
+let loaderTimerDone = false, loaderPageReady = false, loaderExitFired = false;
+
+function maybeExitLoader() {
+    if (loaderExitFired) return;
+    if (loaderTimerDone && loaderPageReady) {
+        loaderExitFired = true;
+        const loader = document.getElementById('loader');
+        if (loader) {
+            loader.classList.add('exiting');
+            setTimeout(() => { loader.style.display = 'none'; }, 1300);
+        }
+    }
+}
+
+setTimeout(() => { loaderTimerDone = true; maybeExitLoader(); }, LOADER_MIN_MS);
+loaderPageReady = true;
+maybeExitLoader();
+</script>
+
+<!-- ==================== CUSTOM CURSOR ==================== -->
+<script>
+(function () {
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    const TRAIL_COUNT = 8;
+    const dot = document.getElementById('cursorDot');
+    const trails = Array.from({ length: TRAIL_COUNT }, (_, i) => {
+        const el = document.createElement('div');
+        el.className = 'cursor-trail';
+        const size = 18 + i * 11;
+        el.style.cssText = `width:${size}px;height:${size}px;opacity:0;`;
+        document.body.appendChild(el);
+        return { el, x: 0, y: 0, size };
+    });
+    let mouseX = -200, mouseY = -200;
+    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+    document.addEventListener('mouseover', (e) => {
+        if (e.target.closest('a, button, .chip')) dot.classList.add('hovering');
+    });
+    document.addEventListener('mouseout', (e) => {
+        if (e.target.closest('a, button, .chip')) dot.classList.remove('hovering');
+    });
+    document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; trails.forEach(t => t.el.style.opacity = '0'); });
+    document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; });
+    const positions = Array(TRAIL_COUNT).fill(null).map(() => ({ x: -200, y: -200 }));
+    const SPEEDS = trails.map((_, i) => 0.28 - i * 0.022);
+    function animate() {
+        dot.style.left = mouseX + 'px';
+        dot.style.top  = mouseY + 'px';
+        positions[0].x += (mouseX - positions[0].x) * SPEEDS[0];
+        positions[0].y += (mouseY - positions[0].y) * SPEEDS[0];
+        for (let i = 1; i < TRAIL_COUNT; i++) {
+            positions[i].x += (positions[i - 1].x - positions[i].x) * SPEEDS[i];
+            positions[i].y += (positions[i - 1].y - positions[i].y) * SPEEDS[i];
+        }
+        trails.forEach((t, i) => {
+            t.el.style.left = positions[i].x + 'px';
+            t.el.style.top  = positions[i].y + 'px';
+            const dx = positions[i].x - mouseX, dy = positions[i].y - mouseY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const baseOpacity = (1 - i / TRAIL_COUNT) * 0.55;
+            const distFade = Math.max(0, 1 - dist / 180);
+            t.el.style.opacity = (baseOpacity * distFade).toFixed(3);
+            const colorAlpha = Math.max(0.08, 1 - i / TRAIL_COUNT);
+            t.el.style.borderColor = `rgba(239, 85, 28, ${colorAlpha.toFixed(2)})`;
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
+})();
+</script>
+
+</body>
+</html>
