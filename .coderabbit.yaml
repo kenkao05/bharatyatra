@@ -1,0 +1,9 @@
+reviews:
+  profile: assertive
+  tools:
+    gitleaks:
+      enabled: true
+    semgrep:
+      enabled: true
+    eslint:
+      enabled: true

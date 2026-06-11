@@ -4,7 +4,7 @@
  *
  * Protections included:
  *  1.  Session guard         — redirect to login if no valid session
- *  2.  Token-age check       — force re-login if JWT is stale (> 50 min)
+ *  2.  Token-age check       — force re login if JWT is stale (> 50 min)
  *  3.  Inactivity timeout    — auto-logout after 15 min of no interaction
  *  4.  Cross-tab logout      — logout in one tab logs out all open admin tabs
  *  5.  Clickjack guard       — bust out of iframes + blank body on failure
